@@ -1,0 +1,9 @@
+mypy.ini
+*.cmd
+rules/
+TODO.txt
+DOING.txt
+.idea/
+.venv/
+__pycache__/
+.mypy_cache/
