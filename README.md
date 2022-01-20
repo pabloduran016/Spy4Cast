@@ -9,9 +9,30 @@ Install dependicies by running the following
 pip install -r requirements.txt
 ```
 **Example:**  
-[example01.py](examples/example01.py)  
-**Output:**  
-[plot01.py](examples/example01.png)  
+```python
+import readers as spy
+from custom_types import Month, Slise
+from readers import F
+
+sl = Slise(
+    latitude_min=-45,
+    latitude_max=45,
+    longitude_min=-100,
+    longitude_max=100,
+    initial_month=Month.JAN,
+    final_month=Month.MAR,
+    initial_year=1871,
+    final_year=2020,
+    selected_year=1990,
+)
+spy.AnomerMap(dataset_name="HadISST_sst.nc") \
+    .load_dataset() \
+    .slice_dataset(sl) \
+    .apply() \
+    .run(F.SHOW_PLOT | F.SAVE_FIG, slise=sl)
+```
+**Output:**    
+![Example 1 plot](examples/example01.png)
 
 
 ## References
