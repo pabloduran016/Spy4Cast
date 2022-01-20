@@ -32,8 +32,27 @@ spy.AnomerMap(dataset_name="HadISST_sst.nc") \
     .run(F.SHOW_PLOT | F.SAVE_FIG, slise=sl)
 ```
 **Output:**    
+  
 ![Example 1 plot](examples/example01.png)
 
+## ReadData
+TBD
+
+## Meteo
+
+## Plotters and Prokers
+TBD
+### AnomerTS
+TBD
+### ClimerTS
+TBD
+### AnomerMap
+TBD
+### ClimerMap
+TBD
+
+## Spy4Caster
+TBD
 
 ## References
 - [xarray](https://xarray.pydata.org/en/stable/)
