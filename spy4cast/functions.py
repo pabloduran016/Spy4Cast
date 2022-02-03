@@ -2,13 +2,15 @@ import json
 import os
 import datetime
 from typing import Optional, Dict
-
-from custom_types import Month, Slise
+from .stypes import Month, Slise
 
 
 # Array with the month indices
 MONTH_TO_STRING = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 STRING_TO_MONTH = list(filter(lambda x: not x.startswith('_'), Month.__dict__.keys()))
+
+
+SILENCE = True
 
 
 def pretty_dict(d: Dict[str, str]) -> str:
@@ -107,3 +109,9 @@ def log_error(string: str, path: Optional[str] = None) -> None:
     print(f'[INFO] <log_error()> Logging in file with path: {os.path.join(full_path, f"errors_{timestamp.day}.txt")}')
     with open(os.path.join(full_path, f'errors_{timestamp.day}.txt'), 'a') as f:
         f.write(string + '\n')
+
+
+def debugprint(*msgs: str):
+    if not SILENCE:
+        print(*msgs)
+

@@ -10,9 +10,12 @@ pip install -r requirements.txt
 ```
 **Example:**  
 ```python
-import readers as spy
-from custom_types import Month, Slise
-from readers import F
+import spy4cast as spy
+from spy4cast.stypes import Slise, Month, F
+
+
+DATASETS_DIR = "/datasets/"
+HadISST_sst = "HadISST_sst.nc"
 
 sl = Slise(
     latitude_min=-45,
@@ -25,7 +28,7 @@ sl = Slise(
     final_year=2020,
     selected_year=1990,
 )
-spy.AnomerMap(dataset_name="HadISST_sst.nc") \
+spy.AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst) \
     .load_dataset() \
     .slice_dataset(sl) \
     .apply() \
@@ -33,12 +36,13 @@ spy.AnomerMap(dataset_name="HadISST_sst.nc") \
 ```
 **Output:**    
   
-![Example 1 plot](examples/example01.png)
+![Example 1 plot](examples/anomer_example.png)
 
 ## ReadData
 TBD
 
 ## Meteo
+TBD
 
 ## Plotters and Prokers
 TBD

@@ -6,4 +6,5 @@ DOING.txt
 .idea/
 .venv/
 __pycache__/
+foo*
 .mypy_cache/

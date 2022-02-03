@@ -2,12 +2,13 @@ from typing import Union, Any, TypedDict, Callable, Tuple, Dict, List, Optional
 import xarray as xr
 import pandas as pd
 import datetime
-from enum import Enum, auto, IntEnum
+from enum import Enum, auto, IntEnum, IntFlag
 from dataclasses import dataclass
 
 
 __all__ = ['DsType', 'RegionType', 'Slise', 'Color', 'T_FORMAT', 'TimeStamp', 'MeteoFunction', 'TEST', 'REC',
-           'ARGS', 'KWARGS', 'Month', 'Methodology', 'PltType', 'STR2PLTTYPE', 'METHODOLOGY2STR', 'STR2METHODOLOGY']
+           'ARGS', 'KWARGS', 'Month', 'Methodology', 'PltType', 'STR2PLTTYPE', 'METHODOLOGY2STR', 'STR2METHODOLOGY', 'F',
+           'RDArgs', 'RDArgsDict']
 
 
 class DsType(Enum):
@@ -110,3 +111,31 @@ class Month(IntEnum):
     OCT = auto()
     NOV = auto()
     DEC = auto()
+
+
+class F(IntFlag):
+    SAVE_DATA = auto()
+    SAVE_FIG = auto()
+    TESTING = auto()
+    SILENT_ERRORS = auto()
+    SHOW_PLOT = auto()
+
+    @staticmethod
+    def checkf(f: 'F', other: Union[int, 'F']) -> bool:
+        return (other & f) == f
+
+
+@dataclass
+class RDArgs():
+    dataset_dir: Optional[str] = None
+    dataset_name: Optional[str] = None
+    variable: Optional[str] = None
+
+    def as_dict(self) -> 'RDArgsDict':
+        return {'dataset_dir': self.dataset_dir,
+                'dataset_name': self.dataset_name,
+                'variable': self.variable}
+
+
+RDArgsDict = TypedDict('RDArgsDict', {'dataset_dir': Optional[str], 'dataset_name': Optional[str],
+                                      'variable': Optional[str]})

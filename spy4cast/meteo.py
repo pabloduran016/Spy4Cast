@@ -11,6 +11,17 @@ NAN_VAL =1e4
 
 
 @dataclass
+class CrossvalidationOut:
+    zhat: npt.NDArray[np.float64]
+    scf: npt.NDArray[np.float64]
+    rt: npt.NDArray[np.float64]
+    p_rt: npt.NDArray[np.float64]
+    rr: npt.NDArray[np.float64]
+    pp: npt.NDArray[np.float64]
+    ruv: npt.NDArray[np.float64]
+    p_ruv: npt.NDArray[np.float64]
+
+@dataclass
 class MCAOut:
     RUY: npt.NDArray[np.float64]
     RUY_sig: npt.NDArray[np.float64]
@@ -125,35 +136,35 @@ class Meteo:
         """
         nz, nt = z.shape
         ny, nt = y.shape
-        nyr = int(nt / nmes)
+        # nyr = int(nt / nmes)
 
-        # first you calculate the covariance matrix
-        c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
+        # first you calculate the covariance matrixç
+        # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
+        c = np.dot(y, np.transpose(z))
         r, d, q = np.linalg.svd(c)
 
         # y había que transponerla si originariamente era (espacio, tiempo), pero ATN_e es (tiempo, espacio) así
         # que no se transpone
-        u = np.dot(np.transpose(y), r[:, 1:1 + nm])
+        u = np.dot(np.transpose(y), r[:, :nm])
         # u = np.dot(np.transpose(y), r[:, :nm])
         # calculamos las anomalías estandarizadas
-        v = np.dot(np.transpose(z), q[:, 1:1 + nm])
+        v = np.dot(np.transpose(z), q[:, :nm])
         # v = np.dot(np.transpose(z), q[:, :nm])
-
         out = MCAOut(
-            RUY=np.ma.empty([nz, nm]),
-            RUY_sig=np.ma.empty([nz, nm]),
-            SUY=np.ma.empty([nz, nm]),
-            SUY_sig=np.ma.empty([nz, nm]),
-            RUZ=np.ma.empty([nz, nm]),
-            RUZ_sig=np.ma.empty([nz, nm]),
-            SUZ=np.ma.empty([nz, nm]),
-            SUZ_sig=np.ma.empty([nz, nm]),
+            RUY=np.zeros([ny, nm]),
+            RUY_sig=np.zeros([ny, nm]),
+            SUY=np.zeros([ny, nm]),
+            SUY_sig=np.zeros([ny, nm]),
+            RUZ=np.zeros([nz, nm]),
+            RUZ_sig=np.zeros([nz, nm]),
+            SUZ=np.zeros([nz, nm]),
+            SUZ_sig=np.zeros([nz, nm]),
             Us=((u - u.mean(0)) / u.std(0)).transpose(),  # Standarized anom across axis 0
             Vs=((v - v.mean(0)) / v.std(0)).transpose(),  # Standarized anom across axis 0
-            scf=d / np.sum(d),
+            scf=(d / np.sum(d))[:nm],
         )
-        pvalruy = np.ma.empty([ny, nm])
-        pvalruz = np.ma.empty([nz, nm])
+        pvalruy = np.zeros([ny, nm])
+        pvalruz = np.zeros([nz, nm])
         for i in range(nm):
             out.RUY[:, i], pvalruy[:, i], out.RUY_sig[:, i], out.SUY[:, i], out.SUY_sig[:, i] = cls.index_regression(y, out.Us[i, :], alpha)
             out.RUZ[:, i], pvalruz[:, i], out.RUZ_sig[:, i], out.SUZ[:, i], out.SUZ_sig[:, i] = cls.index_regression(z, out.Us[i, :], alpha)
@@ -172,11 +183,10 @@ class Meteo:
         """
         n1, n2 = data.shape
         # inicializamos las matrices
-        Cor = np.ma.empty([n1, ])
-        Pvalue = np.ma.empty([n1, ])
+        Cor = np.zeros([n1, ])
+        Pvalue = np.zeros([n1, ])
         for nn in range(n1):  # para cada punto del espacio hacemos la correlación de Pearson
-            bb = stats.pearsonr(data[nn, :],
-                                index)  # bb tiene dos salidas: la primera es corre y la segunda es p-value que es el nivel de confianza
+            bb = stats.pearsonr(data[nn, :], index)  # bb tiene dos salidas: la primera es corre y la segunda es p-value que es el nivel de confianza
             # asociado al valor de la correlación tras aplicar un test-t
             Cor[nn] = bb[0]
             Pvalue[nn] = bb[1]
@@ -188,4 +198,66 @@ class Meteo:
         # igualmente, hacemos una máscara para que sólo se muestre el mapa de regresión cuando es significativo
         reg_sig = np.ma.masked_where(Pvalue > alpha, reg)
         return Cor, Pvalue, Cor_sig, reg, reg_sig
+
+    @staticmethod
+    def crossvalidation(y: np.ndarray, z: np.ndarray, nmes: int, nm: int, alfa: float) -> CrossvalidationOut:
+        nz, ntz = z.shape
+        ny, nty = y.shape
+
+        assert ntz == nty
+        nt = ntz
+
+        zhat = np.zeros_like(z)
+        scf = np.zeros([nm, nt])
+        ruv = np.zeros([nm, nt])
+        p_ruv = np.zeros([nm, nt])
+        # estimación de zhat para cada año
+        yrs = np.arange(nt)
+        for i in yrs:
+            print('year:', i, 'of', nt)
+            z2 = z[:, yrs != i]
+            y2 = y[:, yrs != i]
+            mca_out = Meteo.mca(z2, y2, nmes, nm, alfa)
+            scf[i, :] = mca_out.scf
+            psi = np.dot(
+                np.dot(
+                    np.dot(
+                        mca_out.SUY, np.linalg.inv(
+                            np.dot(mca_out.Us, np.transpose(mca_out.Us))
+                        )
+                    ), mca_out.Us
+                ), np.transpose(z2)
+            ) * nt * nm / ny
+            zhat[:, i] = np.dot(np.transpose(y[:, i]), psi)
+            for m in range(nm):
+                ruv[m, i], p_ruv[m, i] = stats.pearsonr(mca_out.Us[m, :], mca_out.Vs[m, :])
+
+        rt = np.zeros(nt)
+        p_rt = np.zeros(nt)
+        for j in range(nt):
+            rtt = stats.pearsonr(zhat[:, j], z[:, j])  # serie de skill
+            rt[j] = rtt[0]
+            p_rt[j] = rtt[1]
+
+        rr = np.zeros([nz])
+        pp = np.zeros([nz])
+        for i in range(nz):
+            rs = stats.pearsonr(zhat[i, :], z[i, :])  # bb tiene dos salidas: la primera es corre y la segunda es p-value que es el nivel de confianza
+            # asociado al valor de la correlación tras aplicar un test-t
+            rr[i] = rs[0]
+            pp[i] = rs[1]
+        # rs = np.zeros(nz)
+        # rs_sig = np.zeros(nz)
+        # rmse = np.zeros(nz)
+
+        return CrossvalidationOut(
+            zhat=zhat,  # Hindcast of field to predict using crosvalidation
+            scf=scf,  # Squared covariance fraction of the mca for each mode
+            rt=rt,  # Correlation between zhat and Z for each time (time series)
+            p_rt=p_rt,  # P values of rt
+            rr=rr,  # Correlation between time series (for each point) of zhat and z (map)
+            pp=pp,  # P values of rr
+            ruv=ruv,  # Correlation score betweeen u and v for each mode
+            p_ruv=p_ruv  # P value of ruv
+        )
 
