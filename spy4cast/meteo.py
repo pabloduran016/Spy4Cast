@@ -4,6 +4,7 @@ import numpy as np
 from typing import List, Tuple
 from dataclasses import dataclass
 from scipy import stats
+import scipy
 import numpy.typing as npt
 
 
@@ -141,7 +142,9 @@ class Meteo:
         # first you calculate the covariance matrixç
         # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
         c = np.dot(y, np.transpose(z))
-        r, d, q = np.linalg.svd(c)
+        if type(c) == np.ma.MaskedArray:
+            c = c.data
+        r, d, q = scipy.linalg.svd(c)
 
         # y había que transponerla si originariamente era (espacio, tiempo), pero ATN_e es (tiempo, espacio) así
         # que no se transpone
@@ -218,7 +221,7 @@ class Meteo:
             z2 = z[:, yrs != i]
             y2 = y[:, yrs != i]
             mca_out = Meteo.mca(z2, y2, nmes, nm, alfa)
-            scf[i, :] = mca_out.scf
+            scf[:, i] = mca_out.scf
             psi = np.dot(
                 np.dot(
                     np.dot(

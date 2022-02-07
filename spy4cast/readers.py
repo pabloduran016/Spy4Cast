@@ -2,14 +2,18 @@ import os
 import sys
 import traceback
 from abc import ABC, abstractmethod
-from typing import Type, Optional, Any, Union
+import time
+from typing import Type, Optional, Any, Union, Tuple
 
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 from scipy import signal
+import xarray as xr
 # import matplotlib
 import numpy as np
+import numpy.typing as npt
 
+from .functions import debugprint
 from .stypes import Methodology, PltType, Color, Slise, F, RDArgs, RDArgsDict
 from .errors import CustomError, PlotCreationError, DataSavingError, PlotSavingError, \
     PlotShowingError, PlotDataError, SelectedYearError
@@ -31,10 +35,13 @@ from .read_data import ReadData, NAN_VAL
 '''
 
 
+__all__ = ['PlotterTS', 'PlotterMap', 'ClimerTS', 'ClimerMap', 'AnomerTS', 'AnomerMap', 'Spy4Caster']
+
+
 class Plotter(ABC):
     @abstractmethod
-    def create_plot(self: 'Plotter', fig: plt.figure, **__: Any) -> 'Plotter':
-        raise NotImplementedError()
+    def create_plot(self: 'Plotter', fig: Union[plt.Figure, Tuple[plt.Figure, ...]], **kws) -> 'Plotter':
+        raise NotImplementedError
 
     @abstractmethod
     def run(self: 'Plotter', flags: int = 0, **kwargs: Any) -> 'Plotter':
@@ -42,10 +49,6 @@ class Plotter(ABC):
 
 
 class RDPlotter(ReadData, Plotter):
-    @abstractmethod
-    def create_plot(self, fig: plt.figure, **__: Any) -> 'RDPlotter':
-        raise NotImplementedError()
-
     def run(self, flags: int = 0, **kwargs: Any) -> 'RDPlotter':
         # Save the data if needed
         if F.checkf(F.SAVE_DATA, flags):
@@ -129,7 +132,7 @@ def plotter_factory(m: Optional[Methodology], pt: PltType) -> Type[RDPlotter]:
 
 
 class PlotterTS(RDPlotter):
-    def create_plot(self, fig: plt.figure, **kws: Any) -> 'PlotterTS':
+    def create_plot(self, fig: plt.Figure, **kws: Any) -> 'PlotterTS':
         color: Color = (.43, .92, .20) if 'color' not in kws else kws['color']
         print(f"[INFO] <{self.__class__.__name__}> Creating plot for {self._plot_name}")
         # Create figure
@@ -147,7 +150,7 @@ class PlotterTS(RDPlotter):
 class PlotterMap(RDPlotter):
     _n_values = 50
 
-    def create_plot(self, fig: plt.figure, **kws: Any) -> 'PlotterMap':
+    def create_plot(self, fig: plt.Figure, **kws: Any) -> 'PlotterMap':
         if 'slise' not in kws:
             raise TypeError("create_plot() missing 1 required positional argument: 'slise'")
         slise: Slise = kws['slise']
@@ -250,73 +253,95 @@ class AnomerMap(Proker, PlotterMap):
 
 class Spy4Caster(Proker):
     def __init__(self, yargs: Union[RDArgs, RDArgsDict], zargs: Union[RDArgs, RDArgsDict],
-                 plot_dir: str = '', plot_name: str = 'plot.png', plot_data_dir: str = '',
-                 force_name: bool = False):
+                 plot_dir: str = '', mca_plot_name: str = 'mca_plot.png', cross_plot_name: str = 'cross_plot.png',
+                 plot_data_dir: str = '', force_name: bool = False):
         if type(yargs) == RDArgs:
             yargs = yargs.as_dict()
         if type(zargs) == RDArgs:
             zargs = zargs.as_dict()
         assert type(yargs) == dict
         assert type(zargs) == dict
-        self.rdy = ReadData(**yargs)  # Predictor
-        self.rdz = ReadData(**zargs)  # Predictand
-        self.mca_out: Optional[MCAOut] = None
-        self.crossvalidation_out: Optional[CrossvalidationOut] = None
+        self._rdy = ReadData(**yargs)  # Predictor
+        self._rdz = ReadData(**zargs)  # Predictand
+        self._mca_out: Optional[MCAOut] = None
+        self._crossvalidation_out: Optional[CrossvalidationOut] = None
         self._plot_dir = plot_dir
-        self._plot_name = plot_name
+        self._mca_plot_name = mca_plot_name
+        self._cross_plot_name = cross_plot_name
         self._plot_data_dir = plot_data_dir
-        self.force_name = force_name
+        self._force_name = force_name
+        self._y: Optional[npt.NDArray[np.float64]] = None
+        self._z: Optional[npt.NDArray[np.float64]] = None
 
     def load_datasets(self) -> 'Spy4Caster':
-        self.rdy.load_dataset()
-        self.rdz.load_dataset()
-        self.rdy._data = self.rdy._data.where(lambda a: abs(a) < NAN_VAL).sortby(self.rdy._lon_key)
-        self.rdz._data = self.rdz._data.where(lambda a: abs(a) < NAN_VAL).sortby(self.rdy._lon_key)
+        start = time.perf_counter()
+        self._rdy.load_dataset()
+        self._rdz.load_dataset()
+        self._rdy._data = self._rdy._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdy._lon_key)
+        self._rdz._data = self._rdz._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdy._lon_key)
+        debugprint(f'[DEBUG] Loading datasets took: {time.perf_counter() - start:.03f} seconds')
         return self
 
     def slice_datasets(self, yslise: Slise, zslise: Slise) -> 'Spy4Caster':
-        self.rdy.slice_dataset(yslise)
-        self.rdz.slice_dataset(zslise)
+        start = time.perf_counter()
+        self._rdy.slice_dataset(yslise)
+        self._rdz.slice_dataset(zslise)
+        debugprint(f'[DEBUG] Slicing datasets took: {time.perf_counter() - start:.03f} seconds')
         return self
 
-    def apply(self, **kws: Union[float, int]) -> 'Spy4Caster':
-        for _i in ['order', 'period', 'nm', 'alpha']:
-            if _i not in kws:
-                raise TypeError(f'missing argument {_i} for apply()')
-        del _i
-        if type(kws['order']) != int:
-            raise TypeError('Type of `order` should be `int`')
-        if type(kws['period']) != float and type(kws['period']) != int:
-            raise TypeError('Type of `period` should be `int`')
-        if type(kws['nm']) != int:
-            raise TypeError('Type of `nm` should be `int`')
-        if type(kws['alpha']) != float:
-            raise TypeError('Type of `alpha` should be `float`')
-        order: int = kws['order']
-        period: float = kws['period']
-        nm: int = kws['nm']
-        alpha: float = kws['alpha']
-        print(f"[INFO] <{self.__class__.__name__}> Applying Spy4Cast: Y: {self.rdy._dataset_name}, "
-              f"Z: {self.rdz._dataset_name}")
-        self.rdy._data = Meteo.anom(self.rdy._data)
-        self.rdy._time_key = 'year'
-        self.rdz._data = Meteo.anom(self.rdz._data)
-        self.rdz._time_key = 'year'
+    def apply(self, **kws):
+        self.preprocess(order=kws['order'], period=kws['period'])
+        self.mca(nm=kws['nm'], alpha=kws['alpha'])
+        self.crossvalidation(nm=kws['nm'], alpha=kws['alpha'])
 
-        y0 = max(self.rdy._slise.initial_year, self.rdz._slise.initial_year)
-        yf = min(self.rdy._slise.final_year, self.rdz._slise.final_year)
+    def preprocess(self, order: int, period: float) -> 'Spy4Caster':
+        start = time.perf_counter()
+        self._rdy._data = Meteo.anom(self._rdy._data)
+        self._rdy._time_key = 'year'
+        self._rdz._data = Meteo.anom(self._rdz._data)
+        self._rdz._time_key = 'year'
 
-        self.rdy.slice_dataset(Slise.default(initial_year=y0, final_year=yf))
-        self.rdz.slice_dataset(Slise.default(initial_year=y0, final_year=yf))
+        y0 = max(self._rdy._slise.initial_year, self._rdz._slise.initial_year)
+        yf = min(self._rdy._slise.final_year, self._rdz._slise.final_year)
 
-        z = self.rdz._data.values
-        # zlon = self.rdz._data.lon.values
-        # zlat = self.rdz._data.lat.values
+        self._rdy.slice_dataset(Slise.default(initial_year=y0, final_year=yf))
+        self._rdz.slice_dataset(Slise.default(initial_year=y0, final_year=yf))
+
+        b, a = signal.butter(order, 1/period, btype='high', analog=False, output='ba', fs=None)
+
+        nyt, nylat, nylon = self._rdy._data.shape
+        nzt, nzlat, nzlon = self._rdz._data.shape
+        self._z = xr.apply_ufunc(
+            lambda ts: signal.filtfilt(b, a, ts),
+            self._rdz._data,
+            input_core_dims=[[self._rdz._time_key]], output_core_dims=[[self._rdz._time_key]]
+        ).transpose(self._rdz._time_key, self._rdz._lat_key, self._rdz._lon_key).fillna(0).values.reshape((nzt, nzlat*nzlon)).transpose()
+        self._y = self._rdy._data.fillna(0).values.reshape((nyt, nylat*nylon)).transpose()
+
+        debugprint(f'[DEBUG] Preprocessing data took: {time.perf_counter() - start:.03f} seconds')
+        return self
+
+    def preprocess_old(self, order: int, period: float) -> 'Spy4Caster':
+        start = time.perf_counter()
+        self._rdy._data = Meteo.anom(self._rdy._data)
+        self._rdy._time_key = 'year'
+        self._rdz._data = Meteo.anom(self._rdz._data)
+        self._rdz._time_key = 'year'
+
+        y0 = max(self._rdy._slise.initial_year, self._rdz._slise.initial_year)
+        yf = min(self._rdy._slise.final_year, self._rdz._slise.final_year)
+
+        self._rdy.slice_dataset(Slise.default(initial_year=y0, final_year=yf))
+        self._rdz.slice_dataset(Slise.default(initial_year=y0, final_year=yf))
+
+        z = self._rdz._data.values
+        # zlon = self._rdz._data.lon.values
+        # zlat = self._rdz._data.lat.values
         ztrans = np.reshape(z, (z.shape[0], z.shape[1] * z.shape[2])).transpose()
 
-        y = self.rdy._data.values
-        # ylon = self.rdy._data.longitude.values
-        # ylat = self.rdy._data.latitude.values
+        y = self._rdy._data.values
+        # ylon = self._rdy._data.longitude.values
+        # ylat = self._rdy._data.latitude.values
         ytrans = np.reshape(y, (y.shape[0], y.shape[1] * y.shape[2])).transpose()
 
         b, a = signal.butter(order, 1/period, btype='high', analog=False, output='ba', fs=None)
@@ -327,23 +352,36 @@ class Spy4Caster(Proker):
             zmask[index, :] = signal.filtfilt(b, a, ztrans[index, :])
 
         # zmask, zlon, zlat; ytrans, ylon, ylat
-        ynotnan = np.nan_to_num(ytrans)  # fill nan with 0
-        znotnan = np.nan_to_num(zmask)  # fill nan with 0
-        self.mca_out = Meteo.mca(znotnan[:, 1:], ynotnan[:, :-1], 1, nm, alpha)
+        self._y = np.nan_to_num(ytrans)  # fill nan with 0
+        self._z = np.nan_to_num(zmask)  # fill nan with 0
+        debugprint(f'[DEBUG] Preprocessing data took: {time.perf_counter() - start:.03f} seconds')
+        return self
 
-        # self.crossvalidation_out = Meteo.crossvalidation(y, z, 1, nm, alpha)
+    def mca(self, nm: int, alpha: float) -> 'Spy4Caster':
+        start = time.perf_counter()
+        if self._y is None or self._z is None:
+            raise TypeError('Must prprocess data before applying MCA')
+        self._mca_out = Meteo.mca(self._z, self._y, 1, nm, alpha)
+        debugprint(f'[DEBUG] Applying MCA took: {time.perf_counter() - start:.03f} seconds')
+        return self
 
+    def crossvalidation(self, nm: int, alpha: float) -> 'Spy4Caster':
+        start = time.perf_counter()
+        if self._y is None or self._z is None:
+            raise TypeError('Must prprocess data before applying Crossvalidation')
+        self._crossvalidation_out = Meteo.crossvalidation(self._y, self._z, 1, nm, alpha)
+        debugprint(f'[DEBUG] Applying crossvalidation took: {time.perf_counter() - start:.03f} seconds')
         return self
 
     def plot_matrices(self):
-        # sst = self.rdy._data.values
-        # sst_lon = self.rdy.lon
-        # sst_lat = self.rdy.lat
-        # sst_time = self.rdy.time
-        # slp = self.rdz._data.values
-        # slp_lat = self.rdz.lat
-        # slp_lon = self.rdz.lon
-        # slp_time = self.rdz.time
+        # sst = self._rdy._data.values
+        # sst_lon = self._rdy.lon
+        # sst_lat = self._rdy.lat
+        # sst_time = self._rdy.time
+        # slp = self._rdz._data.values
+        # slp_lat = self._rdz.lat
+        # slp_lon = self._rdz.lon
+        # slp_time = self._rdz.time
         #
         # def plot_matrices(y, ytime, ylats, ylons, z, ztime, zlats, zlons):
         #     fig = plt.figure()
@@ -362,15 +400,15 @@ class Spy4Caster(Proker):
 
         fig = plt.figure()
         ax0, ax1 = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
-        print(self.rdy._data.values)
-        t0 = self.rdz._data.values[0, :, :]
-        im0 = ax0.contourf(self.rdz.lon, self.rdz.lat,
+        print(self._rdy._data.values)
+        t0 = self._rdz._data.values[0, :, :]
+        im0 = ax0.contourf(self._rdz.lon, self._rdz.lat,
                            t0, cmap='viridis', transform=ccrs.PlateCarree())
         fig.colorbar(im0, ax=ax0, orientation='horizontal', pad=0.02)
         ax0.coastlines()
 
-        t1 = self.rdy._data.values[0, :, :]
-        im1 = ax1.contourf(self.rdy.lon, self.rdy.lat,
+        t1 = self._rdy._data.values[0, :, :]
+        im1 = ax1.contourf(self._rdy.lon, self._rdy.lat,
                            t1, cmap='viridis', transform=ccrs.PlateCarree())
         fig.colorbar(im1, ax=ax1, orientation='horizontal', pad=0.02)
         ax1.coastlines()
@@ -378,16 +416,18 @@ class Spy4Caster(Proker):
 
         return self
 
-    def plot_mca(self, fig: plt.Figure) -> 'Spy4Caster':
-        if self.mca_out is None:
-            print('[WARNING] Can not plot mca. Methodology was not applied yet')
+    def plot_mca(self, flags: int = 0, fig: plt.Figure = None) -> 'Spy4Caster':
+        if self._mca_out is None:
+            print('[WARNING] Can not plot mca. Methodology was not applied yet', file=sys.stderr)
             return self
 
-        time = self.rdy.time
-        ylats = self.rdy.lat
-        ylons = self.rdy.lon
-        zlats = self.rdz.lat
-        zlons = self.rdz.lon
+        fig = fig if fig is not None else plt.figure()
+
+        time = self._rdy.time
+        ylats = self._rdy.lat
+        ylons = self._rdy.lon
+        zlats = self._rdz.lat
+        zlons = self._rdz.lon
 
         nrows = 3
         ncols = 3
@@ -397,16 +437,16 @@ class Spy4Caster(Proker):
         # Plot timeseries
         for i, ax in enumerate(axs[:3]):
             ax.margins(0)
-            ax.plot(time[:-1], self.mca_out.Us[i, :], color='green', label=f'Us')
-            ax.plot(time[:-1], self.mca_out.Vs[i, :], color='blue', label=f'Vs')
+            ax.plot(time, self._mca_out.Us[i, :], color='green', label=f'Us')
+            ax.plot(time, self._mca_out.Vs[i, :], color='blue', label=f'Vs')
             ax.grid(True)
             ax.set_title(f'Us Vs mode {i}')
         axs[0].legend(loc='upper left')
 
         n = 20
         for i, (name, su, ru, lats, lons) in enumerate((
-                ('SUY', self.mca_out.SUY, self.mca_out.RUY_sig, ylats, ylons),
-                ('SUZ', self.mca_out.SUZ, self.mca_out.RUZ_sig, zlats, zlons)
+                ('SUY', self._mca_out.SUY, self._mca_out.RUY_sig, ylats, ylons),
+                ('SUZ', self._mca_out.SUZ, self._mca_out.RUZ_sig, zlats, zlons)
         )):
             if i == 0:
                 su[su == 0.0] = np.nan
@@ -430,17 +470,21 @@ class Spy4Caster(Proker):
                 ax.set_title(f'{name} mode {j}')
 
         plt.tight_layout()
+
+        if F.checkf(F.SAVE_FIG, flags):
+            plt.savefig(self._mca_plot_name)
+        if F.checkf(F.SHOW_PLOT, flags):
+            plt.show()
+
         return self
 
     def plot_crossvalidation(self, _fig: plt.Figure) -> 'Spy4Caster':
         print('[WARNING] Crossvalidation Plot is not implemented yet', file=sys.stderr)
         return self
 
-    def create_plot(self, fig: plt.figure, **__: Any) -> 'Spy4Caster':
-        if self.mca_out is None:  # or self.crossvalidation_out is None:
-            raise ValueError("The methodology hasn't been applied yet")
-        self.plot_mca(fig)
-        # self.plot_crossvalidation(fig)
+    def create_plot(self, fig: Tuple[plt.figure, ...], **__: Any) -> 'Spy4Caster':
+        self.plot_mca(fig=fig[0])
+        self.plot_crossvalidation(fig[1])
         return self
 
     @staticmethod
@@ -448,19 +492,23 @@ class Spy4Caster(Proker):
         for k, v in variables.__dict__.items():
             if type(v) == np.ma.MaskedArray:
                 v = v.data
-            try:
-                np.save(name + '_' + k, v)
-            except Exception:
-                traceback.print_exc()
+            for _ in range(2):
+                try:
+                    np.save(name + '_' + k, v)
+                    break
+                except FileNotFoundError:
+                    os.mkdir(name.split('/')[0])
+                except Exception:
+                    traceback.print_exc()
 
     def save_fig_data(self) -> 'Spy4Caster':
-        if self.mca_out is not None:
-            self.save_output('saved/save_mca', self.mca_out)
+        if self._mca_out is not None:
+            self.save_output('saved/save_mca', self._mca_out)
         else:
             print('[WARNING] No MCA data to save', file=sys.stderr)
 
-        if self.crossvalidation_out is not None:
-            self.save_output('saved/save_cross', self.crossvalidation_out)
+        if self._crossvalidation_out is not None:
+            self.save_output('saved/save_cross', self._crossvalidation_out)
         else:
             print('[WARNING] No Crossvalidation data to save', file=sys.stderr)
 
@@ -477,10 +525,11 @@ class Spy4Caster(Proker):
                     raise DataSavingError(str(e)) from e
 
         # Create the plot
-        fig = plt.figure()
+        mca_fig = plt.figure()
+        cross_fig = plt.figure()
         if F.checkf(F.SHOW_PLOT, flags) or F.checkf(F.SAVE_FIG, flags) or F.checkf(F.TESTING, flags):
             try:
-                self.create_plot(fig, **kwargs)
+                self.create_plot((mca_fig, cross_fig), **kwargs)
             except CustomError:
                 raise
             except Exception as e:
@@ -491,10 +540,11 @@ class Spy4Caster(Proker):
         # Save the fig0 if needed
         if F.checkf(F.SAVE_FIG, flags):
             try:
-                print(f"[INFO] <{self.__class__.__name__}> Saving plot as {self._plot_name} "
-                      f"in {self._plot_dir}")
+                print(f"[INFO] <{self.__class__.__name__}> Saving plots as {self._cross_plot_name} and "
+                      f"{self._mca_plot_name} in {self._plot_dir}")
                 # Generate a PNG of the figure
-                plt.savefig(os.path.join(self._plot_dir, self._plot_name))
+                mca_fig.savefig(os.path.join(self._plot_dir, self._cross_plot_name))
+                cross_fig.savefig(os.path.join(self._plot_dir, self._mca_plot_name))
             except CustomError:
                 raise
             except Exception as e:

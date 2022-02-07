@@ -5,7 +5,8 @@ from spy4cast.stypes import F, Month, Slise, RDArgs
 DATASET_DIR = '/datasets/'
 PLOTS_DIR = ''
 PLOTS_DATA_DIR = 'data/'
-PLOT_NAME = 'spy4cast_example.png'
+MCA_PLOT_NAME = 'mca_spy4cast_example.png'
+CROSS_PLOT_NAME = 'cross_spy4cast_example.png'
 HadISST_sst = 'HadISST_sst.nc'
 slp_ERA20_1900_2010 = 'slp_ERA20_1900-2010.nc'
 SST = 'sst'
@@ -44,13 +45,19 @@ def main():
     )  # PRECITAND: Z
 
     s = spy.Spy4Caster(
-            yargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=HadISST_sst, variable=SST),
-            zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=slp_ERA20_1900_2010, variable=MSL),
-            plot_dir=PLOTS_DIR, plot_name=PLOT_NAME, force_name=True, plot_data_dir=PLOTS_DATA_DIR).load_datasets()
+            yargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=HadISST_sst, variable=SST, chunks={'latitude': 100, 'longitude': 100}),
+            zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=slp_ERA20_1900_2010, variable=MSL, chunks={'latitude': 100, 'longitude': 100}),
+            plot_dir=PLOTS_DIR, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME,
+            force_name=True, plot_data_dir=PLOTS_DATA_DIR)
+    s.load_datasets()
     s.slice_datasets(yslise=sst_slise, zslise=slp_slise)
-    s.apply(order=order, period=period, nm=nm, alpha=alpha)
-    s.run(F.SHOW_PLOT | F.SAVE_FIG)
+    s.preprocess(order=order, period=period)
+    s.mca(nm=nm, alpha=alpha)
+    s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
+    s.crossvalidation(nm=nm, alpha=alpha)
+    s.run(F.SHOW_PLOT | F.SAVE_FIG | F.SAVE_DATA)
 
 
 if __name__ == '__main__':
+    spy.Settings.silence = False
     main()

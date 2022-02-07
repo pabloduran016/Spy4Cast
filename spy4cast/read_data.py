@@ -2,14 +2,14 @@ import datetime
 import json
 import os
 import traceback
-from typing import ClassVar, Set, Optional, TypeVar, Tuple
+from typing import ClassVar, Set, Optional, TypeVar, Tuple, Dict
 from dateutil.relativedelta import relativedelta
 
 import numpy as np
 import pandas as pd
 import xarray as xr
 
-from .stypes import TimeStamp, T_FORMAT, Month, Slise
+from .stypes import TimeStamp, T_FORMAT, Month, Slise, ChunkType
 from .errors import *
 from .functions import mon2str, str2mon, slise2str, debugprint
 
@@ -45,7 +45,7 @@ class ReadData:
     def __init__(self, dataset_dir: Optional[str] = None, dataset_name: Optional[str] = None,
                  variable: Optional[str] = None, plot_dir: Optional[str] = None,
                  plot_name: Optional[str] = None, plot_data_dir: Optional[str] = None,
-                 force_name: bool = False):
+                 force_name: bool = False, chunks: Optional[ChunkType] = None):
         self._dataset_dir = dataset_dir if dataset_dir is not None else ''
         self._dataset_name = dataset_name if dataset_name is not None else 'dataset.nc'
         self._plot_name = plot_name if plot_name is not None else 'plot.png'
@@ -53,6 +53,7 @@ class ReadData:
         self._plot_dir = plot_dir if plot_dir is not None else ''
         self._plot_data_dir = plot_data_dir if plot_data_dir is not None else ''
         self._variable = variable if variable is not None else ''
+        self._chunks = chunks
         self._dataset_known = self._dataset_name in DATASET_DATA
 
         self._loaded_without_times = False
@@ -85,8 +86,8 @@ class ReadData:
                 i += 1
             self._plot_data_name = os.path.split(fig_data_path)[-1]
 
-        debugprint(f"[INFO] <{self.__class__.__name__}> New Read Data object plot_name: {self._plot_name},"
-                   f" plot_data_name: {self._plot_data_name}")
+        # debugprint(f"[INFO] <{self.__class__.__name__}> New Read Data object plot_name: {self._plot_name},"
+        #            f" plot_data_name: {self._plot_data_name}")
 
     @property
     def time(self) -> xr.DataArray: return self._data[self._time_key]
@@ -101,8 +102,8 @@ class ReadData:
     def shape(self) -> Tuple[int, ...]: return self._data.shape
 
     def load_dataset_info(self: T) -> T:
-        debugprint(f"[INFO] <{self.__class__.__name__}> Loading dataset info: {self._dataset_name} "
-                   f"for {self._plot_name}")
+        # debugprint(f"[INFO] <{self.__class__.__name__}> Loading dataset info: {self._dataset_name} "
+        #            f"for {self._plot_name}")
         if not self._dataset_known:
             raise ValueError('Dataset is not known, add it to the data')
         data = DATASET_DATA[self._dataset_name]
@@ -115,7 +116,7 @@ class ReadData:
         return self
 
     def check_variables(self: T, slise: Optional[Slise] = None) -> T:
-        debugprint(f"[INFO] <{self.__class__.__name__}> Checking variables for {self._plot_name}")
+        # debugprint(f"[INFO] <{self.__class__.__name__}> Checking variables for {self._plot_name}")
         if slise is not None:
             self.check_slise(slise)
         if self._dataset_known:
@@ -137,7 +138,7 @@ class ReadData:
                 self.load_dataset_info()
             else:
                 self.load_dataset()
-        debugprint(f"[INFO] <{self.__class__.__name__}> Checking slise for {self._plot_name}")
+        # debugprint(f"[INFO] <{self.__class__.__name__}> Checking slise for {self._plot_name}")
         assert type(slise.initial_year) == int, f'Invalid type for initial_year: ' \
                                                 f'{type(slise.initial_year)}'
         if slise.initial_year > self._dataset_final_timestamp.year:
@@ -187,13 +188,13 @@ class ReadData:
     def load_dataset(self: T) -> T:
         if self._loaded_dataset:
             return self
-        debugprint(f"[INFO] <{self.__class__.__name__}> Loading dataset: {self._dataset_name} for {self._plot_name}")
+        # debugprint(f"[INFO] <{self.__class__.__name__}> Loading dataset: {self._dataset_name} for {self._plot_name}")
         try:
-            self._dataset = xr.load_dataset(os.path.join(self._dataset_dir, self._dataset_name), mask_and_scale=False)
+            self._dataset = xr.load_dataset(os.path.join(self._dataset_dir, self._dataset_name), mask_and_scale=False, chunks=self._chunks)
         except ValueError:
             try:
                 self._dataset = xr.load_dataset(os.path.join(self._dataset_dir, self._dataset_name),
-                                                mask_and_scale=False, decode_times=False)
+                                                mask_and_scale=False, decode_times=False, chunks=self._chunks)
 
                 initial_timestamp = datetime.datetime.strptime(self._dataset.time.attrs['units'].split()[2],
                                                                '%y-%M-%d')
@@ -262,8 +263,8 @@ class ReadData:
         # debugprint('[WARNING] <mon2str()> Changing month indexes!!!!!!!!!!!!!')
         if self._loaded_dataset:
             return self
-        debugprint(f"[INFO] <{self.__class__.__name__}> Loading dataset from preprocessed: {self._dataset_name} "
-                   f"for {self._plot_name}")
+        # debugprint(f"[INFO] <{self.__class__.__name__}> Loading dataset from preprocessed: {self._dataset_name} "
+        #            f"for {self._plot_name}")
         # Load the Dataset
         try:
             self._dataset = xr.load_dataset(os.path.join(self._dataset_dir, self._dataset_name), mask_and_scale=False)
@@ -333,7 +334,7 @@ class ReadData:
             self.check_slise(slise)
         else:
             debugprint('[WARNING] Trusting slise')
-        debugprint(f"[INFO] <{self.__class__.__name__}> Slicing dataset: {self._dataset_name} for {self._plot_name}")
+        # debugprint(f"[INFO] <{self.__class__.__name__}> Slicing dataset: {self._dataset_name} for {self._plot_name}")
         self._slise = slise
 
         # Time slise
@@ -376,7 +377,7 @@ class ReadData:
             self.check_slise(slise)
         else:
             debugprint('[WARNING] Trusting slise')
-        debugprint(f"[INFO] <{self.__class__.__name__}> Slicing dataset: {self._dataset_name} for {self._plot_name}")
+        # debugprint(f"[INFO] <{self.__class__.__name__}> Slicing dataset: {self._dataset_name} for {self._plot_name}")
         self._slise = slise
 
         if slise.latitude_min == slise.latitude_max and slise.longitude_min == slise.longitude_max:
@@ -432,8 +433,8 @@ class ReadData:
 
     def save_fig_data(self: T) -> T:
         fig_data_path = os.path.join(self._plot_data_dir, self._plot_data_name)
-        debugprint(f"[INFO] <{self.__class__.__name__}> Saving plot data for {self._plot_name} as "
-                   f"{self._plot_data_name} in path: {fig_data_path}")
+        # debugprint(f"[INFO] <{self.__class__.__name__}> Saving plot data for {self._plot_name} as "
+        #            f"{self._plot_data_name} in path: {fig_data_path}")
         # REMOVES NAN VALUES TO PREVENT ERRORS
         if self._lat_key in self._data.dims and self._lon_key in self._data.dims:
             to_save = self._data[{self._lat_key: ~np.isnan(self._data[self._lat_key]),
@@ -445,7 +446,7 @@ class ReadData:
 
         return self
 
-    def get_dataset_info(self) -> tuple[str, dict[str, str]]:
+    def get_dataset_info(self) -> Tuple[str, Dict[str, str]]:
         return (
             self._dataset_name, {
                 "title": f"{'.'.join(self._dataset_name.split('.')[:-1])}",

@@ -10,7 +10,8 @@ MONTH_TO_STRING = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'
 STRING_TO_MONTH = list(filter(lambda x: not x.startswith('_'), Month.__dict__.keys()))
 
 
-SILENCE = True
+class Settings:
+    silence = True
 
 
 def pretty_dict(d: Dict[str, str]) -> str:
@@ -112,6 +113,6 @@ def log_error(string: str, path: Optional[str] = None) -> None:
 
 
 def debugprint(*msgs: str):
-    if not SILENCE:
+    if not Settings.silence:
         print(*msgs)
 

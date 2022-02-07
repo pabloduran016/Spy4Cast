@@ -125,17 +125,23 @@ class F(IntFlag):
         return (other & f) == f
 
 
+ChunkType = Union[int, Tuple[int, ...], Tuple[Tuple[int, ...] ,...], Dict[Union[str, int], int]]
+
+
 @dataclass
 class RDArgs():
     dataset_dir: Optional[str] = None
     dataset_name: Optional[str] = None
     variable: Optional[str] = None
+    chunks: Optional[ChunkType] = None
 
     def as_dict(self) -> 'RDArgsDict':
         return {'dataset_dir': self.dataset_dir,
                 'dataset_name': self.dataset_name,
-                'variable': self.variable}
+                'variable': self.variable,
+                'chunks': self.chunks}
 
 
 RDArgsDict = TypedDict('RDArgsDict', {'dataset_dir': Optional[str], 'dataset_name': Optional[str],
-                                      'variable': Optional[str]})
+                                      'variable': Optional[str], 'chunks': Optional[ChunkType]})
+
