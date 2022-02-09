@@ -14,9 +14,6 @@ MSL = 'msl'
 
 
 def main():
-    year0 = 1901
-    yearf = 2010
-
     order=8
     period=5.5
     nm=3
@@ -29,8 +26,8 @@ def main():
         longitude_max=60,
         initial_month=Month.NOV,
         final_month=Month.FEB,
-        initial_year=year0,
-        final_year=yearf,
+        initial_year=1901,
+        final_year=2010,
     )  # PREDICTOR: Y
 
     slp_slise = Slise(
@@ -38,15 +35,16 @@ def main():
         latitude_max=45,
         longitude_min=-50,
         longitude_max=40,
-        initial_month=Month.NOV,
-        final_month=Month.FEB,
-        initial_year=year0,
-        final_year=yearf,
+        initial_month=Month.JAN,
+        final_month=Month.APR,
+        initial_year=1901,
+        final_year=2010,
     )  # PRECITAND: Z
 
+    # TODO: year0 and yearf dont have to be the same, there just needs to be same nuumber of times
     s = spy.Spy4Caster(
-            yargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=HadISST_sst, variable=SST, chunks={'latitude': 100, 'longitude': 100}),
-            zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=slp_ERA20_1900_2010, variable=MSL, chunks={'latitude': 100, 'longitude': 100}),
+            yargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=HadISST_sst, variable=SST, chunks=20),
+            zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=slp_ERA20_1900_2010, variable=MSL, chunks=20),
             plot_dir=PLOTS_DIR, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME,
             force_name=True, plot_data_dir=PLOTS_DATA_DIR)
     s.load_datasets()
@@ -54,8 +52,11 @@ def main():
     s.preprocess(order=order, period=period)
     s.mca(nm=nm, alpha=alpha)
     s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
-    s.crossvalidation(nm=nm, alpha=alpha)
-    s.run(F.SHOW_PLOT | F.SAVE_FIG | F.SAVE_DATA)
+    s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
+    s.plot_crossvalidation(F.SHOW_PLOT | F.SAVE_FIG)
+    selected_year = 1990
+    s.plot_zhat(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year)
+    s.run(F.SHOW_PLOT | F.SAVE_FIG | F.SAVE_DATA, sy=selected_year)
 
 
 if __name__ == '__main__':

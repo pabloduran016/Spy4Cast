@@ -254,7 +254,7 @@ class AnomerMap(Proker, PlotterMap):
 class Spy4Caster(Proker):
     def __init__(self, yargs: Union[RDArgs, RDArgsDict], zargs: Union[RDArgs, RDArgsDict],
                  plot_dir: str = '', mca_plot_name: str = 'mca_plot.png', cross_plot_name: str = 'cross_plot.png',
-                 plot_data_dir: str = '', force_name: bool = False):
+                 zhat_plot_name: str = 'zhat_plot.png', plot_data_dir: str = '', force_name: bool = False):
         if type(yargs) == RDArgs:
             yargs = yargs.as_dict()
         if type(zargs) == RDArgs:
@@ -268,6 +268,7 @@ class Spy4Caster(Proker):
         self._plot_dir = plot_dir
         self._mca_plot_name = mca_plot_name
         self._cross_plot_name = cross_plot_name
+        self._zhat_plot_name = zhat_plot_name
         self._plot_data_dir = plot_data_dir
         self._force_name = force_name
         self._y: Optional[npt.NDArray[np.float64]] = None
@@ -292,7 +293,7 @@ class Spy4Caster(Proker):
     def apply(self, **kws):
         self.preprocess(order=kws['order'], period=kws['period'])
         self.mca(nm=kws['nm'], alpha=kws['alpha'])
-        self.crossvalidation(nm=kws['nm'], alpha=kws['alpha'])
+        self.crossvalidation(nm=kws['nm'], alpha=kws['alpha'], multiprocessing=kws['multiprocessing'])
 
     def preprocess(self, order: int, period: float) -> 'Spy4Caster':
         start = time.perf_counter()
@@ -301,11 +302,10 @@ class Spy4Caster(Proker):
         self._rdz._data = Meteo.anom(self._rdz._data)
         self._rdz._time_key = 'year'
 
-        y0 = max(self._rdy._slise.initial_year, self._rdz._slise.initial_year)
-        yf = min(self._rdy._slise.final_year, self._rdz._slise.final_year)
-
-        self._rdy.slice_dataset(Slise.default(initial_year=y0, final_year=yf))
-        self._rdz.slice_dataset(Slise.default(initial_year=y0, final_year=yf))
+        if len(self._rdz.time) != len(self._rdy.time):
+            raise ValueError(f'The number of years of the predictand must be the same as the number '
+                             f'of years of the predictor: got {len(self._rdz.time)} and '
+                             f'{len(self._rdy.time)}')
 
         b, a = signal.butter(order, 1/period, btype='high', analog=False, output='ba', fs=None)
 
@@ -365,12 +365,16 @@ class Spy4Caster(Proker):
         debugprint(f'[DEBUG] Applying MCA took: {time.perf_counter() - start:.03f} seconds')
         return self
 
-    def crossvalidation(self, nm: int, alpha: float) -> 'Spy4Caster':
+    def crossvalidation(self, nm: int, alpha: float, multiprocessing: bool) -> 'Spy4Caster':
         start = time.perf_counter()
         if self._y is None or self._z is None:
             raise TypeError('Must prprocess data before applying Crossvalidation')
-        self._crossvalidation_out = Meteo.crossvalidation(self._y, self._z, 1, nm, alpha)
-        debugprint(f'[DEBUG] Applying crossvalidation took: {time.perf_counter() - start:.03f} seconds')
+        if multiprocessing:
+            self._crossvalidation_out = Meteo.crossvalidation_mp(self._y, self._z, 1, nm, alpha)
+        else:
+            self._crossvalidation_out = Meteo.crossvalidation(self._y, self._z, 1, nm, alpha)
+        debugprint(f'[DEBUG] Applying crossvalidation {"(mp) " if multiprocessing else ""}'
+                   f'took: {time.perf_counter() - start:.03f} seconds')
         return self
 
     def plot_matrices(self):
@@ -478,13 +482,44 @@ class Spy4Caster(Proker):
 
         return self
 
-    def plot_crossvalidation(self, _fig: plt.Figure) -> 'Spy4Caster':
-        print('[WARNING] Crossvalidation Plot is not implemented yet', file=sys.stderr)
+    def plot_zhat(self, flags: int = 0, fig: plt.Figure = None, sy: int = None) -> 'Spy4Caster':
+        """
+        Paramaters:
+          - sy: Predicted year to show
+        Plot: zhat: Use `sy` to plot zhat on that year
+        """
+        if sy is None:
+            raise TypeError('`sy` argument must be provided')
+        fig = plt.figure() if fig is None else fig
+        if F.checkf(F.SAVE_FIG, flags):
+            plt.savefig(self._cross_plot_name)
+        if F.checkf(F.SHOW_PLOT, flags):
+            plt.show()
         return self
 
-    def create_plot(self, fig: Tuple[plt.figure, ...], **__: Any) -> 'Spy4Caster':
+    def plot_crossvalidation(self, flags: int = 0, fig: plt.Figure = None) -> 'Spy4Caster':
+        """
+        Plots:
+          - scf: Draw scf for all times for mode i. For the time being all in one plot
+          - r_z_zhat_t and p_z_zhat_t: Bar plot of r and then points when p is <= alpha
+          - r_z_zhat_s and p_z_zhat_s: Cartopy map of r and then hatches when p is <= alpha
+          - r_uv and p_uv: Same as scf and points when p <= alpha
+        Layout:
+           r_z_zhat_s    r_z_zhat_t
+              scf           r_uv
+        """
+        fig = plt.figure() if fig is None else fig
+        print('[WARNING] Crossvalidation Plot is not implemented yet', file=sys.stderr)
+        if F.checkf(F.SAVE_FIG, flags):
+            plt.savefig(self._cross_plot_name)
+        if F.checkf(F.SHOW_PLOT, flags):
+            plt.show()
+        return self
+
+    def create_plot(self, fig: Tuple[plt.figure, ...], **kw: int) -> 'Spy4Caster':
         self.plot_mca(fig=fig[0])
-        self.plot_crossvalidation(fig[1])
+        self.plot_crossvalidation(fig=fig[1])
+        self.plot_zhat(fig=fig[2], sy=kw['sy'])
         return self
 
     @staticmethod
@@ -527,9 +562,10 @@ class Spy4Caster(Proker):
         # Create the plot
         mca_fig = plt.figure()
         cross_fig = plt.figure()
+        zhat_fig = plt.figure()
         if F.checkf(F.SHOW_PLOT, flags) or F.checkf(F.SAVE_FIG, flags) or F.checkf(F.TESTING, flags):
             try:
-                self.create_plot((mca_fig, cross_fig), **kwargs)
+                self.create_plot((mca_fig, cross_fig, zhat_fig), **kwargs)
             except CustomError:
                 raise
             except Exception as e:
@@ -540,11 +576,13 @@ class Spy4Caster(Proker):
         # Save the fig0 if needed
         if F.checkf(F.SAVE_FIG, flags):
             try:
-                print(f"[INFO] <{self.__class__.__name__}> Saving plots as {self._cross_plot_name} and "
-                      f"{self._mca_plot_name} in {self._plot_dir}")
+                print(f"[INFO] <{self.__class__.__name__}> Saving plots as {self._cross_plot_name}, "
+                      f"{self._mca_plot_name} and "
+                      f"{self._zhat_plot_name} in {self._plot_dir}")
                 # Generate a PNG of the figure
                 mca_fig.savefig(os.path.join(self._plot_dir, self._cross_plot_name))
                 cross_fig.savefig(os.path.join(self._plot_dir, self._mca_plot_name))
+                zhat_fig.savefig(os.path.join(self._plot_dir, self._zhat_plot_name))
             except CustomError:
                 raise
             except Exception as e:

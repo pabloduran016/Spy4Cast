@@ -329,7 +329,14 @@ class ReadData:
         return self
 
     def slice_dataset(self: T, slise: Slise, trust_slise: bool = False) -> T:
-        """If the initial month is bigger than final month, th slise strats from the year before"""
+        """
+        Note: If the season contains months from different years (NOV-DEC-JAN-FEB for example)
+        the initial year is applied to the month which comes at last (FEB). In this example, the
+        data that will be used for NOV is on year before the initial year so keep this in mind
+        if your dataset doesn't contain that specific year.
+        """
+
+
         if not trust_slise:
             self.check_slise(slise)
         else:
