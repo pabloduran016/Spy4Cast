@@ -43,15 +43,15 @@ behaviours. I hope it is not too ugly...
 ## Stypes
 Collection of data sctructures used across the API and for the users convenience  
     
-    Color: equivalent to tuple[float, float, float]
+    spy4cast.stypes.Color: equivalent to tuple[float, float, float]
     
-    TimeStamp: timepstamp type equivalent to pd.Timestamp | datetime.datetime
+    spy4cast.stypes.TimeStamp: timepstamp type equivalent to pd.Timestamp | datetime.datetime
 
-    T_FORMAT: format used in dates compatible with datetime.strftime '%d/%m/%Y %H:%M:%S'
+    spy4cast.stypes.T_FORMAT: format used in dates compatible with datetime.strftime '%d/%m/%Y %H:%M:%S'
     
-    Month: IntEnum for each month. (1 -> JAN, 12 -> DEC)
+    spy4cast.stypes.Month: IntEnum for each month. (1 -> JAN, 12 -> DEC)
     
-    Slise: dataclass that is sed for slicing. Slise insetead of Slice explained in `# Important Notes` 
+    spy4cast.stypes.Slise: dataclass that is sed for slicing. Slise insetead of Slice explained in `# Important Notes` 
         lat0 (optional float): minimum latitude 
         latf (optional float): maximum latitude
         lon0 (optional float): minimum longitude
@@ -67,7 +67,7 @@ Collection of data sctructures used across the API and for the users convenience
           Returns a Slise that has latitude and longitude as wide as possible.
             `Slise(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)`
     
-    F: IntFlag enum used is plotting:
+    spy4cast.stypes.F: IntFlag enum used is plotting:
         SAVE_DATA
         SAVE_FIG
         SILENT_ERRORS
@@ -76,15 +76,15 @@ Collection of data sctructures used across the API and for the users convenience
         staticmethod F.checkf(f: F, other: int | F) -> bool:
             return (other & f) == f 
     
-    ChunkType: Type of the chunk passed intop dask. 
+    spy4cast.stypes.ChunkType: Type of the chunk passed intop dask. 
       Equivalent to int | tuple[int, ...] | tuple[tuple[int, ...] ,...] | dict[str | int: int]
 
-    RDArgs: dataclass that can be used to create the arguments passed into readers like 
+    spy4cast.stypes.RDArgs: dataclass that can be used to create the arguments passed into readers like 
       syp4cast.readers.Spy4caster that create multiple ReadData objects
         
         RDArgs.as_dict: returns its attributes as dict to pass into ReadData with the `**` operator
     
-    RDArgsDict: TypedDict of RDArgs.as_ddict return value
+    spy4cast.stypes.RDArgsDict: TypedDict of spy4cast.stypes.RDArgs.as_dict return value
     
 
 ## Errors
