@@ -43,20 +43,20 @@ def main():
     )  # PRECITAND: Z
 
     s = spy.Spy4Caster(
-            yargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=HadISST_sst, variable=SST, chunks=20),
-            zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=slp_ERA20_1900_2010, variable=MSL, chunks=20),
+            yargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=HadISST_sst, variable=SST, chunks=100),
+            zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=slp_ERA20_1900_2010, variable=MSL, chunks=100),
             plot_dir=PLOTS_DIR, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME, zhat_plot_name=ZHAT_PLOT_NAME,
             force_name=True, plot_data_dir=PLOTS_DATA_DIR)
     s.load_datasets()
     s.slice_datasets(yslise=sst_slise, zslise=slp_slise)
     s.preprocess(order=order, period=period)
-    # s.mca(nm=nm, alpha=alpha)
+    s.mca(nm=nm, alpha=alpha)
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
-    # s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=True)
-    s.load_crossvalidation('./saved', 'save_cross_', '.npy')
-    s.load_mca('./saved', 'save_mca_', '.npy')
-    s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
-    s.plot_crossvalidation(F.SHOW_PLOT | F.SAVE_FIG)
+    s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=True)
+    # s.load_crossvalidation('./saved', 'save_cross_', '.npy')
+    # s.load_mca('./saved', 'save_mca_', '.npy')
+    # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
+    # s.plot_crossvalidation(F.SHOW_PLOT | F.SAVE_FIG)
     selected_year = 1984
     # s.plot_zhat(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year)
     s.run(F.SHOW_PLOT | F.SAVE_FIG | 0*F.SAVE_DATA, sy=selected_year)
