@@ -8,15 +8,11 @@ HadISST_sst = 'HadISST_sst.nc'
 
 def main():
     sl = Slise(
-        latitude_min=-45,
-        latitude_max=45,
-        longitude_min=-100,
-        longitude_max=100,
-        initial_month=Month.JAN,
-        final_month=Month.MAR,
-        initial_year=1871,
-        final_year=2020,
-        selected_year=1990,
+        lat0=-45, latf=45,
+        lon0=-100, lonf=100,
+        month0=Month.JAN, monthf=Month.MAR,
+        year0=1871, yearf=2020,
+        sy=1990,
     )
     spy.AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst) \
         .load_dataset() \

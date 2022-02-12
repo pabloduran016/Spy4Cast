@@ -60,7 +60,7 @@ class RDPlotter(ReadData, Plotter, ABC):
 
         # Create the plot
         fig = plt.figure()
-        if F.checkf(F.SHOW_PLOT, flags) or F.checkf(F.SAVE_FIG, flags) or F.checkf(F.TESTING, flags):
+        if F.checkf(F.SHOW_PLOT, flags) or F.checkf(F.SAVE_FIG, flags):
             try:
                 self.create_plot(fig, **kwargs)
             except CustomError:
@@ -729,7 +729,7 @@ class Spy4Caster(Proker):
                     raise DataSavingError(str(e)) from e
 
         # Create the plot
-        if F.checkf(F.SHOW_PLOT, flags) or F.checkf(F.SAVE_FIG, flags) or F.checkf(F.TESTING, flags):
+        if F.checkf(F.SHOW_PLOT, flags) or F.checkf(F.SAVE_FIG, flags):
             try:
                 self.plot_mca(flags & ~F.SHOW_PLOT)
                 self.plot_crossvalidation(flags & ~F.SHOW_PLOT)

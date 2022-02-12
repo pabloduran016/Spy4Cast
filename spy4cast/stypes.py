@@ -43,7 +43,7 @@ class Slise:
     @classmethod
     def default(cls, month0: int = Month.JAN, monthf: int = Month.DEC, year0: int = 0, yearf: int = 2000,
                 sy: Optional[int] = None) -> 'Slise':
-        """Returns: Slise(-90, 90, -180, 180, 1, 12, 1870, 2000, None)"""
+        """Returns: Slise(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)"""
         return Slise(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)
 
 
@@ -61,7 +61,6 @@ class Slise:
 class F(IntFlag):
     SAVE_DATA = auto()
     SAVE_FIG = auto()
-    TESTING = auto()
     SILENT_ERRORS = auto()
     SHOW_PLOT = auto()
 
