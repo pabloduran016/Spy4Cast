@@ -3,6 +3,20 @@ import os
 import datetime
 from typing import Optional, Dict
 from .stypes import Month, Slise
+from time import perf_counter
+
+
+__all__ = [
+    'set_silence',
+    'pretty_dict',
+    'update_dataset_info_json',
+    'get_dataset_info',
+    'slise2str',
+    'mon2str',
+    'str2mon',
+    'log_error',
+    'debugprint',
+]
 
 
 # Array with the month indices
@@ -12,6 +26,28 @@ STRING_TO_MONTH = list(filter(lambda x: not x.startswith('_'), Month.__dict__.ke
 
 class Settings:
     silence = True
+
+
+def set_silence(b: bool):
+    if type(b) != bool:
+        raise TypeError(f'Expected bool got {type(b)}')
+    Settings.silence = b
+
+
+prev: Optional[float] = None
+def time_from_here() -> None:
+    global prev
+    prev = perf_counter()
+    return
+
+
+def time_to_here() -> float:
+    global prev
+    if prev is None:
+        raise ValueError('Expected to call time_from_here() before calling time_to_here()')
+    rv = perf_counter() - prev
+    prev = None
+    return rv
 
 
 def pretty_dict(d: Dict[str, str]) -> str:

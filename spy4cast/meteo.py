@@ -21,6 +21,7 @@ class CrossvalidationOut:
     p_z_zhat_s: npt.NDArray[np.float64]
     r_uv: npt.NDArray[np.float64]
     p_uv: npt.NDArray[np.float64]
+    alpha: float
 
 @dataclass
 class MCAOut:
@@ -244,7 +245,7 @@ class Meteo:
 
         import multiprocessing as mp
         # Step 1: Init multiprocessing.Pool()
-        count= mp.cpu_count()
+        count = mp.cpu_count()
         with mp.Pool(count) as pool:
             # print(f'Starting pool with {count=}')
             processes = []
@@ -292,7 +293,8 @@ class Meteo:
             r_z_zhat_s=r_z_zhat_s,  # Correlation between time series (for each point) of zhat and z (map)
             p_z_zhat_s=p_z_zhat_s,  # P values of rr
             r_uv=r_uv,  # Correlation score betweeen u and v for each mode
-            p_uv=p_uv  # P value of ruv
+            p_uv=p_uv,  # P value of ruv
+            alpha=alpha,  # Correlation factor
         )
 
     @classmethod
@@ -348,5 +350,6 @@ class Meteo:
             r_z_zhat_s=r_z_zhat_s,  # Correlation between time series (for each point) of zhat and z (map)
             p_z_zhat_s=p_z_zhat_s,  # P values of rr
             r_uv=r_uv,  # Correlation score betweeen u and v for each mode
-            p_uv=p_uv  # P value of ruv
+            p_uv=p_uv,  # P value of ruv
+            alpha=alpha,  # Correlation factor
         )

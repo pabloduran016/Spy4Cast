@@ -1,2 +1,2 @@
 from .readers import *
-from .functions import Settings
+from .functions import *
