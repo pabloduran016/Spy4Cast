@@ -41,7 +41,7 @@ built-in function called `slice` and in this library we have decided to use `sli
 behaviours. I hope it is not too ugly...
 
 ## Stypes
-    Collection of data sctructures used across the API and for the users convenience  
+Collection of data sctructures used across the API and for the users convenience  
     
     Color: equivalent to tuple[float, float, float]
     

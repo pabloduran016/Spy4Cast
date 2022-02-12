@@ -1,7 +1,7 @@
 from typing import Any, Optional, Generator
 
 __all__ = [
-    'CustomError',
+    'Spy4CastError',
     'PlotCreationError',
     'VariableSelectionError',
     'TimeBoundsSelectionError',
@@ -25,7 +25,7 @@ def _new_id_gen() -> Generator[int, None, None]:
 _new_id = _new_id_gen()
 
 
-class CustomError(Exception):
+class Spy4CastError(Exception):
     """Base Class for all custom error of the project"""
     _id = 0
 
@@ -34,12 +34,12 @@ class CustomError(Exception):
         super().__init__(msg, *args)
 
 
-class PlotCreationError(CustomError):
+class PlotCreationError(Spy4CastError):
     """Error raised when there is an error during plot creation"""
     _id = next(_new_id)
 
 
-class VariableSelectionError(CustomError, ValueError):
+class VariableSelectionError(Spy4CastError, ValueError):
     """Error raised when there is an error when loading the dataset and the variable given is not valid"""
     _id = next(_new_id)
 
@@ -47,7 +47,7 @@ class VariableSelectionError(CustomError, ValueError):
         super().__init__(f'Variable selected ({variable}) is not valid', *args)
 
 
-class TimeBoundsSelectionError(CustomError, ValueError):
+class TimeBoundsSelectionError(Spy4CastError, ValueError):
     """Error raised when there is an error when loading the dataset and the variable given is not valid"""
     _id = next(_new_id)
 
@@ -55,7 +55,7 @@ class TimeBoundsSelectionError(CustomError, ValueError):
         super().__init__(msg, *args)
 
 
-# class MethodologySelectionError(CustomError, ValueError):
+# class MethodologySelectionError(Spy4CastError, ValueError):
 #     """Error raised when there is an error when applying the selected methodology"""
 #     _id = next(_new_id)
 #
@@ -63,7 +63,7 @@ class TimeBoundsSelectionError(CustomError, ValueError):
 #         super().__init__(msg, *args)
 
 
-# class PlotTypeSelectionError(CustomError, ValueError):
+# class PlotTypeSelectionError(Spy4CastError, ValueError):
 #     """Error raised when there is an error when selecting a plot type that it is not valid"""
 #     _id = next(_new_id)
 #
@@ -71,7 +71,7 @@ class TimeBoundsSelectionError(CustomError, ValueError):
 #         super().__init__(self._flash, *args)
 
 
-# class CmapSelectionError(CustomError, ValueError):
+# class CmapSelectionError(Spy4CastError, ValueError):
 #     """Error raised when there is an error when selecting a cmap that it is not valid"""
 #     _id = next(_new_id)
 #
@@ -79,22 +79,22 @@ class TimeBoundsSelectionError(CustomError, ValueError):
 #         super().__init__(self._flash, *args)
 
 
-class PlotSavingError(CustomError):
+class PlotSavingError(Spy4CastError):
     """Error raised when there is an error when selecting a cmap that it is not valid"""
     _id = next(_new_id)
 
 
-class PlotShowingError(CustomError):
+class PlotShowingError(Spy4CastError):
     """Error raised when there is an error when selecting a cmap that it is not valid"""
     _id = next(_new_id)
 
 
-class DataSavingError(CustomError):
+class DataSavingError(Spy4CastError):
     """Error raised when there is an error during the saving of the data"""
     _id = next(_new_id)
 
 
-class SelectedYearError(CustomError, ValueError):
+class SelectedYearError(Spy4CastError, ValueError):
     """Error raised when there is an error during the saving of the data"""
     _id = next(_new_id)
 
@@ -102,7 +102,7 @@ class SelectedYearError(CustomError, ValueError):
         super().__init__(f'Selected year not valid , got `{s_year}`', *args)
 
 
-class DatasetNotFoundError(CustomError, ValueError):
+class DatasetNotFoundError(Spy4CastError, ValueError):
     """Error raised when a dataset is not found"""
     _id = next(_new_id)
 
@@ -111,7 +111,7 @@ class DatasetNotFoundError(CustomError, ValueError):
         super().__init__(msg, *args)
 
 
-# class DatasetUnknownError(CustomError, ValueError):
+# class DatasetUnknownError(Spy4CastError, ValueError):
 #     """Error raised when there is a dataset is not known"""
 #     _id = next(_new_id)
 #
@@ -120,7 +120,7 @@ class DatasetNotFoundError(CustomError, ValueError):
 #         super().__init__(msg, *args)
 
 
-class DatasetError(CustomError, ValueError):
+class DatasetError(Spy4CastError, ValueError):
     """Error raised when there is an error with the dataset which is supposed to be load"""
     _id = next(_new_id)
 
@@ -129,7 +129,7 @@ class DatasetError(CustomError, ValueError):
         super().__init__(msg, *args)
 
 
-class PlotDataError(CustomError, ValueError):
+class PlotDataError(Spy4CastError, ValueError):
     """Error raised when there is an error with the data used to create the plot"""
     _id = next(_new_id)
 
@@ -138,6 +138,6 @@ class PlotDataError(CustomError, ValueError):
         super().__init__(msg, *args)
 
 
-# class FailedTestError(CustomError):
+# class FailedTestError(Spy4CastError):
 #     """Error raised when there is an error with tests"""
 #     _id = next(_new_id)

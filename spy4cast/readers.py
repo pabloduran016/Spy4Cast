@@ -14,7 +14,7 @@ import numpy.typing as npt
 
 from .functions import debugprint, time_from_here, time_to_here
 from .stypes import Color, Slise, F, RDArgs, RDArgsDict
-from .errors import CustomError, PlotCreationError, DataSavingError, PlotSavingError, \
+from .errors import Spy4CastError, PlotCreationError, DataSavingError, PlotSavingError, \
     PlotShowingError, PlotDataError, SelectedYearError
 from .meteo import Meteo, MCAOut, CrossvalidationOut
 from .read_data import ReadData, NAN_VAL
@@ -63,7 +63,7 @@ class RDPlotter(ReadData, Plotter, ABC):
         if F.checkf(F.SHOW_PLOT, flags) or F.checkf(F.SAVE_FIG, flags):
             try:
                 self.create_plot(fig, **kwargs)
-            except CustomError:
+            except Spy4CastError:
                 raise
             except Exception as e:
                 traceback.print_exc()
@@ -76,7 +76,7 @@ class RDPlotter(ReadData, Plotter, ABC):
                 print(f"[INFO] Saving plot as {self._plot_name} in {self._plot_dir}")
                 # Generate a PNG of the figure
                 plt.savefig(os.path.join(self._plot_dir, self._plot_name))
-            except CustomError:
+            except Spy4CastError:
                 raise
             except Exception as e:
                 traceback.print_exc()
@@ -87,7 +87,7 @@ class RDPlotter(ReadData, Plotter, ABC):
         try:
             if F.checkf(F.SHOW_PLOT, flags):
                 plt.show()
-        except CustomError:
+        except Spy4CastError:
             raise
         except Exception as e:
             traceback.print_exc()
@@ -736,7 +736,7 @@ class Spy4Caster(Proker):
                 self.plot_zhat(flags & ~F.SHOW_PLOT, sy=kwargs.get('sy'))
                 if flags & F.SHOW_PLOT:
                     plt.show()
-            except CustomError:
+            except Spy4CastError:
                 raise
             except Exception as e:
                 traceback.print_exc()
