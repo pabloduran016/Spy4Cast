@@ -35,7 +35,7 @@ class MCAOut:
     SUZ_sig: npt.NDArray[np.float64]
     Us: npt.NDArray[np.float64]
     Vs: npt.NDArray[np.float64]
-    scf: List[float]
+    scf: npt.NDArray[np.float64]
 
 
 class Meteo:
