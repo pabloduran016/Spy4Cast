@@ -14,7 +14,7 @@ import numpy.typing as npt
 
 from .functions import debugprint, time_from_here, time_to_here
 from .stypes import Color, Slise, F, RDArgs, RDArgsDict
-from .errors import Spy4CastError, PlotCreationError, DataSavingError, PlotSavingError, \
+from .errors import Spy4CastError, PlotCreationError, DataSavingError, \
     PlotShowingError, PlotDataError, SelectedYearError
 from .meteo import Meteo, MCAOut, CrossvalidationOut
 from .read_data import ReadData, NAN_VAL
@@ -23,12 +23,12 @@ from .read_data import ReadData, NAN_VAL
 __all__ = ['PlotterTS', 'PlotterMap', 'ClimerTS', 'ClimerMap', 'AnomerTS', 'AnomerMap', 'Spy4Caster']
 
 
-class RDPlotter(ReadData, ABC):
+class Plotter(ReadData, ABC):
     @abstractmethod
-    def create_plot(self, flags: int, **kwargs) -> 'RDPlotter':
+    def create_plot(self, flags: int, **kwargs) -> 'Plotter':
         raise NotImplementedError
 
-    def run(self, flags: int = 0, **kwargs: Any) -> 'RDPlotter':
+    def run(self, flags: int = 0, **kwargs: Any) -> 'Plotter':
         # Save the data if needed
         if F.checkf(F.SAVE_DATA, flags):
             try:
@@ -63,13 +63,16 @@ class RDPlotter(ReadData, ABC):
         return self
 
 
-class PlotterTS(RDPlotter):
+class PlotterTS(Plotter):
     def create_plot(self, flags: int = 0, **kws: Any) -> 'PlotterTS':
         fig = plt.figure()
-        color: Color = (.43, .92, .20) if 'color' not in kws else kws['color']
+        color: Color = (.43, .92, .20) if 'color' not in kws else kws.pop('color')
+        if len(kws) != 0:
+            raise TypeError('`create_plot` only accepts one keyword argument: `color`')
         print(f"[INFO] Creating plot for {self._plot_name}")
         # Create figure
-        assert len(self.shape) == 1, 'Time series arrays must be unidimensional'
+        if len(self.shape) == 1:
+            raise PlotCreationError('Time series arrays must be unidimensional')
         to_plot = self._data.where(lambda a: abs(a) < NAN_VAL)
         ax = fig.add_subplot()
         ax.plot(to_plot[self._time_key], to_plot, linewidth=3, color=color)
@@ -85,15 +88,17 @@ class PlotterTS(RDPlotter):
         return self
 
 
-class PlotterMap(RDPlotter):
+class PlotterMap(Plotter):
     _n_values = 50
 
     def create_plot(self, flags: int = 0, **kws: Any) -> 'PlotterMap':
         fig = plt.figure()
         if 'slise' not in kws:
-            raise TypeError("create_plot() missing 1 required positional argument: 'slise'")
-        slise: Slise = kws['slise']
-        cmap: str = kws['cmap'] if 'cmap' in kws else 'jet'
+            raise TypeError("`create_plot` missing 1 required keyword argument: 'slise'")
+        slise: Slise = kws.pop('slise')
+        cmap: str = kws.pop('cmap') if 'cmap' in kws else 'jet'
+        if len(kws) != 0:
+            raise TypeError("`create_plot` only accepts two keyword arguments: `cmap` and `slise`")
         # self.print('Preparing dataset for plotting...')
         if len(self.shape) == 3:
             assert slise is not None and slise.sy is not None, 'Expected selected year inside of a slise'
@@ -111,7 +116,7 @@ class PlotterMap(RDPlotter):
         to_plot = to_plot.where(lambda a: abs(a) < NAN_VAL).sortby(self._lon_key)
 
         if to_plot.shape[0] < 2 or to_plot.shape[1] < 2:
-            raise PlotDataError(f'Slicing Error, got {to_plot.shape} as slice shapes')
+            raise PlotDataError(f'Slicing Error, got {to_plot.shape} as slice shapes. Might bee too small')
 
         # self.print(self._plot_data, selected_year)
         ax = fig.add_subplot(projection=ccrs.PlateCarree(central_longitude=0))

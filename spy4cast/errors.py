@@ -79,10 +79,10 @@ class TimeBoundsSelectionError(Spy4CastError, ValueError):
 #         super().__init__(self._flash, *args)
 
 
-class PlotSavingError(Spy4CastError):
-    """Exception raised when there is an error while saving the plot"""
-    _id = next(_new_id)
-
+# class PlotSavingError(Spy4CastError):
+#     """Exception raised when there is an error while saving the plot"""
+#     _id = next(_new_id)
+#
 
 class PlotShowingError(Spy4CastError):
     """Exception raised when there is an error while showing the plot"""

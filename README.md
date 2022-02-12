@@ -73,7 +73,8 @@ Collection of data sctructures used across the API and for the users convenience
         SILENT_ERRORS
         SHOW_PLOT
 
-        staticmethod F.checkf(f: F, other: int | F) -> bool:
+        @staticmethod 
+        def F.checkf(f: F, other: int | F) -> bool:
             return (other & f) == f 
     
     spy4cast.stypes.ChunkType: Type of the chunk passed intop dask. 
@@ -153,8 +154,47 @@ Collection of data sctructures used across the API and for the users convenience
               ('HadISST_sst.nc', {'title': 'HadISST_sst', 'from': 'Jan 1870', 'to': 'May 2020', 'variable': 'sst'})
         
 
-## Plotters and Prokers
-Plotters are in charge of reading the data and plotting it using a 
+## Plotters
+Plotters are in charge of reading the data and plotting it. There are all basses of the Abstract class Plotter:
+
+    class spy4cast.plotters.Plotter(ReadData, ABC)
+        This class is also concatenable (see spy4cast.read_data.ReadData)
+
+        @abstractmethod
+        def create_plot(flags=0, **kwargs)
+
+        def run(flags=0, **kwargs)
+            Creates plots, saves figures, saves data and saves figures if the flags indicate so
+            
+            · flags: Int Flags (see spy4cast.stypes.F)
+        
+There are two kinds of Plotters that implemenyt the abstract method `create_plot`
+
+    class spy4cast.plotters.PlotterTS(Plotter):
+        This class is concatenable (see spy4cast.read_data.ReadData)
+
+        def create_plot(flgas=0, color=None) 
+            Plots a timeseries.
+                
+            · flags: Int Flags (see spy4cast.stypes.F)
+            · color: Color (see spy4cast.stypes.Color) to plot the line (values from 0 to 1).
+              Default is (.43, .92, .20) (greenish)    
+            
+            Raises spy4cast.errors.PlotCreationError if the data is not unidimensional
+
+    class spy4cast.plotters.PlotterMap(Plotter):
+        This class is concatenable (see spy4cast.read_data.ReadData)
+
+        def create_plot(flgas=0, slise=None) 
+            Plots a map.
+                
+            · flags: Int Flags (see spy4cast.stypes.F)
+            · slise (required spy4cast.stypes.Slise): Must have `sy` filled with the year you want to plot 
+              if the data has more than 2 dimensions.
+            · cmap: Color map passed into matplotlib.Axes.contourf    
+            
+            Raises spy4cast.errors.SelectedyearError if the selected year is not valid and 
+              spy4cast.errors.PlotDataError if the data's shape is too small
 
 
 ### AnomerTS
@@ -183,10 +223,7 @@ Custom errors related to the api
     
     spy4cast.errors.TimeBoundsSelectionError(Spy4castError, ValueError): Exception raised when checking a slise 
       that has non-valid time constraints
-    
-    spy4cast.errors.PlotSavingError(Spy4castError): Exception raised when there is an error while 
-      saving the plot
-    
+
     spy4cast.errors.PlotShowingError(Spy4castError): Exception raised when there is an error while 
       showing the plot
     
