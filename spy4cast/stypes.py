@@ -13,36 +13,6 @@ T_FORMAT = '%d/%m/%Y %H:%M:%S'
 TimeStamp = Union[pd.Timestamp, datetime.datetime]
 
 
-@dataclass
-class Slise:
-    latitude_min: Union[float, int]
-    latitude_max: Union[float, int]
-    longitude_min: Union[float, int]
-    longitude_max: Union[float, int]
-    initial_month: int
-    final_month: int
-    initial_year: int
-    final_year: int
-    selected_year: Optional[int] = None
-
-    @classmethod
-    def default(cls, initial_month: int = 1, final_month: int = 12, initial_year: int = 0, final_year: int = 2000,
-                selected_year: Optional[int] = None) -> 'Slise':
-        """Returns: Slise(-90, 90, -180, 180, 1, 12, 1870, 2000, None)"""
-        return Slise(-90, 90, -180, 180, initial_month, final_month, initial_year, final_year, selected_year)
-
-
-# class SliseDict(TypedDict):
-#     latitude_min: Union[float, int]
-#     latitude_max: Union[float, int]
-#     longitude_min: Union[float, int]
-#     longitude_max: Union[float, int]
-#     initial_month: int
-#     final_month: int
-#     initial_year: int
-#     final_year: int
-
-
 class Month(IntEnum):
     JAN = auto()
     FEB = auto()
@@ -56,6 +26,36 @@ class Month(IntEnum):
     OCT = auto()
     NOV = auto()
     DEC = auto()
+
+
+@dataclass
+class Slise:
+    lat0: Union[float, int]
+    latf: Union[float, int]
+    lon0: Union[float, int]
+    lonf: Union[float, int]
+    month0: Union[Month, int]
+    monthf: Union[Month, int]
+    year0: int
+    yearf: int
+    sy: Optional[int] = None
+
+    @classmethod
+    def default(cls, month0: int = Month.JAN, monthf: int = Month.DEC, year0: int = 0, yearf: int = 2000,
+                sy: Optional[int] = None) -> 'Slise':
+        """Returns: Slise(-90, 90, -180, 180, 1, 12, 1870, 2000, None)"""
+        return Slise(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)
+
+
+# class SliseDict(TypedDict):
+#     latitude_min: Union[float, int]
+#     latitude_max: Union[float, int]
+#     longitude_min: Union[float, int]
+#     longitude_max: Union[float, int]
+#     initial_month: int
+#     final_month: int
+#     initial_year: int
+#     final_year: int
 
 
 class F(IntFlag):

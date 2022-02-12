@@ -88,9 +88,9 @@ def get_dataset_info(data_reader: type, d_dir: str, output_console: bool = False
 
 
 def slise2str(slise: Slise) -> str:
-    sufixes: dict[str, str] = {'lat_min': '', 'lat_max': '', 'lon_min': '', 'lon_max': ''}
-    values: dict[str, float] = {'lat_min': slise.latitude_min, 'lat_max': slise.latitude_max,
-                                'lon_min': slise.longitude_min, 'lon_max': slise.longitude_max}
+    sufixes: Dict[str, str] = {'lat_min': '', 'lat_max': '', 'lon_min': '', 'lon_max': ''}
+    values: Dict[str, float] = {'lat_min': slise.lat0, 'lat_max': slise.latf,
+                                'lon_min': slise.lon0, 'lon_max': slise.lonf}
     for key in {'lat_min', 'lat_max'}:
         if values[key] >= 0:
             sufixes[key] = 'ºN'

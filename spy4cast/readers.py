@@ -13,7 +13,7 @@ import numpy as np
 import numpy.typing as npt
 
 from .functions import debugprint, time_from_here, time_to_here
-from .stypes import Methodology, PltType, Color, Slise, F, RDArgs, RDArgsDict
+from .stypes import Color, Slise, F, RDArgs, RDArgsDict
 from .errors import CustomError, PlotCreationError, DataSavingError, PlotSavingError, \
     PlotShowingError, PlotDataError, SelectedYearError
 from .meteo import Meteo, MCAOut, CrossvalidationOut
@@ -109,27 +109,6 @@ class RDProker(RDPlotter, Proker, ABC):
     pass
 
 
-def plotter_factory(m: Optional[Methodology], pt: PltType) -> Type[RDPlotter]:
-    if m == Methodology.CLIM:
-        if pt == PltType.TS:
-            return ClimerTS
-        if pt == PltType.MAP:
-            return ClimerMap
-    elif m == Methodology.ANOM:
-        if pt == PltType.TS:
-            return AnomerTS
-        if pt == PltType.MAP:
-            return AnomerMap
-    # elif m == Methodology.SPY4CAST and pt is None:
-    #     return Spy4Caster
-    elif m is None:
-        if pt == PltType.TS:
-            return PlotterTS
-        if pt == PltType.MAP:
-            return PlotterMap
-    raise ValueError('Unknown methodology and/or plt type')
-
-
 class PlotterTS(RDPlotter):
     def create_plot(self, fig: plt.Figure = None, **kws: Any) -> 'PlotterTS':
         fig = fig if fig is not None else plt.figure()
@@ -158,13 +137,13 @@ class PlotterMap(RDPlotter):
         cmap: str = kws['cmap'] if 'cmap' in kws else 'jet'
         # self.print('Preparing dataset for plotting...')
         if len(self.shape) == 3:
-            assert slise is not None and slise.selected_year is not None, 'Expected selected year inside of a slise'
-            if not self._slise.initial_year <= slise.selected_year <= self._slise.final_year:
-                raise SelectedYearError(slise.selected_year)
-            self._plot_data += f' ({slise.selected_year})'
+            assert slise is not None and slise.sy is not None, 'Expected selected year inside of a slise'
+            if not self._slise.year0 <= slise.sy <= self._slise.yearf:
+                raise SelectedYearError(slise.sy)
+            self._plot_data += f' ({slise.sy})'
             self._time_key = self._time_key if self._time_key in self._data.dims else 'year'
             # .reset_index()?
-            to_plot = self._data.sel({self._time_key: slise.selected_year})
+            to_plot = self._data.sel({self._time_key: slise.sy})
             # to_plot = self._data.sel(year=selected_year)
         else:
             to_plot = self._data
@@ -244,8 +223,8 @@ class AnomerMap(Proker, PlotterMap):
         # print(f"[INFO] <apply()> {plt_type=} {methodology=}, {kwargs})")
         self._data = Meteo.anom(self._data, st)
         self._time_key = 'year'
-        self._slise.initial_year = int(self.time[0])
-        self._slise.final_year = int(self.time[-1])
+        self._slise.year0 = int(self.time[0])
+        self._slise.yearf = int(self.time[-1])
         if st:
             self._plot_data += ' (Standarized)'
         self._plot_data = 'ANOM ' + self._plot_data
@@ -333,11 +312,11 @@ class Spy4Caster(Proker):
         self._rdz._data = Meteo.anom(self._rdz._data)
         self._rdz._time_key = 'year'
 
-        y0 = max(self._rdy._slise.initial_year, self._rdz._slise.initial_year)
-        yf = min(self._rdy._slise.final_year, self._rdz._slise.final_year)
+        y0 = max(self._rdy._slise.year0, self._rdz._slise.year0)
+        yf = min(self._rdy._slise.yearf, self._rdz._slise.yearf)
 
-        self._rdy.slice_dataset(Slise.default(initial_year=y0, final_year=yf))
-        self._rdz.slice_dataset(Slise.default(initial_year=y0, final_year=yf))
+        self._rdy.slice_dataset(Slise.default(year0=y0, yearf=yf))
+        self._rdz.slice_dataset(Slise.default(year0=y0, yearf=yf))
 
         z = self._rdz._data.values
         # zlon = self._rdz._data.lon.values

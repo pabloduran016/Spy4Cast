@@ -21,25 +21,17 @@ def main():
     alpha=.1
 
     sst_slise = Slise(
-        latitude_min=20,
-        latitude_max=50,
-        longitude_min=0,
-        longitude_max=60,
-        initial_month=Month.JAN,
-        final_month=Month.APR,
-        initial_year=1980,
-        final_year=2010,
+        lat0=20, latf=50,
+        lon0=0, lonf=60,
+        month0=Month.JAN, monthf=Month.APR,
+        year0=1980, yearf=2010,
     )  # PREDICTOR: Y
 
     slp_slise = Slise(
-        latitude_min=20,
-        latitude_max=45,
-        longitude_min=-50,
-        longitude_max=40,
-        initial_month=Month.JAN,
-        final_month=Month.APR,
-        initial_year=1980,
-        final_year=2010,
+        lat0=20, latf=45,
+        lon0=-50, lonf=40,
+        month0=Month.JAN, monthf=Month.APR,
+        year0=1980, yearf=2010,
     )  # PRECITAND: Z
 
     s = spy.Spy4Caster(

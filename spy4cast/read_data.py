@@ -153,8 +153,8 @@ class ReadData:
         self._dataset_initial_timestamp = self._dataset.indexes['time'][0]
         self._dataset_final_timestamp = self._dataset.indexes['time'][-1]
 
-        self._slise = Slise.default(initial_year=self._dataset_initial_timestamp.year,
-                                    final_year=self._dataset_final_timestamp.year)
+        self._slise = Slise.default(year0=self._dataset_initial_timestamp.year,
+                                    yearf=self._dataset_final_timestamp.year)
 
         self._plot_data = f'Jan to {mon2str(Month(self._dataset_final_timestamp.month))} ' \
                          f'{self._dataset_initial_timestamp.year}-{self._dataset_final_timestamp.year} '
@@ -170,49 +170,49 @@ class ReadData:
         if self._variable not in self._valid_variables and self._variable != '':
             raise VariableSelectionError(self._variable)
         if slise is not None:
-            assert type(slise.initial_year) == int, f'Invalid type for initial_year: ' \
-                                                    f'{type(slise.initial_year)}'
-            if slise.initial_year > self._dataset_final_timestamp.year:
+            assert type(slise.year0) == int, f'Invalid type for initial_year: ' \
+                                                    f'{type(slise.year0)}'
+            if slise.year0 > self._dataset_final_timestamp.year:
                 raise TimeBoundsSelectionError(f"Initial year not valid. Dataset finishes in "
-                                               f"{self._dataset_final_timestamp.year}, got {slise.initial_year} as "
+                                               f"{self._dataset_final_timestamp.year}, got {slise.year0} as "
                                                f"initial year")
-            if slise.initial_year < self._dataset_initial_timestamp.year:
+            if slise.year0 < self._dataset_initial_timestamp.year:
                 raise TimeBoundsSelectionError(f"Initial year not valid. Dataset starts in "
-                                               f"{self._dataset_initial_timestamp.year}, got {slise.initial_year}")
-            assert type(slise.final_year) == int, f"Invalid type for final_year: {type(slise.final_year)}"
-            if slise.final_year > self._dataset_final_timestamp.year:
+                                               f"{self._dataset_initial_timestamp.year}, got {slise.year0}")
+            assert type(slise.yearf) == int, f"Invalid type for final_year: {type(slise.yearf)}"
+            if slise.yearf > self._dataset_final_timestamp.year:
                 raise TimeBoundsSelectionError(f"Final Year out of bounds. Dataset finishes in "
-                                               f"{self._dataset_final_timestamp.year}, got {slise.final_year}")
-            if slise.final_year < self._dataset_initial_timestamp.year:
+                                               f"{self._dataset_final_timestamp.year}, got {slise.yearf}")
+            if slise.yearf < self._dataset_initial_timestamp.year:
                 raise TimeBoundsSelectionError(f"Final year not valid. Dataset starts in "
-                                               f"{self._dataset_initial_timestamp.year}, got {slise.initial_year}")
-            assert type(slise.final_year) == int, "Invalid type for final_year: %s" % type(slise.final_year)
-            assert type(slise.final_month) == int or type(slise.final_month) == Month, \
-                "Invalid type for final_month: %s" % type(slise.final_month)
-            if slise.final_year >= self._dataset_final_timestamp.year and \
-                    slise.final_month > self._dataset_final_timestamp.month:
+                                               f"{self._dataset_initial_timestamp.year}, got {slise.year0}")
+            assert type(slise.yearf) == int, "Invalid type for final_year: %s" % type(slise.yearf)
+            assert type(slise.monthf) == int or type(slise.monthf) == Month, \
+                "Invalid type for final_month: %s" % type(slise.monthf)
+            if slise.yearf >= self._dataset_final_timestamp.year and \
+                    slise.monthf > self._dataset_final_timestamp.month:
                 raise TimeBoundsSelectionError(f"Final Month out of bounds. Dataset finishes in "
                                                f"{mon2str(Month(self._dataset_final_timestamp.month))} "
                                                f"{self._dataset_final_timestamp.year}, got "
-                                               f"{mon2str(Month(slise.final_month))} {slise.final_year}")
-            assert type(slise.final_year) == int, "Invalid type for final_year: %s" % type(slise.final_year)
-            assert type(slise.initial_year) == int, f"Invalid type for initial_year: {type(slise.initial_year)}"
-            if slise.initial_year > slise.final_year:
+                                               f"{mon2str(Month(slise.monthf))} {slise.yearf}")
+            assert type(slise.yearf) == int, "Invalid type for final_year: %s" % type(slise.yearf)
+            assert type(slise.year0) == int, f"Invalid type for initial_year: {type(slise.year0)}"
+            if slise.year0 > slise.yearf:
                 raise TimeBoundsSelectionError(f"Initial year bigger than final year")
-            assert type(slise.initial_month) == int or type(slise.initial_month) == Month, \
-                f"Invalid type for initial_month: {type(slise.initial_month)}"
-            if not 1 <= slise.initial_month <= 12:
+            assert type(slise.month0) == int or type(slise.month0) == Month, \
+                f"Invalid type for initial_month: {type(slise.month0)}"
+            if not 1 <= slise.month0 <= 12:
                 raise TimeBoundsSelectionError(f'Initial month not valid, must be int from 0 to 11')
-            assert type(slise.final_month) == int or type(slise.final_month) == Month, \
-                "Invalid type for final_month: %s" % type(slise.final_month)
-            if not 1 <= slise.final_month <= 12:
+            assert type(slise.monthf) == int or type(slise.monthf) == Month, \
+                "Invalid type for final_month: %s" % type(slise.monthf)
+            if not 1 <= slise.monthf <= 12:
                 raise TimeBoundsSelectionError(f'Final month not valid, must be int from 0 to 11')
-            if slise.initial_month > slise.final_month and slise.initial_year - 1 < self._dataset_initial_timestamp.year:
+            if slise.month0 > slise.monthf and slise.year0 - 1 < self._dataset_initial_timestamp.year:
                 raise TimeBoundsSelectionError(f'Initial year not valid, remember that when selecting month slice that '
                                                f'combines years, the initial year backtracks one unit')
-            if slise.selected_year is not None and slise.selected_year != 0:
-                if not slise.initial_year <= slise.selected_year <= slise.final_year:
-                    raise SelectedYearError(slise.selected_year)
+            if slise.sy is not None and slise.sy != 0:
+                if not slise.year0 <= slise.sy <= slise.yearf:
+                    raise SelectedYearError(slise.sy)
         # debugprint(params, self._dataset_initial_timestamp.year, self._dataset_final_timestamp.year)
         # elif (cmap := params.get('cmap')) not in valid_cmaps:
         #     raise CmapSelectionError(cmap)
@@ -226,7 +226,7 @@ class ReadData:
         if your dataset doesn't contain that specific year.
         """
 
-        self.check_slise(slise)
+        self.check_variables(slise)
         # debugprint(f"[INFO] <{self.__class__.__name__}> Slicing dataset: {self._dataset_name} for {self._plot_name}")
         self._slise = slise
 
@@ -235,18 +235,18 @@ class ReadData:
         to = fro + relativedelta(months=len(self.time))
         time = pd.date_range(start=fro, end=to, freq='M')
 
-        if slise.initial_month <= slise.final_month:
-            timemask = (time.month >= slise.initial_month) & (time.month <= slise.final_month) & \
-                       (time.year >= slise.initial_year) & (time.year <= slise.final_year)
+        if slise.month0 <= slise.monthf:
+            timemask = (time.month >= slise.month0) & (time.month <= slise.monthf) & \
+                       (time.year >= slise.year0) & (time.year <= slise.yearf)
         else:
-            timemask = ((time.month >= slise.initial_month) & (time.year >= (slise.initial_year - 1)) &
-                        (time.year <= (slise.final_year - 1))) | \
-                       ((time.month <= slise.final_month) & (time.year >= slise.initial_year) &
-                        (time.year <= slise.final_year))
+            timemask = ((time.month >= slise.month0) & (time.year >= (slise.year0 - 1)) &
+                        (time.year <= (slise.yearf - 1))) | \
+                       ((time.month <= slise.monthf) & (time.year >= slise.year0) &
+                        (time.year <= slise.yearf))
 
         # Space slise
-        latmask = (self.lat >= slise.latitude_min) & (self.lat <= slise.latitude_max)
-        lonmask = (self.lon >= slise.longitude_min) & (self.lon <= slise.longitude_max)
+        latmask = (self.lat >= slise.lat0) & (self.lat <= slise.latf)
+        lonmask = (self.lon >= slise.lon0) & (self.lon <= slise.lonf)
 
         self._data = self._data[{
             self._time_key: timemask,
@@ -254,8 +254,8 @@ class ReadData:
             self._lon_key: lonmask,
         }]
 
-        self._plot_data = f'{mon2str(Month(slise.initial_month))} to {mon2str(Month(slise.final_month))} ' \
-                         f'{slise.initial_year}-{slise.final_year}'
+        self._plot_data = f'{mon2str(Month(slise.month0))} to {mon2str(Month(slise.monthf))} ' \
+                         f'{slise.year0}-{slise.yearf}'
         self._plot_bounds = f'({slise2str(slise)})'
 
         # return var, lon, lat, time
@@ -263,8 +263,8 @@ class ReadData:
 
     # def slice_dataset_old(self: T, slise: Slise, trust_slise: bool = False) -> T:
     #     """If the initial month is bigger than final month, th slise strats from the year before"""
-    #     assert 1 <= slise.initial_month <= 12 and 1 <= slise.final_month <= 12, \
-    #         f'Initial and final month must be from 1 to 12, got {slise.initial_month}, {slise.final_month}'
+    #     assert 1 <= slise.month0 <= 12 and 1 <= slise.monthf <= 12, \
+    #         f'Initial and final month must be from 1 to 12, got {slise.month0}, {slise.monthf}'
     #     # Check if the years and months parameters are valid
     #     if not trust_slise:
     #         self.check_slise(slise)
@@ -273,16 +273,16 @@ class ReadData:
     #     # debugprint(f"[INFO] <{self.__class__.__name__}> Slicing dataset: {self._dataset_name} for {self._plot_name}")
     #     self._slise = slise
     #
-    #     if slise.latitude_min == slise.latitude_max and slise.longitude_min == slise.longitude_max:
-    #         lat_mask = (abs(self.lat - slise.latitude_min) < 0.6)
+    #     if slise.lat0 == slise.latf and slise.lon0 == slise.lonf:
+    #         lat_mask = (abs(self.lat - slise.lat0) < 0.6)
     #         # long way of saying self.latitude == latitude_min
-    #         lon_mask = (abs(self.lon - slise.latitude_min) < 0.6)
+    #         lon_mask = (abs(self.lon - slise.lat0) < 0.6)
     #     else:
     #         # Make an array of variable values sliced according to the minimum and maximum values set above
-    #         lat_mask = (self.lat >= slise.latitude_min) \
-    #                    & (self.lat <= slise.latitude_max)
-    #         lon_mask = (self.lon >= slise.longitude_min) \
-    #                    & (self._data[self._lon_key] <= slise.longitude_max)
+    #         lat_mask = (self.lat >= slise.lat0) \
+    #                    & (self.lat <= slise.latf)
+    #         lon_mask = (self.lon >= slise.lon0) \
+    #                    & (self._data[self._lon_key] <= slise.lonf)
     #
     #     if not lat_mask.all() or not lon_mask.all():
     #         self._data = self._data[{
@@ -292,34 +292,34 @@ class ReadData:
     #     if self._time_key == '':
     #         assert False, "Loading dataset without time not implemented yet"
     #     # debugprint('[WARNING] <mon2str()> Changing month indexes!!!!!!!!!!!!!')
-    #     if slise.initial_month == Month.JAN and slise.final_month == Month.DEC:
+    #     if slise.month0 == Month.JAN and slise.monthf == Month.DEC:
     #         var = self._data
-    #     elif slise.initial_month <= slise.final_month:
+    #     elif slise.month0 <= slise.monthf:
     #         var = self._data.loc[{
-    #             'time': (self._data['time.month'] >= slise.initial_month) &
-    #                     (self._data['time.month'] <= slise.final_month)
+    #             'time': (self._data['time.month'] >= slise.month0) &
+    #                     (self._data['time.month'] <= slise.monthf)
     #         }]
     #     else:
-    #         var_1 = (self._data['time.month'] >= slise.initial_month) & (
-    #                     self._data['time.year'] < slise.final_year)
-    #         var_2 = (self._data['time.month'] <= slise.final_month) & (
-    #                     self._data['time.year'] > slise.initial_year - 1)
+    #         var_1 = (self._data['time.month'] >= slise.month0) & (
+    #                     self._data['time.year'] < slise.yearf)
+    #         var_2 = (self._data['time.month'] <= slise.monthf) & (
+    #                     self._data['time.year'] > slise.year0 - 1)
     #         var = self._data.loc[{'time': var_1 + var_2}]
-    #         slise.initial_year -= 1
+    #         slise.year0 -= 1
     #     try:
     #         typ = type(self.time.data[0])
     #     except KeyError:
     #         raise
     #     if typ == np.datetime64:
-    #         sl = slice(datetime.datetime(slise.initial_year, 1, 1).strftime(T_FORMAT),
-    #                    datetime.datetime(slise.final_year + 1, 1, 1).strftime(T_FORMAT))
+    #         sl = slice(datetime.datetime(slise.year0, 1, 1).strftime(T_FORMAT),
+    #                    datetime.datetime(slise.yearf + 1, 1, 1).strftime(T_FORMAT))
     #     elif typ == np.int64 or typ == int:
-    #         sl = slice(slise.initial_year, slise.final_year + 1)
+    #         sl = slice(slise.year0, slise.yearf + 1)
     #     else:
-    #         sl = slice(typ(slise.initial_year, 1, 1), typ(slise.final_year + 1, 1, 1))
+    #         sl = slice(typ(slise.year0, 1, 1), typ(slise.yearf + 1, 1, 1))
     #     self._data = var.sel({self._time_key: sl})
-    #     self._plot_data = f'{mon2str(Month(slise.initial_month))} to {mon2str(Month(slise.final_month))} ' \
-    #                      f'{slise.initial_year}-{slise.final_year}'
+    #     self._plot_data = f'{mon2str(Month(slise.month0))} to {mon2str(Month(slise.monthf))} ' \
+    #                      f'{slise.year0}-{slise.yearf}'
     #     self._plot_bounds = f'({slise2str(slise)})'
     #
     #     return self
