@@ -20,34 +20,14 @@ from .meteo import Meteo, MCAOut, CrossvalidationOut
 from .read_data import ReadData, NAN_VAL
 
 
-# matplotlib.use('Agg')
-
-'''
-~~ INHERITANCE TREE ~~
-
-    ReadData     Plotter (run, create)
-        |        |-> Proker (apply) ------------------|--|--|--> 
-         (-run, -create_plot, -apply)
-        |--------|-> RDPlotter (-run) ----------------|  |--|--> ClimerTS, AnomerTS (-apply)
-                     |-> PlotterTS (-create_plot) ----|--|  |--> ClimerMap, AnomerMap (-apply)
-                     |-> PlotterMap (-create_plot) ---|-----|
-'''
-
-
 __all__ = ['PlotterTS', 'PlotterMap', 'ClimerTS', 'ClimerMap', 'AnomerTS', 'AnomerMap', 'Spy4Caster']
 
 
-class Plotter(ABC):
+class RDPlotter(ReadData, ABC):
     @abstractmethod
-    def create_plot(self: 'Plotter', fig: Union[plt.Figure, Tuple[plt.Figure, ...]] = None, **kws) -> 'Plotter':
+    def create_plot(self, flags: int, **kwargs) -> 'RDPlotter':
         raise NotImplementedError
 
-    @abstractmethod
-    def run(self: 'Plotter', flags: int = 0, **kwargs: Any) -> 'Plotter':
-        raise NotImplementedError()
-
-
-class RDPlotter(ReadData, Plotter, ABC):
     def run(self, flags: int = 0, **kwargs: Any) -> 'RDPlotter':
         # Save the data if needed
         if F.checkf(F.SAVE_DATA, flags):
@@ -59,29 +39,15 @@ class RDPlotter(ReadData, Plotter, ABC):
                     raise DataSavingError(str(e)) from e
 
         # Create the plot
-        fig = plt.figure()
         if F.checkf(F.SHOW_PLOT, flags) or F.checkf(F.SAVE_FIG, flags):
             try:
-                self.create_plot(fig, **kwargs)
+                self.create_plot(flags & ~F.SHOW_PLOT, **kwargs)
             except Spy4CastError:
                 raise
             except Exception as e:
                 traceback.print_exc()
                 if not F.checkf(F.SILENT_ERRORS, flags):
                     raise PlotCreationError(str(e)) from e
-
-        # Save the fig0 if needed
-        if F.checkf(F.SAVE_FIG, flags):
-            try:
-                print(f"[INFO] Saving plot as {self._plot_name} in {self._plot_dir}")
-                # Generate a PNG of the figure
-                plt.savefig(os.path.join(self._plot_dir, self._plot_name))
-            except Spy4CastError:
-                raise
-            except Exception as e:
-                traceback.print_exc()
-                if not F.checkf(F.SILENT_ERRORS, flags):
-                    raise PlotSavingError(str(e)) from e
 
         # Show the plot if needed
         try:
@@ -93,25 +59,13 @@ class RDPlotter(ReadData, Plotter, ABC):
             traceback.print_exc()
             if not F.checkf(F.SILENT_ERRORS, flags):
                 raise PlotShowingError(str(e)) from e
-        plt.close()
 
         return self
 
 
-class Proker(Plotter):
-    """Read + Plot + Process data"""
-    @abstractmethod
-    def apply(self: 'Proker', **kwargs: Any) -> 'Proker':
-        raise NotImplementedError()
-
-
-class RDProker(RDPlotter, Proker, ABC):
-    pass
-
-
 class PlotterTS(RDPlotter):
-    def create_plot(self, fig: plt.Figure = None, **kws: Any) -> 'PlotterTS':
-        fig = fig if fig is not None else plt.figure()
+    def create_plot(self, flags: int = 0, **kws: Any) -> 'PlotterTS':
+        fig = plt.figure()
         color: Color = (.43, .92, .20) if 'color' not in kws else kws['color']
         print(f"[INFO] Creating plot for {self._plot_name}")
         # Create figure
@@ -123,14 +77,19 @@ class PlotterTS(RDPlotter):
         ax.set_xlabel('Year')
         ax.set_ylabel(f'{self._variable} ({self._dataset[self._variable].units})')
         # ax.set_ylim(np.min(self._data), np.max(self._data))
+        if F.checkf(F.SAVE_FIG, flags):
+            fig.savefig(os.path.join(self._plot_dir, self._plot_name))
+        if F.checkf(F.SHOW_PLOT, flags):
+            fig.show()
+
         return self
 
 
 class PlotterMap(RDPlotter):
     _n_values = 50
 
-    def create_plot(self, fig: plt.Figure = None, **kws: Any) -> 'PlotterMap':
-        fig = fig if fig is not None else plt.figure()
+    def create_plot(self, flags: int = 0, **kws: Any) -> 'PlotterMap':
+        fig = plt.figure()
         if 'slise' not in kws:
             raise TypeError("create_plot() missing 1 required positional argument: 'slise'")
         slise: Slise = kws['slise']
@@ -185,10 +144,15 @@ class PlotterMap(RDPlotter):
         plt.tight_layout(pad=1)
         plt.margins(1, 1)
 
+        if F.checkf(F.SAVE_FIG, flags):
+            fig.savefig(os.path.join(self._plot_dir, self._plot_name))
+        if F.checkf(F.SHOW_PLOT, flags):
+            fig.show()
+
         return self
 
 
-class ClimerTS(Proker, PlotterTS):
+class ClimerTS(PlotterTS):
     def apply(self, **_: Any) -> 'ClimerTS':
         self._data = self._data.mean(dim=self._lon_key).mean(dim=self._lat_key)
         self._data = Meteo.clim(self._data, dim='month')
@@ -197,14 +161,14 @@ class ClimerTS(Proker, PlotterTS):
         return self
 
 
-class ClimerMap(Proker, PlotterMap):
+class ClimerMap(PlotterMap):
     def apply(self, **_: Any) -> 'ClimerMap':
         self._data = Meteo.clim(self._data)
         self._plot_data = 'CLIM ' + self._plot_data
         return self
 
 
-class AnomerTS(Proker, PlotterTS):
+class AnomerTS(PlotterTS):
     def apply(self, **kwargs: Any) -> 'AnomerTS':
         st = kwargs['st'] if 'st' in kwargs else False
         # index 2 becomes 1 after doinf mean on index 1
@@ -217,7 +181,7 @@ class AnomerTS(Proker, PlotterTS):
         return self
 
 
-class AnomerMap(Proker, PlotterMap):
+class AnomerMap(PlotterMap):
     def apply(self, **kwargs: Any) -> 'AnomerMap':
         st = kwargs['st'] if 'st' in kwargs else False
         # print(f"[INFO] <apply()> {plt_type=} {methodology=}, {kwargs})")
@@ -231,7 +195,7 @@ class AnomerMap(Proker, PlotterMap):
         return self
 
 
-class Spy4Caster(Proker):
+class Spy4Caster:
     def __init__(self, yargs: Union[RDArgs, RDArgsDict], zargs: Union[RDArgs, RDArgsDict],
                  plot_dir: str = '', mca_plot_name: str = 'mca_plot.png', cross_plot_name: str = 'cross_plot.png',
                  zhat_plot_name: str = 'zhat_plot.png', plot_data_dir: str = '', force_name: bool = False):
@@ -272,11 +236,6 @@ class Spy4Caster(Proker):
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def apply(self, **kws):
-        self.preprocess(order=kws['order'], period=kws['period'])
-        self.mca(nm=kws['nm'], alpha=kws['alpha'])
-        self.crossvalidation(nm=kws['nm'], alpha=kws['alpha'], multiprocessing=kws['multiprocessing'])
-
     def preprocess(self, order: int, period: float) -> 'Spy4Caster':
         debugprint(f'[INFO] Preprocessing data', end='')
         time_from_here()
@@ -304,42 +263,42 @@ class Spy4Caster(Proker):
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def preprocess_old(self, order: int, period: float) -> 'Spy4Caster':
-        debugprint('[INFO] Preprocessing data', end='')
-        time_from_here()
-        self._rdy._data = Meteo.anom(self._rdy._data)
-        self._rdy._time_key = 'year'
-        self._rdz._data = Meteo.anom(self._rdz._data)
-        self._rdz._time_key = 'year'
-
-        y0 = max(self._rdy._slise.year0, self._rdz._slise.year0)
-        yf = min(self._rdy._slise.yearf, self._rdz._slise.yearf)
-
-        self._rdy.slice_dataset(Slise.default(year0=y0, yearf=yf))
-        self._rdz.slice_dataset(Slise.default(year0=y0, yearf=yf))
-
-        z = self._rdz._data.values
-        # zlon = self._rdz._data.lon.values
-        # zlat = self._rdz._data.lat.values
-        ztrans = np.reshape(z, (z.shape[0], z.shape[1] * z.shape[2])).transpose()
-
-        y = self._rdy._data.values
-        # ylon = self._rdy._data.longitude.values
-        # ylat = self._rdy._data.latitude.values
-        ytrans = np.reshape(y, (y.shape[0], y.shape[1] * y.shape[2])).transpose()
-
-        b, a = signal.butter(order, 1/period, btype='high', analog=False, output='ba', fs=None)
-
-        # Filtro la señal ampliada y me quedo con la parte central:
-        zmask = np.ma.empty(ztrans.shape)
-        for index in range(ztrans.shape[0]):
-            zmask[index, :] = signal.filtfilt(b, a, ztrans[index, :])
-
-        # zmask, zlon, zlat; ytrans, ylon, ylat
-        self._y = np.nan_to_num(ytrans)  # fill nan with 0
-        self._z = np.nan_to_num(zmask)  # fill nan with 0
-        debugprint(f' took: {time_to_here():.03f} seconds')
-        return self
+    # def preprocess_old(self, order: int, period: float) -> 'Spy4Caster':
+    #     debugprint('[INFO] Preprocessing data', end='')
+    #     time_from_here()
+    #     self._rdy._data = Meteo.anom(self._rdy._data)
+    #     self._rdy._time_key = 'year'
+    #     self._rdz._data = Meteo.anom(self._rdz._data)
+    #     self._rdz._time_key = 'year'
+    #
+    #     y0 = max(self._rdy._slise.year0, self._rdz._slise.year0)
+    #     yf = min(self._rdy._slise.yearf, self._rdz._slise.yearf)
+    #
+    #     self._rdy.slice_dataset(Slise.default(year0=y0, yearf=yf))
+    #     self._rdz.slice_dataset(Slise.default(year0=y0, yearf=yf))
+    #
+    #     z = self._rdz._data.values
+    #     # zlon = self._rdz._data.lon.values
+    #     # zlat = self._rdz._data.lat.values
+    #     ztrans = np.reshape(z, (z.shape[0], z.shape[1] * z.shape[2])).transpose()
+    #
+    #     y = self._rdy._data.values
+    #     # ylon = self._rdy._data.longitude.values
+    #     # ylat = self._rdy._data.latitude.values
+    #     ytrans = np.reshape(y, (y.shape[0], y.shape[1] * y.shape[2])).transpose()
+    #
+    #     b, a = signal.butter(order, 1/period, btype='high', analog=False, output='ba', fs=None)
+    #
+    #     # Filtro la señal ampliada y me quedo con la parte central:
+    #     zmask = np.ma.empty(ztrans.shape)
+    #     for index in range(ztrans.shape[0]):
+    #         zmask[index, :] = signal.filtfilt(b, a, ztrans[index, :])
+    #
+    #     # zmask, zlon, zlat; ytrans, ylon, ylat
+    #     self._y = np.nan_to_num(ytrans)  # fill nan with 0
+    #     self._z = np.nan_to_num(zmask)  # fill nan with 0
+    #     debugprint(f' took: {time_to_here():.03f} seconds')
+    #     return self
 
     def mca(self, nm: int, alpha: float) -> 'Spy4Caster':
         debugprint(f'[INFO] Applying MCA', end='')

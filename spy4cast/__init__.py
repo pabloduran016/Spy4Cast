@@ -1,2 +1,2 @@
-from .readers import *
+from .plotters import *
 from .functions import *

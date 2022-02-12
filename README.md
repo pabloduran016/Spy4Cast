@@ -60,7 +60,7 @@ Collection of data sctructures used across the API and for the users convenience
         monthf (optional int | syp4cast.stypes.Month): final month (1 -> JAN, 12 -> DEC)
         year0 (optional int): initial month
         yearf (optional int): final month
-        sy (optional int): Selected year. It is optional, only readers like Anomer need a specified year
+        sy (optional int): Selected year. It is optional, only plotters like Anomer need a specified year
           to plot
         
         Slise.default(month0=Month.JAN, monthf=Month.DEC, year0=0, yearf=2000, sy=None)
@@ -79,8 +79,8 @@ Collection of data sctructures used across the API and for the users convenience
     spy4cast.stypes.ChunkType: Type of the chunk passed intop dask. 
       Equivalent to int | tuple[int, ...] | tuple[tuple[int, ...] ,...] | dict[str | int: int]
 
-    spy4cast.stypes.RDArgs: dataclass that can be used to create the arguments passed into readers like 
-      syp4cast.readers.Spy4caster that create multiple ReadData objects
+    spy4cast.stypes.RDArgs: dataclass that can be used to create the arguments passed into plotters like 
+      syp4cast.plotters.Spy4caster that create multiple ReadData objects
         
         RDArgs.as_dict: returns its attributes as dict to pass into ReadData with the `**` operator
     
@@ -154,7 +154,9 @@ Collection of data sctructures used across the API and for the users convenience
         
 
 ## Plotters and Prokers
-TBD
+Plotters are in charge of reading the data and plotting it using a 
+
+
 ### AnomerTS
 TBD
 ### ClimerTS
@@ -209,3 +211,4 @@ Custom errors related to the api
 - [numpy](https://numpy.org/)
 - [cartopy](https://scitools.org.uk/cartopy/docs/latest/)
 - [matplotlib](https://matplotlib.org/stable/api/text_api.html#matplotlib.text.Text)
+- [dask](https://dask.org/)
