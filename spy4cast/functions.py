@@ -8,6 +8,8 @@ from time import perf_counter
 
 __all__ = [
     'set_silence',
+    'time_from_here',
+    'time_to_here',
     'pretty_dict',
     'update_dataset_info_json',
     'get_dataset_info',
@@ -148,7 +150,7 @@ def log_error(string: str, path: Optional[str] = None) -> None:
         f.write(string + '\n')
 
 
-def debugprint(*msgs: str):
+def debugprint(*msgs: str, **kws):
     if not Settings.silence:
-        print(*msgs)
+        print(*msgs, **kws)
 
