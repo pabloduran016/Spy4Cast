@@ -85,10 +85,7 @@ Collection of data sctructures used across the API and for the users convenience
         RDArgs.as_dict: returns its attributes as dict to pass into ReadData with the `**` operator
     
     spy4cast.stypes.RDArgsDict: TypedDict of spy4cast.stypes.RDArgs.as_dict return value
-    
 
-## Errors
-TBD
 
 ## ReadData
     class spy4cast.read_data.ReadData 
@@ -169,6 +166,43 @@ TBD
 
 ## Spy4Caster
 TBD
+
+
+## Errors
+Custom errors related to the api
+
+    spy4cast.errors.Spy4CastError: Base class for all the other exceptions
+    
+    spy4cast.errors.PlotCreationError(Spy4castError): Exception raised when there is an error 
+      during plot creation
+
+    spy4cast.errors.VariableSelectionError(Spy4castError, ValueError): Exception raised when there is an
+      error when loading the dataset and the variable given is not valid
+    
+    spy4cast.errors.TimeBoundsSelectionError(Spy4castError, ValueError): Exception raised when checking a slise 
+      that has non-valid time constraints
+    
+    spy4cast.errors.PlotSavingError(Spy4castError): Exception raised when there is an error while 
+      saving the plot
+    
+    spy4cast.errors.PlotShowingError(Spy4castError): Exception raised when there is an error while 
+      showing the plot
+    
+    spy4cast.errors.DataSavingError(Spy4castError): Exception raised when there is an error while saving 
+      the data
+    
+    spy4cast.errors.SelectedYearError(Spy4castError, ValueError): Exception raised when the selected
+      year is not valid
+    
+    spy4cast.errors.DatasetNotFoundError(Spy4castError, ValueError): Exception raised when a dataset 
+      is not found
+    
+    spy4cast.errors.DatasetError(Spy4castError): Exception raised when there is an error with the 
+      dataset which is supposed to be load
+    
+    spy4cast.errors.PlotDataError(Spy4castError, ValueError): Exception raised when there is an error with 
+      the data used to create the plot
+    
 
 ## References
 - [xarray](https://xarray.pydata.org/en/stable/)
