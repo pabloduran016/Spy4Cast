@@ -18,15 +18,11 @@ DATASETS_DIR = "/datasets/"
 HadISST_sst = "HadISST_sst.nc"
 
 sl = Slise(
-    latitude_min=-45,
-    latitude_max=45,
-    longitude_min=-100,
-    longitude_max=100,
-    initial_month=Month.JAN,
-    final_month=Month.MAR,
-    initial_year=1871,
-    final_year=2020,
-    selected_year=1990,
+    lat0=-45, latf=45,
+    lon0=-100, lonf=100,
+    month0=Month.JAN, monthf=Month.MAR,
+    year0=1871, yearf=2020,
+    sy=1990,
 )
 spy.AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst) \
     .load_dataset() \
@@ -38,14 +34,58 @@ spy.AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst) \
   
 ![Example 1 plot](examples/anomer_example.png)
 
-## Important Note:
+## Important Notes:
 
 · If you see anywhere in the docs or in the files `slise` and think it is a typo, it is not. Python has a 
 built-in function called `slice` and in this library we have decided to use `slise` to avoid unexpected 
 behaviours. I hope it is not too ugly...
 
 ## Stypes
-TBD
+    Collection of data sctructures used across the API and for the users convenience  
+    
+    Color: equivalent to tuple[float, float, float]
+    
+    TimeStamp: timepstamp type equivalent to pd.Timestamp | datetime.datetime
+
+    T_FORMAT: format used in dates compatible with datetime.strftime '%d/%m/%Y %H:%M:%S'
+    
+    Month: IntEnum for each month. (1 -> JAN, 12 -> DEC)
+    
+    Slise: dataclass that is sed for slicing. Slise insetead of Slice explained in `# Important Notes` 
+        lat0 (optional float): minimum latitude 
+        latf (optional float): maximum latitude
+        lon0 (optional float): minimum longitude
+        lonf (optional float): maximum longitude
+        month0 (optional int | syp4cast.stypes.Month): initial month (1 -> JAN, 12 -> DEC) 
+        monthf (optional int | syp4cast.stypes.Month): final month (1 -> JAN, 12 -> DEC)
+        year0 (optional int): initial month
+        yearf (optional int): final month
+        sy (optional int): Selected year. It is optional, only readers like Anomer need a specified year
+          to plot
+        
+        Slise.default(month0=Month.JAN, monthf=Month.DEC, year0=0, yearf=2000, sy=None)
+          Returns a Slise that has latitude and longitude as wide as possible.
+            `Slise(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)`
+    
+    F: IntFlag enum used is plotting:
+        SAVE_DATA
+        SAVE_FIG
+        SILENT_ERRORS
+        SHOW_PLOT
+
+        staticmethod F.checkf(f: F, other: int | F) -> bool:
+            return (other & f) == f 
+    
+    ChunkType: Type of the chunk passed intop dask. 
+      Equivalent to int | tuple[int, ...] | tuple[tuple[int, ...] ,...] | dict[str | int: int]
+
+    RDArgs: dataclass that can be used to create the arguments passed into readers like 
+      syp4cast.readers.Spy4caster that create multiple ReadData objects
+        
+        RDArgs.as_dict: returns its attributes as dict to pass into ReadData with the `**` operator
+    
+    RDArgsDict: TypedDict of RDArgs.as_ddict return value
+    
 
 ## Errors
 TBD
