@@ -15,7 +15,7 @@ from .meteo import Meteo
 from .read_data import ReadData, NAN_VAL
 
 
-__all__ = ['PlotterTS', 'PlotterMap', 'ClimerTS', 'ClimerMap', 'AnomerTS', 'AnomerMap']
+__all__ = ['PlotterTS', 'PlotterMap', 'Proker', 'ClimerTS', 'ClimerMap', 'AnomerTS', 'AnomerMap']
 
 
 class Plotter(ReadData, ABC):
@@ -152,6 +152,12 @@ class PlotterMap(Plotter):
         return self
 
 
+class Proker(ABC):
+    @abstractmethod
+    def apply(self, **kwargs):
+        raise NotImplementedError
+
+
 class ClimerTS(PlotterTS):
     def apply(self, **_: Any) -> 'ClimerTS':
         self._data = self._data.mean(dim=self._lon_key).mean(dim=self._lat_key)
@@ -170,7 +176,9 @@ class ClimerMap(PlotterMap):
 
 class AnomerTS(PlotterTS):
     def apply(self, **kwargs: Any) -> 'AnomerTS':
-        st = kwargs['st'] if 'st' in kwargs else False
+        st = kwargs.pop('st') if 'st' in kwargs else False
+        if len(kwargs) != 0:
+            raise TypeError('`apply` only accepts one keyword argument: `st`')
         # index 2 becomes 1 after doinf mean on index 1
         self._data = self._data.mean(dim=self._lon_key).mean(dim=self._lat_key)
         self._data = Meteo.anom(self._data, st)
@@ -183,7 +191,9 @@ class AnomerTS(PlotterTS):
 
 class AnomerMap(PlotterMap):
     def apply(self, **kwargs: Any) -> 'AnomerMap':
-        st = kwargs['st'] if 'st' in kwargs else False
+        st = kwargs.pop('st') if 'st' in kwargs else False
+        if len(kwargs) != 0:
+            raise TypeError('`apply` only accepts one keyword argument: `st`')
         # print(f"[INFO] <apply()> {plt_type=} {methodology=}, {kwargs})")
         self._data = Meteo.anom(self._data, st)
         self._time_key = 'year'

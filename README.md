@@ -40,6 +40,17 @@ spy.AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst) \
 built-in function called `slice` and in this library we have decided to use `slise` to avoid unexpected 
 behaviours. I hope it is not too ugly...
 
+## Methodologies
+### Clim
+TBD
+
+### Anom
+TBD
+
+### Spy4Cast
+TBD
+
+
 ## Stypes
 Collection of data sctructures used across the API and for the users convenience  
     
@@ -81,7 +92,7 @@ Collection of data sctructures used across the API and for the users convenience
       Equivalent to int | tuple[int, ...] | tuple[tuple[int, ...] ,...] | dict[str | int: int]
 
     spy4cast.stypes.RDArgs: dataclass that can be used to create the arguments passed into plotters like 
-      syp4cast.plotters.Spy4caster that create multiple ReadData objects
+      syp4cast.spy4caster.Spy4Caster that create multiple ReadData objects
         
         RDArgs.as_dict: returns its attributes as dict to pass into ReadData with the `**` operator
     
@@ -197,14 +208,34 @@ There are two kinds of Plotters that implemenyt the abstract method `create_plot
               spy4cast.errors.PlotDataError if the data's shape is too small
 
 
-### AnomerTS
-TBD
-### ClimerTS
-TBD
-### AnomerMap
-TBD
-### ClimerMap
-TBD
+Other kinds of plotters do more than just plot the data. They can apply a methodology. This what are called
+Prokers and all inherit from the abstract class `Proker`
+
+```
+    class spy4cast.plottes.Proker(ABC)
+        This is the base class of all prokers
+        
+        @asbtractmethod
+        def apply(**kwargs)
+        
+    class spy4cast.plottes.ClimerTS(PlotterTS)
+        This class is in charge of applying the clim methodology on a timeseries
+
+    class spy4cast.plottes.AnomerTS(PlotterTS)
+        This class is in charge of applying the anom methodology on a timeseries
+        
+        The apply method can accept `st` indicating wether or not to perform standarization of the anomaly
+
+    class spy4cast.plottes.ClimerMap(PlotterTS)
+        This class is in charge of applying the clim methodology on a map
+
+    class spy4cast.plottes.AnomerMap(PlotterTS)
+        This class is in charge of applying the anom methodology on a map
+        
+        The apply method can accept `st` indicating wether or not to perform standarization of the anomaly
+
+
+```
 
 ## Spy4Caster
 TBD
