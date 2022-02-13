@@ -42,14 +42,15 @@ def main():
     s.load_datasets()
     s.slice_datasets(yslise=sst_slise, zslise=slp_slise)
     s.preprocess(order=order, period=period)
-    s.mca(nm=nm, alpha=alpha)
+    # s.mca(nm=nm, alpha=alpha)
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
-    s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=True)
-    # s.load_crossvalidation('./saved', 'save_cross_', '.npy')
-    # s.load_mca('./saved', 'save_mca_', '.npy')
+    # s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=True)
+    # s.load_ppcessed('./saved', 'save_ppcessed_', '.npy')
+    s.load_mca('./saved', 'save_mca_', '.npy')
+    s.load_crossvalidation('./saved', 'save_cross_', '.npy')
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
     # s.plot_crossvalidation(F.SHOW_PLOT | F.SAVE_FIG)
-    selected_year = 1984
+    selected_year = 1986
     # s.plot_zhat(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year)
     s.run(F.SHOW_PLOT | F.SAVE_FIG | 0*F.SAVE_DATA, sy=selected_year)
 

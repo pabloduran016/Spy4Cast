@@ -40,13 +40,13 @@ class Spy4Caster:
         self._plot_data_dir = plot_data_dir
         self._force_name = force_name
         self._y: Optional[npt.NDArray[np.float64]] = None
-        self._ylat: Optional[xr.DataArray] = None
-        self._ylon: Optional[xr.DataArray] = None
-        self._ytime: Optional[xr.DataArray] = None
+        self._ylat: Optional[npt.NDArray[np.float64]] = None
+        self._ylon: Optional[npt.NDArray[np.float64]] = None
+        self._ytime: Optional[npt.NDArray[np.float64]] = None
         self._z: Optional[npt.NDArray[np.float64]] = None
-        self._zlat: Optional[xr.DataArray] = None
-        self._zlon: Optional[xr.DataArray] = None
-        self._ztime: Optional[xr.DataArray] = None
+        self._zlat: Optional[npt.NDArray[np.float64]] = None
+        self._zlon: Optional[npt.NDArray[np.float64]] = None
+        self._ztime: Optional[npt.NDArray[np.float64]] = None
 
     def load_datasets(self) -> 'Spy4Caster':
         debugprint(f'[INFO] Loading datasets', end='')
@@ -89,14 +89,14 @@ class Spy4Caster:
             input_core_dims=[[self._rdz._time_key]], output_core_dims=[[self._rdz._time_key]]
         ).transpose(self._rdz._time_key, self._rdz._lat_key, self._rdz._lon_key).fillna(0).values.reshape(
             (nzt, nzlat * nzlon)).transpose()
-        self._zlat = self._rdz.lat
-        self._zlon = self._rdz.lon
-        self._ztime = self._rdz.time
+        self._zlat = self._rdz.lat.values
+        self._zlon = self._rdz.lon.values
+        self._ztime = self._rdz.time.values
 
         self._y = self._rdy._data.fillna(0).values.reshape((nyt, nylat * nylon)).transpose()
-        self._ylat = self._rdy.lat
-        self._ylon = self._rdy.lon
-        self._ytime = self._rdy.time
+        self._ylat = self._rdy.lat.values
+        self._ylon = self._rdy.lon.values
+        self._ytime = self._rdy.time.values
 
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
@@ -147,8 +147,17 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def set_var(self, name, value):
-        raise NotImplementedError
+    def set_var(self, name: str, value: Union[np.ndarray, xr.DataArray]):
+        if name == 'z':       self._z = value
+        elif name == 'zlat':  self._zlat = value
+        elif name == 'zlon':  self._zlon = value
+        elif name == 'ztime': self._ztime = value
+        elif name == 'y':     self._y = value
+        elif name == 'ylat':  self._ylat = value
+        elif name == 'ylon':  self._ylon = value
+        elif name == 'ytime': self._ytime = value
+        else:
+            raise ValueError(f'Unknown variable name {name}')
 
     def load_ppcessed(self, path0: str, prefix: str = '', ext: str = '.npy') -> 'Spy4Caster':
         debugprint(f'[INFO] Loading Preprocessed data from `{path0}/{prefix}*{ext}`', end='')
@@ -157,10 +166,10 @@ class Spy4Caster:
         for field in ('y', 'z'):
             for var in ('', 'lat', 'lon', 'time'):
                 path = os.path.join(path0, f'{prefix}{field}{var}{ext}')
-            try:
-                self.set_var(field+var, np.load(path))
-            except FileNotFoundError:
-                print(f'\n[ERROR] Could not find file `{path}` for variable `{field}{var}`')
+                try:
+                    self.set_var(field+var, np.load(path))
+                except FileNotFoundError:
+                    print(f'\n[ERROR] Could not find file `{path}` for variable `{field}{var}`')
 
         print(f' took {time_to_here():.03f} seconds')
         return self
@@ -296,7 +305,7 @@ class Spy4Caster:
 
     def plot_mca(self, flags: int = 0, fig: plt.Figure = None) -> 'Spy4Caster':
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime, self._mca_out)]):
-            print('[WARNING] Can not plot mca. Methodology was not applied yet', file=sys.stderr)
+            print('[ERROR] Can not plot mca. Methodology was not applied yet', file=sys.stderr)
             return self
 
         fig = fig if fig is not None else plt.figure()
@@ -386,8 +395,8 @@ class Spy4Caster:
         xlim = lons[0], lons[-1]
         ylim = lats[-1], lats[0]
         index = 0
-        while index < len(ts) and ts.values[index] != sy:  index += 1
-        if ts.values[index] != sy: raise ValueError(f'Selected Year {sy} is not valid')
+        while index < len(ts) and ts[index] != sy:  index += 1
+        if ts[index] != sy: raise ValueError(f'Selected Year {sy} is not valid')
 
         ax0 = plt.subplot(211, projection=ccrs.PlateCarree())
         ax1 = plt.subplot(212, projection=ccrs.PlateCarree())
@@ -544,21 +553,26 @@ class Spy4Caster:
     def save_fig_data(self) -> 'Spy4Caster':
         if self._z is not None and self._y is not None:
             print(f'[INFO] Saving Preprocessed data in `saved/save_ppcessed*.npy`')
-            self.save_output('saved/save_ppcessed', {'z': self._z, 'y': self._z})
+            self.save_output('saved/save_ppcessed',
+                 {
+                     'y': self._y, 'ylat': self._ylat, 'ylon': self._ylon, 'ytime': self._ytime,
+                     'z': self._z, 'zlat': self._zlat, 'zlon': self._zlon, 'ztime': self._ztime,
+                 }
+            )
         else:
-            print('[WARNING] No preprocessed data to save', file=sys.stderr)
+            print('[ERROR] No preprocessed data to save', file=sys.stderr)
 
         if self._mca_out is not None:
             print(f'[INFO] Saving MCA data in `saved/save_mca*.npy`')
             self.save_output('saved/save_mca', self._mca_out)
         else:
-            print('[WARNING] No MCA data to save', file=sys.stderr)
+            print('[ERROR] No MCA data to save', file=sys.stderr)
 
         if self._crossvalidation_out is not None:
             print(f'[INFO] Saving crossvalidation data in `saved/save_cross*.npy`')
             self.save_output('saved/save_cross', self._crossvalidation_out)
         else:
-            print('[WARNING] No Crossvalidation data to save', file=sys.stderr)
+            print('[ERROR] No Crossvalidation data to save', file=sys.stderr)
 
         return self
 
