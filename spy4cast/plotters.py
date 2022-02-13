@@ -25,34 +25,34 @@ class Plotter(ReadData, ABC):
 
     def run(self, flags: int = 0, **kwargs: Any) -> 'Plotter':
         # Save the data if needed
-        if F.checkf(F.SAVE_DATA, flags):
+        if F.SAVE_DATA in flags:
             try:
                 self.save_fig_data()
             except Exception as e:
                 traceback.print_exc()
-                if not F.checkf(F.SILENT_ERRORS, flags):
+                if F.SILENT_ERRORS not in flags:
                     raise DataSavingError(str(e)) from e
 
         # Create the plot
-        if F.checkf(F.SHOW_PLOT, flags) or F.checkf(F.SAVE_FIG, flags):
+        if F.SHOW_PLOT in flags or F.SAVE_FIG in flags:
             try:
                 self.create_plot(flags & ~F.SHOW_PLOT, **kwargs)
             except Spy4CastError:
                 raise
             except Exception as e:
                 traceback.print_exc()
-                if not F.checkf(F.SILENT_ERRORS, flags):
+                if F.SILENT_ERRORS not in flags:
                     raise PlotCreationError(str(e)) from e
 
         # Show the plot if needed
         try:
-            if F.checkf(F.SHOW_PLOT, flags):
+            if F.SHOW_PLOT in flags:
                 plt.show()
         except Spy4CastError:
             raise
         except Exception as e:
             traceback.print_exc()
-            if not F.checkf(F.SILENT_ERRORS, flags):
+            if F.SILENT_ERRORS not in flags:
                 raise PlotShowingError(str(e)) from e
 
         return self
@@ -75,9 +75,9 @@ class PlotterTS(Plotter):
         ax.set_xlabel('Year')
         ax.set_ylabel(f'{self._variable} ({self._dataset[self._variable].units})')
         # ax.set_ylim(np.min(self._data), np.max(self._data))
-        if F.checkf(F.SAVE_FIG, flags):
+        if F.SAVE_FIG in flags:
             fig.savefig(os.path.join(self._plot_dir, self._plot_name))
-        if F.checkf(F.SHOW_PLOT, flags):
+        if F.SHOW_PLOT in flags:
             fig.show()
 
         return self
@@ -144,9 +144,9 @@ class PlotterMap(Plotter):
         plt.tight_layout(pad=1)
         plt.margins(1, 1)
 
-        if F.checkf(F.SAVE_FIG, flags):
+        if F.SAVE_FIG in flags:
             fig.savefig(os.path.join(self._plot_dir, self._plot_name))
-        if F.checkf(F.SHOW_PLOT, flags):
+        if F.SHOW_PLOT in flags:
             fig.show()
 
         return self

@@ -83,10 +83,6 @@ Collection of data sctructures used across the API and for the users convenience
         SAVE_FIG
         SILENT_ERRORS
         SHOW_PLOT
-
-        @staticmethod 
-        def F.checkf(f: F, other: int | F) -> bool:
-            return (other & f) == f 
     
     spy4cast.stypes.ChunkType: Type of the chunk passed intop dask. 
       Equivalent to int | tuple[int, ...] | tuple[tuple[int, ...] ,...] | dict[str | int: int]
@@ -211,7 +207,6 @@ There are two kinds of Plotters that implemenyt the abstract method `create_plot
 Other kinds of plotters do more than just plot the data. They can apply a methodology. This what are called
 Prokers and all inherit from the abstract class `Proker`
 
-```
     class spy4cast.plottes.Proker(ABC)
         This is the base class of all prokers
         
@@ -235,10 +230,12 @@ Prokers and all inherit from the abstract class `Proker`
         The apply method can accept `st` indicating wether or not to perform standarization of the anomaly
 
 
-```
-
 ## Spy4Caster
-TBD
+Spy4Caster is a class that performs the Spy4Cast methodology
+
+    class spy4cast.spy4caster.Spy4Caster(yargs, zargs, plot_dir='', mca_plot_name='mca_plot.png', 
+        cross_plot_name='cross_plot.png', zhat_plot_name='zhat_plot.png', plot_data_dir='', force_name=False)
+    
 
 
 ## Errors

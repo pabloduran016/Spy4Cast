@@ -64,10 +64,6 @@ class F(IntFlag):
     SILENT_ERRORS = auto()
     SHOW_PLOT = auto()
 
-    @staticmethod
-    def checkf(f: 'F', other: Union[int, 'F']) -> bool:
-        return (other & f) == f
-
 
 ChunkType = Union[int, Tuple[int, ...], Tuple[Tuple[int, ...] ,...], Dict[Union[str, int], int]]
 
