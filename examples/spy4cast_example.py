@@ -39,9 +39,9 @@ def main():
             zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=slp_ERA20_1900_2010, variable=MSL, chunks=100),
             plot_dir=PLOTS_DIR, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME, zhat_plot_name=ZHAT_PLOT_NAME,
             force_name=True, plot_data_dir=PLOTS_DATA_DIR)
-    s.load_datasets()
+    s.open_datasets()
     s.slice_datasets(yslise=sst_slise, zslise=slp_slise)
-    s.preprocess(order=order, period=period)
+    s.preprocess(F.FILTER, order=order, period=period)
     # s.mca(nm=nm, alpha=alpha)
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
     # s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=True)

@@ -63,6 +63,7 @@ class F(IntFlag):
     SAVE_FIG = auto()
     SILENT_ERRORS = auto()
     SHOW_PLOT = auto()
+    FILTER = auto()  # Perform butterworth filter in preprocesseing
 
 
 ChunkType = Union[int, Tuple[int, ...], Tuple[Tuple[int, ...] ,...], Dict[Union[str, int], int]]

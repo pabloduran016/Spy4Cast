@@ -76,7 +76,7 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def preprocess(self, order: int, period: float) -> 'Spy4Caster':
+    def preprocess(self, flags: int = F(0), order: int = None, period: float = None) -> 'Spy4Caster':
         debugprint(f'[INFO] Preprocessing data', end='')
         time_from_here()
         self._rdy._data = Meteo.anom(self._rdy._data)
@@ -89,16 +89,23 @@ class Spy4Caster:
                              f'of years of the predictor: got {len(self._rdz.time)} and '
                              f'{len(self._rdy.time)}')
 
-        b, a = signal.butter(order, 1 / period, btype='high', analog=False, output='ba', fs=None)
+        self._z = self._rdz._data
+        if F.FILTER in flags:
+            if order is None:
+                raise TypeError('Missing keyword argument `order`')
+            if period is None:
+                raise TypeError('Missing keyword argument `period`')
+
+            b, a = signal.butter(order, 1 / period, btype='high', analog=False, output='ba', fs=None)
+            self._z = xr.apply_ufunc(
+                lambda ts: signal.filtfilt(b, a, ts),
+                self._z,
+                input_core_dims=[[self._rdz._time_key]], output_core_dims=[[self._rdz._time_key]]
+            )
 
         nyt, nylat, nylon = self._rdy._data.shape
         nzt, nzlat, nzlon = self._rdz._data.shape
-        self._z = xr.apply_ufunc(
-            lambda ts: signal.filtfilt(b, a, ts),
-            self._rdz._data,
-            input_core_dims=[[self._rdz._time_key]], output_core_dims=[[self._rdz._time_key]]
-        ).transpose(self._rdz._time_key, self._rdz._lat_key, self._rdz._lon_key).fillna(0).values.reshape(
-            (nzt, nzlat * nzlon)).transpose()
+        self._z = self._z.transpose(self._rdz._time_key, self._rdz._lat_key, self._rdz._lon_key).fillna(0).values.reshape((nzt, nzlat * nzlon)).transpose()
         self._zlat = self._rdz.lat.values
         self._zlon = self._rdz.lon.values
         self._ztime = self._rdz.time.values
