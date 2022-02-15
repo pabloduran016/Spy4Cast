@@ -15,7 +15,7 @@ def main():
         sy=1990,
     )
     spy.AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst) \
-        .load_dataset() \
+        .open_dataset() \
         .slice_dataset(sl) \
         .apply() \
         .run(F.SHOW_PLOT | F.SAVE_FIG, slise=sl)

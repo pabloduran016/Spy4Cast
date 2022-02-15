@@ -1,5 +1,6 @@
 import datetime
 import os
+import sys
 import traceback
 from typing import ClassVar, Set, Optional, TypeVar, Tuple, Dict
 from dateutil.relativedelta import relativedelta
@@ -49,7 +50,7 @@ class ReadData:
         self._loaded_without_times = False
 
         self._valid_variables: Set[str] = set()
-        self._loaded_dataset = False
+        self._opened_dataset = False
         self._plot_data = ''
         self._plot_bounds = ''
 
@@ -92,18 +93,27 @@ class ReadData:
     def shape(self) -> Tuple[int, ...]: return self._data.shape
 
     def load_dataset(self: T) -> T:
-        if self._loaded_dataset:
+        print('[WARNING] Support for `ReadData.load_dataset` is deprected. Use `ReadData.open_dataset` instead',
+              file=sys.stderr)
+        if self._opened_dataset:
+            return self
+        self.open_dataset()
+        self._dataset = self._dataset.load()
+        return self
+
+    def open_dataset(self: T) -> T:
+        if self._opened_dataset:
             return self
         # debugprint(f"[INFO] <{self.__class__.__name__}> Loading dataset: {self._dataset_name} for {self._plot_name}")
         try:
-            self._dataset = xr.load_dataset(os.path.join(self._dataset_dir, self._dataset_name), mask_and_scale=False, chunks=self._chunks)
+            self._dataset = xr.open_dataset(os.path.join(self._dataset_dir, self._dataset_name), mask_and_scale=False, chunks=self._chunks)
         except ValueError:
             try:
-                self._dataset = xr.load_dataset(os.path.join(self._dataset_dir, self._dataset_name),
+                self._dataset = xr.open_dataset(os.path.join(self._dataset_dir, self._dataset_name),
                                                 mask_and_scale=False, decode_times=False, chunks=self._chunks)
 
                 initial_timestamp = datetime.datetime.strptime(self._dataset.time.attrs['units'].split()[2],
-                                                               '%y-%M-%d')
+                                                               '%Y-%M-%d')
                 final_timestamp = initial_timestamp + relativedelta(months=len(self._dataset.time))
                 self._dataset = self._dataset.assign_coords(
                     time=pd.date_range(initial_timestamp, final_timestamp, freq='M'))
@@ -159,13 +169,13 @@ class ReadData:
         self._plot_data = f'Jan to {mon2str(Month(self._dataset_final_timestamp.month))} ' \
                          f'{self._dataset_initial_timestamp.year}-{self._dataset_final_timestamp.year} '
 
-        self._loaded_dataset = True
+        self._opened_dataset = True
 
         return self
 
     def check_variables(self: T, slise: Optional[Slise] = None) -> T:
         # debugprint(f"[INFO] <{self.__class__.__name__}> Checking variables for {self._plot_name}")
-        if not self._loaded_dataset:
+        if not self._opened_dataset:
             raise ValueError('The dataset has not been loaded yet. Call load_dataset()')
         if self._variable not in self._valid_variables and self._variable != '':
             raise VariableSelectionError(self._variable)
@@ -234,6 +244,8 @@ class ReadData:
         fro = pd.to_datetime(self.time.values[0])
         to = fro + relativedelta(months=len(self.time))
         time = pd.date_range(start=fro, end=to, freq='M')
+        if len(time) == len(self.time) + 1:
+            time = time[:-1]
 
         if slise.month0 <= slise.monthf:
             timemask = (time.month >= slise.month0) & (time.month <= slise.monthf) & \

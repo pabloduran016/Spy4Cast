@@ -48,6 +48,16 @@ class Spy4Caster:
         self._zlon: Optional[npt.NDArray[np.float64]] = None
         self._ztime: Optional[npt.NDArray[np.float64]] = None
 
+    def open_datasets(self) -> 'Spy4Caster':
+        debugprint(f'[INFO] Opening datasets', end='')
+        time_from_here()
+        self._rdy.open_dataset()
+        self._rdz.open_dataset()
+        self._rdy._data = self._rdy._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdy._lon_key)
+        self._rdz._data = self._rdz._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdy._lon_key)
+        debugprint(f' took: {time_to_here():.03f} seconds')
+        return self
+
     def load_datasets(self) -> 'Spy4Caster':
         debugprint(f'[INFO] Loading datasets', end='')
         time_from_here()

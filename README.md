@@ -25,7 +25,7 @@ sl = Slise(
     sy=1990,
 )
 spy.AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst) \
-    .load_dataset() \
+    .open_dataset() \
     .slice_dataset(sl) \
     .apply() \
     .run(F.SHOW_PLOT | F.SAVE_FIG, slise=sl)
@@ -125,6 +125,13 @@ Collection of data sctructures used across the API and for the users convenience
         property longtude: Returns the longtude variable of the data evaluated. They key used is recognised automatically
         
         property shape: Returns the shape variable of the data evaluated.
+
+        def load_dataset()
+            WARNING: Deprecated, use `spy4cast.ReadData.open_dataset`
+            Loads the dataset into memory
+
+        def open_dataset()
+            Opens dataset without loading it into memory
 
         def check_variables(slise=None)
             Checks if the variable selected and the slise (only time-related part), if provided, is valid for the given dataset.
