@@ -128,7 +128,9 @@ Collection of data sctructures used across the API and for the users convenience
 
         def load_dataset()
             WARNING: Deprecated, use `spy4cast.ReadData.open_dataset`
-            Loads the dataset into memory
+            Loads the dataset into memory.
+
+            Uses attr `missing_value` to fill the data with NaN
 
         def open_dataset()
             Opens dataset without loading it into memory
