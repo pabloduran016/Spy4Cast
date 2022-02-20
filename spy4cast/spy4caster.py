@@ -177,7 +177,7 @@ class Spy4Caster:
         else:
             raise ValueError(f'Unknown variable name {name}')
 
-    def load_ppcessed(self, path0: str, prefix: str = '', ext: str = '.npy') -> 'Spy4Caster':
+    def load_preprocessed(self, path0: str, prefix: str = '', ext: str = '.npy') -> 'Spy4Caster':
         debugprint(f'[INFO] Loading Preprocessed data from `{path0}/{prefix}*{ext}`', end='')
         time_from_here()
 
@@ -278,18 +278,28 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def plot_matrices(self, flags: F = F(0), fig: plt.Figure = None):
-        fig = plt.figure() if fig is None else fig
-        axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
-        # print(self._rdy._data.values)
+    def plot_preprocessed(self, flags: F = F(0), fig: plt.Figure = None):
         nyt, nylat, nylon = len(self._ytime), len(self._ylat), len(self._ylon)
         nzt, nzlat, nzlon = len(self._ztime), len(self._zlat), len(self._zlon)
 
         y = self._y.transpose().reshape((nyt, nylat, nylon))[0, :, :]
         z = self._z.transpose().reshape((nzt, nzlat, nzlon))[0, :, :]
 
-        for i, (arr, lat, lon) in enumerate(((y, self._ylat, self._ylon),
-                                             (z, self._zlat, self._zlon))):
+        self._plot_matrices(
+            y, self._ylat, self._ylon,
+            z, self._zlat, self._zlon,
+            flags, fig
+        )
+
+    def _plot_matrices(self, y: np.ndarray, ylat: np.ndarray, ylon: np.ndarray,
+                      z: np.ndarray, zlat: np.ndarray, zlon: np.ndarray,
+                      flags: F = F(0), fig: plt.Figure = None):
+        fig = plt.figure() if fig is None else fig
+        axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
+        # print(self._rdy._data.values)
+
+        for i, (arr, lat, lon) in enumerate(((y, ylat, ylon),
+                                             (z, zlat, zlon))):
             im = axs[i].contourf(lon, lat, arr, cmap='bwr', transform=ccrs.PlateCarree())
             fig.colorbar(im, ax=axs[i], orientation='horizontal', pad=0.02)
             axs[i].coastlines()
