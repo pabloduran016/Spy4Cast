@@ -21,7 +21,7 @@ __all__ = ['Spy4Caster']
 
 class Spy4Caster:
     def __init__(self, yargs: Union[RDArgs, RDArgsDict], zargs: Union[RDArgs, RDArgsDict],
-                 plot_dir: str = '', mca_plot_name: str = 'mca_plot.png', cross_plot_name: str = 'cross_plot.png',
+                 plot_dir: str = '', mats_plot_name: str = 'mats_plot.png', mca_plot_name: str = 'mca_plot.png', cross_plot_name: str = 'cross_plot.png',
                  zhat_plot_name: str = 'zhat_plot.png', plot_data_dir: str = '', force_name: bool = False):
         if type(yargs) == RDArgs:
             yargs = yargs.as_dict()
@@ -34,6 +34,7 @@ class Spy4Caster:
         self._mca_out: Optional[MCAOut] = None
         self._crossvalidation_out: Optional[CrossvalidationOut] = None
         self._plot_dir = plot_dir
+        self._mats_plot_name = mats_plot_name
         self._mca_plot_name = mca_plot_name
         self._cross_plot_name = cross_plot_name
         self._zhat_plot_name = zhat_plot_name
@@ -277,46 +278,30 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def plot_matrices(self):
-        # sst = self._rdy._data.values
-        # sst_lon = self._rdy.lon
-        # sst_lat = self._rdy.lat
-        # sst_time = self._rdy.time
-        # slp = self._rdz._data.values
-        # slp_lat = self._rdz.lat
-        # slp_lon = self._rdz.lon
-        # slp_time = self._rdz.time
-        #
-        # def plot_matrices(y, ytime, ylats, ylons, z, ztime, zlats, zlons):
-        #     fig = plt.figure()
-        #     ax0, ax1 = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
-        #     t0 = z[0, :, :]
-        #     im0 = ax0.contourf(zlons, zlats, t0, cmap='viridis', transform=ccrs.PlateCarree())
-        #     fig.colorbar(im0, ax=ax0, orientation='horizontal', pad=0.02)
-        #     ax0.coastlines()
-        #     t1 = y[10, :, :]
-        #     im1 = ax1.contourf(ylons, ylats, t1, cmap='viridis', transform=ccrs.PlateCarree())
-        #     fig.colorbar(im1, ax=ax1, orientation='horizontal', pad=0.02)
-        #     ax1.coastlines()
-        #     plt.show()
-        #
-        # plot_matrices(sst, sst_time, sst_lat, sst_lon, slp, slp_time, slp_lat, slp_lon)
-
-        fig = plt.figure()
-        ax0, ax1 = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
+    def plot_matrices(self, flags: int = F(0), fig: plt.Figure = None):
+        fig = plt.figure() if fig is None else fig
+        axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
         # print(self._rdy._data.values)
-        t0 = self._rdz._data.values[0, :, :]
-        im0 = ax0.contourf(self._rdz.lon, self._rdz.lat,
-                           t0, cmap='viridis', transform=ccrs.PlateCarree())
-        fig.colorbar(im0, ax=ax0, orientation='horizontal', pad=0.02)
-        ax0.coastlines()
+        nyt, nylat, nylon = len(self._ytime), len(self._ylat), len(self._ylon)
+        nzt, nzlat, nzlon = len(self._ztime), len(self._zlat), len(self._zlon)
 
-        t1 = self._rdy._data.values[0, :, :]
-        im1 = ax1.contourf(self._rdy.lon, self._rdy.lat,
-                           t1, cmap='viridis', transform=ccrs.PlateCarree())
-        fig.colorbar(im1, ax=ax1, orientation='horizontal', pad=0.02)
-        ax1.coastlines()
-        plt.show()
+        y = self._y.transpose().reshape((nyt, nylat, nylon))[0, :, :]
+        z = self._z.transpose().reshape((nzt, nzlat, nzlon))[0, :, :]
+
+        for i, (arr, lat, lon) in enumerate(((y, self._ylat, self._ylon),
+                                             (z, self._zlat, self._zlon))):
+            im = axs[i].contourf(lon, lat, arr, cmap='bwr', transform=ccrs.PlateCarree())
+            fig.colorbar(im, ax=axs[i], orientation='horizontal', pad=0.02)
+            axs[i].coastlines()
+
+        plt.tight_layout()
+
+        if F.SAVE_FIG in flags:
+            fig.savefig(self._mats_plot_name)
+        if F.SHOW_PLOT in flags:
+            fig.show()
+        if F.NOT_HALT not in flags:
+            plt.show()
 
         return self
 
