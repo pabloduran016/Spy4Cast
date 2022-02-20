@@ -2,7 +2,7 @@ import spy4cast as spy
 from spy4cast.stypes import Slise, Month, F
 
 
-DATASETS_DIR = '/datasets/'
+DATASETS_DIR = '/Users/Shared/datasets/'
 HadISST_sst = 'HadISST_sst.nc'
 
 

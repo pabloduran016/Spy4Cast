@@ -159,6 +159,10 @@ class ReadData:
         else:
             self._data = getattr(self._dataset, self._variable)
 
+        # Fill nan
+        if self._data.attrs.get('missing_value') is not None:
+            self._data = self._data.where(lambda e: e != self._data.attrs['missing_value'])
+
         # Establish the initial year of the dataset
         self._dataset_initial_timestamp = self._dataset.indexes['time'][0]
         self._dataset_final_timestamp = self._dataset.indexes['time'][-1]
