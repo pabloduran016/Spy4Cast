@@ -305,8 +305,11 @@ class Spy4Caster:
 
         return self
 
-    def plot_mca(self, flags: int = 0, fig: plt.Figure = None) -> 'Spy4Caster':
-        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime, self._mca_out)]):
+    def plot_mca(self, flags: int = F(0), fig: plt.Figure = None) -> 'Spy4Caster':
+        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
+            print('[ERROR] Can not plot mca. No preprocessing or data loading', file=sys.stderr)
+            return self
+        if self._mca_out is None:
             print('[ERROR] Can not plot mca. Methodology was not applied yet', file=sys.stderr)
             return self
 
