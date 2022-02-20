@@ -228,7 +228,7 @@ class ReadData:
         #     raise CmapSelectionError(cmap)
         return self
 
-    def slice_dataset(self: T, slise: Slise) -> T:
+    def slice_dataset(self: T, slise: Slise, skip: int = 0) -> T:
         """
         Note: If the season contains months from different years (NOV-DEC-JAN-FEB for example)
         the initial year is applied to the month which comes at last (FEB). In this example, the
@@ -264,6 +264,17 @@ class ReadData:
             self._time_key: timemask,
             self._lat_key: latmask,
             self._lon_key: lonmask,
+        }]
+
+        latskipmask = np.zeros(len(self.lat)).astype(bool)
+        latskipmask[::skip + 2] = True
+
+        lonskipmask = np.zeros(len(self.lon)).astype(bool)
+        lonskipmask[::skip + 2] = True
+
+        self._data = self._data[{
+            self._lat_key: latskipmask,
+            self._lon_key: lonskipmask,
         }]
 
         self._plot_data = f'{mon2str(Month(slise.month0))} to {mon2str(Month(slise.monthf))} ' \
