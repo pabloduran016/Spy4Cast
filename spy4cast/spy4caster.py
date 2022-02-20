@@ -369,6 +369,8 @@ class Spy4Caster:
             fig.savefig(self._mca_plot_name)
         if F.SHOW_PLOT in flags:
             fig.show()
+        if F.NOT_HALT not in flags:
+            plt.show()
 
         return self
 
@@ -434,6 +436,8 @@ class Spy4Caster:
             fig.savefig(self._zhat_plot_name)
         if F.SHOW_PLOT in flags:
             fig.show()
+        if F.NOT_HALT not in flags:
+            plt.show()
         return self
 
     def plot_crossvalidation(self, flags: int = 0, fig: plt.Figure = None) -> 'Spy4Caster':
@@ -596,9 +600,9 @@ class Spy4Caster:
         # Create the plot
         if F.SHOW_PLOT in flags or F.SAVE_FIG in flags:
             try:
-                self.plot_mca(flags & ~F.SHOW_PLOT)
-                self.plot_crossvalidation(flags & ~F.SHOW_PLOT)
-                self.plot_zhat(flags & ~F.SHOW_PLOT, sy=kwargs.get('sy'))
+                self.plot_mca(flags & ~F.SHOW_PLOT | F.NOT_HALT)
+                self.plot_crossvalidation(flags & ~F.SHOW_PLOT | F.NOT_HALT)
+                self.plot_zhat(flags & ~F.SHOW_PLOT | F.NOT_HALT, sy=kwargs.get('sy'))
                 if flags & F.SHOW_PLOT:
                     plt.show()
             except Spy4CastError:
