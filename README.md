@@ -144,11 +144,12 @@ Collection of data sctructures used across the API and for the users convenience
                 · spy4cast.errors.TimeBoundsSelectionError: if the time slise is not valid 
                 · spy4cast.errors.SelectedYearError: if the selected_year (if provided) is not valid         
 
-        def slice_dataset(slise):        
+        def slice_dataset(slise, skip=0):        
             Method that slices for you the dataset accorging to a slise. 
             It first calls check_slise method
             
             · slise: Slise to use
+            · skip: Integer, amount of points to skip in the matrix
 
             Note: If the season contains months from different years (NOV-DEC-JAN-FEB for example)
             the initial year is applied to the month which comes at last (FEB). In this example, the
