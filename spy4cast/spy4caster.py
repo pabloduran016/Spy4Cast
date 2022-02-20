@@ -69,11 +69,11 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def slice_datasets(self, yslise: Slise, zslise: Slise) -> 'Spy4Caster':
+    def slice_datasets(self, yslise: Slise, zslise: Slise, yskip: int = 0, zskip: int = 0) -> 'Spy4Caster':
         debugprint(f'[INFO] Slicing datasets', end='')
         time_from_here()
-        self._rdy.slice_dataset(yslise)
-        self._rdz.slice_dataset(zslise)
+        self._rdy.slice_dataset(yslise, yskip)
+        self._rdz.slice_dataset(zslise, zskip)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
