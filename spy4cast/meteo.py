@@ -196,11 +196,13 @@ class Meteo:
             Pvalue[nn] = bb[1]
         # generamos una variable que es para que no se muestren mas que los valores de Cor cuando la correlacion
         # es significativa
-        Cor_sig = np.ma.masked_where(Pvalue > alpha, Cor)
+        Cor_sig = Cor.copy()
+        Cor_sig[Pvalue > alpha] = np.nan
         # generamos el mapa de regresión mediante multiplicación matricial. Ojo con las dimensiones!!
         reg = data.dot(index) / (n2 - 1)
         # igualmente, hacemos una máscara para que sólo se muestre el mapa de regresión cuando es significativo
-        reg_sig = np.ma.masked_where(Pvalue > alpha, reg)
+        reg_sig = reg.copy()
+        reg_sig[Pvalue > alpha] = np.nan
         return Cor, Pvalue, Cor_sig, reg, reg_sig
 
     @staticmethod
