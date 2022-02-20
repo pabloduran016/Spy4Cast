@@ -77,7 +77,7 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def preprocess(self, flags: int = F(0), order: int = None, period: float = None) -> 'Spy4Caster':
+    def preprocess(self, flags: F = F(0), order: int = None, period: float = None) -> 'Spy4Caster':
         debugprint(f'[INFO] Preprocessing data', end='')
         time_from_here()
         self._rdy._data = Meteo.anom(self._rdy._data)
@@ -278,7 +278,7 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def plot_matrices(self, flags: int = F(0), fig: plt.Figure = None):
+    def plot_matrices(self, flags: F = F(0), fig: plt.Figure = None):
         fig = plt.figure() if fig is None else fig
         axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
         # print(self._rdy._data.values)
@@ -305,7 +305,7 @@ class Spy4Caster:
 
         return self
 
-    def plot_mca(self, flags: int = F(0), fig: plt.Figure = None) -> 'Spy4Caster':
+    def plot_mca(self, flags: F = F(0), fig: plt.Figure = None) -> 'Spy4Caster':
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
             print('[ERROR] Can not plot mca. No preprocessing or data loading', file=sys.stderr)
             return self
@@ -374,7 +374,7 @@ class Spy4Caster:
 
         return self
 
-    def plot_zhat(self, flags: int = 0, fig: plt.Figure = None, sy: int = None) -> 'Spy4Caster':
+    def plot_zhat(self, flags: F = F(0), fig: plt.Figure = None, sy: int = None) -> 'Spy4Caster':
         """
         Paramaters:
           - sy: Predicted year to show
@@ -440,7 +440,7 @@ class Spy4Caster:
             plt.show()
         return self
 
-    def plot_crossvalidation(self, flags: int = 0, fig: plt.Figure = None) -> 'Spy4Caster':
+    def plot_crossvalidation(self, flags: F = F(0), fig: plt.Figure = None) -> 'Spy4Caster':
         """
         Plots:
           - r_z_zhat_s and p_z_zhat_s: Cartopy map of r and then hatches when p is <= alpha
@@ -589,7 +589,7 @@ class Spy4Caster:
 
         return self
 
-    def run(self, flags: int = 0, **kwargs: Any) -> 'Spy4Caster':
+    def run(self, flags: F = F(0), **kwargs: Any) -> 'Spy4Caster':
         # Save the data if needed
         if F.SAVE_DATA in flags:
             try:
