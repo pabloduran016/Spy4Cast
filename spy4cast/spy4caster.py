@@ -531,6 +531,8 @@ class Spy4Caster:
             fig.savefig(self._cross_plot_name)
         if F.SHOW_PLOT in flags:
             fig.show()
+        if F.NOT_HALT not in flags:
+            plt.show()
         return self
 
     def create_plot(self, fig: Any = None, **kw: int) -> 'Spy4Caster':
@@ -563,8 +565,8 @@ class Spy4Caster:
 
     def save_fig_data(self) -> 'Spy4Caster':
         if self._z is not None and self._y is not None:
-            print(f'[INFO] Saving Preprocessed data in `saved/save_ppcessed*.npy`')
-            self.save_output('saved/save_ppcessed',
+            print(f'[INFO] Saving Preprocessed data in `{self._plot_data_dir}/save_ppcessed*.npy`')
+            self.save_output(f'{self._plot_data_dir}/save_ppcessed',
                  {
                      'y': self._y, 'ylat': self._ylat, 'ylon': self._ylon, 'ytime': self._ytime,
                      'z': self._z, 'zlat': self._zlat, 'zlon': self._zlon, 'ztime': self._ztime,
@@ -574,14 +576,14 @@ class Spy4Caster:
             print('[ERROR] No preprocessed data to save', file=sys.stderr)
 
         if self._mca_out is not None:
-            print(f'[INFO] Saving MCA data in `saved/save_mca*.npy`')
-            self.save_output('saved/save_mca', self._mca_out)
+            print(f'[INFO] Saving MCA data in `{self._plot_data_dir}/save_mca*.npy`')
+            self.save_output(f'{self._plot_data_dir}/save_mca', self._mca_out)
         else:
             print('[ERROR] No MCA data to save', file=sys.stderr)
 
         if self._crossvalidation_out is not None:
             print(f'[INFO] Saving crossvalidation data in `saved/save_cross*.npy`')
-            self.save_output('saved/save_cross', self._crossvalidation_out)
+            self.save_output(f'{self._plot_data_dir}/save_cross', self._crossvalidation_out)
         else:
             print('[ERROR] No Crossvalidation data to save', file=sys.stderr)
 
