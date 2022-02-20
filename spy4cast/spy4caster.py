@@ -119,43 +119,6 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    # def preprocess_old(self, order: int, period: float) -> 'Spy4Caster':
-    #     debugprint('[INFO] Preprocessing data', end='')
-    #     time_from_here()
-    #     self._rdy._data = Meteo.anom(self._rdy._data)
-    #     self._rdy._time_key = 'year'
-    #     self._rdz._data = Meteo.anom(self._rdz._data)
-    #     self._rdz._time_key = 'year'
-    #
-    #     y0 = max(self._rdy._slise.year0, self._rdz._slise.year0)
-    #     yf = min(self._rdy._slise.yearf, self._rdz._slise.yearf)
-    #
-    #     self._rdy.slice_dataset(Slise.default(year0=y0, yearf=yf))
-    #     self._rdz.slice_dataset(Slise.default(year0=y0, yearf=yf))
-    #
-    #     z = self._rdz._data.values
-    #     # zlon = self._rdz._data.lon.values
-    #     # zlat = self._rdz._data.lat.values
-    #     ztrans = np.reshape(z, (z.shape[0], z.shape[1] * z.shape[2])).transpose()
-    #
-    #     y = self._rdy._data.values
-    #     # ylon = self._rdy._data.longitude.values
-    #     # ylat = self._rdy._data.latitude.values
-    #     ytrans = np.reshape(y, (y.shape[0], y.shape[1] * y.shape[2])).transpose()
-    #
-    #     b, a = signal.butter(order, 1/period, btype='high', analog=False, output='ba', fs=None)
-    #
-    #     # Filtro la señal ampliada y me quedo con la parte central:
-    #     zmask = np.ma.empty(ztrans.shape)
-    #     for index in range(ztrans.shape[0]):
-    #         zmask[index, :] = signal.filtfilt(b, a, ztrans[index, :])
-    #
-    #     # zmask, zlon, zlat; ytrans, ylon, ylat
-    #     self._y = np.nan_to_num(ytrans)  # fill nan with 0
-    #     self._z = np.nan_to_num(zmask)  # fill nan with 0
-    #     debugprint(f' took: {time_to_here():.03f} seconds')
-    #     return self
-
     def mca(self, nm: int, alpha: float) -> 'Spy4Caster':
         debugprint(f'[INFO] Applying MCA', end='')
         time_from_here()
@@ -415,8 +378,8 @@ class Spy4Caster:
         ylim = lats[-1], lats[0]
         index = 0
         while index < len(ts) and ts[index] != sy:  index += 1
-        if ts[index] != sy: raise ValueError(f'Selected Year {sy} is not valid')
-
+        if index > len(ts) - 1 or ts[index] > sy:
+            raise ValueError(f'Selected Year {sy} is not valid\nNOTE: Valid years {ts}')
         ax0 = plt.subplot(211, projection=ccrs.PlateCarree())
         ax1 = plt.subplot(212, projection=ccrs.PlateCarree())
 
