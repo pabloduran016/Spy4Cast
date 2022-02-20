@@ -335,15 +335,17 @@ class Spy4Caster:
             ax.set_title(f'Us Vs mode {i}')
         axs[0].legend(loc='upper left')
 
+        su = self._mca_out.SUY
+        su[su == 0.0] = np.nan
+
         n = 20
         for i, (name, su, ru, lats, lons) in enumerate((
-                ('SUY', self._mca_out.SUY, self._mca_out.RUY_sig, ylats, ylons),
+                ('SUY', su, self._mca_out.RUY_sig, ylats, ylons),
                 ('SUZ', self._mca_out.SUZ, self._mca_out.RUZ_sig, zlats, zlons)
         )):
-            if i == 0:
-                su[su == 0.0] = np.nan
             _std = np.nanstd(su)
-            levels = np.linspace(-_std, _std, n)
+            _m = np.nanmean(su)
+            levels = np.linspace(_m - _std, _m + _std, n)
             xlim = lons[0], lons[-1]
             ylim = lats[-1], lats[0]
             for j, ax in enumerate(axs[3 * (i + 1):3 * (i + 1) + 3]):
