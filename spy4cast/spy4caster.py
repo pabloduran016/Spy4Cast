@@ -361,7 +361,7 @@ class Spy4Caster:
                 ax.set_ylim(ylim)
                 ax.margins(0)
                 ax.coastlines()
-                ax.set_title(f'{name} mode {j}')
+                ax.set_title(f'{name} mode {j}. SCF={self._mca_out.scf[j]*100:.02f}')
 
         plt.tight_layout()
 
