@@ -165,7 +165,7 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def set_var(self, name: str, value: Union[np.ndarray, xr.DataArray]):
+    def _set_var(self, name: str, value: Union[np.ndarray, xr.DataArray]):
         if name == 'z':       self._z = value
         elif name == 'zlat':  self._zlat = value
         elif name == 'zlon':  self._zlon = value
@@ -185,7 +185,7 @@ class Spy4Caster:
             for var in ('', 'lat', 'lon', 'time'):
                 path = os.path.join(path0, f'{prefix}{field}{var}{ext}')
                 try:
-                    self.set_var(field+var, np.load(path))
+                    self._set_var(field+var, np.load(path))
                 except FileNotFoundError:
                     print(f'\n[ERROR] Could not find file `{path}` for variable `{field}{var}`')
 
