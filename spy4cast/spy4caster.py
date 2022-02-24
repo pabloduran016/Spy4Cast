@@ -54,7 +54,7 @@ class Spy4Caster:
         self._rdy.open_dataset()
         self._rdz.open_dataset()
         self._rdy._data = self._rdy._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdy._lon_key)
-        self._rdz._data = self._rdz._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdy._lon_key)
+        self._rdz._data = self._rdz._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdz._lon_key)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
