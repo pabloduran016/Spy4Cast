@@ -79,10 +79,13 @@ Collection of data sctructures used across the API and for the users convenience
             `Slise(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)`
     
     spy4cast.stypes.F: IntFlag enum used is plotting:
-        SAVE_DATA
-        SAVE_FIG
-        SILENT_ERRORS
-        SHOW_PLOT
+        SAVE_DATA     Save data
+        SAVE_FIG      Save the figure
+        SILENT_ERRORS Do not raise errors
+        SHOW_PLOT     Show the plot 
+        FILTER        Perform butterworth filter in preprocesseing
+        NOT_HALT      Not halt the program after showing (runs plt.show)
+
     
     spy4cast.stypes.ChunkType: Type of the chunk passed intop dask. 
       Equivalent to int | tuple[int, ...] | tuple[tuple[int, ...] ,...] | dict[str | int: int]

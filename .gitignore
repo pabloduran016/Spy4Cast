@@ -5,6 +5,7 @@ TODO.txt
 DOING.txt
 .idea/
 .venv/
+other/
 __pycache__/
 foo*
 .mypy_cache/

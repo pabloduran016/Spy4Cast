@@ -64,7 +64,7 @@ class F(IntFlag):
     SILENT_ERRORS = auto()
     SHOW_PLOT = auto()
     FILTER = auto()  # Perform butterworth filter in preprocesseing
-    NOT_HALT = auto()  # Not halt the program after showing (running plt.show)
+    NOT_HALT = auto()  # Not halt the program after showing (runs plt.show)
 
 
 ChunkType = Union[int, Tuple[int, ...], Tuple[Tuple[int, ...] ,...], Dict[Union[str, int], int]]
