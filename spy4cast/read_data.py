@@ -113,7 +113,7 @@ class ReadData:
 
                 initial_timestamp = datetime.datetime.strptime(self._dataset.time.attrs['units'].split()[2],
                                                                '%Y-%M-%d')
-                final_timestamp = initial_timestamp + pd.Timedelta(months=len(self._dataset.time))
+                final_timestamp = initial_timestamp + pd.DateOffset(months=len(self._dataset.time))
                 self._dataset = self._dataset.assign_coords(
                     time=pd.date_range(initial_timestamp, final_timestamp, freq='M'))
             except Exception as e:
@@ -245,7 +245,7 @@ class ReadData:
 
         # Time slise
         fro = pd.to_datetime(self.time.values[0])
-        to = fro + pd.Timedelta(months=len(self.time))
+        to = fro + pd.DateOffset(months=len(self.time))
         time = pd.date_range(start=fro, end=to, freq='M')
         if len(time) == len(self.time) + 1:
             time = time[:-1]
