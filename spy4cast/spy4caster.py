@@ -89,7 +89,7 @@ class Spy4Caster:
                              f'of years of the predictor: got {len(self._rdz.time)} and '
                              f'{len(self._rdy.time)}')
 
-        self._z = self._rdz._data
+        _z = self._rdz._data
         if F.FILTER in flags:
             if order is None:
                 raise TypeError('Missing keyword argument `order`')
@@ -97,7 +97,7 @@ class Spy4Caster:
                 raise TypeError('Missing keyword argument `period`')
 
             b, a = signal.butter(order, 1 / period, btype='high', analog=False, output='ba', fs=None)
-            self._z = xr.apply_ufunc(
+            _z = xr.apply_ufunc(
                 lambda ts: signal.filtfilt(b, a, ts),
                 self._z,
                 input_core_dims=[[self._rdz._time_key]], output_core_dims=[[self._rdz._time_key]]
@@ -105,7 +105,8 @@ class Spy4Caster:
 
         nyt, nylat, nylon = self._rdy._data.shape
         nzt, nzlat, nzlon = self._rdz._data.shape
-        self._z = self._z.transpose(self._rdz._time_key, self._rdz._lat_key, self._rdz._lon_key).fillna(0).values.reshape((nzt, nzlat * nzlon)).transpose()
+        self._z = _z.transpose(self._rdz._time_key, self._rdz._lat_key, self._rdz._lon_key).fillna(0).values.reshape((nzt, nzlat * nzlon)).transpose()
+        del _z
         self._zlat = self._rdz.lat.values
         self._zlon = self._rdz.lon.values
         self._ztime = self._rdz.time.values
@@ -123,6 +124,8 @@ class Spy4Caster:
         time_from_here()
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
             raise TypeError('Must prprocess data before applying MCA')
+        assert self._z is not None
+        assert self._y is not None
         self._mca_out = Meteo.mca(self._z, self._y, 1, nm, alpha)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
@@ -232,7 +235,9 @@ class Spy4Caster:
         debugprint(f'[INFO] Applying crossvalidation {"(mp) " if multiprocessing else ""}', end='')
         time_from_here()
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
-            raise TypeError('Must preprocess data before applying Crossvalidation')
+           raise TypeError('Must preprocess data before applying Crossvalidation')
+        assert self._z is not None
+        assert self._y is not None
         if multiprocessing:
             self._crossvalidation_out = Meteo.crossvalidation_mp(self._y, self._z, 1, nm, alpha)
         else:
@@ -241,6 +246,10 @@ class Spy4Caster:
         return self
 
     def plot_preprocessed(self, flags: F = F(0), fig: plt.Figure = None):
+        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
+           raise TypeError('Must preprocess data before applying Crossvalidation')
+        assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
+
         nyt, nylat, nylon = len(self._ytime), len(self._ylat), len(self._ylon)
         nzt, nzlat, nzlon = len(self._ztime), len(self._zlat), len(self._zlon)
 
@@ -294,6 +303,9 @@ class Spy4Caster:
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
             print('[ERROR] Can not plot mca. No preprocessing or data loading', file=sys.stderr)
             return self
+
+        assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
+
         if self._mca_out is None:
             print('[ERROR] Can not plot mca. Methodology was not applied yet', file=sys.stderr)
             return self
@@ -370,10 +382,17 @@ class Spy4Caster:
         if sy is None:
             raise TypeError('`sy` argument must be provided')
 
-        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime, self._crossvalidation_out)]):
+        if self._crossvalidation_out is None:
             print(f'[ERROR] Could not create zhat plot, the methodology has not been applied yet',
                   file=sys.stderr)
             return self
+
+        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
+            print(f'[ERROR] Could not create zhat plot, the methodology has not been applied yet',
+                  file=sys.stderr)
+            return self
+
+        assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
 
         fig = plt.figure() if fig is None else fig
 
@@ -439,9 +458,13 @@ class Spy4Caster:
         """
         fig = plt.figure() if fig is None else fig
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime, self._crossvalidation_out)]):
-            print(f'[ERROR] Could not create crossvalidation plot, the methodology has not been applied yet',
-                  file=sys.stderr)
+            print(f'[ERROR] Could not create crossvalidation plot, must apply preprocessing first', file=sys.stderr)
             return self
+        if self._crossvalidation_out is None:
+            print(f'[ERROR] Could not create crossvalidation plot, the methodology has not been applied yet', file=sys.stderr)
+            return self
+
+        assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
 
         r_z_zhat_s = self._crossvalidation_out.r_z_zhat_s
         p_z_zhat_s = self._crossvalidation_out.p_z_zhat_s
@@ -550,9 +573,10 @@ class Spy4Caster:
                     traceback.print_exc()
 
     def save_fig_data(self) -> 'Spy4Caster':
-        if self._z is not None and self._y is not None:
-            print(f'[INFO] Saving Preprocessed data in `{self._plot_data_dir}/save_ppcessed*.npy`')
-            self.save_output(f'{self._plot_data_dir}/save_ppcessed',
+        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
+            print(f'[INFO] Saving Preprocessed data in `{self._plot_data_dir}/save_preprocessed*.npy`')
+            assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
+            self.save_output(f'{self._plot_data_dir}/save_preprocessed',
                  {
                      'y': self._y, 'ylat': self._ylat, 'ylon': self._ylon, 'ytime': self._ytime,
                      'z': self._z, 'zlat': self._zlat, 'zlon': self._zlon, 'ztime': self._ztime,

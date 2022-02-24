@@ -20,10 +20,10 @@ __all__ = ['PlotterTS', 'PlotterMap', 'Proker', 'ClimerTS', 'ClimerMap', 'Anomer
 
 class Plotter(ReadData, ABC):
     @abstractmethod
-    def create_plot(self, flags: int, **kwargs) -> 'Plotter':
+    def create_plot(self, flags: F, **kwargs) -> 'Plotter':
         raise NotImplementedError
 
-    def run(self, flags: int = 0, **kwargs: Any) -> 'Plotter':
+    def run(self, flags: F = F(0), **kwargs: Any) -> 'Plotter':
         # Save the data if needed
         if F.SAVE_DATA in flags:
             try:
@@ -59,7 +59,7 @@ class Plotter(ReadData, ABC):
 
 
 class PlotterTS(Plotter):
-    def create_plot(self, flags: int = 0, **kws: Any) -> 'PlotterTS':
+    def create_plot(self, flags: F = F(0), **kws: Any) -> 'PlotterTS':
         fig = plt.figure()
         color: Color = (.43, .92, .20) if 'color' not in kws else kws.pop('color')
         if len(kws) != 0:
@@ -86,7 +86,7 @@ class PlotterTS(Plotter):
 class PlotterMap(Plotter):
     _n_values = 50
 
-    def create_plot(self, flags: int = 0, **kws: Any) -> 'PlotterMap':
+    def create_plot(self, flags: F = F(0), **kws: Any) -> 'PlotterMap':
         fig = plt.figure()
         if 'slise' not in kws:
             raise TypeError("`create_plot` missing 1 required keyword argument: 'slise'")
