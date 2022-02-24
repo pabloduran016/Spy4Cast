@@ -261,6 +261,8 @@ Custom errors related to the api
 
     spy4cast.errors.VariableSelectionError(Spy4castError, ValueError): Exception raised when there is an
       error when loading the dataset and the variable given is not valid
+      Accepts kewyword arguments:
+          · valid_variables: Sequence[str]
     
     spy4cast.errors.TimeBoundsSelectionError(Spy4castError, ValueError): Exception raised when checking a slise 
       that has non-valid time constraints
