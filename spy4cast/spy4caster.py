@@ -231,7 +231,7 @@ class Spy4Caster:
         print(f' took: {time_to_here():.03f}')
         return self
 
-    def crossvalidation(self, nm: int, alpha: float, multiprocessing: bool) -> 'Spy4Caster':
+    def crossvalidation(self, nm: int, alpha: float, multiprocessing: bool = False) -> 'Spy4Caster':
         debugprint(f'[INFO] Applying crossvalidation {"(mp) " if multiprocessing else ""}', end='')
         time_from_here()
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
