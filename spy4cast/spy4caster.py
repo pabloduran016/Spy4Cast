@@ -22,7 +22,7 @@ __all__ = ['Spy4Caster']
 class Spy4Caster:
     def __init__(self, yargs: Union[RDArgs, RDArgsDict], zargs: Union[RDArgs, RDArgsDict],
                  plot_dir: str = '', mats_plot_name: str = 'mats_plot.png', mca_plot_name: str = 'mca_plot.png', cross_plot_name: str = 'cross_plot.png',
-                 zhat_plot_name: str = 'zhat_plot.png', plot_data_dir: str = '', force_name: bool = False):
+                 zhat_plot_name: str = 'zhat_plot.png', plot_data_dir: str = ''):
         if type(yargs) == RDArgs:
             yargs = yargs.as_dict()
         if type(zargs) == RDArgs:
@@ -39,7 +39,6 @@ class Spy4Caster:
         self._cross_plot_name = cross_plot_name
         self._zhat_plot_name = zhat_plot_name
         self._plot_data_dir = plot_data_dir
-        self._force_name = force_name
         self._y: Optional[npt.NDArray[np.float64]] = None
         self._ylat: Optional[npt.NDArray[np.float64]] = None
         self._ylon: Optional[npt.NDArray[np.float64]] = None
@@ -245,8 +244,8 @@ class Spy4Caster:
         nyt, nylat, nylon = len(self._ytime), len(self._ylat), len(self._ylon)
         nzt, nzlat, nzlon = len(self._ztime), len(self._zlat), len(self._zlon)
 
-        y = self._y.transpose().reshape((nyt, nylat, nylon))[0, :, :]
-        z = self._z.transpose().reshape((nzt, nzlat, nzlon))[0, :, :]
+        y = self._y.transpose().reshape((nyt, nylat, nylon))
+        z = self._z.transpose().reshape((nzt, nzlat, nzlon))
 
         self._plot_matrices(
             y, self._ylat, self._ylon,
@@ -261,13 +260,26 @@ class Spy4Caster:
         axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
         # print(self._rdy._data.values)
 
-        for i, (arr, lat, lon) in enumerate(((y, ylat, ylon),
-                                             (z, zlat, zlon))):
-            im = axs[i].contourf(lon, lat, arr, cmap='bwr', transform=ccrs.PlateCarree())
-            fig.colorbar(im, ax=axs[i], orientation='horizontal', pad=0.02)
-            axs[i].coastlines()
+        n = 20
+        for i, (name, arr, lat, lon) in enumerate(
+                (('Y', y, ylat, ylon),
+                 ('Z', z, zlat, zlon))):
+            _std = np.nanstd(arr)
+            _m = np.nanmean(arr)
+            levels = np.linspace(_m - _std, _m + _std, n)
+            xlim = sorted((lon[0], lon[-1]))
+            ylim = sorted((lat[-1], lat[0]))
 
-        plt.tight_layout()
+            im = axs[i].contourf(lon, lat, arr[0], cmap='bwr', levels=levels, extend='both', transform=ccrs.PlateCarree())
+            fig.colorbar(im, ax=axs[i], orientation='horizontal', pad=0.02,
+                         ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
+            axs[i].coastlines()
+            axs[i].set_xlim(xlim)
+            axs[i].set_ylim(ylim)
+            # # axs[i].margins(0)
+            axs[i].set_title(f'{name}')
+
+        # plt.tight_layout()
 
         if F.SAVE_FIG in flags:
             fig.savefig(self._mats_plot_name)
@@ -301,7 +313,7 @@ class Spy4Caster:
 
         # Plot timeseries
         for i, ax in enumerate(axs[:3]):
-            ax.margins(0)
+            # # ax.margins(0)
             ax.plot(ts, self._mca_out.Us[i, :], color='green', label=f'Us')
             ax.plot(ts, self._mca_out.Vs[i, :], color='blue', label=f'Vs')
             ax.grid(True)
@@ -319,8 +331,8 @@ class Spy4Caster:
             _std = np.nanstd(su)
             _m = np.nanmean(su)
             levels = np.linspace(_m - _std, _m + _std, n)
-            xlim = lons[0], lons[-1]
-            ylim = lats[-1], lats[0]
+            xlim = sorted((lons[0], lons[-1]))
+            ylim = sorted((lats[-1], lats[0]))
             for j, ax in enumerate(axs[3 * (i + 1):3 * (i + 1) + 3]):
                 t = su[:, j].transpose().reshape((len(lats), len(lons)))
                 th = ru[:, j].transpose().reshape((len(lats), len(lons)))
@@ -332,7 +344,7 @@ class Spy4Caster:
                                    ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
                 ax.set_xlim(xlim)
                 ax.set_ylim(ylim)
-                ax.margins(0)
+                # ax.margins(1)
                 ax.coastlines()
                 ax.set_title(f'{name} mode {j}. SCF={self._mca_out.scf[j]*100:.02f}')
 
@@ -374,8 +386,8 @@ class Spy4Caster:
         n = 20
         _std = np.nanstd(zhat)
         levels = np.linspace(-_std, _std, n)
-        xlim = lons[0], lons[-1]
-        ylim = lats[-1], lats[0]
+        xlim = sorted((lons[0], lons[-1]))
+        ylim = sorted((lats[-1], lats[0]))
         index = 0
         while index < len(ts) and ts[index] != sy:  index += 1
         if index > len(ts) - 1 or ts[index] > sy:
@@ -390,7 +402,7 @@ class Spy4Caster:
                             ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
         ax0.set_xlim(xlim)
         ax0.set_ylim(ylim)
-        ax0.margins(0)
+        # ax0.margins(1)
         ax0.coastlines()
         ax0.set_title(f'Zhat on year {sy}')
 
@@ -401,7 +413,7 @@ class Spy4Caster:
                             ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
         ax1.set_xlim(xlim)
         ax1.set_ylim(ylim)
-        ax1.margins(0)
+        # ax1.margins(1)
         ax1.coastlines()
         ax1.set_title(f'Z on year {sy}')
 
@@ -449,7 +461,7 @@ class Spy4Caster:
         nzlon = len(zlons)
         nztime = len(ts)
 
-        nrows = 3
+        nrows = 2
         ncols = 2
         axs = [plt.subplot(nrows * 100 + ncols * 10 + i, projection=(ccrs.PlateCarree() if i == 1 else None))
                for i in range(1, ncols * nrows + 1)]
@@ -459,8 +471,8 @@ class Spy4Caster:
         # ------ r_z_zhat_s and p_z_zhat_s ------ #
         _std = np.nanstd(r_z_zhat_s)
         levels = np.linspace(-_std, _std, n)
-        xlim = zlons[0], zlons[-1]
-        ylim = zlats[-1], zlats[0]
+        xlim = sorted((zlons[0], zlons[-1]))
+        ylim = sorted((zlats[-1], zlats[0]))
 
         d = r_z_zhat_s.transpose().reshape((nzlat, nzlon))
         hatches = d.copy()
@@ -473,14 +485,14 @@ class Spy4Caster:
                            ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
         axs[0].set_xlim(xlim)
         axs[0].set_ylim(ylim)
-        axs[0].margins(0)
+        # axs[0].margins(1)
         axs[0].coastlines()
         axs[0].set_title(f'Correlation in space between z and zhat')
         # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
 
-        # TODO: Add titles and legends
         # ------ r_z_zhat_t and p_z_zhat_t ------ #
         axs[1].bar(ts, r_z_zhat_t)
+        # axs[1].margins(1)
         axs[1].scatter(ts[p_z_zhat_t <= alpha], r_z_zhat_t[p_z_zhat_t <= alpha])
         axs[1].set_title(f'Correlation in space between z and zhat')
         # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
@@ -489,15 +501,16 @@ class Spy4Caster:
         for mode in range(scf.shape[0]):
             axs[2].plot(ts, scf[mode], label=f'Mode {mode + 1}')
         axs[2].legend()
+        # axs[2].margins(1)
         axs[2].set_title(f'Squared convariance fraction')
         # ^^^^^^ scf ^^^^^^ #
 
         # TODO: Plot seperately
         # ------ r_uv and p_uv ------ #
-        for mode in range(scf.shape[0]):
-            axs[3 + mode].plot(ts, r_uv[mode])
-            axs[3 + mode].scatter(ts[p_uv[mode] <= alpha], r_uv[mode][p_uv[mode] <= alpha])
-            axs[3 + mode].set_title(f'RUV and PUV for mode {mode + 1}')
+        #for mode in range(scf.shape[0]):
+        #    axs[3 + mode].plot(ts, r_uv[mode])
+        #    axs[3 + mode].scatter(ts[p_uv[mode] <= alpha], r_uv[mode][p_uv[mode] <= alpha])
+        #    axs[3 + mode].set_title(f'RUV and PUV for mode {mode + 1}')
         # ^^^^^^ r_uv and p_uv ^^^^^^ #
 
         if F.SAVE_FIG in flags:
