@@ -266,7 +266,7 @@ class Spy4Caster:
     def _plot_matrices(self, y: np.ndarray, ylat: np.ndarray, ylon: np.ndarray,
                       z: np.ndarray, zlat: np.ndarray, zlon: np.ndarray,
                       flags: F = F(0), fig: plt.Figure = None):
-        fig = plt.figure() if fig is None else fig
+        fig = plt.figure(figsize=(15, 10)) if fig is None else fig
         axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
         # print(self._rdy._data.values)
 
@@ -311,7 +311,7 @@ class Spy4Caster:
             print('[ERROR] Can not plot mca. Methodology was not applied yet', file=sys.stderr)
             return self
 
-        fig = fig if fig is not None else plt.figure()
+        fig = fig if fig is not None else plt.figure(figsize=(15, 10))
 
         ylats = self._ylat
         ts = self._ytime
@@ -395,7 +395,7 @@ class Spy4Caster:
 
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
 
-        fig = plt.figure() if fig is None else fig
+        fig = plt.figure(figsize=(15, 10)) if fig is None else fig
 
         lats = self._zlat
         ts = self._ytime
@@ -457,7 +457,7 @@ class Spy4Caster:
               scf           r_uv_1
             r_uv_1          r_uv_2
         """
-        fig = plt.figure() if fig is None else fig
+        fig = plt.figure(figsize=(15, 10)) if fig is None else fig
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime, self._crossvalidation_out)]):
             print(f'[ERROR] Could not create crossvalidation plot, must apply preprocessing first', file=sys.stderr)
             return self
