@@ -259,44 +259,42 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def _plot_matrices(self, y: np.ndarray, ylat: np.ndarray, ylon: np.ndarray,
-                      z: np.ndarray, zlat: np.ndarray, zlon: np.ndarray,
-                      flags: F = F(0), fig: plt.Figure = None):
-        fig = plt.figure(figsize=(15, 10)) if fig is None else fig
-        axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
-        # print(self._rdy._data.values)
-
-        n = 20
-        for i, (name, arr, lat, lon) in enumerate(
-                (('Y', y, ylat, ylon),
-                 ('Z', z, zlat, zlon))):
+    def _plot_map(self, arr: np.ndarray, lat: np.ndarray, lon: np.ndarray, fig: plt.Figure, ax: plt.Axes, title: str = None,
+                  levels: np.ndarray = None, xlim: Sequence[int] = None, ylim: Sequence[int] = None, cmap: str = None):
+        if levels is None:
+            n = 30
             _std = np.nanstd(arr)
             _m = np.nanmean(arr)
             levels = np.linspace(_m - _std, _m + _std, n)
-            xlim = sorted((lon[0], lon[-1]))
-            ylim = sorted((lat[-1], lat[0]))
+        else:
+            n = len(levels)
 
-            im = axs[i].contourf(lon, lat, arr[0], cmap='bwr', levels=levels, extend='both', transform=ccrs.PlateCarree())
-            fig.colorbar(im, ax=axs[i], orientation='horizontal', pad=0.02,
-                         ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
-            axs[i].coastlines()
-            axs[i].set_xlim(xlim)
-            axs[i].set_ylim(ylim)
-            # # axs[i].margins(0)
-            axs[i].set_title(f'{name}')
+        cmap = 'bwr' if cmap is None else cmap
+        xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
+        ylim = sorted((lat[-1], lat[0])) if ylim is None else ylim
 
-        # plt.tight_layout()
+        im = ax.contourf(lon, lat, arr, cmap=cmap, levels=levels, extend='both', transform=ccrs.PlateCarree())
+        fig.colorbar(im, ax=ax, orientation='horizontal', pad=0.02,
+                     ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
+        ax.coastlines()
+        ax.set_xlim(*xlim)
+        ax.set_ylim(*ylim)
+        # # axs.margins(0)
+        if title is not None:
+            ax.set_title(title)
 
+    def _apply_flags_to_fig(self, fig: plt.Figure, path: str, flags: int):
+        if type(flags) == int:
+            flags = F(flags)
+        assert type(flags) == F
         if F.SAVE_FIG in flags:
-            fig.savefig(os.path.join(self._plot_dir, self._mats_plot_name))
+            fig.savefig(path)
         if F.SHOW_PLOT in flags:
             fig.show()
         if F.NOT_HALT not in flags:
             plt.show()
 
-        return self
-
-    def plot_preprocessed(self, flags: F = F(0), fig: plt.Figure = None):
+    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None):
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
            raise TypeError('Must preprocess data before applying Crossvalidation')
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
@@ -307,11 +305,12 @@ class Spy4Caster:
         y = self._y.transpose().reshape((nyt, nylat, nylon))
         z = self._z.transpose().reshape((nzt, nzlat, nzlon))
 
-        self._plot_matrices(
-            y, self._ylat, self._ylon,
-            z, self._zlat, self._zlon,
-            flags, fig
-        )
+        fig = self._new_figure(figsize=(15, 10)) if fig is None else fig
+        axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
+        self._plot_map(y[0], self._ylat, self._ylon, fig, axs[0], 'Y')
+        self._plot_map(z[0], self._zlat, self._zlon, fig, axs[1], 'Z')
+        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mats_plot_name),
+                                 flags)
 
     def plot_mca(self, flags: int = 0, fig: plt.Figure = None) -> 'Spy4Caster':
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
@@ -359,30 +358,18 @@ class Spy4Caster:
             levels = np.linspace(_m - _std, _m + _std, n)
             xlim = sorted((lons[0], lons[-1]))
             ylim = sorted((lats[-1], lats[0]))
+
             for j, ax in enumerate(axs[3 * (i + 1):3 * (i + 1) + 3]):
+                title = f'{name} mode {j + 1}. SCF={self._mca_out.scf[j]*100:.02f}'
                 t = su[:, j].transpose().reshape((len(lats), len(lons)))
                 th = ru[:, j].transpose().reshape((len(lats), len(lons)))
-                im = ax.contourf(lons, lats, t, cmap='bwr', levels=levels,
-                                 extend='both', transform=ccrs.PlateCarree())
+
+                self._plot_map(t, lats, lons, fig, ax, title, levels=levels, xlim=xlim, ylim=ylim)
                 _imh = ax.contourf(lons, lats, th, colors='none', hatches='..', extend='both',
                                    transform=ccrs.PlateCarree())
-                _cb = fig.colorbar(im, ax=ax, orientation='horizontal',
-                                   ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
-                ax.set_xlim(xlim)
-                ax.set_ylim(ylim)
-                # ax.margins(1)
-                ax.coastlines()
-                ax.set_title(f'{name} mode {j + 1}. SCF={self._mca_out.scf[j]*100:.02f}')
 
-        plt.tight_layout()
-
-        if F.SAVE_FIG in flags:
-            fig.savefig(os.path.join(self._plot_dir, self._mca_plot_name))
-        if F.SHOW_PLOT in flags:
-            fig.show()
-        if F.NOT_HALT not in flags:
-            plt.show()
-
+        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mca_plot_name),
+                                 flags)
         return self
 
     def plot_zhat(self, flags: int = 0, fig: plt.Figure = None, sy: int = None, cmap: str = None) -> 'Spy4Caster':
@@ -411,55 +398,31 @@ class Spy4Caster:
 
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
 
-        fig = plt.figure(figsize=(15, 10)) if fig is None else fig
+        fig = self._new_figure(figsize=(15, 10)) if fig is None else fig
+        ax0 = plt.subplot(211, projection=ccrs.PlateCarree())
+        ax1 = plt.subplot(212, projection=ccrs.PlateCarree())
 
         lats = self._zlat
         ts = self._ytime
         lons = self._zlon
         zhat = self._crossvalidation_out.zhat
 
-        nts, nlats, nlons = len(ts), len(lats), len(lons)
-        n = 20
-        _std = np.nanstd(zhat)
-        _m = np.nanmean(zhat)
-        levels = np.linspace(_m - _std, _m + _std, n)
-        xlim = sorted((lons[0], lons[-1]))
-        ylim = sorted((lats[-1], lats[0]))
         index = 0
         while index < len(ts) and ts[index] != sy:  index += 1
         if index > len(ts) - 1 or ts[index] > sy:
             raise ValueError(f'Selected Year {sy} is not valid\nNOTE: Valid years {ts}')
-        ax0 = plt.subplot(211, projection=ccrs.PlateCarree())
-        ax1 = plt.subplot(212, projection=ccrs.PlateCarree())
+
+        nts, nlats, nlons = len(ts), len(lats), len(lons)
 
         d0 = zhat.transpose().reshape((nts, nlats, nlons))
-        im0 = ax0.contourf(lons, lats, d0[index],
-                           transform=ccrs.PlateCarree(), cmap=cmap, levels=levels, extend='both')
-        _cb0 = fig.colorbar(im0, ax=ax0, orientation='horizontal',
-                            ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
-        ax0.set_xlim(xlim)
-        ax0.set_ylim(ylim)
-        # ax0.margins(1)
-        ax0.coastlines()
-        ax0.set_title(f'Zhat on year {sy}')
+        self._plot_map(d0[index], lats, lons, fig, ax0, f'Zhat on year {sy}', cmap=cmap)
 
         d1 = self._z.transpose().reshape((nts, nlats, nlons))
-        im1 = ax1.contourf(lons, lats, d1[index],
-                           transform=ccrs.PlateCarree(), cmap=cmap, levels=levels, extend='both')
-        _cb1 = fig.colorbar(im1, ax=ax1, orientation='horizontal',
-                            ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
-        ax1.set_xlim(xlim)
-        ax1.set_ylim(ylim)
-        # ax1.margins(1)
-        ax1.coastlines()
-        ax1.set_title(f'Z on year {sy}')
+        self._plot_map(d1[index], lats, lons, fig, ax1, f'Z on year {sy}', cmap=cmap)
 
-        if F.SAVE_FIG in flags:
-            fig.savefig(os.path.join(self._plot_dir, self._zhat_plot_name))
-        if F.SHOW_PLOT in flags:
-            fig.show()
-        if F.NOT_HALT not in flags:
-            plt.show()
+        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._zhat_plot_name),
+                                 flags)
+
         return self
 
     def plot_crossvalidation(self, flags: int = 0, fig: plt.Figure = None, cmap: str = None) -> 'Spy4Caster':
@@ -474,7 +437,6 @@ class Spy4Caster:
               scf           r_uv_1
             r_uv_1          r_uv_2
         """
-        fig = plt.figure(figsize=(15, 10)) if fig is None else fig
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime, self._crossvalidation_out)]):
             print(f'[ERROR] Could not create crossvalidation plot, must apply preprocessing first', file=sys.stderr)
             return self
@@ -484,13 +446,21 @@ class Spy4Caster:
 
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
 
+        cmap = 'bwr' if cmap is None else cmap
+
+        fig = self._new_figure(figsize=(15, 10)) if fig is None else fig
+        nrows = 2
+        ncols = 2
+        axs = [plt.subplot(nrows * 100 + ncols * 10 + i, projection=(ccrs.PlateCarree() if i == 1 else None))
+               for i in range(1, ncols * nrows + 1)]
+
         r_z_zhat_s = self._crossvalidation_out.r_z_zhat_s
         p_z_zhat_s = self._crossvalidation_out.p_z_zhat_s
         r_z_zhat_t = self._crossvalidation_out.r_z_zhat_t
         p_z_zhat_t = self._crossvalidation_out.p_z_zhat_t
         scf = self._crossvalidation_out.scf
-        r_uv = self._crossvalidation_out.r_uv
-        p_uv = self._crossvalidation_out.p_uv
+        # r_uv = self._crossvalidation_out.r_uv
+        # p_uv = self._crossvalidation_out.p_uv
 
         alpha = self._crossvalidation_out.alpha
         # nyt, nylat, nylon = self._y_data.shape
@@ -500,41 +470,20 @@ class Spy4Caster:
 
         nzlat = len(zlats)
         nzlon = len(zlons)
-        nztime = len(ts)
-
-        nrows = 2
-        ncols = 2
-        axs = [plt.subplot(nrows * 100 + ncols * 10 + i, projection=(ccrs.PlateCarree() if i == 1 else None))
-               for i in range(1, ncols * nrows + 1)]
-
-        n = 20
+        # nztime = len(ts)
 
         # ------ r_z_zhat_s and p_z_zhat_s ------ #
-        _std = np.nanstd(r_z_zhat_s)
-        _m = np.nanmean(r_z_zhat_s)
-        levels = np.linspace(_m - _std, _m + _std, n)
-        xlim = sorted((zlons[0], zlons[-1]))
-        ylim = sorted((zlats[-1], zlats[0]))
-
         d = r_z_zhat_s.transpose().reshape((nzlat, nzlon))
+        self._plot_map(d, zlats, zlons, fig, axs[0], f'Correlation in space between z and zhat',
+                       cmap=cmap)
         hatches = d.copy()
         hatches[(p_z_zhat_s > alpha).transpose().reshape((nzlat, nzlon))] = np.nan
-        im = axs[0].contourf(zlons, zlats, d,
-                             cmap=cmap, levels=levels, extend='both', transform=ccrs.PlateCarree())
         _imh = axs[0].contourf(zlons, zlats, hatches,
                                colors='none', hatches='..', extend='both', transform=ccrs.PlateCarree())
-        _cb = fig.colorbar(im, ax=axs[0], orientation='horizontal',
-                           ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
-        axs[0].set_xlim(xlim)
-        axs[0].set_ylim(ylim)
-        # axs[0].margins(1)
-        axs[0].coastlines()
-        axs[0].set_title(f'Correlation in space between z and zhat')
         # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
 
         # ------ r_z_zhat_t and p_z_zhat_t ------ #
         axs[1].bar(ts, r_z_zhat_t)
-        # axs[1].margins(1)
         axs[1].scatter(ts[p_z_zhat_t <= alpha], r_z_zhat_t[p_z_zhat_t <= alpha])
         axs[1].set_title(f'Correlation in space between z and zhat')
         # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
@@ -543,24 +492,12 @@ class Spy4Caster:
         for mode in range(scf.shape[0]):
             axs[2].plot(ts, scf[mode], label=f'Mode {mode + 1}')
         axs[2].legend()
-        # axs[2].margins(1)
         axs[2].set_title(f'Squared convariance fraction')
         # ^^^^^^ scf ^^^^^^ #
 
-        # TODO: Plot seperately
-        # ------ r_uv and p_uv ------ #
-        #for mode in range(scf.shape[0]):
-        #    axs[3 + mode].plot(ts, r_uv[mode])
-        #    axs[3 + mode].scatter(ts[p_uv[mode] <= alpha], r_uv[mode][p_uv[mode] <= alpha])
-        #    axs[3 + mode].set_title(f'RUV and PUV for mode {mode + 1}')
-        # ^^^^^^ r_uv and p_uv ^^^^^^ #
+        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._cross_plot_name),
+                                 flags)
 
-        if F.SAVE_FIG in flags:
-            fig.savefig(os.path.join(self._plot_dir, self._cross_plot_name))
-        if F.SHOW_PLOT in flags:
-            fig.show()
-        if F.NOT_HALT not in flags:
-            plt.show()
         return self
 
     def create_plot(self, fig: Any = None, **kw: Union[str, int]) -> 'Spy4Caster':
