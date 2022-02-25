@@ -22,7 +22,7 @@ __all__ = ['Spy4Caster']
 class Spy4Caster:
     def __init__(self, yargs: Union[RDArgs, RDArgsDict], zargs: Union[RDArgs, RDArgsDict],
                  plot_dir: str = '', mats_plot_name: str = 'mats_plot.png', mca_plot_name: str = 'mca_plot.png', cross_plot_name: str = 'cross_plot.png',
-                 zhat_plot_name: str = 'zhat_plot.png', plot_data_dir: str = ''):
+                 zhat_plot_name: str = 'zhat_plot.png', plot_data_dir: str = '', plot_data_sufix: str = ''):
         if type(yargs) == RDArgs:
             yargs = yargs.as_dict()
         if type(zargs) == RDArgs:
@@ -39,6 +39,7 @@ class Spy4Caster:
         self._cross_plot_name = cross_plot_name
         self._zhat_plot_name = zhat_plot_name
         self._plot_data_dir = plot_data_dir
+        self._plot_data_sufix = plot_data_sufix
         self._y: Optional[npt.NDArray[np.float64]] = None
         self._ylat: Optional[npt.NDArray[np.float64]] = None
         self._ylon: Optional[npt.NDArray[np.float64]] = None
@@ -291,7 +292,7 @@ class Spy4Caster:
         # plt.tight_layout()
 
         if F.SAVE_FIG in flags:
-            fig.savefig(self._mats_plot_name)
+            fig.savefig(os.path.join(self._plot_dir, self._mats_plot_name))
         if F.SHOW_PLOT in flags:
             fig.show()
         if F.NOT_HALT not in flags:
@@ -363,7 +364,7 @@ class Spy4Caster:
         plt.tight_layout()
 
         if F.SAVE_FIG in flags:
-            fig.savefig(self._mca_plot_name)
+            fig.savefig(os.path.join(self._plot_dir, self._mca_plot_name))
         if F.SHOW_PLOT in flags:
             fig.show()
         if F.NOT_HALT not in flags:
@@ -437,7 +438,7 @@ class Spy4Caster:
         ax1.set_title(f'Z on year {sy}')
 
         if F.SAVE_FIG in flags:
-            fig.savefig(self._zhat_plot_name)
+            fig.savefig(os.path.join(self._plot_dir, self._zhat_plot_name))
         if F.SHOW_PLOT in flags:
             fig.show()
         if F.NOT_HALT not in flags:
@@ -537,7 +538,7 @@ class Spy4Caster:
         # ^^^^^^ r_uv and p_uv ^^^^^^ #
 
         if F.SAVE_FIG in flags:
-            fig.savefig(self._cross_plot_name)
+            fig.savefig(os.path.join(self._plot_dir, self._cross_plot_name))
         if F.SHOW_PLOT in flags:
             fig.show()
         if F.NOT_HALT not in flags:
@@ -574,28 +575,28 @@ class Spy4Caster:
 
     def save_fig_data(self) -> 'Spy4Caster':
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
-            print(f'[INFO] Saving Preprocessed data in `{self._plot_data_dir}/save_preprocessed*.npy`')
+            print('[ERROR] No preprocessed data to save', file=sys.stderr)
+        else:
+            print(f'[INFO] Saving Preprocessed data in `{self._plot_data_dir}/save_preprocessed_{self._plot_data_sufix}*.npy`')
             assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
-            self.save_output(f'{self._plot_data_dir}/save_preprocessed',
+            self.save_output(f'{self._plot_data_dir}/save_preprocessed_{self._plot_data_sufix}',
                  {
                      'y': self._y, 'ylat': self._ylat, 'ylon': self._ylon, 'ytime': self._ytime,
                      'z': self._z, 'zlat': self._zlat, 'zlon': self._zlon, 'ztime': self._ztime,
                  }
             )
-        else:
-            print('[ERROR] No preprocessed data to save', file=sys.stderr)
 
-        if self._mca_out is not None:
-            print(f'[INFO] Saving MCA data in `{self._plot_data_dir}/save_mca*.npy`')
-            self.save_output(f'{self._plot_data_dir}/save_mca', self._mca_out)
-        else:
+        if self._mca_out is None:
             print('[ERROR] No MCA data to save', file=sys.stderr)
-
-        if self._crossvalidation_out is not None:
-            print(f'[INFO] Saving crossvalidation data in `saved/save_cross*.npy`')
-            self.save_output(f'{self._plot_data_dir}/save_cross', self._crossvalidation_out)
         else:
+            print(f'[INFO] Saving MCA data in `{self._plot_data_dir}/save_mca_{self._plot_data_sufix}*.npy`')
+            self.save_output(f'{self._plot_data_dir}/save_mca_{self._plot_data_sufix}', self._mca_out)
+
+        if self._crossvalidation_out is None:
             print('[ERROR] No Crossvalidation data to save', file=sys.stderr)
+        else:
+            print(f'[INFO] Saving crossvalidation data in `{self._plot_data_dir}/save_cross_{self._plot_data_sufix}*.npy`')
+            self.save_output(f'{self._plot_data_dir}/save_cross_{self._plot_data_sufix}', self._crossvalidation_out)
 
         return self
 
