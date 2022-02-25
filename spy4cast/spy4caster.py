@@ -1,7 +1,7 @@
 import sys
 import os
 import traceback
-from typing import Union, Dict, Optional, Any
+from typing import Union, Dict, Optional, Any, Tuple, Sequence, List
 
 import xarray as xr
 from scipy import signal
@@ -48,6 +48,7 @@ class Spy4Caster:
         self._zlat: Optional[npt.NDArray[np.float64]] = None
         self._zlon: Optional[npt.NDArray[np.float64]] = None
         self._ztime: Optional[npt.NDArray[np.float64]] = None
+        self._opened_figs: List[plt.Figure] = []
 
     def _set_var(self, name: str, value: Union[np.ndarray, xr.DataArray]):
         if name == 'z':       self._z = value
@@ -60,6 +61,16 @@ class Spy4Caster:
         elif name == 'ytime': self._ytime = value
         else:
             raise ValueError(f'Unknown variable name {name}')
+
+    def _close_figures(self):
+        for fig in self._opened_figs:
+            plt.close(fig)
+        self._opened_figs = []
+
+    def _new_figure(self, figsize: Tuple[int, int] = None):
+        fig = plt.figure(figsize=figsize)
+        self._opened_figs.append(fig)
+        return fig
 
     def open_datasets(self) -> 'Spy4Caster':
         debugprint(f'[INFO] Opening datasets', end='')
@@ -311,7 +322,7 @@ class Spy4Caster:
             print('[ERROR] Can not plot mca. Methodology was not applied yet', file=sys.stderr)
             return self
 
-        fig = fig if fig is not None else plt.figure(figsize=(15, 10))
+        fig = fig if fig is not None else self._new_figure(figsize=(15, 10))
 
         ylats = self._ylat
         ts = self._ytime
@@ -637,6 +648,7 @@ class Spy4Caster:
                 self.plot_zhat(flags & ~F.SHOW_PLOT | F.NOT_HALT, sy=sy, cmap=cmap)
                 if flags & F.SHOW_PLOT:
                     plt.show()
+                self._close_figures()
             except Spy4CastError:
                 raise
             except Exception as e:
