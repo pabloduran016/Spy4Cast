@@ -381,7 +381,9 @@ class Spy4Caster:
           - z: Use `sy` to plot z on that year
         """
         if sy is None:
-            raise TypeError('`sy` argument must be provided')
+            print(f'[ERROR] Could not create zhat plot, the selected_year was not provided',
+                  file=sys.stderr)
+            return self
 
         if self._crossvalidation_out is None:
             print(f'[ERROR] Could not create zhat plot, the methodology has not been applied yet',
