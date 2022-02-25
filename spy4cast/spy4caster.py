@@ -330,7 +330,7 @@ class Spy4Caster:
             ax.plot(ts, self._mca_out.Us[i, :], color='green', label=f'Us')
             ax.plot(ts, self._mca_out.Vs[i, :], color='blue', label=f'Vs')
             ax.grid(True)
-            ax.set_title(f'Us Vs mode {i}')
+            ax.set_title(f'Us Vs mode {i + 1}')
         axs[0].legend(loc='upper left')
 
         su = self._mca_out.SUY
@@ -359,7 +359,7 @@ class Spy4Caster:
                 ax.set_ylim(ylim)
                 # ax.margins(1)
                 ax.coastlines()
-                ax.set_title(f'{name} mode {j}. SCF={self._mca_out.scf[j]*100:.02f}')
+                ax.set_title(f'{name} mode {j + 1}. SCF={self._mca_out.scf[j]*100:.02f}')
 
         plt.tight_layout()
 
