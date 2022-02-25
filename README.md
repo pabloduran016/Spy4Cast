@@ -86,6 +86,13 @@ Collection of data sctructures used across the API and for the users convenience
         FILTER        Perform butterworth filter in preprocesseing
         NOT_HALT      Not halt the program after showing (runs plt.show)
 
+        Ovirriden methods:
+            __mul__(self, other)
+                When you multiple an `F` instance by 1 or 0, the return values will be F(self*other)
+                Example:
+                    F.SHOW_PLOT * 0 = F(0)
+                    F.SHOW_PLOT * 1 = F.SHOW_PLOT
+
     
     spy4cast.stypes.ChunkType: Type of the chunk passed intop dask. 
       Equivalent to int | tuple[int, ...] | tuple[tuple[int, ...] ,...] | dict[str | int: int]
