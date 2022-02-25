@@ -100,8 +100,10 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def preprocess(self, flags: F = F(0), order: int = None, period: float = None) -> 'Spy4Caster':
+    def preprocess(self, flags: int = 0, order: int = None, period: float = None) -> 'Spy4Caster':
         debugprint(f'[INFO] Preprocessing data', end='')
+        flags = F(flags) if type(flags) == int else flags
+        assert type(flags) == F
         time_from_here()
         self._rdy._data = Meteo.anom(self._rdy._data)
         self._rdy._time_key = 'year'
@@ -311,7 +313,7 @@ class Spy4Caster:
             flags, fig
         )
 
-    def plot_mca(self, flags: F = F(0), fig: plt.Figure = None) -> 'Spy4Caster':
+    def plot_mca(self, flags: int = 0, fig: plt.Figure = None) -> 'Spy4Caster':
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
             print('[ERROR] Can not plot mca. No preprocessing or data loading', file=sys.stderr)
             return self
@@ -383,7 +385,7 @@ class Spy4Caster:
 
         return self
 
-    def plot_zhat(self, flags: F = F(0), fig: plt.Figure = None, sy: int = None, cmap: str = None) -> 'Spy4Caster':
+    def plot_zhat(self, flags: int = 0, fig: plt.Figure = None, sy: int = None, cmap: str = None) -> 'Spy4Caster':
         """
         Paramaters:
           - sy: Predicted year to show
@@ -460,7 +462,7 @@ class Spy4Caster:
             plt.show()
         return self
 
-    def plot_crossvalidation(self, flags: F = F(0), fig: plt.Figure = None, cmap: str = 'bwr') -> 'Spy4Caster':
+    def plot_crossvalidation(self, flags: int = 0, fig: plt.Figure = None, cmap: str = None) -> 'Spy4Caster':
         """
         Plots:
           - r_z_zhat_s and p_z_zhat_s: Cartopy map of r and then hatches when p is <= alpha
@@ -576,6 +578,7 @@ class Spy4Caster:
         self.plot_mca(fig=(fig[0] if fig is not None else None))
         self.plot_crossvalidation(fig=(fig[1] if fig is not None else None), cmap=cmap)
         self.plot_zhat(fig=(fig[2] if fig is not None else None), cmap=cmap, sy=sy)
+        self._close_figures()
         return self
 
     @staticmethod
@@ -624,9 +627,11 @@ class Spy4Caster:
 
         return self
 
-    def run(self, flags: F = F(0), **kwargs: Any) -> 'Spy4Caster':
-        sy = kwargs.pop('sy')
-        cmap = kwargs.pop('cmap')
+    def run(self, flags: int = 0, **kwargs: Any) -> 'Spy4Caster':
+        sy = kwargs.pop('sy', None)
+        cmap = kwargs.pop('cmap', None)
+        flags = F(flags) if type(flags) == int else flags
+        assert type(flags) == F
         if len(kwargs) != 0:
             raise TypeError(f'`run` takes only the following keyword arguments: `sy` and `cmap`. '
                             f'Got {", ".join(kwargs.keys())}')
