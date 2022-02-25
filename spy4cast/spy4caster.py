@@ -407,7 +407,8 @@ class Spy4Caster:
         nts, nlats, nlons = len(ts), len(lats), len(lons)
         n = 20
         _std = np.nanstd(zhat)
-        levels = np.linspace(-_std, _std, n)
+        _m = np.nanmean(zhat)
+        levels = np.linspace(_m - _std, _m + _std, n)
         xlim = sorted((lons[0], lons[-1]))
         ylim = sorted((lats[-1], lats[0]))
         index = 0
@@ -496,7 +497,8 @@ class Spy4Caster:
 
         # ------ r_z_zhat_s and p_z_zhat_s ------ #
         _std = np.nanstd(r_z_zhat_s)
-        levels = np.linspace(-_std, _std, n)
+        _m = np.nanmean(r_z_zhat_s)
+        levels = np.linspace(_m - _std, _m + _std, n)
         xlim = sorted((zlons[0], zlons[-1]))
         ylim = sorted((zlats[-1], zlats[0]))
 
