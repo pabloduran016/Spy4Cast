@@ -100,7 +100,7 @@ class Spy4Caster:
             b, a = signal.butter(order, 1 / period, btype='high', analog=False, output='ba', fs=None)
             _z = xr.apply_ufunc(
                 lambda ts: signal.filtfilt(b, a, ts),
-                self._z,
+                _z,
                 input_core_dims=[[self._rdz._time_key]], output_core_dims=[[self._rdz._time_key]]
             )
 
