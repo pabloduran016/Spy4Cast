@@ -312,13 +312,13 @@ class Spy4Caster:
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mats_plot_name),
                                  flags)
 
-    def plot_mca(self, flags: int = 0, fig: plt.Figure = None) -> 'Spy4Caster':
+    def plot_mca(self, flags: int = 0, fig: plt.Figure = None, cmap: str = None) -> 'Spy4Caster':
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
             print('[ERROR] Can not plot mca. No preprocessing or data loading', file=sys.stderr)
             return self
 
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
-
+        cmap = cmap if cmap is not None else 'bwr'
         if self._mca_out is None:
             print('[ERROR] Can not plot mca. Methodology was not applied yet', file=sys.stderr)
             return self
@@ -349,9 +349,9 @@ class Spy4Caster:
         su[su == 0.0] = np.nan
 
         n = 20
-        for i, (name, su, ru, lats, lons) in enumerate((
-                ('SUY', su, self._mca_out.RUY_sig, ylats, ylons),
-                ('SUZ', self._mca_out.SUZ, self._mca_out.RUZ_sig, zlats, zlons)
+        for i, (name, su, ru, lats, lons, cm) in enumerate((
+                ('SUY', su, self._mca_out.RUY_sig, ylats, ylons, 'bwr'),
+                ('SUZ', self._mca_out.SUZ, self._mca_out.RUZ_sig, zlats, zlons, cmap)
         )):
             _std = np.nanstd(su)
             _m = np.nanmean(su)
@@ -360,11 +360,11 @@ class Spy4Caster:
             ylim = sorted((lats[-1], lats[0]))
 
             for j, ax in enumerate(axs[3 * (i + 1):3 * (i + 1) + 3]):
-                title = f'{name} mode {j + 1}. SCF={self._mca_out.scf[j]*100:.02f}'
+                title = f'{name} mode {j + 1}. SCF={self._mca_out.scf[j]*100:.01f}'
                 t = su[:, j].transpose().reshape((len(lats), len(lons)))
                 th = ru[:, j].transpose().reshape((len(lats), len(lons)))
 
-                self._plot_map(t, lats, lons, fig, ax, title, levels=levels, xlim=xlim, ylim=ylim)
+                self._plot_map(t, lats, lons, fig, ax, title, levels=levels, xlim=xlim, ylim=ylim, cmap=cm)
                 _imh = ax.contourf(lons, lats, th, colors='none', hatches='..', extend='both',
                                    transform=ccrs.PlateCarree())
 
@@ -512,7 +512,7 @@ class Spy4Caster:
         if len(kw) != 0:
             raise TypeError(f'`create_plot` only accepts the following keyword arguments: `sy` and `cmap`. '
                             f'Got: {", ".join(kw.keys())}')
-        self.plot_mca(fig=(fig[0] if fig is not None else None))
+        self.plot_mca(fig=(fig[0] if fig is not None else None), cmap=cmap)
         self.plot_crossvalidation(fig=(fig[1] if fig is not None else None), cmap=cmap)
         self.plot_zhat(fig=(fig[2] if fig is not None else None), cmap=cmap, sy=sy)
         self._close_figures()
@@ -585,7 +585,7 @@ class Spy4Caster:
         # Create the plot
         if F.SHOW_PLOT in flags or F.SAVE_FIG in flags:
             try:
-                self.plot_mca(flags & ~F.SHOW_PLOT | F.NOT_HALT)
+                self.plot_mca(flags & ~F.SHOW_PLOT | F.NOT_HALT, cmap=cmap)
                 self.plot_crossvalidation(flags & ~F.SHOW_PLOT | F.NOT_HALT, cmap=cmap)
                 self.plot_zhat(flags & ~F.SHOW_PLOT | F.NOT_HALT, sy=sy, cmap=cmap)
                 if flags & F.SHOW_PLOT:
