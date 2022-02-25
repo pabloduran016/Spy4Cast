@@ -211,7 +211,8 @@ class ReadData:
             assert type(slise.yearf) == int, "Invalid type for final_year: %s" % type(slise.yearf)
             assert type(slise.year0) == int, f"Invalid type for initial_year: {type(slise.year0)}"
             if slise.year0 > slise.yearf:
-                raise TimeBoundsSelectionError(f"Initial year bigger than final year")
+                raise TimeBoundsSelectionError(f"Initial year bigger than final year\n"
+                                               f'NOTE: initial_year={slise.year0}, final_year={slise.yearf}')
             assert type(slise.month0) == int or type(slise.month0) == Month, \
                 f"Invalid type for initial_month: {type(slise.month0)}"
             if not 1 <= slise.month0 <= 12:
@@ -222,7 +223,8 @@ class ReadData:
                 raise TimeBoundsSelectionError(f'Final month not valid, must be int from 0 to 11')
             if slise.month0 > slise.monthf and slise.year0 - 1 < self._dataset_initial_timestamp.year:
                 raise TimeBoundsSelectionError(f'Initial year not valid, remember that when selecting month slice that '
-                                               f'combines years, the initial year backtracks one unit')
+                                               f'combines years, the initial year backtracks one unit\n'
+                                               f'NOTE: dataset_initial_timestamp={self._dataset_initial_timestamp}')
             if slise.sy is not None and slise.sy != 0:
                 if not slise.year0 <= slise.sy <= slise.yearf:
                     raise SelectedYearError(slise.sy)
