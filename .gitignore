@@ -11,3 +11,6 @@ foo*
 .mypy_cache/
 *.sh
 *.json
+Makefile
+build/
+*.bat
