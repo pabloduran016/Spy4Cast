@@ -605,6 +605,10 @@ class Spy4Caster:
         return self
 
     def run(self, flags: F = F(0), **kwargs: Any) -> 'Spy4Caster':
+        sy = kwargs.pop('sy')
+        if len(kwargs) != 0:
+            raise TypeError(f'`run` takes only one keyword argument: `sy`, got {"".join(kwargs.keys())}')
+
         # Save the data if needed
         if F.SAVE_DATA in flags:
             try:
@@ -619,7 +623,7 @@ class Spy4Caster:
             try:
                 self.plot_mca(flags & ~F.SHOW_PLOT | F.NOT_HALT)
                 self.plot_crossvalidation(flags & ~F.SHOW_PLOT | F.NOT_HALT)
-                self.plot_zhat(flags & ~F.SHOW_PLOT | F.NOT_HALT, sy=kwargs.get('sy'))
+                self.plot_zhat(flags & ~F.SHOW_PLOT | F.NOT_HALT, sy=sy)
                 if flags & F.SHOW_PLOT:
                     plt.show()
             except Spy4CastError:
