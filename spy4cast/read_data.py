@@ -150,7 +150,7 @@ class ReadData:
                 self._variable = key
                 break
         elif self._variable not in self._dataset.variables.keys():
-            raise VariableSelectionError(f'{self._variable}', valid_variables=self._valid_variables)
+            raise VariableSelectionError(f'{self._variable}', valid_variables=list(self._valid_variables))
 
         # Check if values are in Kelvin
         if self._dataset.variables[self._variable].attrs['units'] == 'K':  # values in Kelvin
