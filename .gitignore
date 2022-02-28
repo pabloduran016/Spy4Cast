@@ -17,4 +17,4 @@ build/
 tests/
 examples/plots
 examples/saved*
-.zip*
+*.zip
