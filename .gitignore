@@ -14,3 +14,4 @@ foo*
 Makefile
 build/
 *.bat
+tests/
