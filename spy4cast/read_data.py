@@ -17,11 +17,43 @@ __all__ = ['ReadData', 'NAN_VAL']
 
 NAN_VAL = 1e10  # Absolute value from where a point is considered NaN
 
-T = TypeVar('T', bound='ReadData')
+ReadDataType = TypeVar('ReadDataType', bound='ReadData')
+"""Type returned by each ReadData function that enables concatenability
+See Also
+--------
+    `ReadData`
+"""
 
 
 class ReadData:
-    """Concatenable ReadData object"""
+    """This class enables you to load, slice and modify the data in a netcdf4 file confortably.
+
+    It is concatenable, meaning that the output of most methods is the object itself so that you can
+    concatenate methods easily.
+
+    Args
+    ----
+        dataset_dir : str, default=''
+            Directory where the dataset you want to use is located
+        dataset_name : str, default='dataset.nc'
+            Name of the dataset
+        variable : str, optional
+            Variable to evaluate. If it is not set, the program will try to recgnise it by discarding time and coordinate variables
+        plot_dir : str, default=''
+            Directory to store the plot if later created
+        plot_name : str, default='plot.png'
+            Name of the plot saved if later created
+        plot_data_dir : str, default=''
+            Directory of the data saved if later saved
+        force_name : bool, default=False
+            Indicates wether or not inforce the names set above. If false the name will be modified not to overwrite any existing files
+        chunks : `stypes.ChunkType`, optional
+            Argument passed when loading the datasets (see chunks in dask library)
+
+    Example
+    -------
+        >>> ReadData('data/', 'example.nc', 'var').open_dataset().slice_dataset(Slise(-20, 20, -10, 0, Month.Jan, Month.FEB, 1870, 2000)).save_fig_data()
+    """
     _silent: ClassVar[bool] = False
 
     _dataset_initial_timestamp: TimeStamp
@@ -80,18 +112,40 @@ class ReadData:
         #            f" plot_data_name: {self._plot_data_name}")
 
     @property
-    def time(self) -> xr.DataArray: return self._data[self._time_key]
+    def time(self) -> xr.DataArray:
+        """Returns the time variable of the data evaluated. They key used is recognised automatically"""
+        return self._data[self._time_key]
 
     @property
-    def lat(self) -> xr.DataArray: return self._data[self._lat_key]
+    def lat(self) -> xr.DataArray:
+        """Returns the latitude variable of the data evaluated. They key used is recognised automatically"""
+        return self._data[self._lat_key]
 
     @property
-    def lon(self) -> xr.DataArray: return self._data[self._lon_key]
+    def lon(self) -> xr.DataArray:
+        """Returns the latitude variable of the data evaluated. They key used is recognised automatically"""
+        return self._data[self._lon_key]
 
     @property
-    def shape(self) -> Tuple[int, ...]: return self._data.shape
+    def shape(self) -> Tuple[int, ...]:
+        """Returns the shape variable of the data evaluated."""
+        return self._data.shape
 
-    def load_dataset(self: T) -> T:
+    def load_dataset(self: ReadDataType) -> ReadDataType:
+        """Loads dataset into memory
+
+        .. deprecated:: 0.0.1
+          `ReadData.load_dataset` will be removed in SpyCaster 0.0.2, and replaced by
+          `ReadData.open_dataset` because it doesn't load the dataset into memory.
+
+        Warning
+        -------
+            Deprectaed, use `ReadData.open_dataset`
+
+        See Also
+        --------
+            `ReadData.open_dataset`
+        """
         print('[WARNING] Support for `ReadData.load_dataset` is deprected. Use `ReadData.open_dataset` instead',
               file=sys.stderr)
         if self._opened_dataset:
@@ -100,7 +154,18 @@ class ReadData:
         self._dataset = self._dataset.load()
         return self
 
-    def open_dataset(self: T) -> T:
+    def open_dataset(self: ReadDataType) -> ReadDataType:
+        """Opens dataset without loading it into memory
+
+        Raises
+        ------
+            `errors.DatasetError`
+                If there is an error while opening the dataset
+            `errors.DatasetNotFoundError`
+                If the dataset name or dir is not valid
+            `errors.VariableSelectionError`
+                If teh variable selected does not exist or can not be inferred
+        """
         if self._opened_dataset:
             return self
         # debugprint(f"[INFO] <{self.__class__.__name__}> Loading dataset: {self._dataset_name} for {self._plot_name}")
@@ -176,7 +241,29 @@ class ReadData:
 
         return self
 
-    def check_variables(self: T, slise: Optional[Slise] = None) -> T:
+    def check_variables(self: ReadDataType, slise: Optional[Slise] = None) -> ReadDataType:
+        """Checks if the variable selected and the slise (only time-related part), if provided, is valid for the given dataset.
+
+        Args
+        ----
+            slise : Slise
+                Slise use for slicing (see `stypes.Slise`)
+
+        Raises
+        ------
+            `ValueError`
+                if the dataset ha not been loaded
+            `spy4cast.errors.VariableSelectionError`
+                if the variable selected is not valid
+            `spy4cast.errors.TimeBoundsSelectionError`
+                if the time slise is not valid
+            `spy4cast.errors.SelectedYearError`
+                if the selected_year (if provided) is not valid
+
+        See Also
+        --------
+            `stypes.Slise`
+        """
         # debugprint(f"[INFO] <{self.__class__.__name__}> Checking variables for {self._plot_name}")
         if not self._opened_dataset:
             raise ValueError('The dataset has not been loaded yet. Call load_dataset()')
@@ -233,12 +320,30 @@ class ReadData:
         #     raise CmapSelectionError(cmap)
         return self
 
-    def slice_dataset(self: T, slise: Slise, skip: int = 0) -> T:
-        """
-        Note: If the season contains months from different years (NOV-DEC-JAN-FEB for example)
-        the initial year is applied to the month which comes at last (FEB). In this example, the
-        data that will be used for NOV is on year before the initial year so keep this in mind
-        if your dataset doesn't contain that specific year.
+    def slice_dataset(self: ReadDataType, slise: Slise, skip: int = 0) -> ReadDataType:
+        """Method that slices the dataset accorging to a slise.
+
+        Args
+        ----
+            slise : Slise
+                Slise to use
+            skip : int
+                Amount of points to skip in the matrix
+
+        Note
+        ----
+            It first calls `check_variables` method
+
+        Note
+        ----
+            If the season contains months from different years (NOV-DEC-JAN-FEB for example)
+            the initial year is applied to the month which comes at last (FEB). In this example, the
+            data that will be used for NOV is on year before the initial year so keep this in mind
+            if your dataset doesn't contain that specific year.
+
+        See Also
+        --------
+            `stypes.Slise`
         """
 
         self.check_variables(slise)
@@ -352,7 +457,10 @@ class ReadData:
     #
     #     return self
 
-    def save_fig_data(self: T) -> T:
+    def save_fig_data(self: ReadDataType) -> ReadDataType:
+        """Saves the data as a netcdf4 file in the path specified in __init__
+        """
+
         fig_data_path = os.path.join(self._plot_data_dir, self._plot_data_name)
         # debugprint(f"[INFO] <{self.__class__.__name__}> Saving plot data for {self._plot_name} as "
         #            f"{self._plot_data_name} in path: {fig_data_path}")
@@ -368,6 +476,29 @@ class ReadData:
         return self
 
     def get_dataset_info(self) -> Tuple[str, Dict[str, str]]:
+        """Returns a tuple where the first element is the dataset name and the second is a dict with keys:
+
+        · **title**: dataset name without the extension
+
+        · **from**: initial date of the dataset loaded
+
+        · **to**: final date of the dataset
+
+        · **variable**: variable used
+
+        Example
+        -------
+            >>> (
+            ...     'HadISST_sst.nc',
+            ...     {
+            ...         'title': 'HadISST_sst',
+            ...         'from': 'Jan 1870',
+            ...         'to': 'May 2020',
+            ...         'variable': 'sst'
+            ...     }
+            ... )
+
+        """
         return (
             self._dataset_name, {
                 "title": f"{'.'.join(self._dataset_name.split('.')[:-1])}",
