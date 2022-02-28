@@ -12,17 +12,14 @@ Welcome to Spy4Cast's documentation!
    This project is under active developement
 
 .. toctree::
-   :maxdepth: 5
-   :caption: Contents:
-
+   :maxdepth: 4
+   
    usage
    methodologies
-   modules
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   Stypes <.toctrees/spy4cast.stypes>
+   Errors <.toctrees/spy4cast.errors>
+   Functions <.toctrees/spy4cast.functions>
+   Meteo <.toctrees/spy4cast.meteo>
+   Plotters <.toctrees/spy4cast.plotters>
+   Read_data <.toctrees/spy4cast.read_data>
+   Spy4caster <.toctrees/spy4cast.spy4caster>
