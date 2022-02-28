@@ -288,7 +288,12 @@ class Spy4Caster:
             flags = F(flags)
         assert type(flags) == F
         if F.SAVE_FIG in flags:
-            fig.savefig(path)
+            for _ in range(2):
+                try:
+                    fig.savefig(path)
+                    break
+                except FileNotFoundError:
+                    os.mkdir(path.split('/')[0])
         if F.SHOW_PLOT in flags:
             fig.show()
         if F.NOT_HALT not in flags:
