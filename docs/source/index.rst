@@ -1,7 +1,11 @@
 .. Spy4Cast documentation master file
 
-Welcome to Spy4Cast's documentation!
-====================================
+.. |ICON| image:: _static/favicon.png
+    :height: 1em
+    :alt: Icon
+
+Welcome to Spy4Cast's documentation! |ICON|
+===========================================
 
 **Spy4Cast** is a framework for working with .nc files and applying methodologies to them as well as plotting.
 

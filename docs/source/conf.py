@@ -136,7 +136,7 @@ extensions = [
     'enum_tools.autoenum',
 ]
 autodoc_member_order = 'bysource'
-html_favicon = "_static/favicon.ico"
+html_favicon = "_static/favicon.png"
 
 # Napoleon settings
 napoleon_google_docstring = False
