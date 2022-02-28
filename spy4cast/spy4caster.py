@@ -404,12 +404,15 @@ class Spy4Caster:
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
 
         fig = self._new_figure(figsize=(15, 10)) if fig is None else fig
-        ax0 = plt.subplot(211, projection=ccrs.PlateCarree())
-        ax1 = plt.subplot(212, projection=ccrs.PlateCarree())
+        ax0 = plt.subplot(311, projection=ccrs.PlateCarree())
+        ax1 = plt.subplot(312, projection=ccrs.PlateCarree())
+        ax2 = plt.subplot(313, projection=ccrs.PlateCarree())
 
-        lats = self._zlat
+        zlats = self._zlat
+        ylats = self._ylat
         ts = self._ytime
-        lons = self._zlon
+        zlons = self._zlon
+        ylons = self._ylon
         zhat = self._crossvalidation_out.zhat
 
         index = 0
@@ -417,13 +420,16 @@ class Spy4Caster:
         if index > len(ts) - 1 or ts[index] > sy:
             raise ValueError(f'Selected Year {sy} is not valid\nNOTE: Valid years {ts}')
 
-        nts, nlats, nlons = len(ts), len(lats), len(lons)
+        nts, nylats, nylons = len(ts), len(ylats), len(ylons)
+        d0 = self._y.transpose().reshape((nts, nylats, nylons))
+        self._plot_map(d0[index], ylats, ylons, fig, ax0, f'Y on year {sy}')
 
-        d0 = zhat.transpose().reshape((nts, nlats, nlons))
-        self._plot_map(d0[index], lats, lons, fig, ax0, f'Zhat on year {sy}', cmap=cmap)
+        nts, nzlats, nzlons = len(ts), len(zlats), len(zlons)
+        d1 = zhat.transpose().reshape((nts, nzlats, nzlons))
+        self._plot_map(d1[index], zlats, zlons, fig, ax1, f'Zhat on year {sy}', cmap=cmap)
 
-        d1 = self._z.transpose().reshape((nts, nlats, nlons))
-        self._plot_map(d1[index], lats, lons, fig, ax1, f'Z on year {sy}', cmap=cmap)
+        d2 = self._z.transpose().reshape((nts, nzlats, nzlons))
+        self._plot_map(d2[index], zlats, zlons, fig, ax2, f'Z on year {sy}', cmap=cmap)
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._zhat_plot_name),
                                  flags)
