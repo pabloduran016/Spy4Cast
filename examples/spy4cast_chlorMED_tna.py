@@ -4,11 +4,11 @@ from spy4cast.stypes import F, Month, Slise, RDArgs
 
 DATASET_DIR = '/Users/Shared/datasets/'
 PLOTS_DIR = ''
-PLOTS_DATA_DIR = 'saved_2/'
-MATS_PLOT_NAME = 'mats_spy4cast_example_2.png'
-MCA_PLOT_NAME = 'mca_spy4cast_example_2.png'
-CROSS_PLOT_NAME = 'cross_spy4cast_example_2.png'
-ZHAT_PLOT_NAME = 'zhat_spy4cast_example_2.png'
+PLOTS_DATA_DIR = 'saved_chlorMED_tna/'
+MATS_PLOT_NAME = 'mats_spy4cast_chlorMED_tna.png'
+MCA_PLOT_NAME = 'mca_spy4cast_chlorMED_tna.png'
+CROSS_PLOT_NAME = 'cross_spy4cast_chlorMED_tna.png'
+ZHAT_PLOT_NAME = 'zhat_spy4cast_chlorMED_tna.png'
 chl_1km_monthly_Sep1997_Dec2020 = 'chl_1km_monthly_Sep1997_Dec2020.nc'  # Clorofila perdictando
 oisst_v2_mean_monthly = 'oisst_v2_mean_monthly.nc'  # Clorofila perdictando con años bien
 CHL = 'CHL'
@@ -20,8 +20,8 @@ def main():
     alpha=.1
 
     oisst_slise = Slise(
-        lat0=5, latf=30,
-        lon0=-90, lonf=-10,
+        lat0=5, latf=45,
+        lon0=-90, lonf=-5,
         month0=Month.APR, monthf=Month.JUL,
         year0=1997, yearf=2019,
     )  # PREDICTOR: Y
@@ -43,13 +43,13 @@ def main():
     # TODO: Implement `ray` for multiprocessing in crossvalidation
     s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=0, zskip=0)
     s.preprocess()  # Primero sin filtro y luego con filtro de 8 años
-    # s.load_preprocessed('./saved_2', 'save_ppcessed_', '.npy')
+    # s.load_preprocessed(PLOTS_DATA_DIR, 'save_ppcessed_', '.npy')
     # s.plot_preprocessed()
     s.mca(nm=nm, alpha=alpha)
-    # s.load_mca('./saved_2', 'save_mca_', '.npy')
+    # s.load_mca(PLOTS_DATA_DIR, 'save_mca_', '.npy')
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
-    s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=True)
-    # s.load_crossvalidation('./saved_2', 'save_cross_', '.npy')
+    s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
+    # s.load_crossvalidation(PLOTS_DATA_DIR, 'save_cross_', '.npy')
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
     # s.plot_crossvalidation(F.SHOW_PLOT | F.SAVE_FIG)
     # s.plot_zhat(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year)

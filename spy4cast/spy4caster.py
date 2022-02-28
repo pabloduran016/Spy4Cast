@@ -432,11 +432,13 @@ class Spy4Caster:
           - r_z_zhat_t and p_z_zhat_t: Bar plot of r and then points when p is <= alpha
           - scf: Draw scf for all times for mode i. For the time being all in one plot
           - r_uv and p_uv: Same as scf and points when p <= alpha
-        Layout:
-           r_z_zhat_s    r_z_zhat_t
-              scf           r_uv_1
-            r_uv_1          r_uv_2
         """
+
+        # Layout:
+        #    r_z_zhat_s    r_z_zhat_t
+        #       scf           r_uv_1
+        #     r_uv_1          r_uv_2
+
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime, self._crossvalidation_out)]):
             print(f'[ERROR] Could not create crossvalidation plot, must apply preprocessing first', file=sys.stderr)
             return self

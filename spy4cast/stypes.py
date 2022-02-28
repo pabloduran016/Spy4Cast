@@ -45,7 +45,7 @@ class Slise:
     """Dataclass to create a `Slise`
 
     A slise is the way of slicing datasets that is convenient to the user and the API
-                                                                                           ç
+
     Note
     ----
         The developers of this API are aware that the correct slpelling for `slice` is with a `c`.

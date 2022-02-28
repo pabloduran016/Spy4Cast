@@ -140,7 +140,7 @@ class Meteo:
         ny, nt = y.shape
         # nyr = int(nt / nmes)
 
-        # first you calculate the covariance matrixç
+        # first you calculate the covariance matrix
         # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
         c = np.dot(y, np.transpose(z))
         if type(c) == np.ma.MaskedArray:
