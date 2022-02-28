@@ -125,7 +125,7 @@ class DatasetError(Spy4CastError, ValueError):
     _id = next(_new_id)
 
     def __init__(self, e: Optional[str] = None, *args: Any):
-        msg = e if e is not None else 'Dataset name not valid'
+        msg = e if e is not None else 'There was an error while loading the dataset'
         super().__init__(msg, *args)
 
 
