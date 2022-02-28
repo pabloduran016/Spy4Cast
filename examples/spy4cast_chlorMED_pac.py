@@ -3,7 +3,7 @@ from spy4cast.stypes import F, Month, Slise, RDArgs
 
 
 DATASET_DIR = '/Users/Shared/datasets/'
-PLOTS_DIR = ''
+PLOTS_DIR = 'plots'
 PLOTS_DATA_DIR = 'saved_pac/'
 MATS_PLOT_NAME = 'mats_spy4cast_chlorMED_pac.png'
 MCA_PLOT_NAME = 'mca_spy4cast_chlorMED_pac.png'
@@ -20,10 +20,10 @@ def main():
     alpha=.1
 
     oisst_slise = Slise(
-        lat0=-15, latf=25,
-        lon0=-150, lonf=-90,
-        month0=Month.NOV, monthf=Month.JAN,
-        year0=1998, yearf=2020,
+        lat0=-20, latf=25,
+        lon0=-210, lonf=-60,
+        month0=Month.OCT, monthf=Month.DEC,
+        year0=1997, yearf=2019,
     )  # PREDICTOR: Y
 
     chl_slise = Slise(
