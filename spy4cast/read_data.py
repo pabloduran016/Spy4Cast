@@ -2,9 +2,10 @@ import datetime
 import os
 import sys
 import traceback
-from typing import ClassVar, Set, Optional, TypeVar, Tuple, Dict
+from typing import ClassVar, Set, Optional, TypeVar, Tuple, Dict, cast
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import xarray as xr
 
@@ -129,7 +130,7 @@ class ReadData:
     @property
     def shape(self) -> Tuple[int, ...]:
         """Returns the shape variable of the data evaluated."""
-        return self._data.shape
+        return cast(Tuple[int, ...], self._data.shape)
 
     def load_dataset(self: ReadDataType) -> ReadDataType:
         """Loads dataset into memory
@@ -376,10 +377,10 @@ class ReadData:
             self._lon_key: lonmask,
         }]
 
-        latskipmask = np.zeros(len(self.lat)).astype(bool)
+        latskipmask: npt.NDArray[np.bool_] = np.zeros(len(self.lat)).astype(bool)
         latskipmask[::skip + 2] = True
 
-        lonskipmask = np.zeros(len(self.lon)).astype(bool)
+        lonskipmask: npt.NDArray[np.bool_] = np.zeros(len(self.lon)).astype(bool)
         lonskipmask[::skip + 2] = True
 
         self._data = self._data[{

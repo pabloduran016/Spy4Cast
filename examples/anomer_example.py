@@ -6,7 +6,7 @@ DATASETS_DIR = '/Users/Shared/datasets/'
 HadISST_sst = 'HadISST_sst.nc'
 
 
-def main():
+def main() -> None:
     sl = Slise(
         lat0=-45, latf=45,
         lon0=-100, lonf=100,

@@ -43,7 +43,7 @@ class VariableSelectionError(Spy4CastError, ValueError):
     """Exception raised when there is an error when loading the dataset and the variable given is not valid"""
     _id = next(_new_id)
 
-    def __init__(self, variable: str, *args: Any, valid_variables: Sequence[str] = None):
+    def __init__(self, variable: str, *args: Any, valid_variables: Optional[Sequence[str]] = None):
         super().__init__(f'Variable selected ({variable}) is not valid.{(f" Valid: {valid_variables}" if valid_variables is not None else "")}', *args)
 
 

@@ -14,7 +14,7 @@ SST = 'sst'
 MSL = 'msl'
 
 
-def main():
+def main() -> None:
     order=8
     period=5.5
     nm=3
@@ -38,7 +38,7 @@ def main():
             yargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=HadISST_sst, variable=SST, chunks=100),
             zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=slp_ERA20_1900_2010, variable=MSL, chunks=100),
             plot_dir=PLOTS_DIR, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME, zhat_plot_name=ZHAT_PLOT_NAME,
-            force_name=True, plot_data_dir=PLOTS_DATA_DIR)
+            plot_data_dir=PLOTS_DATA_DIR)
     s.open_datasets()
     s.slice_datasets(yslise=sst_slise, zslise=slp_slise)
     s.preprocess(F.FILTER, order=order, period=period)

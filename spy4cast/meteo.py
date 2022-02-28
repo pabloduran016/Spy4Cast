@@ -21,6 +21,7 @@ class CrossvalidationOut:
     p_z_zhat_s: npt.NDArray[np.float64]
     r_uv: npt.NDArray[np.float64]
     p_uv: npt.NDArray[np.float64]
+    us: npt.NDArray[np.float64]
     alpha: float
 
 @dataclass
@@ -206,8 +207,8 @@ class Meteo:
         return Cor, Pvalue, Cor_sig, reg, reg_sig
 
     @staticmethod
-    def _crossvalidate_year(year: int, z: np.ndarray, y: np.ndarray, nt: int, ny: int, yrs: np.ndarray,
-                            nmes: int, nm: int, alpha: float):
+    def _crossvalidate_year(year: int, z: npt.NDArray[np.float64], y: npt.NDArray[np.float64], nt: int, ny: int, yrs: npt.NDArray[np.int32],
+                            nmes: int, nm: int, alpha: float) -> Tuple[npt.NDArray[np.float64], ...]:
         print('year:', year, 'of', nt)
         z2 = z[:, yrs != year]
         y2 = y[:, yrs != year]
@@ -228,10 +229,10 @@ class Meteo:
         for m in range(nm):
             r_uv[m], p_uv[m] = stats.pearsonr(mca_out.Us[m, :], mca_out.Vs[m, :]) #
 
-        return scf, zhat, r_uv, p_uv
+        return scf, zhat, r_uv, p_uv, mca_out.Us
 
     @classmethod
-    def crossvalidation_mp(cls, y: np.ndarray, z: np.ndarray, nmes: int, nm: int, alpha: float) -> CrossvalidationOut:
+    def crossvalidation_mp(cls, y: npt.NDArray[np.float64], z: npt.NDArray[np.float64], nmes: int, nm: int, alpha: float) -> CrossvalidationOut:
         nz, ntz = z.shape
         ny, nty = y.shape
 
@@ -242,6 +243,7 @@ class Meteo:
         scf = np.zeros([nm, nt])
         r_uv = np.zeros([nm, nt])
         p_uv = np.zeros([nm, nt])
+        us = np.zeros([nt, nt])  # crosvalidated year on axis 1
         # estimación de zhat para cada año
         yrs = np.arange(nt)
 
@@ -261,7 +263,7 @@ class Meteo:
 
             for i in yrs:
                 values = processes[i].get()
-                scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i] = values
+                scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, i] = values
 
         # Step 3: Don't forget to close
 
@@ -296,11 +298,12 @@ class Meteo:
             p_z_zhat_s=p_z_zhat_s,  # P values of rr
             r_uv=r_uv,  # Correlation score betweeen u and v for each mode
             p_uv=p_uv,  # P value of ruv
+            us=us,  # crosvalidated year on axis 1
             alpha=alpha,  # Correlation factor
         )
 
     @classmethod
-    def crossvalidation(cls, y: np.ndarray, z: np.ndarray, nmes: int, nm: int, alpha: float) -> CrossvalidationOut:
+    def crossvalidation(cls, y: npt.NDArray[np.float64], z: npt.NDArray[np.float64], nmes: int, nm: int, alpha: float) -> CrossvalidationOut:
         nz, ntz = z.shape
         ny, nty = y.shape
 
@@ -311,6 +314,7 @@ class Meteo:
         scf = np.zeros([nm, nt])
         r_uv = np.zeros([nm, nt])
         p_uv = np.zeros([nm, nt])
+        us = np.zeros([nt, nt])  # crosvalidated year on axis 1
         # estimación de zhat para cada año
         yrs = np.arange(nt)
 
@@ -323,7 +327,7 @@ class Meteo:
         #     scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i] = results[i]
 
         for i in yrs:
-            scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], \
+            scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, i] \
                 = cls._crossvalidate_year(year=i, z=z, y=y, nt=nt, ny=ny, yrs=yrs, nmes=nmes, nm=nm, alpha=alpha)
 
         r_z_zhat_t = np.zeros(nt)
@@ -353,5 +357,6 @@ class Meteo:
             p_z_zhat_s=p_z_zhat_s,  # P values of rr
             r_uv=r_uv,  # Correlation score betweeen u and v for each mode
             p_uv=p_uv,  # P value of ruv
+            us=us,  # crosvalidated year on axis 1
             alpha=alpha,  # Correlation factor
         )

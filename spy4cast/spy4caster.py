@@ -50,7 +50,7 @@ class Spy4Caster:
         self._ztime: Optional[npt.NDArray[np.float64]] = None
         self._opened_figs: List[plt.Figure] = []
 
-    def _set_var(self, name: str, value: Union[np.ndarray, xr.DataArray]):
+    def _set_var(self, name: str, value: Union[npt.NDArray[np.float64], xr.DataArray]) -> None:
         if name == 'z':       self._z = value
         elif name == 'zlat':  self._zlat = value
         elif name == 'zlon':  self._zlon = value
@@ -62,12 +62,12 @@ class Spy4Caster:
         else:
             raise ValueError(f'Unknown variable name {name}')
 
-    def _close_figures(self):
+    def _close_figures(self) -> None:
         for fig in self._opened_figs:
             plt.close(fig)
         self._opened_figs = []
 
-    def _new_figure(self, figsize: Tuple[int, int] = None):
+    def _new_figure(self, figsize: Optional[Tuple[int, int]] = None) -> plt.Figure:
         fig = plt.figure(figsize=figsize)
         self._opened_figs.append(fig)
         return fig
@@ -100,7 +100,7 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def preprocess(self, flags: int = 0, order: int = None, period: float = None) -> 'Spy4Caster':
+    def preprocess(self, flags: int = 0, order: Optional[int] = None, period: Optional[float] = None) -> 'Spy4Caster':
         debugprint(f'[INFO] Preprocessing data', end='')
         flags = F(flags) if type(flags) == int else flags
         assert type(flags) == F
@@ -211,6 +211,7 @@ class Spy4Caster:
             'p_z_zhat_s': None,
             'r_uv': None,
             'p_uv': None,
+            'us': None,
             'alpha': None,
         }
         for key in out.keys():
@@ -229,6 +230,7 @@ class Spy4Caster:
             p_z_zhat_s=out['p_z_zhat_s'],
             r_uv=out['r_uv'],
             p_uv=out['p_uv'],
+            us=out['us'],
             alpha=out['alpha'],
         )
         print(f' took {time_to_here():.03f} seconds')
@@ -259,8 +261,11 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def _plot_map(self, arr: np.ndarray, lat: np.ndarray, lon: np.ndarray, fig: plt.Figure, ax: plt.Axes, title: str = None,
-                  levels: np.ndarray = None, xlim: Sequence[int] = None, ylim: Sequence[int] = None, cmap: str = None):
+    def _plot_map(self, arr: npt.NDArray[np.float64], lat: npt.NDArray[np.float64], lon: npt.NDArray[np.float64],
+                  fig: plt.Figure, ax: plt.Axes, title: Optional[str] = None,
+                  levels: Optional[npt.NDArray[np.float64]] = None,
+                  xlim: Optional[Sequence[int]] = None, ylim: Optional[Sequence[int]] = None,
+                  cmap: Optional[str] = None) -> None:
         if levels is None:
             n = 30
             _std = np.nanstd(arr)
@@ -283,7 +288,7 @@ class Spy4Caster:
         if title is not None:
             ax.set_title(title)
 
-    def _apply_flags_to_fig(self, fig: plt.Figure, path: str, flags: int):
+    def _apply_flags_to_fig(self, fig: plt.Figure, path: str, flags: int) -> None:
         if type(flags) == int:
             flags = F(flags)
         assert type(flags) == F
@@ -299,7 +304,7 @@ class Spy4Caster:
         if F.NOT_HALT not in flags:
             plt.show()
 
-    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None):
+    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None) -> None:
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
            raise TypeError('Must preprocess data before applying Crossvalidation')
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
@@ -317,7 +322,7 @@ class Spy4Caster:
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mats_plot_name),
                                  flags)
 
-    def plot_mca(self, flags: int = 0, fig: plt.Figure = None, cmap: str = None) -> 'Spy4Caster':
+    def plot_mca(self, flags: int = 0, fig: Optional[plt.Figure] = None, cmap: Optional[str] = None) -> 'Spy4Caster':
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
             print('[ERROR] Can not plot mca. No preprocessing or data loading', file=sys.stderr)
             return self
@@ -377,7 +382,8 @@ class Spy4Caster:
                                  flags)
         return self
 
-    def plot_zhat(self, flags: int = 0, fig: plt.Figure = None, sy: int = None, cmap: str = None) -> 'Spy4Caster':
+    def plot_zhat(self, flags: int = 0, fig: Optional[plt.Figure] = None, sy: Optional[int] = None,
+                  cmap: Optional[str] = None) -> 'Spy4Caster':
         """
         Paramaters:
           - sy: Predicted year to show
@@ -436,13 +442,14 @@ class Spy4Caster:
 
         return self
 
-    def plot_crossvalidation(self, flags: int = 0, fig: plt.Figure = None, cmap: str = None) -> 'Spy4Caster':
+    def plot_crossvalidation(self, flags: int = 0, fig: Optional[plt.Figure] = None,
+                             cmap: Optional[str] = None) -> 'Spy4Caster':
         """
         Plots:
           - r_z_zhat_s and p_z_zhat_s: Cartopy map of r and then hatches when p is <= alpha
           - r_z_zhat_t and p_z_zhat_t: Bar plot of r and then points when p is <= alpha
           - scf: Draw scf for all times for mode i. For the time being all in one plot
-          - r_uv and p_uv: Same as scf and points when p <= alpha
+          - US
         """
 
         # Layout:
@@ -508,6 +515,10 @@ class Spy4Caster:
         axs[2].set_title(f'Squared convariance fraction')
         # ^^^^^^ scf ^^^^^^ #
 
+        # ^^^^^^ Us ^^^^^^ #
+        self._crossvalidation_out.us
+
+
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._cross_plot_name),
                                  flags)
 
@@ -532,7 +543,7 @@ class Spy4Caster:
         return self
 
     @staticmethod
-    def save_output(name: str, variables: Union[Dict[str, np.ndarray], MCAOut, CrossvalidationOut]):
+    def save_output(name: str, variables: Union[Dict[str, npt.NDArray[np.float64]], MCAOut, CrossvalidationOut]) -> None:
         if type(variables) != dict:
             d = variables.__dict__
         else:

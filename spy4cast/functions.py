@@ -1,7 +1,7 @@
 import json
 import os
 import datetime
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 from .stypes import Month, Slise
 from time import perf_counter
 
@@ -30,7 +30,7 @@ class Settings:
     silence = True
 
 
-def set_silence(b: bool):
+def set_silence(b: bool) -> None:
     if type(b) != bool:
         raise TypeError(f'Expected bool got {type(b)}')
     Settings.silence = b
@@ -150,7 +150,7 @@ def log_error(string: str, path: Optional[str] = None) -> None:
         f.write(string + '\n')
 
 
-def debugprint(*msgs: str, **kws):
+def debugprint(*msgs: str, **kws: Any) -> None:
     if not Settings.silence:
         print(*msgs, **kws)
 

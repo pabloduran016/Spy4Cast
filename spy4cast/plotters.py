@@ -20,7 +20,7 @@ __all__ = ['PlotterTS', 'PlotterMap', 'Proker', 'ClimerTS', 'ClimerMap', 'Anomer
 
 class Plotter(ReadData, ABC):
     @abstractmethod
-    def create_plot(self, flags: F, **kwargs) -> 'Plotter':
+    def create_plot(self, flags: F, **kwargs: Any) -> 'Plotter':
         raise NotImplementedError
 
     def run(self, flags: F = F(0), **kwargs: Any) -> 'Plotter':
@@ -154,7 +154,7 @@ class PlotterMap(Plotter):
 
 class Proker(ABC):
     @abstractmethod
-    def apply(self, **kwargs):
+    def apply(self, **kwargs: Any) -> 'Proker':
         raise NotImplementedError
 
 

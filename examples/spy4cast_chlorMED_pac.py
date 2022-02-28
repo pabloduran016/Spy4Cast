@@ -15,7 +15,7 @@ CHL = 'CHL'
 oisst_v2_mean_monthly_Jan1996_Dec2020 = 'oisst_v2_mean_monthly_Jan1996_Dec2020.nc'  # SST predictor
 SST = 'sst'
 
-def main():
+def main() -> None:
     nm=3
     alpha=.1
 

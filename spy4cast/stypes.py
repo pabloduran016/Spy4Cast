@@ -104,7 +104,7 @@ class F(IntFlag):
     FILTER = auto()  # doc: Perform butterworth filter in preprocesseing. Only for spy4caster.Spy4Caster
     NOT_HALT = auto()  # doc: Not halt the program after showing (don't run matplotlib.pyplot.show)
 
-    def __mul__(self, other: int):
+    def __mul__(self, other: int) -> Union[int, F]:
         """Returns normal multiplication unless the value is 1 or 0. In that case it will return the same value or F(0)
 
         Useful to annulate flags by multiplying them by 0 and setting and unsetting them easily
