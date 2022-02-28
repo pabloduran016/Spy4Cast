@@ -15,3 +15,5 @@ Makefile
 build/
 *.bat
 tests/
+examples/plots
+examples/saved*
