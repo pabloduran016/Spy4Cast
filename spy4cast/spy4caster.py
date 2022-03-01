@@ -220,6 +220,8 @@ class Spy4Caster:
                 out[key] = np.load(path)
             except FileNotFoundError:
                 print(f'\n[ERROR] Could not find file `{path}` for variable `{key}`')
+            except:
+                raise
 
         self._crossvalidation_out = CrossvalidationOut(
             zhat=out['zhat'],
@@ -565,9 +567,9 @@ class Spy4Caster:
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
             print('[ERROR] No preprocessed data to save', file=sys.stderr)
         else:
-            print(f'[INFO] Saving Preprocessed data in `{self._plot_data_dir}/save_preprocessed_{self._plot_data_sufix}*.npy`')
+            print(f'[INFO] Saving Preprocessed data in `{self._plot_data_dir}/save_preprocessed{self._plot_data_sufix}*.npy`')
             assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
-            self.save_output(f'{self._plot_data_dir}/save_preprocessed_{self._plot_data_sufix}',
+            self.save_output(f'{self._plot_data_dir}/save_preprocessed{self._plot_data_sufix}',
                  {
                      'y': self._y, 'ylat': self._ylat, 'ylon': self._ylon, 'ytime': self._ytime,
                      'z': self._z, 'zlat': self._zlat, 'zlon': self._zlon, 'ztime': self._ztime,
@@ -577,14 +579,14 @@ class Spy4Caster:
         if self._mca_out is None:
             print('[ERROR] No MCA data to save', file=sys.stderr)
         else:
-            print(f'[INFO] Saving MCA data in `{self._plot_data_dir}/save_mca_{self._plot_data_sufix}*.npy`')
-            self.save_output(f'{self._plot_data_dir}/save_mca_{self._plot_data_sufix}', self._mca_out)
+            print(f'[INFO] Saving MCA data in `{self._plot_data_dir}/save_mca{self._plot_data_sufix}*.npy`')
+            self.save_output(f'{self._plot_data_dir}/save_mca{self._plot_data_sufix}', self._mca_out)
 
         if self._crossvalidation_out is None:
             print('[ERROR] No Crossvalidation data to save', file=sys.stderr)
         else:
-            print(f'[INFO] Saving crossvalidation data in `{self._plot_data_dir}/save_cross_{self._plot_data_sufix}*.npy`')
-            self.save_output(f'{self._plot_data_dir}/save_cross_{self._plot_data_sufix}', self._crossvalidation_out)
+            print(f'[INFO] Saving crossvalidation data in `{self._plot_data_dir}/save_cross{self._plot_data_sufix}*.npy`')
+            self.save_output(f'{self._plot_data_dir}/save_cross{self._plot_data_sufix}', self._crossvalidation_out)
 
         return self
 
