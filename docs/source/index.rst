@@ -20,10 +20,10 @@ Welcome to Spy4Cast's documentation! |ICON|
    
    usage
    methodologies
-   Stypes <.toctrees/spy4cast.stypes>
-   Errors <.toctrees/spy4cast.errors>
-   Functions <.toctrees/spy4cast.functions>
-   Meteo <.toctrees/spy4cast.meteo>
-   Plotters <.toctrees/spy4cast.plotters>
-   Read_data <.toctrees/spy4cast.read_data>
-   Spy4caster <.toctrees/spy4cast.spy4caster>
+   Stypes <.toctrees/stypes>
+   Errors <.toctrees/errors>
+   Functions <.toctrees/functions>
+   Meteo <.toctrees/meteo>
+   Plotters <.toctrees/plotters>
+   Read_data <.toctrees/read_data>
+   Spy4caster <.toctrees/spy4caster>
