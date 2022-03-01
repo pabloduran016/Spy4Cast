@@ -39,17 +39,20 @@ def main() -> None:
             zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=chl_1km_monthly_Sep1997_Dec2020, variable=CHL, chunks=100),
             plot_dir=PLOTS_DIR, mats_plot_name=MATS_PLOT_NAME, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME, zhat_plot_name=ZHAT_PLOT_NAME,
             plot_data_dir=PLOTS_DATA_DIR)
-    # s.open_datasets()
+
     # TODO: Implement `ray` for multiprocessing in crossvalidation
-    # s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=0, zskip=0)
-    # s.preprocess()  # Primero sin filtro y luego con filtro de 8 años
-    s.load_preprocessed(PLOTS_DATA_DIR, 'save_ppcessed_', '.npy')
+    if True:
+        s.open_datasets()
+        s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=0, zskip=0)
+        s.preprocess()  # Primero sin filtro y luego con filtro de 8 años
+        s.mca(nm=nm, alpha=alpha)
+        s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
+    else:
+        s.load_preprocessed(PLOTS_DATA_DIR, 'save_ppcessed_', '.npy')
+        s.load_mca(PLOTS_DATA_DIR, 'save_mca_', '.npy')
+        s.load_crossvalidation(PLOTS_DATA_DIR, 'save_cross_', '.npy')
     # s.plot_preprocessed()
-    # s.mca(nm=nm, alpha=alpha)
-    s.load_mca(PLOTS_DATA_DIR, 'save_mca_', '.npy')
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
-    # s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
-    s.load_crossvalidation(PLOTS_DATA_DIR, 'save_cross_', '.npy')
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
     # s.plot_crossvalidation(F.SHOW_PLOT | F.SAVE_FIG)
     # s.plot_zhat(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year)
