@@ -5,7 +5,6 @@ __all__ = [
     'PlotCreationError',
     'VariableSelectionError',
     'TimeBoundsSelectionError',
-    'PlotSavingError',
     'PlotShowingError',
     'DataSavingError',
     'SelectedYearError',
