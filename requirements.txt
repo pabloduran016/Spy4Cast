@@ -1,27 +1,51 @@
+alabaster==0.7.12
+apeye==1.2.0
+autodocsumm==0.2.7
+Babel==2.9.1
+beautifulsoup4==4.10.0
 bokeh @ file:///opt/concourse/worker/volumes/live/daea12c5-5a78-4471-406c-958ab70942ea/volume/bokeh_1638362839809/work
 Bottleneck @ file:///opt/concourse/worker/volumes/live/ac8c8ef3-2ed0-42e9-6ec0-5bb05ad938f6/volume/bottleneck_1607575111469/work
+CacheControl==0.12.10
 Cartopy @ file:///opt/concourse/worker/volumes/live/5969ab52-7aa4-4159-63eb-440ce0ef1f3a/volume/cartopy_1636039353558/work
 certifi==2021.10.8
 cftime @ file:///opt/concourse/worker/volumes/live/99817dc6-07fe-438f-6754-d7ba59d3b7f3/volume/cftime_1638358481643/work
+charset-normalizer==2.0.12
 click==8.0.3
 cloudpickle @ file:///tmp/build/80754af9/cloudpickle_1632508026186/work
+consolekit==1.3.2
+css-parser==1.0.6
 cycler @ file:///tmp/build/80754af9/cycler_1637851556182/work
 cytoolz==0.11.0
 dask==2021.10.0
+dataclasses==0.6
+deprecation==2.1.0
+deprecation-alias==0.3.1
+dict2css==0.2.4
 distributed @ file:///opt/concourse/worker/volumes/live/34c9adba-e95e-473d-7a32-ecdf958a8844/volume/distributed_1635968220957/work
+docutils==0.16
+domdf-python-tools==3.2.2.post1
+enum-tools==0.9.0.post1
 fonttools==4.25.0
 fsspec @ file:///opt/conda/conda-bld/fsspec_1642510437511/work
+furo==2022.2.23
 HeapDict @ file:///Users/ktietz/demo/mc3/conda-bld/heapdict_1630598515714/work
+html5lib==1.1
+idna==3.3
+imagesize==1.3.0
+importlib-metadata==4.11.1
 Jinja2 @ file:///tmp/build/80754af9/jinja2_1635780242639/work
 kiwisolver @ file:///Users/builder/miniconda3/envs/prefect/conda-bld/kiwisolver_1638569885739/work
 locket==0.2.1
+lockfile==0.12.2
 MarkupSafe @ file:///opt/concourse/worker/volumes/live/1bcf0940-5bf8-4171-61e3-2133f5885e8b/volume/markupsafe_1621528148241/work
 matplotlib @ file:///opt/concourse/worker/volumes/live/4863dc73-443d-42f7-68bf-489aaa0e23a1/volume/matplotlib-suite_1638289695940/work
+mistletoe==0.8.2
 mkl-fft==1.3.1
 mkl-random @ file:///opt/concourse/worker/volumes/live/0cda23d8-7460-44b2-7e5d-3c76a8a0ca7e/volume/mkl_random_1626186083266/work
 mkl-service==2.4.0
 msgpack @ file:///opt/concourse/worker/volumes/live/ccdd6ca0-523a-4fde-5a76-cdd4f47c445e/volume/msgpack-python_1612287158191/work
 munkres==1.1.4
+natsort==8.1.0
 netCDF4==1.5.7
 numexpr @ file:///opt/concourse/worker/volumes/live/87ac54fe-281a-440d-4d94-26ac99bdabdc/volume/numexpr_1640704258458/work
 numpy @ file:///opt/concourse/worker/volumes/live/21fb9bb9-9731-4901-4403-2bc27cc2cc33/volume/numpy_and_numpy_base_1634106739792/work
@@ -30,20 +54,47 @@ packaging @ file:///tmp/build/80754af9/packaging_1637314298585/work
 pandas==1.4.1
 partd @ file:///tmp/build/80754af9/partd_1618000087440/work
 Pillow==8.4.0
+platformdirs==2.5.1
 psutil @ file:///opt/concourse/worker/volumes/live/da41f1b1-060b-47fa-4c17-557e069ead1d/volume/psutil_1612298011002/work
+Pygments==2.11.2
 pyparsing @ file:///tmp/build/80754af9/pyparsing_1635766073266/work
 pyshp @ file:///tmp/build/80754af9/pyshp_1610641829514/work
 python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
+python-json-logger==2.0.2
 pytz==2021.3
 PyYAML==6.0
+requests==2.27.1
+ruamel.yaml==0.17.21
+ruamel.yaml.clib==0.2.6
 scipy @ file:///opt/concourse/worker/volumes/live/9284487f-601d-4bc3-5556-535c4949d341/volume/scipy_1641557769615/work
 Shapely @ file:///opt/concourse/worker/volumes/live/38c6b365-abe9-4a08-4fa8-755f0e7e51a5/volume/shapely_1632813532854/work
 sip==4.19.13
 six @ file:///tmp/build/80754af9/six_1644875935023/work
+snowballstemmer==2.2.0
 sortedcontainers @ file:///tmp/build/80754af9/sortedcontainers_1623949099177/work
+soupsieve==2.3.1
+Sphinx==4.4.0
+sphinx-autodoc-typehints==1.14.1
+sphinx-automodapi==0.14.1
+sphinx-data-fields==0.1.2
+sphinx-prompt==1.5.0
+sphinx-tabs==3.2.0
+sphinx-toolbox==2.17.0
+sphinxcontrib-applehelp==1.0.2
+sphinxcontrib-devhelp==1.0.2
+sphinxcontrib-htmlhelp==2.0.0
+sphinxcontrib-jsmath==1.0.1
+sphinxcontrib-qthelp==1.0.3
+sphinxcontrib-serializinghtml==1.1.5
+sphynx==0.0.3
+structlog==21.5.0
+tabulate==0.8.9
 tblib @ file:///Users/ktietz/demo/mc3/conda-bld/tblib_1629402031467/work
 toolz @ file:///tmp/build/80754af9/toolz_1636545406491/work
 tornado @ file:///opt/concourse/worker/volumes/live/2c1a63a2-006b-48ee-56b9-0cfe8b4927f9/volume/tornado_1606942321278/work
 typing-extensions @ file:///tmp/build/80754af9/typing_extensions_1631814937681/work
+urllib3==1.26.8
+webencodings==0.5.1
 xarray @ file:///opt/conda/conda-bld/xarray_1639166117697/work
 zict==2.0.0
+zipp==3.7.0
