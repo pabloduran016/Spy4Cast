@@ -101,7 +101,7 @@ class Meteo:
 
         The anomaly is the time variable minus the mean across all times of a given point
 
-        Paramaters
+        Parameters
         ----------
             array : xr.DataArray
                 Array to process the anomalies. Must have a dimension called `time`
@@ -164,7 +164,7 @@ class Meteo:
 
         The anomaly is the time variable minus the mean across all times of a given point
 
-        Paramaters
+        Parameters
         ----------
             array : npt.NDArray[np.float32]
                 Array to process the anomalies.

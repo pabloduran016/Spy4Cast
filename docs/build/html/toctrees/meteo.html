@@ -191,7 +191,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/spy4cast.meteo.CrossvalidationOut.html">CrossvalidationOut</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/spy4cast.meteo.MCAOut.html">MCAOut</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/spy4cast.meteo.Meteo.html">Meteo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/spy4cast.meteo.List.html">List</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/spy4cast.meteo.NAN_VAL.html">NAN_VAL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/spy4cast.meteo.Tuple.html">Tuple</a></li>
 </ul>
@@ -249,6 +248,7 @@
         <article role="main">
           <div class="section" id="module-spy4cast.meteo">
 <span id="meteo"></span><h1>Meteo<a class="headerlink" href="#module-spy4cast.meteo" title="Permalink to this headline">#</a></h1>
+<p>Module tha contains the Meteo class, in charge of performing calculations</p>
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">#</a></h2>
 <div class="table-wrapper"><table class="longtable docutils align-default">
@@ -258,13 +258,13 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.meteo.CrossvalidationOut.html#spy4cast.meteo.CrossvalidationOut" title="spy4cast.meteo.CrossvalidationOut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CrossvalidationOut</span></code></a>(zhat, scf, r_z_zhat_t, ...)</p></td>
-<td><p></p></td>
+<td><p>Dataclass that is the output of the crossvalidation methodology</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.meteo.MCAOut.html#spy4cast.meteo.MCAOut" title="spy4cast.meteo.MCAOut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MCAOut</span></code></a>(RUY, RUY_sig, SUY, SUY_sig, RUZ, ...)</p></td>
-<td><p></p></td>
+<td><p>Dataclass that is the output of the MCA methodology</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.meteo.Meteo.html#spy4cast.meteo.Meteo" title="spy4cast.meteo.Meteo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Meteo</span></code></a>()</p></td>
-<td><p>Class containing functions to carry out on the dataset</p></td>
+<td><p>Class that carries out methodologies</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -277,13 +277,10 @@
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.meteo.List.html#spy4cast.meteo.List" title="spy4cast.meteo.List"><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code></a></p></td>
-<td><p>A generic version of list.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.meteo.NAN_VAL.html#spy4cast.meteo.NAN_VAL" title="spy4cast.meteo.NAN_VAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NAN_VAL</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.meteo.NAN_VAL.html#spy4cast.meteo.NAN_VAL" title="spy4cast.meteo.NAN_VAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NAN_VAL</span></code></a></p></td>
 <td><p>Convert a string or number to a floating point number, if possible.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.meteo.Tuple.html#spy4cast.meteo.Tuple" title="spy4cast.meteo.Tuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tuple</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.meteo.Tuple.html#spy4cast.meteo.Tuple" title="spy4cast.meteo.Tuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tuple</span></code></a></p></td>
 <td><p>Tuple type; Tuple[X, Y] is the cross-product type of X and Y.</p></td>
 </tr>
 </tbody>

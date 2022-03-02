@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="List" href="spy4cast.meteo.List.html" /><link rel="prev" title="MCAOut" href="spy4cast.meteo.MCAOut.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="NAN_VAL" href="spy4cast.meteo.NAN_VAL.html" /><link rel="prev" title="MCAOut" href="spy4cast.meteo.MCAOut.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
         <title>Meteo - Spy4Cast 0.0.1 documentation</title>
@@ -191,7 +191,6 @@
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.meteo.CrossvalidationOut.html">CrossvalidationOut</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.meteo.MCAOut.html">MCAOut</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Meteo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.meteo.List.html">List</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.meteo.NAN_VAL.html">NAN_VAL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.meteo.Tuple.html">Tuple</a></li>
 </ul>
@@ -253,7 +252,7 @@
 <dt class="sig sig-object py" id="spy4cast.meteo.Meteo">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.meteo.</span></span><span class="sig-name descname"><span class="pre">Meteo</span></span><a class="headerlink" href="#spy4cast.meteo.Meteo" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class containing functions to carry out on the dataset</p>
+<p>Class that carries out methodologies</p>
 <p class="rubric">Methods Summary</p>
 <div class="table-wrapper"><table class="longtable docutils align-default">
 <colgroup>
@@ -262,26 +261,26 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.anom" title="spy4cast.meteo.Meteo.anom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anom</span></code></a>(array[, st])</p></td>
-<td><p>Function to calculate the anomalies :param array: Array to process the anomalies.</p></td>
+<td><p>Function to calculate the anomalies on a xarray DataArray</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.clim" title="spy4cast.meteo.Meteo.clim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clim</span></code></a>(array[, dim])</p></td>
+<td><p>Function that performs the climatology of a xarray Dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.crossvalidation" title="spy4cast.meteo.Meteo.crossvalidation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crossvalidation</span></code></a>(y, z, nm, alpha)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.crossvalidation" title="spy4cast.meteo.Meteo.crossvalidation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crossvalidation</span></code></a>(y, z, nmes, nm, alpha)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.crossvalidation_mp" title="spy4cast.meteo.Meteo.crossvalidation_mp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crossvalidation_mp</span></code></a>(y, z, nmes, nm, alpha)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.crossvalidation_mp" title="spy4cast.meteo.Meteo.crossvalidation_mp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crossvalidation_mp</span></code></a>(y, z, nm, alpha)</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.index_regression" title="spy4cast.meteo.Meteo.index_regression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_regression</span></code></a>(data, index, alpha)</p></td>
 <td><p>Create correlation (using pearson correlation) and regression :param data: <cite>data</cite> (space, time) :param index: array of temporal series :param alpha: Significant level :return: Correlation map, map with p values, significative corrrelation map, regression map, significative regression map</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.mca" title="spy4cast.meteo.Meteo.mca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mca</span></code></a>(z, y, nmes, nm, alpha)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.mca" title="spy4cast.meteo.Meteo.mca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mca</span></code></a>(z, y, nm, alpha)</p></td>
 <td><p><p>"</p>
 </p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.npanom" title="spy4cast.meteo.Meteo.npanom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">npanom</span></code></a>(array[, axis, st])</p></td>
-<td><p>Function to calculate the anomalies :param array: Array to process the anomalies.</p></td>
+<td><p>Function to calculate the anomalies on a numpy array</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -289,21 +288,52 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.meteo.Meteo.anom">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.core.dataarray.DataArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">st</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">xarray.core.dataarray.DataArray</span></span></span><a class="headerlink" href="#spy4cast.meteo.Meteo.anom" title="Permalink to this definition">#</a></dt>
-<dd><p>Function to calculate the anomalies
-:param array: Array to process the anomalies. Fisrt dimension must be time
-:param st: bool to indicate whether the method should standarize</p>
+<dd><p>Function to calculate the anomalies on a xarray DataArray</p>
+<p>The anomaly is the time variable minus the mean across all times of a given point</p>
+<blockquote>
+<div><dl class="simple">
+<dt>array<span class="classifier">xr.DataArray</span></dt><dd><p>Array to process the anomalies. Must have a dimension called <cite>time</cite></p>
+</dd>
+<dt>st<span class="classifier">bool, default=False</span></dt><dd><p>Indicates whether the anomaly should standarized. Divide by the standard deviation</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.meteo.Meteo.clim">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.core.dataarray.DataArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'time'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">xarray.core.dataarray.DataArray</span></span></span><a class="headerlink" href="#spy4cast.meteo.Meteo.clim" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Function that performs the climatology of a xarray Dataset</p>
+<p>The climatology is the average across a given axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>xr.DataArray</em>) – Xarray DataArray where you wish to perform the climatology</p></li>
+<li><p><strong>dim</strong> (<em>str</em><em>, </em><em>default='time'</em>) – Dimension where the climatology is going to be performed on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.meteo.Meteo.crossvalidation">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">crossvalidation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="spy4cast.meteo.CrossvalidationOut.html#spy4cast.meteo.CrossvalidationOut" title="spy4cast.meteo.CrossvalidationOut"><span class="pre">spy4cast.meteo.CrossvalidationOut</span></a></span></span><a class="headerlink" href="#spy4cast.meteo.Meteo.crossvalidation" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">crossvalidation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="spy4cast.meteo.CrossvalidationOut.html#spy4cast.meteo.CrossvalidationOut" title="spy4cast.meteo.CrossvalidationOut"><span class="pre">spy4cast.meteo.CrossvalidationOut</span></a></span></span><a class="headerlink" href="#spy4cast.meteo.Meteo.crossvalidation" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.meteo.Meteo.crossvalidation_mp">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">crossvalidation_mp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="spy4cast.meteo.CrossvalidationOut.html#spy4cast.meteo.CrossvalidationOut" title="spy4cast.meteo.CrossvalidationOut"><span class="pre">spy4cast.meteo.CrossvalidationOut</span></a></span></span><a class="headerlink" href="#spy4cast.meteo.Meteo.crossvalidation_mp" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">crossvalidation_mp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="spy4cast.meteo.CrossvalidationOut.html#spy4cast.meteo.CrossvalidationOut" title="spy4cast.meteo.CrossvalidationOut"><span class="pre">spy4cast.meteo.CrossvalidationOut</span></a></span></span><a class="headerlink" href="#spy4cast.meteo.Meteo.crossvalidation_mp" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.meteo.Meteo.index_regression">
@@ -316,7 +346,7 @@
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.meteo.Meteo.mca">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="spy4cast.meteo.MCAOut.html#spy4cast.meteo.MCAOut" title="spy4cast.meteo.MCAOut"><span class="pre">spy4cast.meteo.MCAOut</span></a></span></span><a class="headerlink" href="#spy4cast.meteo.Meteo.mca" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="spy4cast.meteo.MCAOut.html#spy4cast.meteo.MCAOut" title="spy4cast.meteo.MCAOut"><span class="pre">spy4cast.meteo.MCAOut</span></a></span></span><a class="headerlink" href="#spy4cast.meteo.Meteo.mca" title="Permalink to this definition">#</a></dt>
 <dd><p>”
 Maximum covariance analysis between y (predictor) and Z (predictand)</p>
 <dl class="field-list simple">
@@ -325,7 +355,6 @@ Maximum covariance analysis between y (predictor) and Z (predictand)</p>
 <li><p><strong>z</strong> – predictand</p></li>
 <li><p><strong>y</strong> – predictor. space x time.</p></li>
 <li><p><strong>nm</strong> – number of modes</p></li>
-<li><p><strong>nmes</strong> – es datos meses metes al año. Si haces la media estacional es 1, pero si metes enero y feb por separado es 2</p></li>
 <li><p><strong>alpha</strong> – significant level</p></li>
 </ul>
 </dd>
@@ -337,9 +366,18 @@ Maximum covariance analysis between y (predictor) and Z (predictand)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.meteo.Meteo.npanom">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">npanom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">st</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spy4cast.meteo.Meteo.npanom" title="Permalink to this definition">#</a></dt>
-<dd><p>Function to calculate the anomalies
-:param array: Array to process the anomalies. space x time
-:param st: bool to indicate whether the method should standarize</p>
+<dd><p>Function to calculate the anomalies on a numpy array</p>
+<p>The anomaly is the time variable minus the mean across all times of a given point</p>
+<blockquote>
+<div><dl class="simple">
+<dt>array<span class="classifier">npt.NDArray[np.float32]</span></dt><dd><p>Array to process the anomalies.</p>
+</dd>
+<dt>axis<span class="classifier">int, default=0</span></dt><dd><p>Axis where to perform teh anomaly, ussually the time axis</p>
+</dd>
+<dt>st<span class="classifier">bool, default=False</span></dt><dd><p>Indicates whether the anomaly should standarized. Divide by the standard deviation</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 </dd></dl>
 </div>
@@ -349,12 +387,12 @@ Maximum covariance analysis between y (predictor) and Z (predictand)</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="spy4cast.meteo.List.html">
+          <a class="next-page" href="spy4cast.meteo.NAN_VAL.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">List</div>
+                <div class="title">NAN_VAL</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
