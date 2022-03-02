@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
-        <title>List - Spy4Cast 0.0.1 documentation</title>
+        <title>Errors - Spy4Cast 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
@@ -130,7 +130,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -179,20 +179,73 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <div class="section" id="list">
-<h1>List<a class="headerlink" href="#list" title="Permalink to this headline">#</a></h1>
-<dl class="py data">
-<dt class="sig sig-object py" id="spy4cast.meteo.List">
-<span class="sig-prename descclassname"><span class="pre">spy4cast.meteo.</span></span><span class="sig-name descname"><span class="pre">List</span></span><a class="headerlink" href="#spy4cast.meteo.List" title="Permalink to this definition">#</a></dt>
-<dd><p>A generic version of list.</p>
-<p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></p>
-</dd></dl>
+          <div class="section" id="errors">
+<h1>Errors<a class="headerlink" href="#errors" title="Permalink to this headline">#</a></h1>
+<div class="section" id="module-spy4cast.errors">
+<span id="spy4cast-errors-module"></span><h2>spy4cast.errors Module<a class="headerlink" href="#module-spy4cast.errors" title="Permalink to this headline">#</a></h2>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">#</a></h3>
+<div class="table-wrapper"><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.errors.Spy4CastError.html#spy4cast.errors.Spy4CastError" title="spy4cast.errors.Spy4CastError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spy4CastError</span></code></a>([e])</p></td>
+<td><p>Base Class for all custom excpetins of the project</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.errors.PlotCreationError.html#spy4cast.errors.PlotCreationError" title="spy4cast.errors.PlotCreationError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotCreationError</span></code></a>([e])</p></td>
+<td><p>Exception raised when there is an error during plot creation</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.errors.VariableSelectionError.html#spy4cast.errors.VariableSelectionError" title="spy4cast.errors.VariableSelectionError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableSelectionError</span></code></a>(variable, *args[, ...])</p></td>
+<td><p>Exception raised when there is an error when loading the dataset and the variable given is not valid</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.errors.TimeBoundsSelectionError.html#spy4cast.errors.TimeBoundsSelectionError" title="spy4cast.errors.TimeBoundsSelectionError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeBoundsSelectionError</span></code></a>(msg, *args)</p></td>
+<td><p>Exception raised when checking a slise that has non-valid time constraints</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.errors.PlotShowingError.html#spy4cast.errors.PlotShowingError" title="spy4cast.errors.PlotShowingError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotShowingError</span></code></a>([e])</p></td>
+<td><p>Exception raised when there is an error while showing the plot</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.errors.DataSavingError.html#spy4cast.errors.DataSavingError" title="spy4cast.errors.DataSavingError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataSavingError</span></code></a>([e])</p></td>
+<td><p>Exception raised when there is an error while saving the data</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.errors.SelectedYearError.html#spy4cast.errors.SelectedYearError" title="spy4cast.errors.SelectedYearError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelectedYearError</span></code></a>(s_year, *args)</p></td>
+<td><p>Exception raised when the selected year is not valid</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.errors.DatasetNotFoundError.html#spy4cast.errors.DatasetNotFoundError" title="spy4cast.errors.DatasetNotFoundError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DatasetNotFoundError</span></code></a>([e])</p></td>
+<td><p>Exception raised when a dataset is not found</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.errors.DatasetError.html#spy4cast.errors.DatasetError" title="spy4cast.errors.DatasetError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DatasetError</span></code></a>([e])</p></td>
+<td><p>Exception raised when there is an error with the dataset which is supposed to be load</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.errors.PlotDataError.html#spy4cast.errors.PlotDataError" title="spy4cast.errors.PlotDataError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotDataError</span></code></a>([e])</p></td>
+<td><p>Exception raised when there is an error with the data used to create the plot</p></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section" id="class-inheritance-diagram">
+<h3>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">#</a></h3>
+<div class="graphviz"><img alt="Inheritance diagram of spy4cast.errors.Spy4CastError, spy4cast.errors.PlotCreationError, spy4cast.errors.VariableSelectionError, spy4cast.errors.TimeBoundsSelectionError, spy4cast.errors.PlotShowingError, spy4cast.errors.DataSavingError, spy4cast.errors.SelectedYearError, spy4cast.errors.DatasetNotFoundError, spy4cast.errors.DatasetError, spy4cast.errors.PlotDataError" class="inheritance graphviz" src="../_images/inheritance-830776e97805031dcb2948483f9b3c7c71c78d58.png" usemap="#inheritancef1cdc986a3"/></div>
+<map id="inheritancef1cdc986a3" name="inheritancef1cdc986a3">
+<area alt="" coords="191,5,309,31" href="../api/spy4cast.errors.DataSavingError.html#spy4cast.errors.DataSavingError" id="node1" shape="rect" target="_top" title="Exception raised when there is an error while saving the data"/>
+<area alt="" coords="5,203,113,228" href="../api/spy4cast.errors.Spy4CastError.html#spy4cast.errors.Spy4CastError" id="node2" shape="rect" target="_top" title="Base Class for all custom excpetins of the project"/>
+<area alt="" coords="202,55,298,80" href="../api/spy4cast.errors.DatasetError.html#spy4cast.errors.DatasetError" id="node3" shape="rect" target="_top" title="Exception raised when there is an error with the dataset which is supposed to be load"/>
+<area alt="" coords="173,104,327,129" href="../api/spy4cast.errors.DatasetNotFoundError.html#spy4cast.errors.DatasetNotFoundError" id="node4" shape="rect" target="_top" title="Exception raised when a dataset is not found"/>
+<area alt="" coords="189,153,311,179" href="../api/spy4cast.errors.PlotCreationError.html#spy4cast.errors.PlotCreationError" id="node5" shape="rect" target="_top" title="Exception raised when there is an error during plot creation"/>
+<area alt="" coords="199,203,301,228" href="../api/spy4cast.errors.PlotDataError.html#spy4cast.errors.PlotDataError" id="node6" shape="rect" target="_top" title="Exception raised when there is an error with the data used to create the plot"/>
+<area alt="" coords="189,252,311,277" href="../api/spy4cast.errors.PlotShowingError.html#spy4cast.errors.PlotShowingError" id="node7" shape="rect" target="_top" title="Exception raised when there is an error while showing the plot"/>
+<area alt="" coords="187,301,313,327" href="../api/spy4cast.errors.SelectedYearError.html#spy4cast.errors.SelectedYearError" id="node8" shape="rect" target="_top" title="Exception raised when the selected year is not valid"/>
+<area alt="" coords="161,351,339,376" href="../api/spy4cast.errors.TimeBoundsSelectionError.html#spy4cast.errors.TimeBoundsSelectionError" id="node9" shape="rect" target="_top" title="Exception raised when checking a slise that has non-valid time constraints"/>
+<area alt="" coords="175,400,325,425" href="../api/spy4cast.errors.VariableSelectionError.html#spy4cast.errors.VariableSelectionError" id="node10" shape="rect" target="_top" title="Exception raised when there is an error when loading the dataset and the variable given is not valid"/>
+</map></div>
+</div>
 </div>
 
         </article>
@@ -222,8 +275,31 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Errors</a><ul>
+<li><a class="reference internal" href="#module-spy4cast.errors">spy4cast.errors Module</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

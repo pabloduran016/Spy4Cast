@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
-        <title>List - Spy4Cast 0.0.1 documentation</title>
+        <title>Stypes - Spy4Cast 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
@@ -130,7 +130,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -179,20 +179,73 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <div class="section" id="list">
-<h1>List<a class="headerlink" href="#list" title="Permalink to this headline">#</a></h1>
-<dl class="py data">
-<dt class="sig sig-object py" id="spy4cast.meteo.List">
-<span class="sig-prename descclassname"><span class="pre">spy4cast.meteo.</span></span><span class="sig-name descname"><span class="pre">List</span></span><a class="headerlink" href="#spy4cast.meteo.List" title="Permalink to this definition">#</a></dt>
-<dd><p>A generic version of list.</p>
-<p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></p>
-</dd></dl>
+          <div class="section" id="stypes">
+<h1>Stypes<a class="headerlink" href="#stypes" title="Permalink to this headline">#</a></h1>
+<div class="section" id="module-spy4cast.stypes">
+<span id="spy4cast-stypes-module"></span><h2>spy4cast.stypes Module<a class="headerlink" href="#module-spy4cast.stypes" title="Permalink to this headline">#</a></h2>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">#</a></h3>
+<div class="table-wrapper"><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" title="spy4cast.stypes.Slise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Slise</span></code></a>(lat0, latf, lon0, lonf, month0, ...[, sy])</p></td>
+<td><p>Dataclass to create a <cite>Slise</cite></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.stypes.Month.html#spy4cast.stypes.Month" title="spy4cast.stypes.Month"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Month</span></code></a>(value)</p></td>
+<td><p>Enumaration for Months.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.stypes.F.html#spy4cast.stypes.F" title="spy4cast.stypes.F"><code class="xref py py-obj docutils literal notranslate"><span class="pre">F</span></code></a>(value)</p></td>
+<td><p>An enumeration.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.stypes.RDArgs.html#spy4cast.stypes.RDArgs" title="spy4cast.stypes.RDArgs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RDArgs</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
+<td><p>Dataclass to convientely pass arguements for a <cite>ReadData</cite> constructor</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.stypes.RDArgsDict.html#spy4cast.stypes.RDArgsDict" title="spy4cast.stypes.RDArgsDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RDArgsDict</span></code></a></p></td>
+<td><p>Typed dict to set as as a type and indicate the arguments that should be passes into <cite>read_data.ReadData</cite></p></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section" id="variables">
+<h3>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">#</a></h3>
+<div class="table-wrapper"><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.stypes.Color.html#spy4cast.stypes.Color" title="spy4cast.stypes.Color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Color</span></code></a></p></td>
+<td><p>Color type.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.stypes.T_FORMAT.html#spy4cast.stypes.T_FORMAT" title="spy4cast.stypes.T_FORMAT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">T_FORMAT</span></code></a></p></td>
+<td><p>Time stamp format used internally</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.stypes.TimeStamp.html#spy4cast.stypes.TimeStamp" title="spy4cast.stypes.TimeStamp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeStamp</span></code></a></p></td>
+<td><p>TimeStamp type.</p></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section" id="class-inheritance-diagram">
+<h3>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">#</a></h3>
+<div class="graphviz"><img alt="Inheritance diagram of spy4cast.stypes.Slise, spy4cast.stypes.Month, spy4cast.stypes.F, spy4cast.stypes.RDArgs, spy4cast.stypes.RDArgsDict" class="inheritance graphviz" src="../_images/inheritance-0ba58496835af686e125deb9d23b8e814dc7e74f.png" usemap="#inheritance4f53c16b36"/></div>
+<map id="inheritance4f53c16b36" name="inheritance4f53c16b36">
+<area alt="" coords="387,128,459,153" href="../api/spy4cast.stypes.F.html#spy4cast.stypes.F" id="node2" shape="rect" target="_top" title="An enumeration."/>
+<area alt="" coords="267,177,339,203" href="../api/spy4cast.stypes.Month.html#spy4cast.stypes.Month" id="node6" shape="rect" target="_top" title="Enumaration for Months."/>
+<area alt="" coords="16,104,88,129" href="../api/spy4cast.stypes.RDArgs.html#spy4cast.stypes.RDArgs" id="node7" shape="rect" target="_top" title="Dataclass to convientely pass arguements for a `ReadData` constructor"/>
+<area alt="" coords="5,55,99,80" href="../api/spy4cast.stypes.RDArgsDict.html#spy4cast.stypes.RDArgsDict" id="node8" shape="rect" target="_top" title="RDArgsDict"/>
+<area alt="" coords="16,5,88,31" href="../api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" id="node9" shape="rect" target="_top" title="Dataclass to create a `Slise`"/>
+</map></div>
+</div>
 </div>
 
         </article>
@@ -222,8 +275,32 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Stypes</a><ul>
+<li><a class="reference internal" href="#module-spy4cast.stypes">spy4cast.stypes Module</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#variables">Variables</a></li>
+<li><a class="reference internal" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
