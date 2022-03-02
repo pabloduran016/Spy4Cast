@@ -334,8 +334,8 @@ class Spy4Caster:
 
         fig = self._new_figure(figsize=(15, 10)) if fig is None else fig
         axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
-        self._plot_map(y[yindex], self._ylat, self._ylon, fig, axs[0], f'Y{(f" on year {selected_year}" if selected_year is not None else "")}')
-        self._plot_map(z[zindex], self._zlat, self._zlon, fig, axs[1], f'Z{(f" on year {selected_year}" if selected_year is not None else "")}', cmap=cmap)
+        self._plot_map(y[yindex], self._ylat, self._ylon, fig, axs[0], f'Y on year {self._ytime[yindex]}')
+        self._plot_map(z[zindex], self._zlat, self._zlon, fig, axs[1], f'Z on year {self._ztime[zindex]}', cmap=cmap)
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mats_plot_name),
                                  flags)
 
