@@ -14,7 +14,6 @@ __all__ = [
     'slise2str',
     'mon2str',
     'str2mon',
-    'log_error',
     'debugprint',
 ]
 
