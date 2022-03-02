@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="pretty_dict" href="spy4cast.functions.pretty_dict.html" /><link rel="prev" title="time_from_here" href="spy4cast.functions.time_from_here.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="update_dataset_info_json" href="spy4cast.functions.update_dataset_info_json.html" /><link rel="prev" title="time_from_here" href="spy4cast.functions.time_from_here.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
         <title>time_to_here - Spy4Cast 0.0.1 documentation</title>
@@ -181,7 +181,6 @@
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.functions.set_silence.html">set_silence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.functions.time_from_here.html">time_from_here</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">time_to_here</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.functions.pretty_dict.html">pretty_dict</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.functions.update_dataset_info_json.html">update_dataset_info_json</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.functions.get_dataset_info.html">get_dataset_info</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.functions.slise2str.html">slise2str</a></li>
@@ -256,7 +255,19 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="spy4cast.functions.time_to_here">
 <span class="sig-prename descclassname"><span class="pre">spy4cast.functions.</span></span><span class="sig-name descname"><span class="pre">time_to_here</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#spy4cast.functions.time_to_here" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Function that is supposed to use in conjunctin with <cite>time_from_here</cite> to time program parts</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">'Iterating through the first 100 million ints and adding their square to an array '</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+<span class="gp">... </span><span class="n">arr</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">... </span><span class="n">time_from_here</span><span class="p">()</span>
+<span class="gp">... </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100_000_000</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'took: </span><span class="si">{</span><span class="n">time_to_here</span><span class="p">()</span><span class="si">:</span><span class="s1">.02f</span><span class="si">}</span><span class="s1"> seconds'</span><span class="p">)</span>
+<span class="go">Iterating through the first 100 million ints and adding their square to an array took: 30.27 seconds</span>
+</pre></div>
+</div>
+</dd></dl>
 </div>
 
         </article>
@@ -264,12 +275,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="spy4cast.functions.pretty_dict.html">
+          <a class="next-page" href="spy4cast.functions.update_dataset_info_json.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">pretty_dict</div>
+                <div class="title">update_dataset_info_json</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
