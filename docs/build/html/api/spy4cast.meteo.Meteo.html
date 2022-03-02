@@ -265,7 +265,7 @@
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="spy4cast.meteo.Meteo.anom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anom</span></code></a>(array[, st])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.anom" title="spy4cast.meteo.Meteo.anom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anom</span></code></a>(array[, st])</p></td>
 <td><p>Function to calculate the anomalies :param array: Array to process the anomalies.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.clim" title="spy4cast.meteo.Meteo.clim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clim</span></code></a>(array[, dim])</p></td>
@@ -277,14 +277,14 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.crossvalidation_mp" title="spy4cast.meteo.Meteo.crossvalidation_mp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crossvalidation_mp</span></code></a>(y, z, nmes, nm, alpha)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id3" title="spy4cast.meteo.Meteo.index_regression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_regression</span></code></a>(data, index, alpha)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.index_regression" title="spy4cast.meteo.Meteo.index_regression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_regression</span></code></a>(data, index, alpha)</p></td>
 <td><p>Create correlation (using pearson correlation) and regression :param data: <cite>data</cite> (space, time) :param index: array of temporal series :param alpha: Significant level :return: Correlation map, map with p values, significative corrrelation map, regression map, significative regression map</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#id2" title="spy4cast.meteo.Meteo.mca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mca</span></code></a>(z, y, nmes, nm, alpha)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.mca" title="spy4cast.meteo.Meteo.mca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mca</span></code></a>(z, y, nmes, nm, alpha)</p></td>
 <td><p><p>"</p>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id1" title="spy4cast.meteo.Meteo.npanom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">npanom</span></code></a>(array[, axis, st])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.meteo.Meteo.npanom" title="spy4cast.meteo.Meteo.npanom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">npanom</span></code></a>(array[, axis, st])</p></td>
 <td><p>Function to calculate the anomalies :param array: Array to process the anomalies.</p></td>
 </tr>
 </tbody>
@@ -344,49 +344,6 @@ Maximum covariance analysis between y (predictor) and Z (predictand)</p>
 <dd><p>Function to calculate the anomalies
 :param array: Array to process the anomalies. space x time
 :param st: bool to indicate whether the method should standarize</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="id0">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.core.dataarray.DataArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">st</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">xarray.core.dataarray.DataArray</span></span></span><a class="headerlink" href="#id0" title="Permalink to this definition">#</a></dt>
-<dd><p>Function to calculate the anomalies
-:param array: Array to process the anomalies. Fisrt dimension must be time
-:param st: bool to indicate whether the method should standarize</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="id1">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">npanom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">st</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#id1" title="Permalink to this definition">#</a></dt>
-<dd><p>Function to calculate the anomalies
-:param array: Array to process the anomalies. space x time
-:param st: bool to indicate whether the method should standarize</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="id2">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="spy4cast.meteo.MCAOut.html#spy4cast.meteo.MCAOut" title="spy4cast.meteo.MCAOut"><span class="pre">spy4cast.meteo.MCAOut</span></a></span></span><a class="headerlink" href="#id2" title="Permalink to this definition">#</a></dt>
-<dd><p>”
-Maximum covariance analysis between y (predictor) and Z (predictand)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>z</strong> – predictand</p></li>
-<li><p><strong>y</strong> – predictor. space x time.</p></li>
-<li><p><strong>nm</strong> – number of modes</p></li>
-<li><p><strong>nmes</strong> – es datos meses metes al año. Si haces la media estacional es 1, pero si metes enero y feb por separado es 2</p></li>
-<li><p><strong>alpha</strong> – significant level</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>RUY, RUY_sig, SUY, SUY_sig, RUZ, RUZ_sig, SUZ, SUZ_sig, us, Vs, scf</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="id3">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index_regression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#id3" title="Permalink to this definition">#</a></dt>
-<dd><p>Create correlation (using pearson correlation) and regression
-:param data: <cite>data</cite> (space, time)
-:param index: array of temporal series
-:param alpha: Significant level
-:return: Correlation map, map with p values, significative corrrelation map, regression map, significative regression map</p>
 </dd></dl>
 </dd></dl>
 </div>
