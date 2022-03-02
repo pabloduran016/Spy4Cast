@@ -16,7 +16,7 @@ Welcome to Spy4Cast's documentation! |ICON|
    This project is under active developement
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
    
    usage
    methodologies
