@@ -52,25 +52,37 @@ class Slise:
         However, `slice` is a built-in function in python and in the start of the development of this poject was better to use
         `slise`. This is the reason why this class is spelled with `s` (it wouldn't conflict with `slice` right now because
         it is capitalised, but it is kinda cool, right?)
+
+    Attributes
+    ----------
+        lat0 : float | int
+            Minimum latitude
+        latf : float | int
+            Maximum latitude
+        lon0 : float | int
+            Minimum longitud
+        lonf : float | int
+            Maximum longitud
+        month0 : Month | int
+            Starting month of the season to select (included)
+        monthf : Month | int
+            Ending month of the season to select (included)
+        year0 : int
+            Starting year of the period to select (included)
+        yearf : int
+            Ending year of the period to select (included)
+        sy: int, optional
+            Selected year used in methodologies like anom where you can only plot a given year
     """
     lat0: Union[float, int]
-    """Minimum latitude"""
     latf: Union[float, int]
-    """Maximum latitude"""
     lon0: Union[float, int]
-    """Minimum longitud"""
     lonf: Union[float, int]
-    """Maximum longitud"""
     month0: Union[Month, int]
-    """Starting month of the season to select (included)"""
     monthf: Union[Month, int]
-    """Ending month of the season to select (included)"""
     year0: int
-    """Starting year of the period to select (included)"""
     yearf: int
-    """Ending year of the period to select (included)"""
     sy: Optional[int] = None
-    """"(optional) Selected year used in methodologies like anom where you can only plot a given year"""
 
     @classmethod
     def default(cls, month0: int = Month.JAN, monthf: int = Month.DEC, year0: int = 0, yearf: int = 2000,
