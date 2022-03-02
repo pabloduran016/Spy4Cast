@@ -1,3 +1,6 @@
+"""
+Collection of functions used across the api and for the users convenience
+"""
 import json
 import os
 import datetime
@@ -172,6 +175,12 @@ def str2mon(month: str) -> Month:
 
 
 def debugprint(*msgs: str, **kws: Any) -> None:
+    """Function that only prints if `Settings.silence` is True
+
+    See Also
+    --------
+        `Settings`
+    """
     if not Settings.silence:
         print(*msgs, **kws)
 
