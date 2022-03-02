@@ -185,14 +185,26 @@ class Meteo:
 
     @classmethod
     def mca(cls, z: npt.NDArray[np.float32], y: npt.NDArray[np.float32], nm: int, alpha: float) -> MCAOut:
-        """"
-        Maximum covariance analysis between y (predictor) and Z (predictand)
+        """"Maximum covariance analysis between y (predictor) and Z (predictand)
 
-        :param z: predictand
-        :param y: predictor. space x time.
-        :param nm: number of modes
-        :param alpha: significant level
-        :return: RUY, RUY_sig, SUY, SUY_sig, RUZ, RUZ_sig, SUZ, SUZ_sig, us, Vs, scf
+        Parameters
+        ----------
+            z : npt.NDArray[np.float32]
+                Predictand array (space x time)
+            y : npt.NDArray[np.float32]
+                predictor array (space x time)
+            nm : int
+                Number of modes
+            alpha : float
+                Significance level
+
+        Returns
+        -------
+            MCAOut
+
+        See Also
+        --------
+            `MCAOut`
         """
         nz, nt = z.shape
         ny, nt = y.shape
@@ -234,31 +246,42 @@ class Meteo:
         return out
 
     @staticmethod
-    def index_regression(data: npt.NDArray[np.float32], index: npt.NDArray[np.float32], alpha: float
-                         ) -> Tuple[npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32]]:
-        """
-        Create correlation (using pearson correlation) and regression
-        :param data: `data` (space, time)
-        :param index: array of temporal series
-        :param alpha: Significant level
-        :return: Correlation map, map with p values, significative corrrelation map, regression map, significative regression map
+    def index_regression(data: npt.NDArray[np.float32], index: npt.NDArray[np.float32], alpha: float) -> Tuple[npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32]]:
+        """Create correlation (pearson correlation) and regression
+
+        Parameters
+        ----------
+            data : npt.NDArray[np.float32]
+                Data to perform the methodology in (space x time)
+            index : npt.NDArray[np.float32]
+                Unidimensional array: temporal series
+            alpha : float
+                Significance level
+
+        Returns
+        -------
+            Cor : npt.NDArray[np.float32] (space)
+                Correlation map
+            Pvalue : npt.NDArray[np.float32] (space)
+                Map with p values
+            Cor_sig : npt.NDArray[np.float32] (space)
+                Significative corrrelation map
+            reg : npt.NDArray[np.float32] (space)
+                Regression map
+            reg_sig : npt.NDArray[np.float32] (space)
+                Significative regression map
         """
         n1, n2 = data.shape
-        # inicializamos las matrices
+
         Cor = np.zeros([n1, ], dtype=np.float32)
         Pvalue = np.zeros([n1, ], dtype=np.float32)
-        for nn in range(n1):  # para cada punto del espacio hacemos la correlación de Pearson
-            bb = stats.pearsonr(data[nn, :], index)  # bb tiene dos salidas: la primera es corre y la segunda es p-value que es el nivel de confianza
-            # asociado al valor de la correlación tras aplicar un test-t
-            Cor[nn] = bb[0]
-            Pvalue[nn] = bb[1]
-        # generamos una variable que es para que no se muestren mas que los valores de Cor cuando la correlacion
-        # es significativa
+        for nn in range(n1):  # Pearson correaltion for every point in the map
+            Cor[nn], Pvalue[nn] = stats.pearsonr(data[nn, :], index)
+
         Cor_sig = Cor.copy()
         Cor_sig[Pvalue > alpha] = np.nan
-        # generamos el mapa de regresión mediante multiplicación matricial. Ojo con las dimensiones!!
+
         reg = data.dot(index) / (n2 - 1)
-        # igualmente, hacemos una máscara para que sólo se muestre el mapa de regresión cuando es significativo
         reg_sig = reg.copy()
         reg_sig[Pvalue > alpha] = np.nan
         return Cor, Pvalue, Cor_sig, reg, reg_sig
@@ -266,19 +289,20 @@ class Meteo:
     @staticmethod
     def _crossvalidate_year(year: int, z: npt.NDArray[np.float32], y: npt.NDArray[np.float32], nt: int, ny: int, yrs: npt.NDArray[np.int32],
                             nm: int, alpha: float) -> Tuple[npt.NDArray[np.float32], ...]:
+        """Function of interna use that processes a single year for crossvalidation"""
         print('year:', year, 'of', nt)
         z2 = z[:, yrs != year]
         y2 = y[:, yrs != year]
         mca_out = Meteo.mca(z2, y2, nm, alpha)
         scf = mca_out.scf  #
         psi = np.dot(
-            np.dot(
                 np.dot(
-                    mca_out.SUY, np.linalg.inv(
-                        np.dot(mca_out.Us, np.transpose(mca_out.Us))
-                    )
-                ), mca_out.Us
-            ), np.transpose(z2)
+                    np.dot(
+                        mca_out.SUY, np.linalg.inv(
+                            np.dot(mca_out.Us, np.transpose(mca_out.Us))
+                        )
+                    ), mca_out.Us
+                ), np.transpose(z2)
         ) * nt * nm / ny
         zhat = np.dot(np.transpose(y[:, year]), psi) #
         r_uv = np.zeros(nm, dtype=np.float32)
@@ -290,6 +314,29 @@ class Meteo:
 
     @classmethod
     def crossvalidation_mp(cls, y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nm: int, alpha: float) -> CrossvalidationOut:
+        """Perform crossvalidation methodology with multiprocessing
+
+        Parameters
+        ----------
+            y : npt.NDArray[np.float32]
+                Predictor field (space x time)
+            z : npt.NDArray[np.float32]
+                Predictand field (space x time)
+            nm : npt.NDArray[np.float32]
+                Number of modes
+            alpha : float
+                Significance coeficient
+
+        Returns
+        -------
+            CrossvalidationOut
+
+        See Also
+        -------
+            `CrossvalidationOut`
+            `mca`
+            `crossvalidation`
+        """
         nz, ntz = z.shape
         ny, nty = y.shape
 
@@ -301,7 +348,7 @@ class Meteo:
         r_uv = np.zeros([nm, nt], dtype=np.float32)
         p_uv = np.zeros([nm, nt], dtype=np.float32)
         us = np.zeros([nm, nt - 1, nt], dtype=np.float32)  # crosvalidated year on axis 1
-        # estimación de zhat para cada año
+
         yrs = np.arange(nt)
 
         import multiprocessing as mp
@@ -331,15 +378,14 @@ class Meteo:
         r_z_zhat_t = np.zeros(nt, dtype=np.float32)
         p_z_zhat_t = np.zeros(nt, dtype=np.float32)
         for j in range(nt):
-            rtt = stats.pearsonr(zhat[:, j], z[:, j])  # serie de skill
+            rtt = stats.pearsonr(zhat[:, j], z[:, j])  # skill series
             r_z_zhat_t[j] = rtt[0]
             p_z_zhat_t[j] = rtt[1]
 
         r_z_zhat_s = np.zeros([nz], dtype=np.float32)
         p_z_zhat_s = np.zeros([nz], dtype=np.float32)
         for i in range(nz):
-            rs = stats.pearsonr(zhat[i, :], z[i, :])  # bb tiene dos salidas: la primera es corre y la segunda es p-value que es el nivel de confianza
-            # asociado al valor de la correlación tras aplicar un test-t
+            rs = stats.pearsonr(zhat[i, :], z[i, :])
             r_z_zhat_s[i] = rs[0]
             p_z_zhat_s[i] = rs[1]
         # rs = np.zeros(nz, dtype=np.float32)
@@ -361,6 +407,29 @@ class Meteo:
 
     @classmethod
     def crossvalidation(cls, y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nm: int, alpha: float) -> CrossvalidationOut:
+        """Perform crossvalidation methodology
+
+        Parameters
+        ----------
+            y : npt.NDArray[np.float32]
+                Predictor field (space x time)
+            z : npt.NDArray[np.float32]
+                Predictand field (space x time)
+            nm : npt.NDArray[np.float32]
+                Number of modes
+            alpha : float
+                Significance coeficient
+        
+        Returns
+        -------
+            CrossvalidationOut
+
+        See Also
+        -------
+            `CrossvalidationOut`
+            `mca`
+            `crossvalidation_mp
+        """
         nz, ntz = z.shape
         ny, nty = y.shape
 

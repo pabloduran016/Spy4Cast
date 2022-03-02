@@ -38,6 +38,7 @@ extensions = [
 numpydoc_show_class_members = False
 
 automodapi_writereprocessed = True
+autodoc_default_options = True
 
 autodoc_member_order = 'bysource'
 
