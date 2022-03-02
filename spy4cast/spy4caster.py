@@ -263,6 +263,13 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
+    def _get_index_from_sy(self, arr: np.ndarray, sy: int) -> int:
+        index = 0
+        while index < len(arr) and arr[index] != sy:  index += 1
+        if index > len(arr) - 1 or arr[index] > sy:
+            raise ValueError(f'Selected Year {sy} is not valid\nNOTE: Valid years {arr}')
+        return index
+
     def _plot_map(self, arr: npt.NDArray[np.float64], lat: npt.NDArray[np.float64], lon: npt.NDArray[np.float64],
                   fig: plt.Figure, ax: plt.Axes, title: Optional[str] = None,
                   levels: Optional[npt.NDArray[np.float64]] = None,
