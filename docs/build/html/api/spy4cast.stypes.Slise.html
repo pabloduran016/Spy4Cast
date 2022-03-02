@@ -261,6 +261,96 @@ However, <cite>slice</cite> is a built-in function in python and in the start of
 <cite>slise</cite>. This is the reason why this class is spelled with <cite>s</cite> (it wouldn’t conflict with <cite>slice</cite> right now because
 it is capitalised, but it is kinda cool, right?)</p>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.stypes.Slise.lat0">
+<span class="sig-name descname"><span class="pre">lat0</span></span><a class="headerlink" href="#spy4cast.stypes.Slise.lat0" title="Permalink to this definition">#</a></dt>
+<dd><p>Minimum latitude</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float | int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.stypes.Slise.latf">
+<span class="sig-name descname"><span class="pre">latf</span></span><a class="headerlink" href="#spy4cast.stypes.Slise.latf" title="Permalink to this definition">#</a></dt>
+<dd><p>Maximum latitude</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float | int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.stypes.Slise.lon0">
+<span class="sig-name descname"><span class="pre">lon0</span></span><a class="headerlink" href="#spy4cast.stypes.Slise.lon0" title="Permalink to this definition">#</a></dt>
+<dd><p>Minimum longitud</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float | int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.stypes.Slise.lonf">
+<span class="sig-name descname"><span class="pre">lonf</span></span><a class="headerlink" href="#spy4cast.stypes.Slise.lonf" title="Permalink to this definition">#</a></dt>
+<dd><p>Maximum longitud</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float | int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.stypes.Slise.month0">
+<span class="sig-name descname"><span class="pre">month0</span></span><a class="headerlink" href="#spy4cast.stypes.Slise.month0" title="Permalink to this definition">#</a></dt>
+<dd><p>Starting month of the season to select (included)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="spy4cast.stypes.Month.html#spy4cast.stypes.Month" title="spy4cast.stypes.Month">Month</a> | int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.stypes.Slise.monthf">
+<span class="sig-name descname"><span class="pre">monthf</span></span><a class="headerlink" href="#spy4cast.stypes.Slise.monthf" title="Permalink to this definition">#</a></dt>
+<dd><p>Ending month of the season to select (included)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="spy4cast.stypes.Month.html#spy4cast.stypes.Month" title="spy4cast.stypes.Month">Month</a> | int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.stypes.Slise.year0">
+<span class="sig-name descname"><span class="pre">year0</span></span><a class="headerlink" href="#spy4cast.stypes.Slise.year0" title="Permalink to this definition">#</a></dt>
+<dd><p>Starting year of the period to select (included)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.stypes.Slise.yearf">
+<span class="sig-name descname"><span class="pre">yearf</span></span><a class="headerlink" href="#spy4cast.stypes.Slise.yearf" title="Permalink to this definition">#</a></dt>
+<dd><p>Ending year of the period to select (included)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.stypes.Slise.sy">
+<span class="sig-name descname"><span class="pre">sy</span></span><a class="headerlink" href="#spy4cast.stypes.Slise.sy" title="Permalink to this definition">#</a></dt>
+<dd><p>Selected year used in methodologies like anom where you can only plot a given year</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int, optional</p>
+</dd>
+</dl>
+</dd></dl>
 <p class="rubric">Attributes Summary</p>
 <div class="table-wrapper"><table class="longtable docutils align-default">
 <colgroup>
@@ -268,8 +358,8 @@ it is capitalised, but it is kinda cool, right?)</p>
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.stypes.Slise.sy" title="spy4cast.stypes.Slise.sy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sy</span></code></a></p></td>
-<td><p>"(optional) Selected year used in methodologies like anom where you can only plot a given year</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="spy4cast.stypes.Slise.sy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sy</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table></div>
@@ -287,10 +377,9 @@ it is capitalised, but it is kinda cool, right?)</p>
 </table></div>
 <p class="rubric">Attributes Documentation</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Slise.sy">
-<span class="sig-name descname"><span class="pre">sy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.stypes.Slise.sy" title="Permalink to this definition">#</a></dt>
-<dd><p>“(optional) Selected year used in methodologies like anom where you can only plot a given year</p>
-</dd></dl>
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">sy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id0" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.stypes.Slise.default">
