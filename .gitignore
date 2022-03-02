@@ -9,7 +9,7 @@ DOING.txt
 
 __pycache__/
 
-docs/build/
+
 Makefile
 
 tests/
