@@ -17,23 +17,73 @@ NAN_VAL =1e4
 
 @dataclass
 class CrossvalidationOut:
-    """Dataclass that is the output of the crossvalidation methodology"""
-    zhat: npt.NDArray[np.float32]  # doc: Hindcast of field to predict using crosvalidation
-    scf: npt.NDArray[np.float32]  # doc: Squared covariance fraction of the mca for each mode
-    r_z_zhat_t: npt.NDArray[np.float32]  # doc: Correlation between zhat and Z for each time (time series)
-    p_z_zhat_t: npt.NDArray[np.float32]  # doc: P values of rt
-    r_z_zhat_s: npt.NDArray[np.float32]  # doc: Correlation between time series (for each point) of zhat and z (map)
-    p_z_zhat_s: npt.NDArray[np.float32]  # doc: P values of rr
-    r_uv: npt.NDArray[np.float32]  # doc: Correlation score betweeen u and v for each mode
-    p_uv: npt.NDArray[np.float32]  # doc: P value of ruv
-    us: npt.NDArray[np.float32]  # doc: crosvalidated year on axis 2
-    alpha: float  # doc: Correlation factor
+    """Dataclass that is the output of the crossvalidation methodology
+
+    Attributes
+    ----------
+        zhat : npt.NDArray[float32]
+            Hindcast of field to predict using crosvalidation
+        scf : npt.NDArray[float32]
+            Squared covariance fraction of the mca for each mode
+        r_z_zhat_t : npt.NDArray[float32]
+            Correlation between zhat and Z for each time (time series)
+        p_z_zhat_t : npt.NDArray[float32]
+            P values of rt
+        r_z_zhat_s : npt.NDArray[float32]
+            Correlation between time series (for each point) of zhat and z (map)
+        p_z_zhat_s : npt.NDArray[float32]
+            P values of rr
+        r_uv : npt.NDArray[float32]
+            Correlation score betweeen u and v for each mode
+        p_uv : npt.NDArray[float32]
+            P value of ruv
+        us : npt.NDArray[float32]
+            crosvalidated year on axis 2
+        alpha : float
+            Correlation factor
+    """
+    zhat: npt.NDArray[np.float32]
+    scf: npt.NDArray[np.float32]
+    r_z_zhat_t: npt.NDArray[np.float32]
+    p_z_zhat_t: npt.NDArray[np.float32]
+    r_z_zhat_s: npt.NDArray[np.float32]
+    p_z_zhat_s: npt.NDArray[np.float32]
+    r_uv: npt.NDArray[np.float32]
+    p_uv: npt.NDArray[np.float32]
+    us: npt.NDArray[np.float32]
+    alpha: float
 
 
 @dataclass
 class MCAOut:
-    """Dataclass that is the output of the MCA methodology"""
-    # TODO: Add docs ffor MCAOut field
+    """Dataclass that is the output of the MCA methodology
+
+    Attributes
+    ----------
+    RUY : npt.NDArray[np.float32]
+        TBD
+    RUY_sig : npt.NDArray[np.float32]
+        TBD
+    SUY : npt.NDArray[np.float32]
+        TBD
+    SUY_sig : npt.NDArray[np.float32]
+        TBD
+    RUZ : npt.NDArray[np.float32]
+        TBD
+    RUZ_sig : npt.NDArray[np.float32]
+        TBD
+    SUZ : npt.NDArray[np.float32]
+        TBD
+    SUZ_sig : npt.NDArray[np.float32]
+        TBD
+    Us : npt.NDArray[np.float32]
+        TBD
+    Vs : npt.NDArray[np.float32]
+        TBD
+    scf : npt.NDArray[np.float32]
+        TBD
+    """
+    # TODO: Add docs for MCAOut field
     RUY: npt.NDArray[np.float32]
     RUY_sig: npt.NDArray[np.float32]
     SUY: npt.NDArray[np.float32]
