@@ -15,7 +15,7 @@ After that, navigate to the folder and install dependencies
 .. code-block:: console
 
     (.venv) $ cd Spy4Cast
-    (.venv) $ pip install -r requirements.txt
+    (.venv) $ conda env create --file environment.yml -n env_name
 
 Example
 -------
