@@ -1,4 +1,5 @@
 # Spy4Cast
+![Icon](docs/source/_static/favicon.png)
 
 Python framework for working with .nc files and applying methodologies to them as well as plotting
 
