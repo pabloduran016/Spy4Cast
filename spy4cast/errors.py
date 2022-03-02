@@ -1,3 +1,7 @@
+"""
+Collection of excpetions that are raised from functions in the api
+"""
+
 from typing import Any, Optional, Generator, Sequence
 
 __all__ = [

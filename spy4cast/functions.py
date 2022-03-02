@@ -1,9 +1,6 @@
 """
 Collection of functions used across the api and for the users convenience
 """
-import json
-import os
-import datetime
 from typing import Optional, Dict, Any
 from .stypes import Month, Slise
 from time import perf_counter
