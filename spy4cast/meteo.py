@@ -1,7 +1,11 @@
+"""
+Module tha contains the Meteo class, in charge of performing calculations
+"""
+
 import pandas as pd
 import xarray as xr
 import numpy as np
-from typing import List, Tuple
+from typing import Tuple
 from dataclasses import dataclass
 from scipy import stats
 import scipy
@@ -13,19 +17,23 @@ NAN_VAL =1e4
 
 @dataclass
 class CrossvalidationOut:
-    zhat: npt.NDArray[np.float32]
-    scf: npt.NDArray[np.float32]
-    r_z_zhat_t: npt.NDArray[np.float32]
-    p_z_zhat_t: npt.NDArray[np.float32]
-    r_z_zhat_s: npt.NDArray[np.float32]
-    p_z_zhat_s: npt.NDArray[np.float32]
-    r_uv: npt.NDArray[np.float32]
-    p_uv: npt.NDArray[np.float32]
-    us: npt.NDArray[np.float32]
-    alpha: float
+    """Dataclass that is the output of the crossvalidation methodology"""
+    zhat: npt.NDArray[np.float32]  # doc: Hindcast of field to predict using crosvalidation
+    scf: npt.NDArray[np.float32]  # doc: Squared covariance fraction of the mca for each mode
+    r_z_zhat_t: npt.NDArray[np.float32]  # doc: Correlation between zhat and Z for each time (time series)
+    p_z_zhat_t: npt.NDArray[np.float32]  # doc: P values of rt
+    r_z_zhat_s: npt.NDArray[np.float32]  # doc: Correlation between time series (for each point) of zhat and z (map)
+    p_z_zhat_s: npt.NDArray[np.float32]  # doc: P values of rr
+    r_uv: npt.NDArray[np.float32]  # doc: Correlation score betweeen u and v for each mode
+    p_uv: npt.NDArray[np.float32]  # doc: P value of ruv
+    us: npt.NDArray[np.float32]  # doc: crosvalidated year on axis 2
+    alpha: float  # doc: Correlation factor
+
 
 @dataclass
 class MCAOut:
+    """Dataclass that is the output of the MCA methodology"""
+    # TODO: Add docs ffor MCAOut field
     RUY: npt.NDArray[np.float32]
     RUY_sig: npt.NDArray[np.float32]
     SUY: npt.NDArray[np.float32]
@@ -40,84 +48,134 @@ class MCAOut:
 
 
 class Meteo:
-    """Class containing functions to carry out on the dataset"""
+    """Class that carries out methodologies"""
 
     @classmethod
     def clim(cls, array: xr.DataArray, dim: str = 'time') -> xr.DataArray:
-        if isinstance(array, xr.DataArray):
-            if dim == 'year' or dim == 'month':
-                months = list(array.groupby('time.month').groups.keys())  # List of month values
-                nm = len(months)
-                # Create index to reshape time variable
-                ind = pd.MultiIndex.from_product((months, array.time[nm - 1::nm].data), names=('month', 'year'))
-                # Reshape time variable
-                assert len(array.shape) == 2 or len(array.shape) == 1,\
-                    f'Clim implemented only for 1 and 2 dimensional arrays, for now'
-                arr = array.assign_coords(
-                    time=('time', ind)
-                ).unstack('time').transpose('year', 'month')
-                rv: xr.DataArray =  arr.mean(dim=dim)
-            elif dim == 'time':  # Apply across year and month
-                assert 'time' in array.dims
-                rv = array.mean(dim=dim)
-            else:
-                raise ValueError(f'Invalid dim {dim}')
-            return rv
-        raise ValueError(f"Expected type xarray.DataArray, got {type(array)}")
+        """Function that performs the climatology of a xarray Dataset
+
+        The climatology is the average across a given axis
+
+        Parameters
+        ----------
+            array : xr.DataArray
+                Xarray DataArray where you wish to perform the climatology
+
+            dim : str, default='time'
+                Dimension where the climatology is going to be performed on
+
+        See Also
+        --------
+            `plotters.ClimerTS`
+            `plotters.ClimerMap`
+
+        Raises
+        ------
+           `TypeError` if array is not an instance of `xr.DataArray`
+           `ValueError` if dim is not `month`, `time` or `year`
+        """
+        if not isinstance(array, xr.DataArray):
+            raise TypeError(f"Expected type xarray.DataArray, got {type(array)}")
+        if dim == 'year' or dim == 'month':
+            months = list(array.groupby('time.month').groups.keys())  # List of month values
+            nm = len(months)
+            # Create index to reshape time variable
+            ind = pd.MultiIndex.from_product((months, array.time[nm - 1::nm].data), names=('month', 'year'))
+            # Reshape time variable
+            assert len(array.shape) == 2 or len(array.shape) == 1,\
+                f'Clim implemented only for 1 and 2 dimensional arrays, for now'
+            arr = array.assign_coords(
+                time=('time', ind)
+            ).unstack('time').transpose('year', 'month')
+            rv: xr.DataArray =  arr.mean(dim=dim)
+        elif dim == 'time':  # Apply across year and month
+            assert 'time' in array.dims
+            rv = array.mean(dim=dim)
+        else:
+            raise ValueError(f'Invalid dim {dim}')
+        return rv
 
     @classmethod
     def anom(cls, array: xr.DataArray, st: bool = False) -> xr.DataArray:
-        """
-        Function to calculate the anomalies
-        :param array: Array to process the anomalies. Fisrt dimension must be time
-        :param st: bool to indicate whether the method should standarize
+        """Function to calculate the anomalies on a xarray DataArray
+
+        The anomaly is the time variable minus the mean across all times of a given point
+
+        Paramaters
+        ----------
+            array : xr.DataArray
+                Array to process the anomalies. Must have a dimension called `time`
+            st : bool, default=False
+                Indicates whether the anomaly should standarized. Divide by the standard deviation
+
+        Raises
+        ------
+            `TypeError` if array is not an instance of `xr.DataArray`
+            `ValueError` if the number of dimension of the array is not either 3 (map) or 1 (time series)
+
+        See Also
+        --------
+            `npanom`
         """
         # print(f'[INFO] <meteo.Meteo.anom()> called, st: {st}')
-        if isinstance(array, xr.DataArray):
-            assert 'time' in array.dims, 'Cant\'t recognise time key in array'
-            months_set = set(array.groupby('time.month').groups.keys())  # List of month values
-            nm = len(months_set)
-            months = array['time.month'][:nm].data
-            # Create index to reshape time variab le
-            ind = pd.MultiIndex.from_product((array.time[nm - 1::nm]['time.year'].data, months), names=('year', 'month'))
-            assert len(array.time) == len(ind)
-            if len(array.shape) == 3:  # 3d array
-                # Reshape time variable
-                lat_key = 'latitude' if 'latitude' in array.dims else 'lat'
-                lon_key = 'longitude' if 'longitude' in array.dims else 'lon'
-                assert lat_key in array.dims and lon_key in array.dims, 'Can\'t recognise keys'
-                arr = array.assign_coords(time=('time', ind))
-                # arr must be a DataArray with dims=(months, year, lat, lon)
-                a = arr.groupby('year').mean()
-                b: xr.DataArray = a - a.mean('year')
-                if st:
-                    # print('[INFO] <meteo.Meteo.anom()> standarzing')
-                    rv: xr.DataArray = b / b.std()
-                    return rv
-                return b
-            elif len(array.shape) == 1:  # time series
-                assert 'latitude' not in array.dims and 'longitude' not in array.dims,\
-                    'Unidimensional arrays time must be the only dimension'
-                arr = array.assign_coords(
-                    time=('time', ind)
-                ).unstack('time').transpose('year', 'month')
-                a = arr.mean('month')
-                b = a - a.mean('year')
-                if st:
-                    # print('[INFO] <meteo.Meteo.anom()> standarzing')
-                    rv = b / b.std()
-                    return rv
-                return b
-            else:
-                raise ValueError('Invalid dimensions of array from anom methodology')
-        raise ValueError(f"Invalid type for array: {type(array)}")
+        if not isinstance(array, xr.DataArray):
+            raise TypeError(f"Invalid type for array: {type(array)}")
+
+        assert 'time' in array.dims, 'Cant\'t recognise time key in array'
+        months_set = set(array.groupby('time.month').groups.keys())  # List of month values
+        nm = len(months_set)
+        months = array['time.month'][:nm].data
+        # Create index to reshape time variab le
+        ind = pd.MultiIndex.from_product((array.time[nm - 1::nm]['time.year'].data, months), names=('year', 'month'))
+        assert len(array.time) == len(ind)
+        if len(array.shape) == 3:  # 3d array
+            # Reshape time variable
+            lat_key = 'latitude' if 'latitude' in array.dims else 'lat'
+            lon_key = 'longitude' if 'longitude' in array.dims else 'lon'
+            assert lat_key in array.dims and lon_key in array.dims, 'Can\'t recognise keys'
+            arr = array.assign_coords(time=('time', ind))
+            # arr must be a DataArray with dims=(months, year, lat, lon)
+            a = arr.groupby('year').mean()
+            b: xr.DataArray = a - a.mean('year')
+            if st:
+                # print('[INFO] <meteo.Meteo.anom()> standarzing')
+                rv: xr.DataArray = b / b.std()
+                return rv
+            return b
+        elif len(array.shape) == 1:  # time series
+            assert 'latitude' not in array.dims and 'longitude' not in array.dims,\
+                'Unidimensional arrays time must be the only dimension'
+            arr = array.assign_coords(
+                time=('time', ind)
+            ).unstack('time').transpose('year', 'month')
+            a = arr.mean('month')
+            b = a - a.mean('year')
+            if st:
+                # print('[INFO] <meteo.Meteo.anom()> standarzing')
+                rv = b / b.std()
+                return rv
+            return b
+        else:
+            raise ValueError('Invalid dimensions of array from anom methodology')
 
     @staticmethod
     def npanom(array: npt.NDArray[np.float32], axis: int = 0, st: bool = False) -> npt.NDArray[np.float32]:
-        """
-        Function to calculate the anomalies
-        :param array: Array to process the anomalies. space x time
-        :param st: bool to indicate whether the method should standarize
+        """Function to calculate the anomalies on a numpy array
+
+        The anomaly is the time variable minus the mean across all times of a given point
+
+        Paramaters
+        ----------
+            array : npt.NDArray[np.float32]
+                Array to process the anomalies.
+            axis : int, default=0
+                Axis where to perform teh anomaly, ussually the time axis
+            st : bool, default=False
+                Indicates whether the anomaly should standarized. Divide by the standard deviation
+
+        See Also
+        --------
+            `anom`
         """
         b: npt.NDArray[np.float32] = array - array.mean(axis=axis)
         if st:
@@ -126,14 +184,13 @@ class Meteo:
         return b
 
     @classmethod
-    def mca(cls, z: npt.NDArray[np.float32], y: npt.NDArray[np.float32], nmes: int, nm: int, alpha: float) -> MCAOut:
+    def mca(cls, z: npt.NDArray[np.float32], y: npt.NDArray[np.float32], nm: int, alpha: float) -> MCAOut:
         """"
         Maximum covariance analysis between y (predictor) and Z (predictand)
 
         :param z: predictand
         :param y: predictor. space x time.
         :param nm: number of modes
-        :param nmes: es datos meses metes al año. Si haces la media estacional es 1, pero si metes enero y feb por separado es 2
         :param alpha: significant level
         :return: RUY, RUY_sig, SUY, SUY_sig, RUZ, RUZ_sig, SUZ, SUZ_sig, us, Vs, scf
         """
@@ -208,11 +265,11 @@ class Meteo:
 
     @staticmethod
     def _crossvalidate_year(year: int, z: npt.NDArray[np.float32], y: npt.NDArray[np.float32], nt: int, ny: int, yrs: npt.NDArray[np.int32],
-                            nmes: int, nm: int, alpha: float) -> Tuple[npt.NDArray[np.float32], ...]:
+                            nm: int, alpha: float) -> Tuple[npt.NDArray[np.float32], ...]:
         print('year:', year, 'of', nt)
         z2 = z[:, yrs != year]
         y2 = y[:, yrs != year]
-        mca_out = Meteo.mca(z2, y2, nmes, nm, alpha)
+        mca_out = Meteo.mca(z2, y2, nm, alpha)
         scf = mca_out.scf  #
         psi = np.dot(
             np.dot(
@@ -232,7 +289,7 @@ class Meteo:
         return scf, zhat, r_uv, p_uv, mca_out.Us
 
     @classmethod
-    def crossvalidation_mp(cls, y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nmes: int, nm: int, alpha: float) -> CrossvalidationOut:
+    def crossvalidation_mp(cls, y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nm: int, alpha: float) -> CrossvalidationOut:
         nz, ntz = z.shape
         ny, nty = y.shape
 
@@ -256,7 +313,7 @@ class Meteo:
             for i in yrs:
                 # print(f'applying async on process {i=}')
                 p = pool.apply_async(cls._crossvalidate_year, kwds={
-                    'year': i, 'z': z, 'y': y, 'nt': nt, 'ny': ny, 'yrs': yrs, 'nmes': nmes,
+                    'year': i, 'z': z, 'y': y, 'nt': nt, 'ny': ny, 'yrs': yrs,
                     'nm': nm, 'alpha': alpha
                 })
                 processes.append(p)
@@ -303,7 +360,7 @@ class Meteo:
         )
 
     @classmethod
-    def crossvalidation(cls, y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nmes: int, nm: int, alpha: float) -> CrossvalidationOut:
+    def crossvalidation(cls, y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nm: int, alpha: float) -> CrossvalidationOut:
         nz, ntz = z.shape
         ny, nty = y.shape
 
@@ -328,7 +385,7 @@ class Meteo:
 
         for i in yrs:
             scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, :, i] \
-                = cls._crossvalidate_year(year=i, z=z, y=y, nt=nt, ny=ny, yrs=yrs, nmes=nmes, nm=nm, alpha=alpha)
+                = cls._crossvalidate_year(year=i, z=z, y=y, nt=nt, ny=ny, yrs=yrs, nm=nm, alpha=alpha)
 
         r_z_zhat_t = np.zeros(nt, dtype=np.float32)
         p_z_zhat_t = np.zeros(nt, dtype=np.float32)

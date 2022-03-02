@@ -262,7 +262,7 @@ class Spy4Caster:
             raise TypeError('Must prprocess data before applying MCA')
         assert self._z is not None
         assert self._y is not None
-        self._mca_out = Meteo.mca(self._z, self._y, 1, nm, alpha)
+        self._mca_out = Meteo.mca(self._z, self._y, nm, alpha)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
@@ -274,9 +274,9 @@ class Spy4Caster:
         assert self._z is not None
         assert self._y is not None
         if multiprocessing:
-            self._crossvalidation_out = Meteo.crossvalidation_mp(self._y, self._z, 1, nm, alpha)
+            self._crossvalidation_out = Meteo.crossvalidation_mp(self._y, self._z, nm, alpha)
         else:
-            self._crossvalidation_out = Meteo.crossvalidation(self._y, self._z, 1, nm, alpha)
+            self._crossvalidation_out = Meteo.crossvalidation(self._y, self._z, nm, alpha)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
