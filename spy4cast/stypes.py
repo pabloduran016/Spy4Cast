@@ -55,17 +55,17 @@ class Slise:
 
     Attributes
     ----------
-        lat0 : float | int
+        lat0 : float or int
             Minimum latitude
-        latf : float | int
+        latf : float or int
             Maximum latitude
-        lon0 : float | int
+        lon0 : float or int
             Minimum longitud
-        lonf : float | int
+        lonf : float or int
             Maximum longitud
-        month0 : Month | int
+        month0 : Month or int
             Starting month of the season to select (included)
-        monthf : Month | int
+        monthf : Month or int
             Ending month of the season to select (included)
         year0 : int
             Starting year of the period to select (included)
