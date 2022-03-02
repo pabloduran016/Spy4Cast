@@ -40,25 +40,42 @@ class Spy4Caster:
         self._zhat_plot_name = zhat_plot_name
         self._plot_data_dir = plot_data_dir
         self._plot_data_sufix = plot_data_sufix
-        self._y: Optional[npt.NDArray[np.float64]] = None
-        self._ylat: Optional[npt.NDArray[np.float64]] = None
-        self._ylon: Optional[npt.NDArray[np.float64]] = None
-        self._ytime: Optional[npt.NDArray[np.float64]] = None
-        self._z: Optional[npt.NDArray[np.float64]] = None
-        self._zlat: Optional[npt.NDArray[np.float64]] = None
-        self._zlon: Optional[npt.NDArray[np.float64]] = None
-        self._ztime: Optional[npt.NDArray[np.float64]] = None
+        self._y: Optional[npt.NDArray[np.float32]] = None
+        self._ylat: Optional[npt.NDArray[np.float32]] = None
+        self._ylon: Optional[npt.NDArray[np.float32]] = None
+        self._ytime: Optional[npt.NDArray[np.int64]] = None
+        self._z: Optional[npt.NDArray[np.float32]] = None
+        self._zlat: Optional[npt.NDArray[np.float32]] = None
+        self._zlon: Optional[npt.NDArray[np.float32]] = None
+        self._ztime: Optional[npt.NDArray[np.int64]] = None
         self._opened_figs: List[plt.Figure] = []
 
-    def _set_var(self, name: str, value: Union[npt.NDArray[np.float64], xr.DataArray]) -> None:
-        if name == 'z':       self._z = value
-        elif name == 'zlat':  self._zlat = value
-        elif name == 'zlon':  self._zlon = value
-        elif name == 'ztime': self._ztime = value
-        elif name == 'y':     self._y = value
-        elif name == 'ylat':  self._ylat = value
-        elif name == 'ylon':  self._ylon = value
-        elif name == 'ytime': self._ytime = value
+    def _set_var(self, name: str, value: Union[npt.NDArray[np.float32],
+                 npt.NDArray[np.int64], xr.DataArray]) -> None:
+        if name == 'z':
+            assert value.dtype == np.float32, f'Invaldid type for `z`, got {value.dtype}, expected {np.float32}'
+            self._z = value.astype(np.float32)
+        elif name == 'zlat':
+            assert value.dtype == np.float32, f'Invalid dtype for `zlat`, got {value.dtype}, expected {np.float32}'
+            self._zlat = value.astype(np.float32)
+        elif name == 'zlon':
+            assert value.dtype == np.float32, f'Invalid dtype for `zlon`, got {value.dtype}, expected {np.float32}'
+            self._zlon = value.astype(np.float32)
+        elif name == 'ztime':
+            assert value.dtype == np.int64, f'Invalid dtype for `ztime`, got {value.dtype}, expected {np.int64}'
+            self._ztime = value.astype(np.int64)
+        elif name == 'y':
+            assert value.dtype == np.float32, f'Invalid dtype for `y`, got {value.dtype}, expected {np.float32}'
+            self._y = value.astype(np.float32)
+        elif name == 'ylat':
+            assert value.dtype == np.float32, f'Invalid dtype for `ylat`, got {value.dtype}, expected {np.float32}'
+            self._ylat = value.astype(np.float32)
+        elif name == 'ylon':
+            assert value.dtype == np.float32, f'Invalid dtype for `ylon`, got {value.dtype}, expected {np.float32}'
+            self._ylon = value.astype(np.float32)
+        elif name == 'ytime':
+            assert value.dtype == np.int64, f'Invalid dtype for `ztime`, got {value.dtype}, expected {np.int64}'
+            self._ytime = value.astype(np.int64)
         else:
             raise ValueError(f'Unknown variable name {name}')
 
@@ -263,16 +280,16 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def _get_index_from_sy(self, arr: np.ndarray, sy: int) -> int:
+    def _get_index_from_sy(self, arr: npt.NDArray[np.int64], sy: int) -> int:
         index = 0
         while index < len(arr) and arr[index] != sy:  index += 1
         if index > len(arr) - 1 or arr[index] > sy:
             raise ValueError(f'Selected Year {sy} is not valid\nNOTE: Valid years {arr}')
         return index
 
-    def _plot_map(self, arr: npt.NDArray[np.float64], lat: npt.NDArray[np.float64], lon: npt.NDArray[np.float64],
+    def _plot_map(self, arr: npt.NDArray[np.float32], lat: npt.NDArray[np.float32], lon: npt.NDArray[np.float32],
                   fig: plt.Figure, ax: plt.Axes, title: Optional[str] = None,
-                  levels: Optional[npt.NDArray[np.float64]] = None,
+                  levels: Optional[npt.NDArray[np.float32]] = None,
                   xlim: Optional[Sequence[int]] = None, ylim: Optional[Sequence[int]] = None,
                   cmap: Optional[str] = None) -> None:
         if levels is None:
@@ -313,14 +330,14 @@ class Spy4Caster:
         if F.NOT_HALT not in flags:
             plt.show()
 
-    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None, selected_year: int = None, cmap: str = None) -> None:
+    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None, selected_year: Optional[int] = None, cmap: Optional[str] = None) -> None:
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
            nones = [n for n, v in (
                ("y", self._y), ("ylat", self._ylat), ("ylon", self._ylon), ("ytime", self._ytime),
                ("z", self._z), ("zlat", self._zlat), ("zlon", self._zlon), ("ztime", self._ztime)
            ) if v is None]
            raise TypeError(f'Must preprocess data before plotting\n'
-                           f'\t{", ".join(nones)} do not exist')
+                           f'\t{", ".join(nones)} {("does" if len(nones) == 1 else "do")} not exist')
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
 
         nyt, nylat, nylon = len(self._ytime), len(self._ylat), len(self._ylon)
@@ -559,7 +576,8 @@ class Spy4Caster:
         return self
 
     @staticmethod
-    def save_output(name: str, variables: Union[Dict[str, npt.NDArray[np.float64]], MCAOut, CrossvalidationOut]) -> None:
+    def save_output(name: str, variables: Union[Dict[str, Union[npt.NDArray[np.float32], npt.NDArray[np.int64]]],
+                                                MCAOut, CrossvalidationOut]) -> None:
         if type(variables) != dict:
             d = variables.__dict__
         else:

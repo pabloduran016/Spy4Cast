@@ -13,30 +13,30 @@ NAN_VAL =1e4
 
 @dataclass
 class CrossvalidationOut:
-    zhat: npt.NDArray[np.float64]
-    scf: npt.NDArray[np.float64]
-    r_z_zhat_t: npt.NDArray[np.float64]
-    p_z_zhat_t: npt.NDArray[np.float64]
-    r_z_zhat_s: npt.NDArray[np.float64]
-    p_z_zhat_s: npt.NDArray[np.float64]
-    r_uv: npt.NDArray[np.float64]
-    p_uv: npt.NDArray[np.float64]
-    us: npt.NDArray[np.float64]
+    zhat: npt.NDArray[np.float32]
+    scf: npt.NDArray[np.float32]
+    r_z_zhat_t: npt.NDArray[np.float32]
+    p_z_zhat_t: npt.NDArray[np.float32]
+    r_z_zhat_s: npt.NDArray[np.float32]
+    p_z_zhat_s: npt.NDArray[np.float32]
+    r_uv: npt.NDArray[np.float32]
+    p_uv: npt.NDArray[np.float32]
+    us: npt.NDArray[np.float32]
     alpha: float
 
 @dataclass
 class MCAOut:
-    RUY: npt.NDArray[np.float64]
-    RUY_sig: npt.NDArray[np.float64]
-    SUY: npt.NDArray[np.float64]
-    SUY_sig: npt.NDArray[np.float64]
-    RUZ: npt.NDArray[np.float64]
-    RUZ_sig: npt.NDArray[np.float64]
-    SUZ: npt.NDArray[np.float64]
-    SUZ_sig: npt.NDArray[np.float64]
-    Us: npt.NDArray[np.float64]
-    Vs: npt.NDArray[np.float64]
-    scf: npt.NDArray[np.float64]
+    RUY: npt.NDArray[np.float32]
+    RUY_sig: npt.NDArray[np.float32]
+    SUY: npt.NDArray[np.float32]
+    SUY_sig: npt.NDArray[np.float32]
+    RUZ: npt.NDArray[np.float32]
+    RUZ_sig: npt.NDArray[np.float32]
+    SUZ: npt.NDArray[np.float32]
+    SUZ_sig: npt.NDArray[np.float32]
+    Us: npt.NDArray[np.float32]
+    Vs: npt.NDArray[np.float32]
+    scf: npt.NDArray[np.float32]
 
 
 class Meteo:
@@ -113,20 +113,20 @@ class Meteo:
         raise ValueError(f"Invalid type for array: {type(array)}")
 
     @staticmethod
-    def npanom(array: npt.NDArray[np.float64], axis: int = 0, st: bool = False) -> npt.NDArray[np.float64]:
+    def npanom(array: npt.NDArray[np.float32], axis: int = 0, st: bool = False) -> npt.NDArray[np.float32]:
         """
         Function to calculate the anomalies
         :param array: Array to process the anomalies. space x time
         :param st: bool to indicate whether the method should standarize
         """
-        b: npt.NDArray[np.float64] = array - array.mean(axis=axis)
+        b: npt.NDArray[np.float32] = array - array.mean(axis=axis)
         if st:
-            rv: npt.NDArray[np.float64] = b / b.std(axis=axis)
+            rv: npt.NDArray[np.float32] = b / b.std(axis=axis)
             return rv
         return b
 
     @classmethod
-    def mca(cls, z: npt.NDArray[np.float64], y: npt.NDArray[np.float64], nmes: int, nm: int, alpha: float) -> MCAOut:
+    def mca(cls, z: npt.NDArray[np.float32], y: npt.NDArray[np.float32], nmes: int, nm: int, alpha: float) -> MCAOut:
         """"
         Maximum covariance analysis between y (predictor) and Z (predictand)
 
@@ -156,20 +156,20 @@ class Meteo:
         v = np.dot(np.transpose(z), q[:, :nm])
         # v = np.dot(np.transpose(z), q[:, :nm])
         out = MCAOut(
-            RUY=np.zeros([ny, nm]),
-            RUY_sig=np.zeros([ny, nm]),
-            SUY=np.zeros([ny, nm]),
-            SUY_sig=np.zeros([ny, nm]),
-            RUZ=np.zeros([nz, nm]),
-            RUZ_sig=np.zeros([nz, nm]),
-            SUZ=np.zeros([nz, nm]),
-            SUZ_sig=np.zeros([nz, nm]),
+            RUY=np.zeros([ny, nm], dtype=np.float32),
+            RUY_sig=np.zeros([ny, nm], dtype=np.float32),
+            SUY=np.zeros([ny, nm], dtype=np.float32),
+            SUY_sig=np.zeros([ny, nm], dtype=np.float32),
+            RUZ=np.zeros([nz, nm], dtype=np.float32),
+            RUZ_sig=np.zeros([nz, nm], dtype=np.float32),
+            SUZ=np.zeros([nz, nm], dtype=np.float32),
+            SUZ_sig=np.zeros([nz, nm], dtype=np.float32),
             Us=((u - u.mean(0)) / u.std(0)).transpose(),  # Standarized anom across axis 0
             Vs=((v - v.mean(0)) / v.std(0)).transpose(),  # Standarized anom across axis 0
             scf=(d / np.sum(d))[:nm],
         )
-        pvalruy = np.zeros([ny, nm])
-        pvalruz = np.zeros([nz, nm])
+        pvalruy = np.zeros([ny, nm], dtype=np.float32)
+        pvalruz = np.zeros([nz, nm], dtype=np.float32)
         for i in range(nm):
             out.RUY[:, i], pvalruy[:, i], out.RUY_sig[:, i], out.SUY[:, i], out.SUY_sig[:, i] = cls.index_regression(y, out.Us[i, :], alpha)
             out.RUZ[:, i], pvalruz[:, i], out.RUZ_sig[:, i], out.SUZ[:, i], out.SUZ_sig[:, i] = cls.index_regression(z, out.Us[i, :], alpha)
@@ -177,8 +177,8 @@ class Meteo:
         return out
 
     @staticmethod
-    def index_regression(data: npt.NDArray[np.float64], index: npt.NDArray[np.float64], alpha: float
-                         ) -> Tuple[npt.NDArray[np.float64], npt.NDArray[np.float64], npt.NDArray[np.float64], npt.NDArray[np.float64], npt.NDArray[np.float64]]:
+    def index_regression(data: npt.NDArray[np.float32], index: npt.NDArray[np.float32], alpha: float
+                         ) -> Tuple[npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32]]:
         """
         Create correlation (using pearson correlation) and regression
         :param data: `data` (space, time)
@@ -188,8 +188,8 @@ class Meteo:
         """
         n1, n2 = data.shape
         # inicializamos las matrices
-        Cor = np.zeros([n1, ])
-        Pvalue = np.zeros([n1, ])
+        Cor = np.zeros([n1, ], dtype=np.float32)
+        Pvalue = np.zeros([n1, ], dtype=np.float32)
         for nn in range(n1):  # para cada punto del espacio hacemos la correlación de Pearson
             bb = stats.pearsonr(data[nn, :], index)  # bb tiene dos salidas: la primera es corre y la segunda es p-value que es el nivel de confianza
             # asociado al valor de la correlación tras aplicar un test-t
@@ -207,8 +207,8 @@ class Meteo:
         return Cor, Pvalue, Cor_sig, reg, reg_sig
 
     @staticmethod
-    def _crossvalidate_year(year: int, z: npt.NDArray[np.float64], y: npt.NDArray[np.float64], nt: int, ny: int, yrs: npt.NDArray[np.int32],
-                            nmes: int, nm: int, alpha: float) -> Tuple[npt.NDArray[np.float64], ...]:
+    def _crossvalidate_year(year: int, z: npt.NDArray[np.float32], y: npt.NDArray[np.float32], nt: int, ny: int, yrs: npt.NDArray[np.int32],
+                            nmes: int, nm: int, alpha: float) -> Tuple[npt.NDArray[np.float32], ...]:
         print('year:', year, 'of', nt)
         z2 = z[:, yrs != year]
         y2 = y[:, yrs != year]
@@ -224,26 +224,26 @@ class Meteo:
             ), np.transpose(z2)
         ) * nt * nm / ny
         zhat = np.dot(np.transpose(y[:, year]), psi) #
-        r_uv = np.zeros(nm)
-        p_uv = np.zeros(nm)
+        r_uv = np.zeros(nm, dtype=np.float32)
+        p_uv = np.zeros(nm, dtype=np.float32)
         for m in range(nm):
             r_uv[m], p_uv[m] = stats.pearsonr(mca_out.Us[m, :], mca_out.Vs[m, :]) #
 
         return scf, zhat, r_uv, p_uv, mca_out.Us
 
     @classmethod
-    def crossvalidation_mp(cls, y: npt.NDArray[np.float64], z: npt.NDArray[np.float64], nmes: int, nm: int, alpha: float) -> CrossvalidationOut:
+    def crossvalidation_mp(cls, y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nmes: int, nm: int, alpha: float) -> CrossvalidationOut:
         nz, ntz = z.shape
         ny, nty = y.shape
 
         assert ntz == nty
         nt = ntz
 
-        zhat = np.zeros_like(z)
-        scf = np.zeros([nm, nt])
-        r_uv = np.zeros([nm, nt])
-        p_uv = np.zeros([nm, nt])
-        us = np.zeros([nm, nt - 1, nt])  # crosvalidated year on axis 1
+        zhat = np.zeros_like(z, dtype=np.float32)
+        scf = np.zeros([nm, nt], dtype=np.float32)
+        r_uv = np.zeros([nm, nt], dtype=np.float32)
+        p_uv = np.zeros([nm, nt], dtype=np.float32)
+        us = np.zeros([nm, nt - 1, nt], dtype=np.float32)  # crosvalidated year on axis 1
         # estimación de zhat para cada año
         yrs = np.arange(nt)
 
@@ -271,23 +271,23 @@ class Meteo:
         #     scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], \
         #         = cls._crossvalidate_year(year=i, z=z, y=y, nt=nt, ny=ny, yrs=yrs, nmes=nmes, nm=nm, alpha=alpha)
 
-        r_z_zhat_t = np.zeros(nt)
-        p_z_zhat_t = np.zeros(nt)
+        r_z_zhat_t = np.zeros(nt, dtype=np.float32)
+        p_z_zhat_t = np.zeros(nt, dtype=np.float32)
         for j in range(nt):
             rtt = stats.pearsonr(zhat[:, j], z[:, j])  # serie de skill
             r_z_zhat_t[j] = rtt[0]
             p_z_zhat_t[j] = rtt[1]
 
-        r_z_zhat_s = np.zeros([nz])
-        p_z_zhat_s = np.zeros([nz])
+        r_z_zhat_s = np.zeros([nz], dtype=np.float32)
+        p_z_zhat_s = np.zeros([nz], dtype=np.float32)
         for i in range(nz):
             rs = stats.pearsonr(zhat[i, :], z[i, :])  # bb tiene dos salidas: la primera es corre y la segunda es p-value que es el nivel de confianza
             # asociado al valor de la correlación tras aplicar un test-t
             r_z_zhat_s[i] = rs[0]
             p_z_zhat_s[i] = rs[1]
-        # rs = np.zeros(nz)
-        # rs_sig = np.zeros(nz)
-        # rmse = np.zeros(nz)
+        # rs = np.zeros(nz, dtype=np.float32)
+        # rs_sig = np.zeros(nz, dtype=np.float32)
+        # rmse = np.zeros(nz, dtype=np.float32)
 
         return CrossvalidationOut(
             zhat=zhat,  # Hindcast of field to predict using crosvalidation
@@ -303,18 +303,18 @@ class Meteo:
         )
 
     @classmethod
-    def crossvalidation(cls, y: npt.NDArray[np.float64], z: npt.NDArray[np.float64], nmes: int, nm: int, alpha: float) -> CrossvalidationOut:
+    def crossvalidation(cls, y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nmes: int, nm: int, alpha: float) -> CrossvalidationOut:
         nz, ntz = z.shape
         ny, nty = y.shape
 
         assert ntz == nty
         nt = ntz
 
-        zhat = np.zeros_like(z)
-        scf = np.zeros([nm, nt])
-        r_uv = np.zeros([nm, nt])
-        p_uv = np.zeros([nm, nt])
-        us = np.zeros([nm, nt - 1, nt])  # crosvalidated year on axis 2
+        zhat = np.zeros_like(z, dtype=np.float32)
+        scf = np.zeros([nm, nt], dtype=np.float32)
+        r_uv = np.zeros([nm, nt], dtype=np.float32)
+        p_uv = np.zeros([nm, nt], dtype=np.float32)
+        us = np.zeros([nm, nt - 1, nt], dtype=np.float32)  # crosvalidated year on axis 1
         # estimación de zhat para cada año
         yrs = np.arange(nt)
 
@@ -330,23 +330,23 @@ class Meteo:
             scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, :, i] \
                 = cls._crossvalidate_year(year=i, z=z, y=y, nt=nt, ny=ny, yrs=yrs, nmes=nmes, nm=nm, alpha=alpha)
 
-        r_z_zhat_t = np.zeros(nt)
-        p_z_zhat_t = np.zeros(nt)
+        r_z_zhat_t = np.zeros(nt, dtype=np.float32)
+        p_z_zhat_t = np.zeros(nt, dtype=np.float32)
         for j in range(nt):
             rtt = stats.pearsonr(zhat[:, j], z[:, j])  # serie de skill
             r_z_zhat_t[j] = rtt[0]
             p_z_zhat_t[j] = rtt[1]
 
-        r_z_zhat_s = np.zeros([nz])
-        p_z_zhat_s = np.zeros([nz])
+        r_z_zhat_s = np.zeros([nz], dtype=np.float32)
+        p_z_zhat_s = np.zeros([nz], dtype=np.float32)
         for i in range(nz):
             rs = stats.pearsonr(zhat[i, :], z[i, :])  # bb tiene dos salidas: la primera es corre y la segunda es p-value que es el nivel de confianza
             # asociado al valor de la correlación tras aplicar un test-t
             r_z_zhat_s[i] = rs[0]
             p_z_zhat_s[i] = rs[1]
-        # rs = np.zeros(nz)
-        # rs_sig = np.zeros(nz)
-        # rmse = np.zeros(nz)
+        # rs = np.zeros(nz, dtype=np.float32)
+        # rs_sig = np.zeros(nz, dtype=np.float32)
+        # rmse = np.zeros(nz, dtype=np.float32)
 
         return CrossvalidationOut(
             zhat=zhat,  # Hindcast of field to predict using crosvalidation

@@ -23,7 +23,10 @@ __all__ = [
 
 # Array with the month indices
 MONTH_TO_STRING = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-STRING_TO_MONTH = list(filter(lambda x: not x.startswith('_'), Month.__dict__.keys()))
+"""Array to translate from Month to string"""
+
+VALID_MONTHS = list(filter(lambda x: not x.startswith('_'), Month.__dict__.keys()))
+"""Array indicating valid months that can be passed to `str2mon`"""
 
 
 class Settings:
@@ -125,7 +128,7 @@ def str2mon(month: str) -> Month:
     """
     month = month.upper()[:3]
     if not hasattr(Month, month):
-        raise ValueError(f'Month not known, got {month}, valid values: {STRING_TO_MONTH}')
+        raise ValueError(f'Month not known, got {month}, valid values: {VALID_MONTHS}')
     return Month['JAN']
 
 
