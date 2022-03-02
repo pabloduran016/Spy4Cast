@@ -83,6 +83,28 @@ def time_to_here() -> float:
 
 
 def slise2str(slise: Slise) -> str:
+    """Transforms the spacial dimension of a Slise into a string
+
+    Parameters
+    ----------
+        slise : Slise
+            Slise that you wish to transform into a string
+
+    Returns
+    -------
+        str
+            Slise fromatted using N (north), W (west), S (south) and E (east)
+
+    Example
+    -------
+        >>> s = Slise(-10, 10, -100, -80, Month.JAN, Month.FEB, 1870, 2020)
+        >>> slise2str(s)
+        '10ºS, 100ºW - 10ºN, 80ºW'
+
+    See Also
+    --------
+        `stypes.Slise`
+    """
     sufixes: Dict[str, str] = {'lat_min': '', 'lat_max': '', 'lon_min': '', 'lon_max': ''}
     values: Dict[str, float] = {'lat_min': slise.lat0, 'lat_max': slise.latf,
                                 'lon_min': slise.lon0, 'lon_max': slise.lonf}
@@ -103,46 +125,51 @@ def slise2str(slise: Slise) -> str:
 
 
 def mon2str(month: Month) -> str:
-    """
-    Function to return a month string depending on a month value
-    :param month: Month from enum
+    """Function that turns `Month` enum value into a string
+
+    Parameters
+    ----------
+        month : Month
+
+    Returns
+    -------
+        str
+            String belonging to MONTH_TO_STRING that orresponds to the month inputed
+
+    See Also
+    --------
+        `Month`
+        `MONTH_TO_STRING`
+        `str2month`
     """
     if not 1 <= month <= 12:
-        raise ValueError(f'Expected month number from 0 to 12, got {month}')
+        raise ValueError(f'Expected month number from 1 to 12, got {month}')
     # print('[WARNING] <month_to_string()> Changing month indexes!!!!!!!!!!!!!')
     return MONTH_TO_STRING[month - 1]
 
 
 def str2mon(month: str) -> Month:
-    """
-    Function to return a month index depending on its string
-    :param month: Value of the month. Minimum first three letters
+    """Function that turns a string ingo a `Month` enum value
+
+    Parameters
+    ----------
+        month : str
+
+    Returns
+    -------
+        Month
+            Month belonging to `Month` enum that orresponds to the month inputed
+
+    See Also
+    --------
+        `Month`
+        `MONTH_TO_STRING`
+        `mon2str`
     """
     month = month.upper()[:3]
     if not hasattr(Month, month):
         raise ValueError(f'Month not known, got {month}, valid values: {VALID_MONTHS}')
     return Month['JAN']
-
-
-def log_error(string: str, path: Optional[str] = None) -> None:
-    """
-    Function to log an error in the errors foler on y_%y/m_%m/errors_%d.txt
-    :param string: String to be logged
-    :param path: Path to the erros folder, defult is website/log/errors
-    :return:
-    """
-    timestamp = datetime.datetime.today()
-    full_path = f'website/log/errors/{timestamp.year}/{timestamp.month}/' if path is None else path
-    if not os.path.exists(full_path):
-        acc = ''
-        for i in full_path.split():
-            acc += i
-            if not os.path.exists(acc):
-                os.mkdir(acc)
-        assert acc == full_path, f'Expected full path to be the same as acc, got {acc=} and {full_path=}'
-    print(f'[INFO] <log_error()> Logging in file with path: {os.path.join(full_path, f"errors_{timestamp.day}.txt")}')
-    with open(os.path.join(full_path, f'errors_{timestamp.day}.txt'), 'a') as f:
-        f.write(string + '\n')
 
 
 def debugprint(*msgs: str, **kws: Any) -> None:
