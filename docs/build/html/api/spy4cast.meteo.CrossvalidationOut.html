@@ -253,6 +253,106 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.meteo.</span></span><span class="sig-name descname"><span class="pre">CrossvalidationOut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zhat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_z_zhat_t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_z_zhat_t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_z_zhat_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_z_zhat_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_uv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_uv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">us</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Dataclass that is the output of the crossvalidation methodology</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.meteo.CrossvalidationOut.zhat">
+<span class="sig-name descname"><span class="pre">zhat</span></span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut.zhat" title="Permalink to this definition">#</a></dt>
+<dd><p>Hindcast of field to predict using crosvalidation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>npt.NDArray[float32]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.meteo.CrossvalidationOut.scf">
+<span class="sig-name descname"><span class="pre">scf</span></span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut.scf" title="Permalink to this definition">#</a></dt>
+<dd><p>Squared covariance fraction of the mca for each mode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>npt.NDArray[float32]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.meteo.CrossvalidationOut.r_z_zhat_t">
+<span class="sig-name descname"><span class="pre">r_z_zhat_t</span></span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut.r_z_zhat_t" title="Permalink to this definition">#</a></dt>
+<dd><p>Correlation between zhat and Z for each time (time series)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>npt.NDArray[float32]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.meteo.CrossvalidationOut.p_z_zhat_t">
+<span class="sig-name descname"><span class="pre">p_z_zhat_t</span></span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut.p_z_zhat_t" title="Permalink to this definition">#</a></dt>
+<dd><p>P values of rt</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>npt.NDArray[float32]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.meteo.CrossvalidationOut.r_z_zhat_s">
+<span class="sig-name descname"><span class="pre">r_z_zhat_s</span></span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut.r_z_zhat_s" title="Permalink to this definition">#</a></dt>
+<dd><p>Correlation between time series (for each point) of zhat and z (map)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>npt.NDArray[float32]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.meteo.CrossvalidationOut.p_z_zhat_s">
+<span class="sig-name descname"><span class="pre">p_z_zhat_s</span></span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut.p_z_zhat_s" title="Permalink to this definition">#</a></dt>
+<dd><p>P values of rr</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>npt.NDArray[float32]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.meteo.CrossvalidationOut.r_uv">
+<span class="sig-name descname"><span class="pre">r_uv</span></span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut.r_uv" title="Permalink to this definition">#</a></dt>
+<dd><p>Correlation score betweeen u and v for each mode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>npt.NDArray[float32]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.meteo.CrossvalidationOut.p_uv">
+<span class="sig-name descname"><span class="pre">p_uv</span></span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut.p_uv" title="Permalink to this definition">#</a></dt>
+<dd><p>P value of ruv</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>npt.NDArray[float32]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.meteo.CrossvalidationOut.us">
+<span class="sig-name descname"><span class="pre">us</span></span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut.us" title="Permalink to this definition">#</a></dt>
+<dd><p>crosvalidated year on axis 2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>npt.NDArray[float32]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.meteo.CrossvalidationOut.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#spy4cast.meteo.CrossvalidationOut.alpha" title="Permalink to this definition">#</a></dt>
+<dd><p>Correlation factor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 </div>
 
