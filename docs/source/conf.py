@@ -40,7 +40,7 @@ extensions = [
 numpydoc_show_class_members = False
 
 autodoc_member_order = 'bysource'
-Ç
+
 html_favicon = "_static/favicon.png"
 
 # Napoleon settings

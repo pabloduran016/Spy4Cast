@@ -1,0 +1,11 @@
+<map id="inheritance4f53c16b36" name="inheritance4f53c16b36">
+<area shape="rect" id="node1" title="Generic enumeration." alt="" coords="16,153,88,179"/>
+<area shape="rect" id="node4" title="Support for flags" alt="" coords="147,128,219,153"/>
+<area shape="rect" id="node5" title="Enum where members are also (and must be) ints" alt="" coords="147,177,219,203"/>
+<area shape="rect" id="node2" href="../api/spy4cast.stypes.F.html#spy4cast.stypes.F" target="_top" title="An enumeration." alt="" coords="387,128,459,153"/>
+<area shape="rect" id="node3" title="Support for integer&#45;based Flags" alt="" coords="267,128,339,153"/>
+<area shape="rect" id="node6" href="../api/spy4cast.stypes.Month.html#spy4cast.stypes.Month" target="_top" title="Enumaration for Months." alt="" coords="267,177,339,203"/>
+<area shape="rect" id="node7" href="../api/spy4cast.stypes.RDArgs.html#spy4cast.stypes.RDArgs" target="_top" title="Dataclass to convientely pass arguements for a `ReadData` constructor" alt="" coords="16,104,88,129"/>
+<area shape="rect" id="node8" href="../api/spy4cast.stypes.RDArgsDict.html#spy4cast.stypes.RDArgsDict" target="_top" title="RDArgsDict" alt="" coords="5,55,99,80"/>
+<area shape="rect" id="node9" href="../api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" target="_top" title="Dataclass to create a `Slise`" alt="" coords="16,5,88,31"/>
+</map>

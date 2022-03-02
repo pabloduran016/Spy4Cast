@@ -1,0 +1,7 @@
+API Reference
+=============
+
+.. automodapi:: spy4cast
+    :include-all-objects:
+    :inheritance-diagram:
+// To skip any object -> :skip: T_FORMAT

@@ -1,0 +1,12 @@
+<map id="inheritancef1cdc986a3" name="inheritancef1cdc986a3">
+<area shape="rect" id="node1" href="../api/spy4cast.errors.DataSavingError.html#spy4cast.errors.DataSavingError" target="_top" title="Exception raised when there is an error while saving the data" alt="" coords="191,5,309,31"/>
+<area shape="rect" id="node2" href="../api/spy4cast.errors.Spy4CastError.html#spy4cast.errors.Spy4CastError" target="_top" title="Base Class for all custom excpetins of the project" alt="" coords="5,203,113,228"/>
+<area shape="rect" id="node3" href="../api/spy4cast.errors.DatasetError.html#spy4cast.errors.DatasetError" target="_top" title="Exception raised when there is an error with the dataset which is supposed to be load" alt="" coords="202,55,298,80"/>
+<area shape="rect" id="node4" href="../api/spy4cast.errors.DatasetNotFoundError.html#spy4cast.errors.DatasetNotFoundError" target="_top" title="Exception raised when a dataset is not found" alt="" coords="173,104,327,129"/>
+<area shape="rect" id="node5" href="../api/spy4cast.errors.PlotCreationError.html#spy4cast.errors.PlotCreationError" target="_top" title="Exception raised when there is an error during plot creation" alt="" coords="189,153,311,179"/>
+<area shape="rect" id="node6" href="../api/spy4cast.errors.PlotDataError.html#spy4cast.errors.PlotDataError" target="_top" title="Exception raised when there is an error with the data used to create the plot" alt="" coords="199,203,301,228"/>
+<area shape="rect" id="node7" href="../api/spy4cast.errors.PlotShowingError.html#spy4cast.errors.PlotShowingError" target="_top" title="Exception raised when there is an error while showing the plot" alt="" coords="189,252,311,277"/>
+<area shape="rect" id="node8" href="../api/spy4cast.errors.SelectedYearError.html#spy4cast.errors.SelectedYearError" target="_top" title="Exception raised when the selected year is not valid" alt="" coords="187,301,313,327"/>
+<area shape="rect" id="node9" href="../api/spy4cast.errors.TimeBoundsSelectionError.html#spy4cast.errors.TimeBoundsSelectionError" target="_top" title="Exception raised when checking a slise that has non&#45;valid time constraints" alt="" coords="161,351,339,376"/>
+<area shape="rect" id="node10" href="../api/spy4cast.errors.VariableSelectionError.html#spy4cast.errors.VariableSelectionError" target="_top" title="Exception raised when there is an error when loading the dataset and the variable given is not valid" alt="" coords="175,400,325,425"/>
+</map>

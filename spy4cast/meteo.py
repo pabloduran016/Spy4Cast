@@ -243,7 +243,7 @@ class Meteo:
         scf = np.zeros([nm, nt])
         r_uv = np.zeros([nm, nt])
         p_uv = np.zeros([nm, nt])
-        us = np.zeros([nt, nm, nt])  # crosvalidated year on axis 1
+        us = np.zeros([nm, nt - 1, nt])  # crosvalidated year on axis 1
         # estimación de zhat para cada año
         yrs = np.arange(nt)
 
@@ -314,7 +314,7 @@ class Meteo:
         scf = np.zeros([nm, nt])
         r_uv = np.zeros([nm, nt])
         p_uv = np.zeros([nm, nt])
-        us = np.zeros([nt, nm, nt])  # crosvalidated year on axis 2
+        us = np.zeros([nm, nt - 1, nt])  # crosvalidated year on axis 2
         # estimación de zhat para cada año
         yrs = np.arange(nt)
 

@@ -1,0 +1,5 @@
+<map id="inheritancee4a863fd2d" name="inheritancee4a863fd2d">
+<area shape="rect" id="node1" href="../api/spy4cast.meteo.CrossvalidationOut.html#spy4cast.meteo.CrossvalidationOut" target="_top" title="CrossvalidationOut(zhat: numpy.ndarray, scf: numpy.ndarray, r_z_zhat_t: numpy.ndarray, p_z_zhat_t: numpy.ndarray, r_z_zhat_s: numpy.ndarray, p_z_zhat_s: numpy.ndarray, r_uv: numpy.ndarray, p_uv: numpy.ndarray, us: numpy.ndarray, alpha: float)" alt="" coords="5,104,139,129"/>
+<area shape="rect" id="node2" href="../api/spy4cast.meteo.MCAOut.html#spy4cast.meteo.MCAOut" target="_top" title="MCAOut(RUY: numpy.ndarray, RUY_sig: numpy.ndarray, SUY: numpy.ndarray, SUY_sig: numpy.ndarray, RUZ: numpy.ndarray, RUZ_sig: numpy.ndarray, SUZ: numpy.ndarray, SUZ_sig: numpy.ndarray, Us: numpy.ndarray, Vs: numpy.ndarray, scf: numpy.ndarray)" alt="" coords="35,55,109,80"/>
+<area shape="rect" id="node3" href="../api/spy4cast.meteo.Meteo.html#spy4cast.meteo.Meteo" target="_top" title="Class containing functions to carry out on the dataset" alt="" coords="36,5,108,31"/>
+</map>
