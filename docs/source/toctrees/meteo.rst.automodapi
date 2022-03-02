@@ -1,0 +1,23 @@
+Meteo
+=====
+
+
+ 
+
+
+.. automodule:: spy4cast.meteo
+
+Classes
+^^^^^^^
+
+.. automodsumm:: spy4cast.meteo
+    :classes-only:
+    :toctree: ../api
+
+Variables
+^^^^^^^^^
+
+.. automodsumm:: spy4cast.meteo
+    :variables-only:
+    :toctree: ../api
+

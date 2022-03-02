@@ -37,7 +37,6 @@ extensions = [
 ]
 numpydoc_show_class_members = False
 
-automodapi_toctreedirnm = 'api'
 automodapi_writereprocessed = True
 
 autodoc_member_order = 'bysource'

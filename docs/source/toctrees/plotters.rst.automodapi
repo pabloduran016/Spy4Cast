@@ -1,0 +1,16 @@
+Plotters
+========
+
+
+ 
+
+
+.. automodule:: spy4cast.plotters
+
+Classes
+^^^^^^^
+
+.. automodsumm:: spy4cast.plotters
+    :classes-only:
+    :toctree: ../api
+

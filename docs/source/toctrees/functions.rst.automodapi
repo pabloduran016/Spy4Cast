@@ -1,0 +1,16 @@
+Functions
+=========
+
+
+ 
+
+
+.. automodule:: spy4cast.functions
+
+Functions
+^^^^^^^^^
+
+.. automodsumm:: spy4cast.functions
+    :functions-only:
+    :toctree: ../api
+
