@@ -313,9 +313,14 @@ class Spy4Caster:
         if F.NOT_HALT not in flags:
             plt.show()
 
-    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None) -> None:
+    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None, selected_year: int = None, cmap: str = None) -> None:
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
-           raise TypeError('Must preprocess data before applying Crossvalidation')
+           nones = [n for n, v in (
+               ("y", self._y), ("ylat", self._ylat), ("ylon", self._ylon), ("ytime", self._ytime),
+               ("z", self._z), ("zlat", self._zlat), ("zlon", self._zlon), ("ztime", self._ztime)
+           ) if v is None]
+           raise TypeError(f'Must preprocess data before plotting\n'
+                           f'\t{", ".join(nones)} do not exist')
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
 
         nyt, nylat, nylon = len(self._ytime), len(self._ylat), len(self._ylon)
@@ -324,10 +329,13 @@ class Spy4Caster:
         y = self._y.transpose().reshape((nyt, nylat, nylon))
         z = self._z.transpose().reshape((nzt, nzlat, nzlon))
 
+        yindex = 0 if selected_year is None else self._get_index_from_sy(self._ytime, selected_year)
+        zindex = 0 if selected_year is None else self._get_index_from_sy(self._ztime, selected_year)
+
         fig = self._new_figure(figsize=(15, 10)) if fig is None else fig
         axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
-        self._plot_map(y[0], self._ylat, self._ylon, fig, axs[0], 'Y')
-        self._plot_map(z[0], self._zlat, self._zlon, fig, axs[1], 'Z')
+        self._plot_map(y[yindex], self._ylat, self._ylon, fig, axs[0], f'Y{(f" on year {selected_year}" if selected_year is not None else "")}')
+        self._plot_map(z[zindex], self._zlat, self._zlon, fig, axs[1], f'Z{(f" on year {selected_year}" if selected_year is not None else "")}', cmap=cmap)
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mats_plot_name),
                                  flags)
 
@@ -425,26 +433,25 @@ class Spy4Caster:
 
         zlats = self._zlat
         ylats = self._ylat
-        ts = self._ytime
+        yts = self._ytime
+        zts = self._ztime
         zlons = self._zlon
         ylons = self._ylon
         zhat = self._crossvalidation_out.zhat
 
-        index = 0
-        while index < len(ts) and ts[index] != sy:  index += 1
-        if index > len(ts) - 1 or ts[index] > sy:
-            raise ValueError(f'Selected Year {sy} is not valid\nNOTE: Valid years {ts}')
+        yindex = self._get_index_from_sy(yts, sy)
+        zindex = self._get_index_from_sy(zts, sy)
 
-        nts, nylats, nylons = len(ts), len(ylats), len(ylons)
+        nts, nylats, nylons = len(yts), len(ylats), len(ylons)
         d0 = self._y.transpose().reshape((nts, nylats, nylons))
-        self._plot_map(d0[index], ylats, ylons, fig, ax0, f'Y on year {sy}')
+        self._plot_map(d0[yindex], ylats, ylons, fig, ax0, f'Y on year {sy}')
 
-        nts, nzlats, nzlons = len(ts), len(zlats), len(zlons)
+        nts, nzlats, nzlons = len(zts), len(zlats), len(zlons)
         d1 = zhat.transpose().reshape((nts, nzlats, nzlons))
-        self._plot_map(d1[index], zlats, zlons, fig, ax1, f'Zhat on year {sy}', cmap=cmap)
+        self._plot_map(d1[zindex], zlats, zlons, fig, ax1, f'Zhat on year {sy}', cmap=cmap)
 
         d2 = self._z.transpose().reshape((nts, nzlats, nzlons))
-        self._plot_map(d2[index], zlats, zlons, fig, ax2, f'Z on year {sy}', cmap=cmap)
+        self._plot_map(d2[zindex], zlats, zlons, fig, ax2, f'Z on year {sy}', cmap=cmap)
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._zhat_plot_name),
                                  flags)

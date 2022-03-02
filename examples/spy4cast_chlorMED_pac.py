@@ -40,22 +40,24 @@ def main() -> None:
             plot_dir=PLOTS_DIR, mats_plot_name=MATS_PLOT_NAME, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME, zhat_plot_name=ZHAT_PLOT_NAME,
             plot_data_dir=PLOTS_DATA_DIR)
     # TODO: Implement `ray` for multiprocessing in crossvalidation
-    if True:
+    load = True
+    if not load:
         s.open_datasets()
         s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=0, zskip=0)
         s.preprocess()  # Primero sin filtro y luego con filtro de 8 años
         s.mca(nm=nm, alpha=alpha)
         s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
+        s.run(F.SHOW_PLOT | F.SAVE_FIG | F.SAVE_DATA, sy=selected_year, cmap='viridis')
     else:
-        s.load_preprocessed(PLOTS_DATA_DIR, 'save_ppcessed_', '.npy')
+        s.load_preprocessed(PLOTS_DATA_DIR, 'save_preprocessed_', '.npy')
         s.load_mca(PLOTS_DATA_DIR, 'save_mca_', '.npy')
         s.load_crossvalidation(PLOTS_DATA_DIR, 'save_cross_', '.npy')
+        s.run(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year, cmap='viridis')
     # s.plot_preprocessed()
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
     # s.plot_crossvalidation(F.SHOW_PLOT | F.SAVE_FIG)
     # s.plot_zhat(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year)
-    s.run(F.SHOW_PLOT | F.SAVE_FIG | F.SAVE_DATA, sy=selected_year, cmap='viridis')
 
 
 if __name__ == '__main__':
