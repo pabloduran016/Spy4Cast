@@ -10,7 +10,7 @@ __all__ = [
     'set_silence',
     'time_from_here',
     'time_to_here',
-    'pretty_dict',
+
     'update_dataset_info_json',
     'get_dataset_info',
     'slise2str',
@@ -30,42 +30,58 @@ VALID_MONTHS = list(filter(lambda x: not x.startswith('_'), Month.__dict__.keys(
 
 
 class Settings:
-    silence = True
+    """Stores the settings that can be modified by the user"""
+    silence: bool = True
+    """Bool that if set to `True` indicates the program to dont output information about the process"""
 
 
 def set_silence(b: bool) -> None:
+    """Set the silence for the output"""
     if type(b) != bool:
         raise TypeError(f'Expected bool got {type(b)}')
     Settings.silence = b
 
 
-prev: Optional[float] = None
+_prev: Optional[float] = None
 def time_from_here() -> None:
-    global prev
-    prev = perf_counter()
+    """Function that is supposed to use in conjunctin with `time_to_here` to time program parts
+
+    Example
+    -------
+        >>> print('Iterating through the first 100 million ints and adding their square to an array ', end='')
+        ... arr = []
+        ... time_from_here()
+        ... for i in range(100_000_000):
+        ...     arr.append(i ** 2)
+        ...
+        ... print(f'took: {time_to_here():.02f} seconds')
+        Iterating through the first 100 million ints and adding their square to an array took: 30.27 seconds
+    """
+    global _prev
+    _prev = perf_counter()
     return
 
 
 def time_to_here() -> float:
-    global prev
-    if prev is None:
+    """Function that is supposed to use in conjunctin with `time_from_here` to time program parts
+
+    Example
+    -------
+        >>> print('Iterating through the first 100 million ints and adding their square to an array ', end='')
+        ... arr = []
+        ... time_from_here()
+        ... for i in range(100_000_000):
+        ...     arr.append(i ** 2)
+        ...
+        ... print(f'took: {time_to_here():.02f} seconds')
+        Iterating through the first 100 million ints and adding their square to an array took: 30.27 seconds
+    """
+    global _prev
+    if _prev is None:
         raise ValueError('Expected to call time_from_here() before calling time_to_here()')
-    rv = perf_counter() - prev
-    prev = None
+    rv = perf_counter() - _prev
+    _prev = None
     return rv
-
-
-def pretty_dict(d: Dict[str, str]) -> str:
-    """
-    Returns a string for a given dict
-    :param d: dict
-    :return: str
-    """
-    s = '('
-    for k, v in d.items():
-        s += f'{k}={v!r}, '
-    s += ')'
-    return s
 
 
 def update_dataset_info_json(data_reader: type, datasets_dir: str, json_dir: str) -> None:
