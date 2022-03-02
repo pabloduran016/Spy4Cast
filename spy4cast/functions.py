@@ -11,8 +11,6 @@ __all__ = [
     'time_from_here',
     'time_to_here',
 
-    'update_dataset_info_json',
-    'get_dataset_info',
     'slise2str',
     'mon2str',
     'str2mon',
@@ -82,28 +80,6 @@ def time_to_here() -> float:
     rv = perf_counter() - _prev
     _prev = None
     return rv
-
-
-def update_dataset_info_json(data_reader: type, datasets_dir: str, json_dir: str) -> None:
-    data = get_dataset_info(data_reader, datasets_dir)
-    with open(json_dir, 'w') as f:
-        json.dump(data, f, indent=4)
-
-
-def get_dataset_info(data_reader: type, d_dir: str, output_console: bool = False) -> dict[str, dict[str, str]]:
-    data = {}
-    for name in os.listdir(d_dir):
-        if not name.endswith('.nc'):
-            continue
-        rd = data_reader(save_fig=False, show_plot=True,
-                         dataset_dir=d_dir,
-                         dataset_name=name)
-        rd.load_dataset()
-        info = rd.get_dataset_info()
-        data[info[0]] = info[1]
-        if output_console:
-            print(rd.string_dataset_info)
-    return data
 
 
 def slise2str(slise: Slise) -> str:
