@@ -44,7 +44,7 @@ built-in function called `slice` and in this library we have decided to use `sli
 behaviours. I hope it is not too ugly...
 
 ## Documentation
-The documentation for this project is in [https://www.sy4cast.netlify.app]
+The documentation for this project is in [https://www.spy4cast-docs.netlify.app]
         
 
 ## Plotters
