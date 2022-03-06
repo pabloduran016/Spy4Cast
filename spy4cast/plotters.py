@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 # import matplotlib
 import numpy as np
 
-from ._stypes import Color, Slise, F
+from .stypes import Color, Slise, F
 from .errors import Spy4CastError, PlotCreationError, DataSavingError, \
     PlotShowingError, PlotDataError, SelectedYearError
 from .meteo import clim, anom

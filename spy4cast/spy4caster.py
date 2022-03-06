@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
 from ._functions import debugprint, time_from_here, time_to_here
-from ._stypes import Slise, F, RDArgs, RDArgsDict
+from .stypes import Slise, F, RDArgs, RDArgsDict
 from .errors import DataSavingError, Spy4CastError, PlotCreationError
 from .read_data import ReadData, NAN_VAL
 from .meteo import MCAOut, CrossvalidationOut, anom, crossvalidation, crossvalidation_mp, mca

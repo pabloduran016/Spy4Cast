@@ -1,7 +1,7 @@
-Functions
-=========
+Other
+=====
 
-.. automodapi:: spy4cast.functions
+.. automodapi:: spy4cast
     :include-all-objects:
     :no-inheritance-diagram:
     :include-all-objects:

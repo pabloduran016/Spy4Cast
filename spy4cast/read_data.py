@@ -9,7 +9,7 @@ import numpy.typing as npt
 import pandas as pd
 import xarray as xr
 
-from ._stypes import TimeStamp, Month, Slise, ChunkType
+from .stypes import TimeStamp, Month, Slise, ChunkType
 from .errors import VariableSelectionError, TimeBoundsSelectionError,\
     SelectedYearError, DatasetNotFoundError, DatasetError
 from ._functions import mon2str, slise2str, debugprint
