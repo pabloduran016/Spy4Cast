@@ -154,7 +154,7 @@ def str2mon(month: str) -> Month:
     month = month.upper()[:3]
     if not hasattr(Month, month):
         raise ValueError(f'Month not known, got {month}, valid values: {VALID_MONTHS}')
-    return Month['JAN']
+    return Month[month]
 
 
 def debugprint(*msgs: str, **kws: Any) -> None:
