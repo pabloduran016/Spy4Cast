@@ -1,3 +1,3 @@
-from .plotters import *
+from .plotters import ClimerTS, AnomerTS, AnomerMap, ClimerMap
 from .spy4caster import Spy4Caster
-from .functions import *
+from ._stypes import Slise, Month, RDArgs, RDArgsDict, F

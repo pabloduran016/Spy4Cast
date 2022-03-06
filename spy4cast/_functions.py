@@ -2,7 +2,7 @@
 Collection of functions used across the api and for the users convenience
 """
 from typing import Optional, Dict, Any
-from .stypes import Month, Slise
+from ._stypes import Month, Slise
 from time import perf_counter
 
 

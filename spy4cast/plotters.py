@@ -12,10 +12,10 @@ import matplotlib.pyplot as plt
 # import matplotlib
 import numpy as np
 
-from .stypes import Color, Slise, F
+from ._stypes import Color, Slise, F
 from .errors import Spy4CastError, PlotCreationError, DataSavingError, \
     PlotShowingError, PlotDataError, SelectedYearError
-from .meteo import Meteo
+from .meteo import clim, anom
 from .read_data import ReadData, NAN_VAL
 
 
@@ -165,7 +165,7 @@ class Proker(ABC):
 class ClimerTS(PlotterTS):
     def apply(self, **_: Any) -> 'ClimerTS':
         self._data = self._data.mean(dim=self._lon_key).mean(dim=self._lat_key)
-        self._data = Meteo.clim(self._data, dim='month')
+        self._data = clim(self._data, dim='month')
         self._time_key = 'year'
         self._plot_data = 'CLIM ' + self._plot_data
         return self
@@ -173,7 +173,7 @@ class ClimerTS(PlotterTS):
 
 class ClimerMap(PlotterMap):
     def apply(self, **_: Any) -> 'ClimerMap':
-        self._data = Meteo.clim(self._data)
+        self._data = clim(self._data)
         self._plot_data = 'CLIM ' + self._plot_data
         return self
 
@@ -185,7 +185,7 @@ class AnomerTS(PlotterTS):
             raise TypeError('`apply` only accepts one keyword argument: `st`')
         # index 2 becomes 1 after doinf mean on index 1
         self._data = self._data.mean(dim=self._lon_key).mean(dim=self._lat_key)
-        self._data = Meteo.anom(self._data, st)
+        self._data = anom(self._data, st)
         self._time_key = 'year'
         if st:
             self._plot_data += ' (Standarized)'
@@ -199,7 +199,7 @@ class AnomerMap(PlotterMap):
         if len(kwargs) != 0:
             raise TypeError('`apply` only accepts one keyword argument: `st`')
         # print(f"[INFO] <apply()> {plt_type=} {methodology=}, {kwargs})")
-        self._data = Meteo.anom(self._data, st)
+        self._data = anom(self._data, st)
         self._time_key = 'year'
         self._slise.year0 = int(self.time[0])
         self._slise.yearf = int(self.time[-1])

@@ -1,5 +1,5 @@
 import spy4cast as spy
-from spy4cast.stypes import F, Month, Slise, RDArgs
+from spy4cast._stypes import F, Month, Slise, RDArgs
 
 
 DATASET_DIR = '/datasets/'

@@ -9,10 +9,10 @@ import numpy.typing as npt
 import pandas as pd
 import xarray as xr
 
-from .stypes import TimeStamp, Month, Slise, ChunkType
+from ._stypes import TimeStamp, Month, Slise, ChunkType
 from .errors import VariableSelectionError, TimeBoundsSelectionError,\
     SelectedYearError, DatasetNotFoundError, DatasetError
-from .functions import mon2str, slise2str, debugprint
+from ._functions import mon2str, slise2str, debugprint
 
 __all__ = ['ReadData', 'NAN_VAL']
 

@@ -10,11 +10,11 @@ import numpy.typing as npt
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
-from .functions import debugprint, time_from_here, time_to_here
-from .stypes import Slise, F, RDArgs, RDArgsDict
+from ._functions import debugprint, time_from_here, time_to_here
+from ._stypes import Slise, F, RDArgs, RDArgsDict
 from .errors import DataSavingError, Spy4CastError, PlotCreationError
 from .read_data import ReadData, NAN_VAL
-from .meteo import Meteo, MCAOut, CrossvalidationOut
+from .meteo import MCAOut, CrossvalidationOut, anom, crossvalidation, crossvalidation_mp, mca
 
 __all__ = ['Spy4Caster']
 
@@ -122,9 +122,9 @@ class Spy4Caster:
         flags = F(flags) if type(flags) == int else flags
         assert type(flags) == F
         time_from_here()
-        self._rdy._data = Meteo.anom(self._rdy._data)
+        self._rdy._data = anom(self._rdy._data)
         self._rdy._time_key = 'year'
-        self._rdz._data = Meteo.anom(self._rdz._data)
+        self._rdz._data = anom(self._rdz._data)
         self._rdz._time_key = 'year'
 
         if len(self._rdz.time) != len(self._rdy.time):
@@ -262,7 +262,7 @@ class Spy4Caster:
             raise TypeError('Must prprocess data before applying MCA')
         assert self._z is not None
         assert self._y is not None
-        self._mca_out = Meteo.mca(self._z, self._y, nm, alpha)
+        self._mca_out = mca(self._z, self._y, nm, alpha)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
@@ -274,9 +274,9 @@ class Spy4Caster:
         assert self._z is not None
         assert self._y is not None
         if multiprocessing:
-            self._crossvalidation_out = Meteo.crossvalidation_mp(self._y, self._z, nm, alpha)
+            self._crossvalidation_out = crossvalidation_mp(self._y, self._z, nm, alpha)
         else:
-            self._crossvalidation_out = Meteo.crossvalidation(self._y, self._z, nm, alpha)
+            self._crossvalidation_out = crossvalidation(self._y, self._z, nm, alpha)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 

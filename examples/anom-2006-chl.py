@@ -1,6 +1,6 @@
 import spy4cast as spy
 from spy4cast import set_silence
-from spy4cast.stypes import F, Slise, Month, RDArgs
+from spy4cast._stypes import F, Slise, Month, RDArgs
 
 DATASET_DIR = '/Users/Shared/datasets/'
 PLOTS_DIR = 'plots'
