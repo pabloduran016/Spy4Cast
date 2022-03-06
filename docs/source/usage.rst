@@ -8,7 +8,7 @@ To use Spy4Cast, first install it using git:
 
 .. code-block:: console
 
-   (.venv) $ $ pip install spy4cast
+   $ pip install spy4cast
 
 Example
 -------
