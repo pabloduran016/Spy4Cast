@@ -8,11 +8,14 @@ Python framework for working with .nc files and applying methodologies to them a
 
 To get the latest version:
 ```console
-    $ pip install git+https://github.com/pabloduran016/Spy4Cast
-    $ git clone https://github.com/pabloduran016/Spy4Cast
-    $ cp Spy4Cast/requirements.txt requirements.txt
-    $ rm -r Spy4Cast
-    $ pip install -r requirements.txt
+    $ conda create -n <your-env-name>
+    $ conda activate <your-env-name>
+    (<your-env-name>) $ conda install pip
+    (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
+    (<your-env-name>) $ git clone https://github.com/pabloduran016/Spy4Cast
+    (<your-env-name>) $ cp Spy4Cast/requirements.txt requirements.txt
+    (<your-env-name>) $ sudo rm -r Spy4Cast
+    (<your-env-name>) $ pip install -r requirements.txt
 ```
 
 To get the latest stable version:
@@ -23,8 +26,7 @@ To get the latest stable version:
 ## Example
 
 ```python
-import spy4cast as spy
-from spy4cast.stypes import Slise, Month, F
+from spy4cast import AnomerMap, Slise, Month, F
 
 DATASETS_DIR = "/datasets/"
 HadISST_sst = "HadISST_sst.nc"
@@ -36,7 +38,7 @@ sl = Slise(
     year0=1871, yearf=2020,
     sy=1990,
 )
-spy.AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst) \ 
+AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst) \ 
     .open_dataset() \
     .slice_dataset(sl) \
     .apply() \
