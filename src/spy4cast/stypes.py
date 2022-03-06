@@ -15,9 +15,18 @@ T_FORMAT = '%d/%m/%Y %H:%M:%S'
 TimeStamp = Union[pd.Timestamp, datetime.datetime]
 """TimeStamp type. Union of standard library `datetime.datetime` and `pandas.Timestamp`"""
 
-@enum_tools.documentation.document_enum
+
+def document_enum(cls: EnumMeta) -> EnumMeta:
+    try:
+        import enum_tools
+        return enum_tools.documentation.document_enum(cls)
+    except ImportError:
+        return cls
+
+
+@document_enum
 class Month(IntEnum):
-    """Enumaretion for Months.
+    """Enumeration for Months.
 
     Useful to use together with `Slise`
 
@@ -48,14 +57,6 @@ def document_dataclass(cls: type) -> type:
         setattr(cls, attr, None)
 
     return cls
-
-
-def document_enum(cls: EnumMeta) -> EnumMeta:
-    try:
-        import enum_tools
-        return enum_tools.documentation.document_enum(cls)
-    except ImportError:
-        return cls
 
 
 @document_dataclass
