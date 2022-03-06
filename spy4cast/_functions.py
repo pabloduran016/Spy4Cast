@@ -7,7 +7,6 @@ from time import perf_counter
 
 
 __all__ = [
-    'set_silence',
     'time_from_here',
     'time_to_here',
 
@@ -165,6 +164,7 @@ def debugprint(*msgs: str, **kws: Any) -> None:
     --------
         `Settings`
     """
+    from spy4cast import Settings
     if not Settings.silence:
         print(*msgs, **kws)
 
