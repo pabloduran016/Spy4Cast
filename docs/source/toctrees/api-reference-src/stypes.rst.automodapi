@@ -1,0 +1,23 @@
+Stypes
+======
+
+
+ 
+
+
+.. automodule:: spy4cast.stypes
+
+Classes
+^^^^^^^
+
+.. automodsumm:: spy4cast.stypes
+    :classes-only:
+    :toctree: ../../api
+
+Variables
+^^^^^^^^^
+
+.. automodsumm:: spy4cast.stypes
+    :variables-only:
+    :toctree: ../../api
+

@@ -1,0 +1,23 @@
+Read Data
+=========
+
+
+ 
+
+
+.. automodule:: spy4cast.read_data
+
+Classes
+^^^^^^^
+
+.. automodsumm:: spy4cast.read_data
+    :classes-only:
+    :toctree: ../../api
+
+Variables
+^^^^^^^^^
+
+.. automodsumm:: spy4cast.read_data
+    :variables-only:
+    :toctree: ../../api
+

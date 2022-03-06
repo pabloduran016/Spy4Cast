@@ -1,0 +1,16 @@
+Errors
+======
+
+
+ 
+
+
+.. automodule:: spy4cast.errors
+
+Classes
+^^^^^^^
+
+.. automodsumm:: spy4cast.errors
+    :classes-only:
+    :toctree: ../../api
+
