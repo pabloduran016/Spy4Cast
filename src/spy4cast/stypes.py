@@ -4,7 +4,6 @@ import pandas as pd
 import datetime
 from enum import auto, IntEnum, IntFlag, EnumMeta
 from dataclasses import dataclass
-import enum_tools
 
 
 __all__ = ['Slise', 'Color', 'T_FORMAT', 'TimeStamp', 'Month', 'F', 'RDArgs', 'RDArgsDict']
@@ -53,6 +52,7 @@ def document_dataclass(cls: type) -> type:
 
 def document_enum(cls: EnumMeta) -> EnumMeta:
     try:
+        import enum_tools
         return enum_tools.documentation.document_enum(cls)
     except ImportError:
         return cls
