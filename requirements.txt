@@ -1,6 +1,5 @@
 numpy
 matplotlib
-cartopy
 xarray
 dask
 pandas
