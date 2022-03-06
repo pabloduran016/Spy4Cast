@@ -1,5 +1,5 @@
 """
-Module that contains a collection of functions used in nmethodologies
+Module that contains a collection of functions used in methodologies
 """
 
 import pandas as pd
