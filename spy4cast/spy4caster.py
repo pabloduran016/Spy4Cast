@@ -364,13 +364,14 @@ class Spy4Caster:
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
         cmap = cmap if cmap is not None else 'bwr'
         if self._mca_out is None:
-            print('[ERROR] Can not plot mca. Methodology was not applied yet', file=sys.stderr)
+            print('[ERROR] Can not plot mca. Methodology was not applied or loaded yet', file=sys.stderr)
             return self
 
         fig = fig if fig is not None else self._new_figure(figsize=(15, 10))
 
         ylats = self._ylat
-        ts = self._ytime
+        yts = self._ytime
+        zts = self._ztime
         ylons = self._ylon
         zlats = self._zlat
         zlons = self._zlon
@@ -383,8 +384,8 @@ class Spy4Caster:
         # Plot timeseries
         for i, ax in enumerate(axs[:3]):
             # # ax.margins(0)
-            ax.plot(ts, self._mca_out.Us[i, :], color='green', label=f'Us')
-            ax.plot(ts, self._mca_out.Vs[i, :], color='blue', label=f'Vs')
+            ax.plot(yts, self._mca_out.Us[i, :], color='green', label=f'Us')
+            ax.plot(zts, self._mca_out.Vs[i, :], color='blue', label=f'Vs')
             ax.grid(True)
             ax.set_title(f'Us Vs mode {i + 1}')
         axs[0].legend(loc='upper left')
@@ -432,12 +433,12 @@ class Spy4Caster:
             return self
 
         if self._crossvalidation_out is None:
-            print(f'[ERROR] Could not create zhat plot, the methodology has not been applied yet',
+            print(f'[ERROR] Could not create zhat plot, the methodology has not been applied or loaded yet',
                   file=sys.stderr)
             return self
 
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
-            print(f'[ERROR] Could not create zhat plot, the methodology has not been applied yet',
+            print(f'[ERROR] Could not create zhat plot, the methodology has not been applied or loaded yet',
                   file=sys.stderr)
             return self
 
@@ -459,16 +460,23 @@ class Spy4Caster:
         yindex = self._get_index_from_sy(yts, sy)
         zindex = self._get_index_from_sy(zts, sy)
 
+
         nts, nylats, nylons = len(yts), len(ylats), len(ylons)
         d0 = self._y.transpose().reshape((nts, nylats, nylons))
+
         self._plot_map(d0[yindex], ylats, ylons, fig, ax0, f'Y on year {sy}')
 
         nts, nzlats, nzlons = len(zts), len(zlats), len(zlons)
         d1 = zhat.transpose().reshape((nts, nzlats, nzlons))
-        self._plot_map(d1[zindex], zlats, zlons, fig, ax1, f'Zhat on year {sy}', cmap=cmap)
-
         d2 = self._z.transpose().reshape((nts, nzlats, nzlons))
-        self._plot_map(d2[zindex], zlats, zlons, fig, ax2, f'Z on year {sy}', cmap=cmap)
+
+        n = 30
+        _std = np.nanstd(d2[zindex])
+        _m = np.nanmean(d2[zindex])
+        levels = np.linspace(_m - _std, _m + _std, n)
+
+        self._plot_map(d1[zindex], zlats, zlons, fig, ax1, f'Zhat on year {sy}', cmap=cmap, levels=levels)
+        self._plot_map(d2[zindex], zlats, zlons, fig, ax2, f'Z on year {sy}', cmap=cmap, levels=levels)
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._zhat_plot_name),
                                  flags)
@@ -494,15 +502,18 @@ class Spy4Caster:
             print(f'[ERROR] Could not create crossvalidation plot, must apply preprocessing first', file=sys.stderr)
             return self
         if self._crossvalidation_out is None:
-            print(f'[ERROR] Could not create crossvalidation plot, the methodology has not been applied yet', file=sys.stderr)
+            print(f'[ERROR] Could not create crossvalidation plot, the methodology has not been applied or loaded yet', file=sys.stderr)
             return self
+        # if self._mca_out is None:
+        #     print(f'[ERROR] Could not create crossvalidation plot, MCA has not been applied or loaded yet', file=sys.stderr)
+        #     return self
 
         assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
 
         cmap = 'bwr' if cmap is None else cmap
 
         fig = self._new_figure(figsize=(15, 10)) if fig is None else fig
-        nrows = 2
+        nrows = 3
         ncols = 2
         axs = [plt.subplot(nrows * 100 + ncols * 10 + i, projection=(ccrs.PlateCarree() if i == 1 else None))
                for i in range(1, ncols * nrows + 1)]
@@ -549,11 +560,20 @@ class Spy4Caster:
         # ^^^^^^ scf ^^^^^^ #
 
         # ^^^^^^ Us ^^^^^^ #
-        self._crossvalidation_out.us
+        mean = self._crossvalidation_out.us.mean(2)
+        _std = np.std(self._crossvalidation_out.us, axis=2)
+        mx = mean + _std
+        mn = mean - _std
+        for mode in range(mean.shape[0]):
+            axs[3 + mode].grid(True)
+            axs[3 + mode].bar(ts, mx[mode] - mn[mode], bottom=mn[mode], color='purple', width=.2)
+            axs[3 + mode].plot(ts, mean[mode], label='Mean', color='orange', linewidth=3)
+            axs[3 + mode].plot(ts, mx[mode], label='Mean', color='r', linewidth=.5, alpha=.5)
+            axs[3 + mode].plot(ts, mn[mode], label='Mean', color='r', linewidth=.5, alpha=.5)
+            axs[3 + mode].set_title(f'Us for mode {mode + 1}')
+            axs[3 + mode].legend()
 
-
-        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._cross_plot_name),
-                                 flags)
+        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._cross_plot_name), flags)
 
         return self
 

@@ -393,7 +393,7 @@ def crossvalidation_mp(y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], n
     scf = np.zeros([nm, nt], dtype=np.float32)
     r_uv = np.zeros([nm, nt], dtype=np.float32)
     p_uv = np.zeros([nm, nt], dtype=np.float32)
-    us = np.zeros([nm, nt - 1, nt], dtype=np.float32)  # crosvalidated year on axis 1
+    us = np.zeros([nm, nt, nt], dtype=np.float32)  # crosvalidated year on axis 2
 
     yrs = np.arange(nt)
 
@@ -413,7 +413,7 @@ def crossvalidation_mp(y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], n
 
         for i in yrs:
             values = processes[i].get()
-            scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, :, i] = values
+            scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, [True for x in range(nt) if x != i], i] = values
 
     # Step 3: Don't forget to close
 
@@ -486,7 +486,7 @@ def crossvalidation(y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nm: 
     scf = np.zeros([nm, nt], dtype=np.float32)
     r_uv = np.zeros([nm, nt], dtype=np.float32)
     p_uv = np.zeros([nm, nt], dtype=np.float32)
-    us = np.zeros([nm, nt - 1, nt], dtype=np.float32)  # crosvalidated year on axis 1
+    us = np.zeros([nm, nt, nt], dtype=np.float32)  # crosvalidated year on axis 2
     # estimación de zhat para cada año
     yrs = np.arange(nt)
 
@@ -499,7 +499,7 @@ def crossvalidation(y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nm: 
     #     scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i] = results[i]
 
     for i in yrs:
-        scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, :, i] \
+        scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, [True for x in range(nt) if x != i], i] \
             = _crossvalidate_year(year=i, z=z, y=y, nt=nt, ny=ny, yrs=yrs, nm=nm, alpha=alpha)
 
     r_z_zhat_t = np.zeros(nt, dtype=np.float32)
