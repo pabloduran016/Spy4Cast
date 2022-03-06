@@ -23,5 +23,8 @@ setuptools.setup(
     ],
     package_dir={"": "src"},
     packages=setuptools.find_packages(where=""),
+    install_requeries=[
+        "cartopy", "pandas", "enum-tools", "netcdf4", "xarray"
+    ],
     python_requires=">=3.6",
 )
