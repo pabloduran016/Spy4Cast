@@ -21,7 +21,7 @@ setuptools.setup(
         "License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)",
         "Operating System :: OS Independent",
     ],
-    package_dir={"spy4cast": "spy4cast"},
-    packages=setuptools.find_packages(where="spy4cast"),
+    package_dir={"": "src"},
+    packages=setuptools.find_packages(where="src"),
     python_requires=">=3.6",
 )
