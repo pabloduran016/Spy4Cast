@@ -9,12 +9,14 @@ To use Spy4Cast, first install it using git:
 To get the latest version:
 
 .. code-block:: console
-
-    $ pip install git+https://github.com/pabloduran016/Spy4Cast
-    $ git clone https://github.com/pabloduran016/Spy4Cast
-    $ cp Spy4Cast/requirements.txt requirements.txt
-    $ rm -r Spy4Cast
-    $ pip install -r requirements.txt
+    $ conda create -n <your-env-name>
+    $ conda activate <your-env-name>
+    (<your-env-name>) $ conda install pip
+    (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
+    (<your-env-name>) $ git clone https://github.com/pabloduran016/Spy4Cast
+    (<your-env-name>) $ cp Spy4Cast/requirements.txt requirements.txt
+    (<your-env-name>) $ sudo rm -r Spy4Cast
+    (<your-env-name>) $ pip install -r requirements.txt
 
 
 To get the latest stable version:

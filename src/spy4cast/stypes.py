@@ -2,13 +2,12 @@ import builtins
 from typing import Union, TypedDict, Tuple, Dict, Optional
 import pandas as pd
 import datetime
-from enum import auto, IntEnum, IntFlag
+from enum import auto, IntEnum, IntFlag, EnumMeta
 from dataclasses import dataclass
 import enum_tools
 
 
 __all__ = ['Slise', 'Color', 'T_FORMAT', 'TimeStamp', 'Month', 'F', 'RDArgs', 'RDArgsDict']
-
 
 Color = Tuple[float, float, float]
 """Color type. Tuple of 3 floats"""
@@ -50,6 +49,13 @@ def document_dataclass(cls: type) -> type:
         setattr(cls, attr, None)
 
     return cls
+
+
+def document_enum(cls: EnumMeta) -> EnumMeta:
+    try:
+        return enum_tools.documentation.document_enum(cls)
+    except ImportError:
+        return cls
 
 
 @document_dataclass
@@ -109,7 +115,7 @@ class Slise:
 #     initial_year: int
 #     final_year: int
 
-@enum_tools.documentation.document_enum
+@document_enum
 class F(IntFlag):
     """Flags"""
 

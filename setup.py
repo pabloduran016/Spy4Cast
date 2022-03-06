@@ -23,8 +23,8 @@ setuptools.setup(
     ],
     package_dir={"": "src"},
     packages=setuptools.find_packages(where=""),
-    install_requeries=[
-        "cartopy", "pandas", "enum-tools", "netcdf4", "xarray", "dask"
+    install_requires=[
+        'numpy', 'matplotlib', 'cartopy', 'xarray', 'dask', 'pandas', 'netcdf4'
     ],
     python_requires=">=3.6",
 )
