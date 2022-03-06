@@ -9,6 +9,7 @@ To use Spy4Cast, first install it using git:
 To get the latest version:
 
 .. code-block:: console
+
     $ conda create -n <your-env-name>
     $ conda activate <your-env-name>
     (<your-env-name>) $ conda install pip

@@ -16,7 +16,7 @@ TimeStamp = Union[pd.Timestamp, datetime.datetime]
 """TimeStamp type. Union of standard library `datetime.datetime` and `pandas.Timestamp`"""
 
 
-def document_enum(cls: EnumMeta) -> EnumMeta:
+def _document_enum(cls: EnumMeta) -> EnumMeta:
     try:
         import enum_tools
         return enum_tools.documentation.document_enum(cls)
@@ -24,7 +24,7 @@ def document_enum(cls: EnumMeta) -> EnumMeta:
         return cls
 
 
-@document_enum
+@_document_enum
 class Month(IntEnum):
     """Enumeration for Months.
 
@@ -48,7 +48,7 @@ class Month(IntEnum):
     DEC = auto()
 
 
-def document_dataclass(cls: type) -> type:
+def _document_dataclass(cls: type) -> type:
     if not getattr(builtins, '__sphinx_build__', False):
         # print('return normal')
         return cls
@@ -59,7 +59,7 @@ def document_dataclass(cls: type) -> type:
     return cls
 
 
-@document_dataclass
+@_document_dataclass
 @dataclass
 class Slise:
     """Dataclass to create a `Slise`
@@ -116,7 +116,7 @@ class Slise:
 #     initial_year: int
 #     final_year: int
 
-@document_enum
+@_document_enum
 class F(IntFlag):
     """Flags"""
 
