@@ -413,7 +413,7 @@ def crossvalidation_mp(y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], n
 
         for i in yrs:
             values = processes[i].get()
-            scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, [True for x in range(nt) if x != i], i] = values
+            scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, [x for x in range(nt) if x != i], i] = values
 
     # Step 3: Don't forget to close
 
@@ -499,7 +499,7 @@ def crossvalidation(y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nm: 
     #     scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i] = results[i]
 
     for i in yrs:
-        scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, [True for x in range(nt) if x != i], i] \
+        scf[:, i], zhat[:, i], r_uv[:, i], p_uv[:, i], us[:, [x for x in range(nt) if x != i], i] \
             = _crossvalidate_year(year=i, z=z, y=y, nt=nt, ny=ny, yrs=yrs, nm=nm, alpha=alpha)
 
     r_z_zhat_t = np.zeros(nt, dtype=np.float32)
