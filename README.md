@@ -5,10 +5,16 @@ Python framework for working with .nc files and applying methodologies to them a
 
 
 ## Installation
+
+To get the latest version:
 ```console
-$ pip install spy4cast
+    $ pip install git+https://github.com/pabloduran016/Spy4Cast
 ```
 
+To get the latest stable version:
+```console
+    $ pip install spy4cast
+```
 
 ## Example
 
