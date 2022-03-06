@@ -1,3 +1,5 @@
+import builtins
+import sys
 from typing import Union, TypedDict, Tuple, Dict, Optional
 import pandas as pd
 import datetime
@@ -40,6 +42,18 @@ class Month(IntEnum):
     DEC = auto()
 
 
+def document_dataclass(cls):
+    if not getattr(builtins, '__sphinx_build__', False):
+        # print('return normal')
+        return cls
+    # print('return modified')
+    for attr, typ in cls.__annotations__.items():
+        setattr(cls, attr, None)
+
+    return cls
+
+
+@document_dataclass
 @dataclass
 class Slise:
     """Dataclass to create a `Slise`
@@ -51,38 +65,27 @@ class Slise:
         The developers of this API are aware that the correct slpelling for `slice` is with a `c`.
         However, `slice` is a built-in function in python and in the start of the development of this poject was better to use
         `slise`. This is the reason why this class is spelled with `s` (it wouldn't conflict with `slice` right now because
-        it is capitalised, but it is kinda cool, right?)
-
-    Attributes
-    ----------
-        lat0 : float or int
-            Minimum latitude
-        latf : float or int
-            Maximum latitude
-        lon0 : float or int
-            Minimum longitud
-        lonf : float or int
-            Maximum longitud
-        month0 : Month or int
-            Starting month of the season to select (included)
-        monthf : Month or int
-            Ending month of the season to select (included)
-        year0 : int
-            Starting year of the period to select (included)
-        yearf : int
-            Ending year of the period to select (included)
-        sy: int, optional
-            Selected year used in methodologies like anom where you can only plot a given year
+        it is capitalised, but it looks good enough, right?)
     """
+
     lat0: Union[float, int]
+    """Minimum latitude"""
     latf: Union[float, int]
+    """Maximum latitude"""
     lon0: Union[float, int]
+    """Minimum longitud"""
     lonf: Union[float, int]
+    """Maximum longitud"""
     month0: Union[Month, int]
+    """Starting month of the season to select (included)"""
     monthf: Union[Month, int]
+    """Ending month of the season to select (included)"""
     year0: int
+    """Starting year of the period to select (included)"""
     yearf: int
+    """Ending year of the period to select (included)"""
     sy: Optional[int] = None
+    """Selected year used in methodologies like anom where you can only plot a given year"""
 
     @classmethod
     def default(cls, month0: int = Month.JAN, monthf: int = Month.DEC, year0: int = 0, yearf: int = 2000,

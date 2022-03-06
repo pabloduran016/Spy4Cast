@@ -14,6 +14,8 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../../'))
 
+import builtins
+builtins.__sphinx_build__ = True
 
 # -- Project information -----------------------------------------------------
 
