@@ -1,5 +1,5 @@
 import builtins
-from typing import Union, TypedDict, Tuple, Dict, Optional
+from typing import Union, TypedDict, Tuple, Dict, Optional, Type
 import pandas as pd
 import datetime
 from enum import auto, IntEnum, IntFlag, EnumMeta

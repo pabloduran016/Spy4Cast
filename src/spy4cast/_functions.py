@@ -164,7 +164,7 @@ def debugprint(*msgs: str, **kws: Any) -> None:
     --------
         `Settings`
     """
-    from spy4cast import Settings
+    from . import Settings
     if not Settings.silence:
         print(*msgs, **kws)
 
