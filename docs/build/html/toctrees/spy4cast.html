@@ -36,7 +36,7 @@
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="AnomerMap" href="../api/spy4cast.AnomerMap.html" />
+    <link rel="next" title="set_silence" href="../api/spy4cast.set_silence.html" />
     <link rel="prev" title="Methodologies" href="../methodologies.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -96,6 +96,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="../api/spy4cast.set_silence.html">
+     set_silence
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../api/spy4cast.AnomerMap.html">
      AnomerMap
     </a>
@@ -138,6 +143,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../api/spy4cast.ReadData.html">
      ReadData
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/spy4cast.Settings.html">
+     Settings
     </a>
    </li>
    <li class="toctree-l2">
@@ -503,6 +513,11 @@
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#functions">
+   Functions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#classes">
    Classes
   </a>
@@ -528,6 +543,11 @@
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#functions">
+   Functions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#classes">
    Classes
   </a>
@@ -543,6 +563,20 @@
                 
   <div class="section" id="module-spy4cast">
 <span id="other"></span><h1>Other<a class="headerlink" href="#module-spy4cast" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.set_silence.html#spy4cast.set_silence" title="spy4cast.set_silence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_silence</span></code></a>(b)</p></td>
+<td><p>Set the silence for the output</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <table class="longtable table autosummary">
@@ -564,10 +598,10 @@
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.F.html#spy4cast.F" title="spy4cast.F"><code class="xref py py-obj docutils literal notranslate"><span class="pre">F</span></code></a>(value)</p></td>
-<td><p>An enumeration.</p></td>
+<td><p>Flags</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.Month.html#spy4cast.Month" title="spy4cast.Month"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Month</span></code></a>(value)</p></td>
-<td><p>Enumaration for Months.</p></td>
+<td><p>Enumaretion for Months.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.RDArgs.html#spy4cast.RDArgs" title="spy4cast.RDArgs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RDArgs</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
 <td><p>Dataclass to convientely pass arguements for a <cite>ReadData</cite> constructor</p></td>
@@ -578,10 +612,13 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.ReadData.html#spy4cast.ReadData" title="spy4cast.ReadData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReadData</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
 <td><p>This class enables you to load, slice and modify the data in a netcdf4 file confortably.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.Slise.html#spy4cast.Slise" title="spy4cast.Slise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Slise</span></code></a>(lat0, latf, lon0, lonf, month0, ...[, sy])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.Settings.html#spy4cast.Settings" title="spy4cast.Settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Settings</span></code></a>()</p></td>
+<td><p>Stores the settings that can be modified by the user</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.Slise.html#spy4cast.Slise" title="spy4cast.Slise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Slise</span></code></a>(lat0, latf, lon0, lonf, month0, ...[, sy])</p></td>
 <td><p>Dataclass to create a <cite>Slise</cite></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../api/spy4cast.Spy4Caster.html#spy4cast.Spy4Caster" title="spy4cast.Spy4Caster"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spy4Caster</span></code></a>(yargs, zargs[, plot_dir, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/spy4cast.Spy4Caster.html#spy4cast.Spy4Caster" title="spy4cast.Spy4Caster"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spy4Caster</span></code></a>(yargs, zargs[, plot_dir, ...])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -602,10 +639,10 @@
             <p class="prev-next-title">Methodologies</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../api/spy4cast.AnomerMap.html" title="next page">
+    <a class='right-next' id="next-link" href="../api/spy4cast.set_silence.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">AnomerMap</p>
+        <p class="prev-next-title">set_silence</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

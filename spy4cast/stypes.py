@@ -1,5 +1,4 @@
 import builtins
-import sys
 from typing import Union, TypedDict, Tuple, Dict, Optional
 import pandas as pd
 import datetime
@@ -42,7 +41,7 @@ class Month(IntEnum):
     DEC = auto()
 
 
-def document_dataclass(cls):
+def document_dataclass(cls: type) -> type:
     if not getattr(builtins, '__sphinx_build__', False):
         # print('return normal')
         return cls

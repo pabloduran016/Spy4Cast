@@ -10,15 +10,7 @@ Slise
 
    .. autosummary::
 
-      ~Slise.lat0
-      ~Slise.latf
-      ~Slise.lon0
-      ~Slise.lonf
-      ~Slise.month0
-      ~Slise.monthf
       ~Slise.sy
-      ~Slise.year0
-      ~Slise.yearf
 
    .. rubric:: Methods Summary
 
@@ -28,15 +20,7 @@ Slise
 
    .. rubric:: Attributes Documentation
 
-   .. autoattribute:: lat0
-   .. autoattribute:: latf
-   .. autoattribute:: lon0
-   .. autoattribute:: lonf
-   .. autoattribute:: month0
-   .. autoattribute:: monthf
    .. autoattribute:: sy
-   .. autoattribute:: year0
-   .. autoattribute:: yearf
 
    .. rubric:: Methods Documentation
 

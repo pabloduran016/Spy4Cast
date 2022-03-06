@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Spy4Caster" href="spy4cast.Spy4Caster.html" />
-    <link rel="prev" title="ReadData" href="spy4cast.ReadData.html" />
+    <link rel="prev" title="Settings" href="spy4cast.Settings.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -96,6 +96,11 @@
   </label>
   <ul class="current">
    <li class="toctree-l2">
+    <a class="reference internal" href="spy4cast.set_silence.html">
+     set_silence
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="spy4cast.AnomerMap.html">
      AnomerMap
     </a>
@@ -138,6 +143,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="spy4cast.ReadData.html">
      ReadData
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="spy4cast.Settings.html">
+     Settings
     </a>
    </li>
    <li class="toctree-l2 current active">
@@ -537,32 +547,8 @@ it is capitalised, but it looks good enough, right?)</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.lat0" title="spy4cast.Slise.lat0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lat0</span></code></a></p></td>
-<td><p>Minimum latitude</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Slise.latf" title="spy4cast.Slise.latf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">latf</span></code></a></p></td>
-<td><p>Maximum latitude</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.lon0" title="spy4cast.Slise.lon0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lon0</span></code></a></p></td>
-<td><p>Minimum longitud</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Slise.lonf" title="spy4cast.Slise.lonf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lonf</span></code></a></p></td>
-<td><p>Maximum longitud</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.month0" title="spy4cast.Slise.month0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">month0</span></code></a></p></td>
-<td><p>Starting month of the season to select (included)</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Slise.monthf" title="spy4cast.Slise.monthf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">monthf</span></code></a></p></td>
-<td><p>Ending month of the season to select (included)</p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.sy" title="spy4cast.Slise.sy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sy</span></code></a></p></td>
 <td><p>Selected year used in methodologies like anom where you can only plot a given year</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Slise.year0" title="spy4cast.Slise.year0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">year0</span></code></a></p></td>
-<td><p>Starting year of the period to select (included)</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.yearf" title="spy4cast.Slise.yearf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">yearf</span></code></a></p></td>
-<td><p>Ending year of the period to select (included)</p></td>
 </tr>
 </tbody>
 </table>
@@ -580,57 +566,9 @@ it is capitalised, but it looks good enough, right?)</p>
 </table>
 <p class="rubric">Attributes Documentation</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.lat0">
-<span class="sig-name descname"><span class="pre">lat0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.lat0" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimum latitude</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.latf">
-<span class="sig-name descname"><span class="pre">latf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.latf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximum latitude</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.lon0">
-<span class="sig-name descname"><span class="pre">lon0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.lon0" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimum longitud</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.lonf">
-<span class="sig-name descname"><span class="pre">lonf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.lonf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximum longitud</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.month0">
-<span class="sig-name descname"><span class="pre">month0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.stypes.Month.html#spy4cast.stypes.Month" title="spy4cast.stypes.Month"><span class="pre">spy4cast.stypes.Month</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.month0" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starting month of the season to select (included)</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.monthf">
-<span class="sig-name descname"><span class="pre">monthf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.stypes.Month.html#spy4cast.stypes.Month" title="spy4cast.stypes.Month"><span class="pre">spy4cast.stypes.Month</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.monthf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Ending month of the season to select (included)</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.Slise.sy">
 <span class="sig-name descname"><span class="pre">sy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.sy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selected year used in methodologies like anom where you can only plot a given year</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.year0">
-<span class="sig-name descname"><span class="pre">year0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.year0" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starting year of the period to select (included)</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.yearf">
-<span class="sig-name descname"><span class="pre">yearf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.yearf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Ending year of the period to select (included)</p>
 </dd></dl>
 
 <p class="rubric">Methods Documentation</p>
@@ -656,11 +594,11 @@ it is capitalised, but it looks good enough, right?)</p>
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="spy4cast.ReadData.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="spy4cast.Settings.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">ReadData</p>
+            <p class="prev-next-title">Settings</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="spy4cast.Spy4Caster.html" title="next page">

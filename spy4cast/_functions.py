@@ -26,19 +26,6 @@ VALID_MONTHS = list(filter(lambda x: not x.startswith('_'), Month.__dict__.keys(
 """Array indicating valid months that can be passed to `str2mon`"""
 
 
-class Settings:
-    """Stores the settings that can be modified by the user"""
-    silence: bool = True
-    """Bool that if set to `True` indicates the program to dont output information about the process"""
-
-
-def set_silence(b: bool) -> None:
-    """Set the silence for the output"""
-    if type(b) != bool:
-        raise TypeError(f'Expected bool got {type(b)}')
-    Settings.silence = b
-
-
 _prev: Optional[float] = None
 def time_from_here() -> None:
     """Function that is supposed to use in conjunctin with `time_to_here` to time program parts
