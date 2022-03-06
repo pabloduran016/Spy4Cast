@@ -18,7 +18,7 @@ TimeStamp = Union[pd.Timestamp, datetime.datetime]
 
 @enum_tools.documentation.document_enum
 class Month(IntEnum):
-    """Enumaration for Months.
+    """Enumaretion for Months.
 
     Useful to use together with `Slise`
 
@@ -109,6 +109,8 @@ class Slise:
 
 @enum_tools.documentation.document_enum
 class F(IntFlag):
+    """Flags"""
+
     SAVE_DATA = auto()  # doc: Save data. Check documentation for each specific function you pass this flag into
     SAVE_FIG = auto()  # doc: Save fig (calls matplotlib.pyplot.Figure.savefig)
     SILENT_ERRORS = auto()  # doc: If an exception is raise in `Plotter.run`, the program won`t be halted
