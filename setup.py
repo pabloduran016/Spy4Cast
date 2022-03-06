@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="spy4cast",
-    version="0.0.3",
+    version="0.0.4",
     author="Pablo Duran",
     author_email="pdrm56@gmail.com",
     description="Python API for applying methodologies to .nc Datasets",
