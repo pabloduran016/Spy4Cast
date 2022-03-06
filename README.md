@@ -9,6 +9,10 @@ Python framework for working with .nc files and applying methodologies to them a
 To get the latest version:
 ```console
     $ pip install git+https://github.com/pabloduran016/Spy4Cast
+    $ git clone https://github.com/pabloduran016/Spy4Cast
+    $ cp Spy4Cast/requirements.txt requirements.txt
+    $ rm -r Spy4Cast
+    $ pip install -r requirements.txt
 ```
 
 To get the latest stable version:

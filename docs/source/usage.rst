@@ -11,6 +11,10 @@ To get the latest version:
 .. code-block:: console
 
     $ pip install git+https://github.com/pabloduran016/Spy4Cast
+    $ git clone https://github.com/pabloduran016/Spy4Cast
+    $ cp Spy4Cast/requirements.txt requirements.txt
+    $ rm -r Spy4Cast
+    $ pip install -r requirements.txt
 
 
 To get the latest stable version:

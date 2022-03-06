@@ -143,6 +143,7 @@ class Spy4Caster:
             _z = xr.apply_ufunc(
                 lambda ts: signal.filtfilt(b, a, ts),
                 _z,
+                dask='allowed',
                 input_core_dims=[[self._rdz._time_key]], output_core_dims=[[self._rdz._time_key]]
             )
 
