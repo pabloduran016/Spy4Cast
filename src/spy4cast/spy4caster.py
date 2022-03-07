@@ -391,12 +391,12 @@ class Spy4Caster:
             ax.set_title(f'Us Vs mode {i + 1}')
         axs[0].legend(loc='upper left')
 
-        su = self._mca_out.SUY
-        su[su == 0.0] = np.nan
+        suy = self._mca_out.SUY
+        suy[suy == 0.0] = np.nan
 
         n = 20
         for i, (name, su, ru, lats, lons, cm) in enumerate((
-                ('SUY', su, self._mca_out.RUY_sig, ylats, ylons, 'bwr'),
+                ('SUY', suy, self._mca_out.RUY_sig, ylats, ylons, 'bwr'),
                 ('SUZ', self._mca_out.SUZ, self._mca_out.RUZ_sig, zlats, zlons, cmap)
         )):
             _std = np.nanstd(su)
