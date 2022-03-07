@@ -68,7 +68,7 @@ def time_to_here() -> float:
 
 
 def slise2str(slise: Slise) -> str:
-    """Transforms the spacial dimension of a Slise into a string
+    """Transforms a Slise into a string
 
     Parameters
     ----------
@@ -78,7 +78,7 @@ def slise2str(slise: Slise) -> str:
     Returns
     -------
         str
-            Slise fromatted using N (north), W (west), S (south) and E (east)
+            Slise fromatted using N (north), W (west), S (south) and E (east) and with the season
 
     Example
     -------
@@ -105,8 +105,15 @@ def slise2str(slise: Slise) -> str:
         else:
             sufixes[key] = 'ºW'
         values[key] = abs(values[key])
-    return f'{values["lat_min"]}{sufixes["lat_min"]}, {values["lon_min"]}{sufixes["lon_min"]} - ' \
-           f'{values["lat_max"]}{sufixes["lat_max"]}, {values["lon_max"]}{sufixes["lon_max"]}'
+    region = f'{values["lat_min"]}{sufixes["lat_min"]}, {values["lon_min"]}{sufixes["lon_min"]} - ' \
+             f'{values["lat_max"]}{sufixes["lat_max"]}, {values["lon_max"]}{sufixes["lon_max"]}'
+
+    if slise.monthf >= slise.month0:
+        season = ''.join(Month(x).name[0] for x in range(slise.month0, slise.monthf + 1))
+    else:
+        season = ''.join(Month(x).name[0] for x in range(slise.month0, Month.DEC + 1)) + ''.join(Month(x).name[0] for x in range(1, slise.monthf + 1))
+
+    return f'{season} ({region})'
 
 
 def mon2str(month: Month) -> str:

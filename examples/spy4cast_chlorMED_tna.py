@@ -1,7 +1,6 @@
 import spy4cast as spy
 from spy4cast.stypes import F, Month, Slise, RDArgs
 
-
 DATASET_DIR = '/Users/Shared/datasets/'
 PLOTS_DIR = 'plots'
 PLOTS_DATA_DIR = 'saved_tna/'
@@ -22,7 +21,7 @@ def main() -> None:
     oisst_slise = Slise(
         lat0=5, latf=45,
         lon0=-90, lonf=-5,
-        month0=Month.APR, monthf=Month.JUL,
+        month0=Month.JUN, monthf=Month.JUL,
         year0=1997, yearf=2019,
     )  # PREDICTOR: Y
 
@@ -41,17 +40,33 @@ def main() -> None:
             plot_data_dir=PLOTS_DATA_DIR)
 
     # TODO: Implement `ray` for multiprocessing in crossvalidation
-    load = True
+    load = False
     if not load:
         s.open_datasets()
         s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=0, zskip=0)
         s.preprocess()  # Primero sin filtro y luego con filtro de 8 años
         s.mca(nm=nm, alpha=alpha)
-        s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
+        # s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
         s.run(F.SHOW_PLOT | F.SAVE_FIG | F.SAVE_DATA, sy=selected_year, cmap='viridis')
     else:
         s.load_preprocessed(PLOTS_DATA_DIR, 'save_preprocessed_', '.npy')
         s.load_mca(PLOTS_DATA_DIR, 'save_mca_', '.npy')
+
+        # Cor, Pvalue, Cor_sig, reg, reg_sig = index_regression(s._y, s._mca_out.Us[1, :], alpha)
+        # lats = s._ylat
+        # lons = s._ylon
+        # nlat = len(lats)
+        # nlon = len(lons)
+        #
+        # arr = Cor.reshape((nlat, nlon))
+        #
+        # fig = plt.figure()
+        # ax = fig.add_subplot(projection=ccrs.PlateCarree())
+        # im = ax.contourf(lons, lats, arr, cmap='bwr', extend='both', transform=ccrs.PlateCarree())
+        # fig.colorbar(im, ax=ax, orientation='horizontal', pad=0.02)
+        # ax.coastlines()
+        # plt.show()
+
         s.load_crossvalidation(PLOTS_DATA_DIR, 'save_cross_', '.npy')
         s.run(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year, cmap='viridis')
     # s.plot_preprocessed()

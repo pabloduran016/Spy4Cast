@@ -10,7 +10,7 @@ import numpy.typing as npt
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
-from ._functions import debugprint, time_from_here, time_to_here
+from ._functions import debugprint, time_from_here, time_to_here, slise2str
 from .stypes import Slise, F, RDArgs, RDArgsDict
 from .errors import DataSavingError, Spy4CastError, PlotCreationError
 from .read_data import ReadData, NAN_VAL
@@ -354,8 +354,12 @@ class Spy4Caster:
         axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
         self._plot_map(y[yindex], self._ylat, self._ylon, fig, axs[0], f'Y on year {self._ytime[yindex]}')
         self._plot_map(z[zindex], self._zlat, self._zlon, fig, axs[1], f'Z on year {self._ztime[zindex]}', cmap=cmap)
+
+        fig.suptitle(f'Y: {slise2str(self._rdy._slise)}, Z: {slise2str(self._rdz._slise)}')
+
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mats_plot_name),
                                  flags)
+
 
     def plot_mca(self, flags: int = 0, fig: Optional[plt.Figure] = None, cmap: Optional[str] = None) -> 'Spy4Caster':
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
@@ -416,6 +420,9 @@ class Spy4Caster:
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mca_plot_name),
                                  flags)
+
+        fig.suptitle(f'Y: {slise2str(self._rdy._slise)}, Z: {slise2str(self._rdz._slise)}')
+
         return self
 
     def plot_zhat(self, flags: int = 0, fig: Optional[plt.Figure] = None, sy: Optional[int] = None,
@@ -479,8 +486,9 @@ class Spy4Caster:
         self._plot_map(d1[zindex], zlats, zlons, fig, ax1, f'Zhat on year {sy}', cmap=cmap, levels=levels)
         self._plot_map(d2[zindex], zlats, zlons, fig, ax2, f'Z on year {sy}', cmap=cmap, levels=levels)
 
-        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._zhat_plot_name),
-                                 flags)
+        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._zhat_plot_name), flags)
+
+        fig.suptitle(f'Y: {slise2str(self._rdy._slise)}, Z: {slise2str(self._rdz._slise)}')
 
         return self
 
@@ -575,6 +583,8 @@ class Spy4Caster:
             axs[3 + mode].legend()
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._cross_plot_name), flags)
+
+        fig.suptitle(f'Y: {slise2str(self._rdy._slise)}, Z: {slise2str(self._rdz._slise)}')
 
         return self
 
