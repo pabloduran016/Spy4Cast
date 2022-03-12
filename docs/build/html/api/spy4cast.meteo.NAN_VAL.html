@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NAN_VAL &#8212; Spy4Cast 0.0.7 documentation</title>
+    <title>NAN_VAL &#8212; Spy4Cast 0.0.9 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -36,8 +36,6 @@
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Tuple" href="spy4cast.meteo.Tuple.html" />
-    <link rel="prev" title="MCAOut" href="spy4cast.meteo.MCAOut.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -66,7 +64,7 @@
       
       
       
-      <h1 class="site-logo" id="site-title">Spy4Cast 0.0.7 documentation</h1>
+      <h1 class="site-logo" id="site-title">Spy4Cast 0.0.9 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -74,7 +72,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="current nav bd-sidenav">
+        <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="../usage.html">
    Usage
@@ -162,16 +160,16 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="../toctrees/api-reference.html">
    API Reference
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
+  <ul>
    <li class="toctree-l2 has-children">
     <a class="reference internal" href="../toctrees/api-reference-src/errors.html">
      Errors
@@ -234,39 +232,29 @@
      </li>
     </ul>
    </li>
-   <li class="toctree-l2 current active has-children">
+   <li class="toctree-l2 has-children">
     <a class="reference internal" href="../toctrees/api-reference-src/meteo.html">
      Meteo
     </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
     <label for="toctree-checkbox-4">
      <i class="fas fa-chevron-down">
      </i>
     </label>
-    <ul class="current">
-     <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.anom.html">
-       anom
-      </a>
-     </li>
+    <ul>
      <li class="toctree-l3">
       <a class="reference internal" href="spy4cast.meteo.clim.html">
        clim
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.crossvalidation.html">
-       crossvalidation
+      <a class="reference internal" href="spy4cast.meteo.anom.html">
+       anom
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.crossvalidation_mp.html">
-       crossvalidation_mp
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.index_regression.html">
-       index_regression
+      <a class="reference internal" href="spy4cast.meteo.npanom.html">
+       npanom
       </a>
      </li>
      <li class="toctree-l3">
@@ -275,8 +263,18 @@
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.npanom.html">
-       npanom
+      <a class="reference internal" href="spy4cast.meteo.index_regression.html">
+       index_regression
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="spy4cast.meteo.crossvalidation_mp.html">
+       crossvalidation_mp
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="spy4cast.meteo.crossvalidation.html">
+       crossvalidation
       </a>
      </li>
      <li class="toctree-l3">
@@ -287,16 +285,6 @@
      <li class="toctree-l3">
       <a class="reference internal" href="spy4cast.meteo.MCAOut.html">
        MCAOut
-      </a>
-     </li>
-     <li class="toctree-l3 current active">
-      <a class="current reference internal" href="#">
-       NAN_VAL
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.Tuple.html">
-       Tuple
       </a>
      </li>
     </ul>
@@ -540,21 +528,7 @@
               
             
                 <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="spy4cast.meteo.MCAOut.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">MCAOut</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="spy4cast.meteo.Tuple.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Tuple</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
+<div class='prev-next-area'>
 </div>
             
         </div>

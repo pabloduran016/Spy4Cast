@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Proker &#8212; Spy4Cast 0.0.7 documentation</title>
+    <title>Proker &#8212; Spy4Cast 0.0.9 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -66,7 +66,7 @@
       
       
       
-      <h1 class="site-logo" id="site-title">Spy4Cast 0.0.7 documentation</h1>
+      <h1 class="site-logo" id="site-title">Spy4Cast 0.0.9 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -245,28 +245,18 @@
     </label>
     <ul>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.anom.html">
-       anom
-      </a>
-     </li>
-     <li class="toctree-l3">
       <a class="reference internal" href="spy4cast.meteo.clim.html">
        clim
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.crossvalidation.html">
-       crossvalidation
+      <a class="reference internal" href="spy4cast.meteo.anom.html">
+       anom
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.crossvalidation_mp.html">
-       crossvalidation_mp
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.index_regression.html">
-       index_regression
+      <a class="reference internal" href="spy4cast.meteo.npanom.html">
+       npanom
       </a>
      </li>
      <li class="toctree-l3">
@@ -275,8 +265,18 @@
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.npanom.html">
-       npanom
+      <a class="reference internal" href="spy4cast.meteo.index_regression.html">
+       index_regression
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="spy4cast.meteo.crossvalidation_mp.html">
+       crossvalidation_mp
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="spy4cast.meteo.crossvalidation.html">
+       crossvalidation
       </a>
      </li>
      <li class="toctree-l3">
@@ -287,16 +287,6 @@
      <li class="toctree-l3">
       <a class="reference internal" href="spy4cast.meteo.MCAOut.html">
        MCAOut
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.NAN_VAL.html">
-       NAN_VAL
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.Tuple.html">
-       Tuple
       </a>
      </li>
     </ul>
@@ -531,6 +521,8 @@
 <dt class="sig sig-object py" id="spy4cast.plotters.Proker">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.plotters.</span></span><span class="sig-name descname"><span class="pre">Proker</span></span><a class="headerlink" href="#spy4cast.plotters.Proker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract base class for every Proker in the API. A proker is a class that is in charge
+of applyinf a methodology for the data in a dataset variable.</p>
 <p class="rubric">Methods Summary</p>
 <table class="longtable table autosummary">
 <colgroup>
@@ -539,7 +531,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.plotters.Proker.apply" title="spy4cast.plotters.Proker.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a>(**kwargs)</p></td>
-<td><p></p></td>
+<td><p>Abstract method that applies the methodology</p></td>
 </tr>
 </tbody>
 </table>
@@ -547,7 +539,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.plotters.Proker.apply">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spy4cast.plotters.Proker" title="spy4cast.plotters.Proker"><span class="pre">spy4cast.plotters.Proker</span></a></span></span><a class="headerlink" href="#spy4cast.plotters.Proker.apply" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Abstract method that applies the methodology</p>
+</dd></dl>
 
 </dd></dl>
 

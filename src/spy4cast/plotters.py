@@ -1,5 +1,5 @@
 """
-Collection of plotters
+Collection of plotters that are used to plot maps and apply methodologies to them
 """
 
 import os
@@ -23,11 +23,58 @@ __all__ = ['PlotterTS', 'PlotterMap', 'Proker', 'ClimerTS', 'ClimerMap', 'Anomer
 
 
 class Plotter(ReadData, ABC):
+    """Abstract base class for every plotter in the API. A Plotter is a class that is in charge
+    of creating a plot from the data in a dataset variable.
+
+    Inherits from ReadData class: see `spy4cast.ReadData`
+
+    See Also
+    --------
+        `ReadData`
+        `Proker`
+        `PlotterTS`
+        `PlotterMap`
+    """
+
     @abstractmethod
     def create_plot(self, flags: F, **kwargs: Any) -> 'Plotter':
+        """Abstract method that is used in each specific plotter to create the plot
+
+        Parameters
+        ----------
+            flags : F
+                Flags that indicate wether or not to show the plot, saved the figure ...
+
+            kwargs
+                See the specific kwargs for each plotter
+
+        See Also
+        --------
+            `Plotter.run`
+        """
         raise NotImplementedError
 
     def run(self, flags: F = F(0), **kwargs: Any) -> 'Plotter':
+        """Running method of plotters that processes the flags (see spy4cast.F) passed.
+
+        Parameters
+        ----------
+            flags : F
+                Flags that indicate wether or not to show the plot, saved the figure, raise errors ...
+
+            kwargs
+                See the specific kwargs for each plotter
+
+        Raises
+        ------
+            `DataSavingError`
+            `PlotCreationError`
+            `PlotShowingError`
+
+        See Also
+        --------
+            `spy4cast.F`
+        """
         # Save the data if needed
         if F.SAVE_DATA in flags:
             try:
@@ -63,7 +110,32 @@ class Plotter(ReadData, ABC):
 
 
 class PlotterTS(Plotter):
+    """Plotter for a time series
+
+    See Also
+    --------
+     `Plotter`
+     `PlotterTS`
+    """
+
     def create_plot(self, flags: F = F(0), **kws: Any) -> 'PlotterTS':
+        """Creates the plot for a time series
+
+        Parameters
+        ----------
+            flags : spy4cast.F
+                F.SAVE_FIG or F.SHOW_PLOT are valid
+
+            kwargs
+                color : Color, default=(.43, .92, .20)
+                    Color of the line in the plot. Default is green
+
+        Raises
+        ------
+            `TypeError` if other keyword arguments appart from `color` are passed
+            `PlotCreationError` if the shape of the data is not unidimensional
+
+        """
         fig = plt.figure()
         color: Color = (.43, .92, .20) if 'color' not in kws else kws.pop('color')
         if len(kws) != 0:
@@ -88,9 +160,38 @@ class PlotterTS(Plotter):
 
 
 class PlotterMap(Plotter):
+    """Plotter for a Map
+
+    See Also
+    --------
+     `Plotter`
+     `PlotterTS`
+    """
+
     _n_values = 50
 
     def create_plot(self, flags: F = F(0), **kws: Any) -> 'PlotterMap':
+        """Creates the plot for a map
+
+        Parameters
+        ----------
+            flags : spy4cast.F
+                F.SAVE_FIG or F.SHOW_PLOT are valid
+
+            kwargs
+                slise : Slise
+                    Indicates the selected year through the `sy` attribute
+
+                cmap : str, default="jet"
+                    Color map of the plot
+
+        Raises
+        ------
+            `TypeError` if `slise` keyword argument is not passed or if unknown keyword arguments are passed
+            `SelectedYearError` if the selected year is not valid
+            `PlotDataError` if the shapes are too small
+
+        """
         fig = plt.figure()
         if 'slise' not in kws:
             raise TypeError("`create_plot` missing 1 required keyword argument: 'slise'")
@@ -157,13 +258,43 @@ class PlotterMap(Plotter):
 
 
 class Proker(ABC):
+    """Abstract base class for every Proker in the API. A proker is a class that is in charge
+    of applyinf a methodology for the data in a dataset variable.
+
+    See Also
+    --------
+        `Plotter`
+        `ClimerTS`
+        `ClimerMap`
+        `AnomerTS`
+        `AnomerMap`
+    """
+
     @abstractmethod
     def apply(self, **kwargs: Any) -> 'Proker':
+        """Abstract method that applies the methodology
+        """
         raise NotImplementedError
 
 
-class ClimerTS(PlotterTS):
-    def apply(self, **_: Any) -> 'ClimerTS':
+class ClimerTS(PlotterTS, Proker):
+    """A proker and a plotter that performs the climatology of a variable on a time series
+
+    See Also
+    --------
+        `ClimerMap`
+        `AnomerTS`
+    """
+
+    def apply(self, **kw: Any) -> 'ClimerTS':
+        """Method that applies the climatology. Does not accept any keyword arguments
+
+        See Also
+        --------
+            `spy4cast.meteo.clim`
+        """
+        if len(kw) != 0:
+            raise TypeError('`apply` does not accept any keyword arguments')
         self._data = self._data.mean(dim=self._lon_key).mean(dim=self._lat_key)
         self._data = clim(self._data, dim='month')
         self._time_key = 'year'
@@ -171,15 +302,50 @@ class ClimerTS(PlotterTS):
         return self
 
 
-class ClimerMap(PlotterMap):
-    def apply(self, **_: Any) -> 'ClimerMap':
+class ClimerMap(PlotterMap, Proker):
+    """A proker and a plotter that performs the climatology of a variable on a map
+
+    See Also
+    --------
+        `ClimerTS`
+        `AnomerMap`
+    """
+
+    def apply(self, **kw: Any) -> 'ClimerMap':
+        """Method that applies the climatology. Does not accept any keyword arguments
+
+        See Also
+        --------
+            `spy4cast.meteo.clim`
+        """
+        if len(kw) != 0:
+            raise TypeError('`apply` does not accept any keyword arguments')
         self._data = clim(self._data)
         self._plot_data = 'CLIM ' + self._plot_data
         return self
 
 
-class AnomerTS(PlotterTS):
+class AnomerTS(PlotterTS, Proker):
+    """A proker and a plotter that performs the anomaly of a variable on a time series
+
+    See Also
+    --------
+        `AnomerMap`
+        `ClimerTS`
+    """
+
     def apply(self, **kwargs: Any) -> 'AnomerTS':
+        """Method that applies the anomaly.
+
+        Parameters
+        ----------
+            st: bool, default=False
+                Indicates wether of not to standarise the anomaly
+
+        See Also
+        --------
+            `spy4cast.meteo.anom`
+        """
         st = kwargs.pop('st') if 'st' in kwargs else False
         if len(kwargs) != 0:
             raise TypeError('`apply` only accepts one keyword argument: `st`')
@@ -193,8 +359,27 @@ class AnomerTS(PlotterTS):
         return self
 
 
-class AnomerMap(PlotterMap):
+class AnomerMap(PlotterMap, Proker):
+    """A proker and a plotter that performs the anomaly of a variable on a map
+
+    See Also
+    --------
+        `AnomerTS`
+        `ClimerMap`
+    """
+
     def apply(self, **kwargs: Any) -> 'AnomerMap':
+        """Method that applies the anomaly.
+
+        Parameters
+        ----------
+            st: bool, default=False
+                Indicates wether of not to standarise the anomaly
+
+        See Also
+        --------
+            `spy4cast.meteo.anom`
+        """
         st = kwargs.pop('st') if 'st' in kwargs else False
         if len(kwargs) != 0:
             raise TypeError('`apply` only accepts one keyword argument: `st`')
@@ -207,25 +392,3 @@ class AnomerMap(PlotterMap):
             self._plot_data += ' (Standarized)'
         self._plot_data = 'ANOM ' + self._plot_data
         return self
-
-# if __name__ == '__main__':
-#     matplotlib.use('TkAgg')
-#     DATASET_DIR = '../../gbg'
-#     PLOTS_DIR = '../../gbg/plots'
-#     PREDICTAND_DSET = 'ecoocean_gfdl-reanalysis_hist_w-diaz_fishing_no-oa_b10cm_global_monthly_1971_2005.nc'
-#     PREDICTAND_NAME = 'predictand.png'
-#     PREDICTOR_DSET = 'gfdl_reanalysis_to_zs_monthly_1959-2004.nc4'
-#     PREDICTOR_NAME = 'predictor.png'
-#
-#     spy = Spy4Caster(
-#         RDArgs(dataset_dir= DATASET_DIR, dataset_name= PREDICTOR_DSET, variable= 'to'),
-#         RDArgs(dataset_dir= DATASET_DIR, dataset_name= PREDICTAND_DSET, variable= 'b10cm'),
-#         plot_dir= PLOTS_DIR, plot_name= PREDICTOR_NAME, plot_data_dir= DATASET_DIR, force_name= False,
-#     )
-#     yslis = Slise(-30, 30, -60, 0, 6, 8, 1959, 2004)
-#     zslis = Slise(-30, 30, -60, 0, 6, 8, 1972, 2005)
-#     spy.load_datasets()
-#     spy.rdy._data = spy.rdy._data.squeeze('zt_ocean')
-#     spy.slice_datasets(yslis, zslis)
-#     spy.apply(order=8, period=5.5, nm=3, alpha=.1)
-#     spy.run(F.SHOW_PLOT)

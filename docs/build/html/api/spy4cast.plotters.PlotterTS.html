@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PlotterTS &#8212; Spy4Cast 0.0.7 documentation</title>
+    <title>PlotterTS &#8212; Spy4Cast 0.0.9 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -66,7 +66,7 @@
       
       
       
-      <h1 class="site-logo" id="site-title">Spy4Cast 0.0.7 documentation</h1>
+      <h1 class="site-logo" id="site-title">Spy4Cast 0.0.9 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -245,28 +245,18 @@
     </label>
     <ul>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.anom.html">
-       anom
-      </a>
-     </li>
-     <li class="toctree-l3">
       <a class="reference internal" href="spy4cast.meteo.clim.html">
        clim
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.crossvalidation.html">
-       crossvalidation
+      <a class="reference internal" href="spy4cast.meteo.anom.html">
+       anom
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.crossvalidation_mp.html">
-       crossvalidation_mp
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.index_regression.html">
-       index_regression
+      <a class="reference internal" href="spy4cast.meteo.npanom.html">
+       npanom
       </a>
      </li>
      <li class="toctree-l3">
@@ -275,8 +265,18 @@
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.npanom.html">
-       npanom
+      <a class="reference internal" href="spy4cast.meteo.index_regression.html">
+       index_regression
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="spy4cast.meteo.crossvalidation_mp.html">
+       crossvalidation_mp
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="spy4cast.meteo.crossvalidation.html">
+       crossvalidation
       </a>
      </li>
      <li class="toctree-l3">
@@ -287,16 +287,6 @@
      <li class="toctree-l3">
       <a class="reference internal" href="spy4cast.meteo.MCAOut.html">
        MCAOut
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.NAN_VAL.html">
-       NAN_VAL
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.meteo.Tuple.html">
-       Tuple
       </a>
      </li>
     </ul>
@@ -531,6 +521,7 @@
 <dt class="sig sig-object py" id="spy4cast.plotters.PlotterTS">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.plotters.</span></span><span class="sig-name descname"><span class="pre">PlotterTS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.plotters.PlotterTS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">spy4cast.plotters.Plotter</span></code></p>
+<p>Plotter for a time series</p>
 <p class="rubric">Methods Summary</p>
 <table class="longtable table autosummary">
 <colgroup>
@@ -539,7 +530,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.plotters.PlotterTS.create_plot" title="spy4cast.plotters.PlotterTS.create_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_plot</span></code></a>([flags])</p></td>
-<td><p></p></td>
+<td><p>Creates the plot for a time series</p></td>
 </tr>
 </tbody>
 </table>
@@ -547,7 +538,26 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.plotters.PlotterTS.create_plot">
 <span class="sig-name descname"><span class="pre">create_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags:</span> <span class="pre">spy4cast.stypes.F</span> <span class="pre">=</span> <span class="pre">F.None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kws:</span> <span class="pre">typing.Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spy4cast.plotters.PlotterTS" title="spy4cast.plotters.PlotterTS"><span class="pre">spy4cast.plotters.PlotterTS</span></a></span></span><a class="headerlink" href="#spy4cast.plotters.PlotterTS.create_plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates the plot for a time series</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flags</strong> (<a class="reference internal" href="spy4cast.F.html#spy4cast.F" title="spy4cast.F"><em>spy4cast.F</em></a>) – F.SAVE_FIG or F.SHOW_PLOT are valid</p></li>
+<li><p><strong>kwargs</strong> – <dl class="simple">
+<dt>color<span class="classifier">Color, default=(.43, .92, .20)</span></dt><dd><p>Color of the line in the plot. Default is green</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="spy4cast.errors.PlotCreationError.html#spy4cast.errors.PlotCreationError" title="spy4cast.errors.PlotCreationError"><strong>PlotCreationError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

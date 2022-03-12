@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plotters &#8212; Spy4Cast 0.0.7 documentation</title>
+    <title>Plotters &#8212; Spy4Cast 0.0.9 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
   <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="PlotterTS" href="../../api/spy4cast.plotters.PlotterTS.html" />
-    <link rel="prev" title="Tuple" href="../../api/spy4cast.meteo.Tuple.html" />
+    <link rel="prev" title="MCAOut" href="../../api/spy4cast.meteo.MCAOut.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -66,7 +66,7 @@
       
       
       
-      <h1 class="site-logo" id="site-title">Spy4Cast 0.0.7 documentation</h1>
+      <h1 class="site-logo" id="site-title">Spy4Cast 0.0.9 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -245,28 +245,18 @@
     </label>
     <ul>
      <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.anom.html">
-       anom
-      </a>
-     </li>
-     <li class="toctree-l3">
       <a class="reference internal" href="../../api/spy4cast.meteo.clim.html">
        clim
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation.html">
-       crossvalidation
+      <a class="reference internal" href="../../api/spy4cast.meteo.anom.html">
+       anom
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation_mp.html">
-       crossvalidation_mp
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.index_regression.html">
-       index_regression
+      <a class="reference internal" href="../../api/spy4cast.meteo.npanom.html">
+       npanom
       </a>
      </li>
      <li class="toctree-l3">
@@ -275,8 +265,18 @@
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.npanom.html">
-       npanom
+      <a class="reference internal" href="../../api/spy4cast.meteo.index_regression.html">
+       index_regression
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation_mp.html">
+       crossvalidation_mp
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation.html">
+       crossvalidation
       </a>
      </li>
      <li class="toctree-l3">
@@ -287,16 +287,6 @@
      <li class="toctree-l3">
       <a class="reference internal" href="../../api/spy4cast.meteo.MCAOut.html">
        MCAOut
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.NAN_VAL.html">
-       NAN_VAL
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.Tuple.html">
-       Tuple
       </a>
      </li>
     </ul>
@@ -553,7 +543,7 @@
                 
   <div class="section" id="module-spy4cast.plotters">
 <span id="plotters"></span><h1>Plotters<a class="headerlink" href="#module-spy4cast.plotters" title="Permalink to this headline">¶</a></h1>
-<p>Collection of plotters</p>
+<p>Collection of plotters that are used to plot maps and apply methodologies to them</p>
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <table class="longtable table autosummary">
@@ -563,25 +553,25 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.PlotterTS.html#spy4cast.plotters.PlotterTS" title="spy4cast.plotters.PlotterTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotterTS</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
-<td><p></p></td>
+<td><p>Plotter for a time series</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.PlotterMap.html#spy4cast.plotters.PlotterMap" title="spy4cast.plotters.PlotterMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotterMap</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
-<td><p></p></td>
+<td><p>Plotter for a Map</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.Proker.html#spy4cast.plotters.Proker" title="spy4cast.plotters.Proker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Proker</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Abstract base class for every Proker in the API.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.ClimerTS.html#spy4cast.plotters.ClimerTS" title="spy4cast.plotters.ClimerTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ClimerTS</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
-<td><p></p></td>
+<td><p>A proker and a plotter that performs the climatology of a variable on a time series</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.ClimerMap.html#spy4cast.plotters.ClimerMap" title="spy4cast.plotters.ClimerMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ClimerMap</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
-<td><p></p></td>
+<td><p>A proker and a plotter that performs the climatology of a variable on a map</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.AnomerTS.html#spy4cast.plotters.AnomerTS" title="spy4cast.plotters.AnomerTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnomerTS</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
-<td><p></p></td>
+<td><p>A proker and a plotter that performs the anomaly of a variable on a time series</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.AnomerMap.html#spy4cast.plotters.AnomerMap" title="spy4cast.plotters.AnomerMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnomerMap</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
-<td><p></p></td>
+<td><p>A proker and a plotter that performs the anomaly of a variable on a map</p></td>
 </tr>
 </tbody>
 </table>
@@ -594,11 +584,11 @@
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="../../api/spy4cast.meteo.Tuple.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="../../api/spy4cast.meteo.MCAOut.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Tuple</p>
+            <p class="prev-next-title">MCAOut</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="../../api/spy4cast.plotters.PlotterTS.html" title="next page">

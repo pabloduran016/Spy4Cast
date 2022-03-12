@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meteo &#8212; Spy4Cast 0.0.7 documentation</title>
+    <title>Meteo &#8212; Spy4Cast 0.0.9 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
   <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -36,7 +36,7 @@
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="anom" href="../../api/spy4cast.meteo.anom.html" />
+    <link rel="next" title="clim" href="../../api/spy4cast.meteo.clim.html" />
     <link rel="prev" title="PlotDataError" href="../../api/spy4cast.errors.PlotDataError.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -66,7 +66,7 @@
       
       
       
-      <h1 class="site-logo" id="site-title">Spy4Cast 0.0.7 documentation</h1>
+      <h1 class="site-logo" id="site-title">Spy4Cast 0.0.9 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -245,28 +245,18 @@
     </label>
     <ul>
      <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.anom.html">
-       anom
-      </a>
-     </li>
-     <li class="toctree-l3">
       <a class="reference internal" href="../../api/spy4cast.meteo.clim.html">
        clim
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation.html">
-       crossvalidation
+      <a class="reference internal" href="../../api/spy4cast.meteo.anom.html">
+       anom
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation_mp.html">
-       crossvalidation_mp
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.index_regression.html">
-       index_regression
+      <a class="reference internal" href="../../api/spy4cast.meteo.npanom.html">
+       npanom
       </a>
      </li>
      <li class="toctree-l3">
@@ -275,8 +265,18 @@
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.npanom.html">
-       npanom
+      <a class="reference internal" href="../../api/spy4cast.meteo.index_regression.html">
+       index_regression
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation_mp.html">
+       crossvalidation_mp
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation.html">
+       crossvalidation
       </a>
      </li>
      <li class="toctree-l3">
@@ -287,16 +287,6 @@
      <li class="toctree-l3">
       <a class="reference internal" href="../../api/spy4cast.meteo.MCAOut.html">
        MCAOut
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.NAN_VAL.html">
-       NAN_VAL
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../api/spy4cast.meteo.Tuple.html">
-       Tuple
       </a>
      </li>
     </ul>
@@ -522,11 +512,6 @@
    Classes
   </a>
  </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#variables">
-   Variables
-  </a>
- </li>
 </ul>
 
             </nav>
@@ -557,11 +542,6 @@
    Classes
   </a>
  </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#variables">
-   Variables
-  </a>
- </li>
 </ul>
 
                         </nav>
@@ -582,29 +562,26 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.anom.html#spy4cast.meteo.anom" title="spy4cast.meteo.anom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anom</span></code></a>(array[, st])</p></td>
-<td><p>Function to calculate the anomalies on a xarray DataArray</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.clim.html#spy4cast.meteo.clim" title="spy4cast.meteo.clim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clim</span></code></a>(array[, dim])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.clim.html#spy4cast.meteo.clim" title="spy4cast.meteo.clim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clim</span></code></a>(array[, dim])</p></td>
 <td><p>Function that performs the climatology of a xarray Dataset</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation.html#spy4cast.meteo.crossvalidation" title="spy4cast.meteo.crossvalidation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crossvalidation</span></code></a>(y, z, nm, alpha)</p></td>
-<td><p>Perform crossvalidation methodology</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.anom.html#spy4cast.meteo.anom" title="spy4cast.meteo.anom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anom</span></code></a>(array[, st])</p></td>
+<td><p>Function to calculate the anomalies on a xarray DataArray</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.npanom.html#spy4cast.meteo.npanom" title="spy4cast.meteo.npanom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">npanom</span></code></a>(array[, axis, st])</p></td>
+<td><p>Function to calculate the anomalies on a numpy array</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.mca.html#spy4cast.meteo.mca" title="spy4cast.meteo.mca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mca</span></code></a>(z, y, nm, alpha)</p></td>
+<td><p>&quot;Maximum covariance analysis between y (predictor) and Z (predictand)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.index_regression.html#spy4cast.meteo.index_regression" title="spy4cast.meteo.index_regression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_regression</span></code></a>(data, index, alpha)</p></td>
+<td><p>Create correlation (pearson correlation) and regression</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation_mp.html#spy4cast.meteo.crossvalidation_mp" title="spy4cast.meteo.crossvalidation_mp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crossvalidation_mp</span></code></a>(y, z, nm, alpha)</p></td>
 <td><p>Perform crossvalidation methodology with multiprocessing</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataclass</span></code>([cls, init, repr, eq, order, ...])</p></td>
-<td><p>Returns the same class as was passed in, with dunder methods added based on the fields defined in the class.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.index_regression.html#spy4cast.meteo.index_regression" title="spy4cast.meteo.index_regression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_regression</span></code></a>(data, index, alpha)</p></td>
-<td><p>Create correlation (pearson correlation) and regression</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.mca.html#spy4cast.meteo.mca" title="spy4cast.meteo.mca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mca</span></code></a>(z, y, nm, alpha)</p></td>
-<td><p>&quot;Maximum covariance analysis between y (predictor) and Z (predictand)</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.npanom.html#spy4cast.meteo.npanom" title="spy4cast.meteo.npanom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">npanom</span></code></a>(array[, axis, st])</p></td>
-<td><p>Function to calculate the anomalies on a numpy array</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.crossvalidation.html#spy4cast.meteo.crossvalidation" title="spy4cast.meteo.crossvalidation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crossvalidation</span></code></a>(y, z, nm, alpha)</p></td>
+<td><p>Perform crossvalidation methodology</p></td>
 </tr>
 </tbody>
 </table>
@@ -626,23 +603,6 @@
 </tbody>
 </table>
 </div>
-<div class="section" id="variables">
-<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
-<table class="longtable table autosummary">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.NAN_VAL.html#spy4cast.meteo.NAN_VAL" title="spy4cast.meteo.NAN_VAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NAN_VAL</span></code></a></p></td>
-<td><p>Convert a string or number to a floating point number, if possible.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.meteo.Tuple.html#spy4cast.meteo.Tuple" title="spy4cast.meteo.Tuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tuple</span></code></a></p></td>
-<td><p>Tuple type; Tuple[X, Y] is the cross-product type of X and Y.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 
 
@@ -658,10 +618,10 @@
             <p class="prev-next-title">PlotDataError</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../../api/spy4cast.meteo.anom.html" title="next page">
+    <a class='right-next' id="next-link" href="../../api/spy4cast.meteo.clim.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">anom</p>
+        <p class="prev-next-title">clim</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

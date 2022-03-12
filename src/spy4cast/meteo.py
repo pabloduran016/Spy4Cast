@@ -12,8 +12,20 @@ import scipy
 import numpy.typing as npt
 
 
-NAN_VAL =1e4
 
+__all__ = [
+    'CrossvalidationOut',
+    'MCAOut',
+    'clim',
+    'anom',
+    'npanom',
+    'mca',
+    'index_regression',
+    'crossvalidation_mp',
+    'crossvalidation',
+]
+
+NAN_VAL = 1e4
 
 @dataclass
 class CrossvalidationOut:
