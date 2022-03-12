@@ -19,7 +19,7 @@ from .meteo import clim, anom
 from .read_data import ReadData, NAN_VAL
 
 
-__all__ = ['PlotterTS', 'PlotterMap', 'Proker', 'ClimerTS', 'ClimerMap', 'AnomerTS', 'AnomerMap']
+__all__ = ['Plotter', 'PlotterTS', 'PlotterMap', 'Proker', 'ClimerTS', 'ClimerMap', 'AnomerTS', 'AnomerMap']
 
 
 class Plotter(ReadData, ABC):

@@ -36,7 +36,7 @@
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="PlotterTS" href="../../api/spy4cast.plotters.PlotterTS.html" />
+    <link rel="next" title="Plotter" href="../../api/spy4cast.plotters.Plotter.html" />
     <link rel="prev" title="MCAOut" href="../../api/spy4cast.meteo.MCAOut.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -302,6 +302,11 @@
     </label>
     <ul>
      <li class="toctree-l3">
+      <a class="reference internal" href="../../api/spy4cast.plotters.Plotter.html">
+       Plotter
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="../../api/spy4cast.plotters.PlotterTS.html">
        PlotterTS
       </a>
@@ -552,25 +557,28 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.PlotterTS.html#spy4cast.plotters.PlotterTS" title="spy4cast.plotters.PlotterTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotterTS</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.Plotter.html#spy4cast.plotters.Plotter" title="spy4cast.plotters.Plotter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plotter</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
+<td><p>Abstract base class for every plotter in the API.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.PlotterTS.html#spy4cast.plotters.PlotterTS" title="spy4cast.plotters.PlotterTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotterTS</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
 <td><p>Plotter for a time series</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.PlotterMap.html#spy4cast.plotters.PlotterMap" title="spy4cast.plotters.PlotterMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotterMap</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.PlotterMap.html#spy4cast.plotters.PlotterMap" title="spy4cast.plotters.PlotterMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotterMap</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
 <td><p>Plotter for a Map</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.Proker.html#spy4cast.plotters.Proker" title="spy4cast.plotters.Proker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Proker</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.Proker.html#spy4cast.plotters.Proker" title="spy4cast.plotters.Proker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Proker</span></code></a>()</p></td>
 <td><p>Abstract base class for every Proker in the API.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.ClimerTS.html#spy4cast.plotters.ClimerTS" title="spy4cast.plotters.ClimerTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ClimerTS</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.ClimerTS.html#spy4cast.plotters.ClimerTS" title="spy4cast.plotters.ClimerTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ClimerTS</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
 <td><p>A proker and a plotter that performs the climatology of a variable on a time series</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.ClimerMap.html#spy4cast.plotters.ClimerMap" title="spy4cast.plotters.ClimerMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ClimerMap</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.ClimerMap.html#spy4cast.plotters.ClimerMap" title="spy4cast.plotters.ClimerMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ClimerMap</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
 <td><p>A proker and a plotter that performs the climatology of a variable on a map</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.AnomerTS.html#spy4cast.plotters.AnomerTS" title="spy4cast.plotters.AnomerTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnomerTS</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.AnomerTS.html#spy4cast.plotters.AnomerTS" title="spy4cast.plotters.AnomerTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnomerTS</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
 <td><p>A proker and a plotter that performs the anomaly of a variable on a time series</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.AnomerMap.html#spy4cast.plotters.AnomerMap" title="spy4cast.plotters.AnomerMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnomerMap</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.plotters.AnomerMap.html#spy4cast.plotters.AnomerMap" title="spy4cast.plotters.AnomerMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnomerMap</span></code></a>([dataset_dir, dataset_name, ...])</p></td>
 <td><p>A proker and a plotter that performs the anomaly of a variable on a map</p></td>
 </tr>
 </tbody>
@@ -591,10 +599,10 @@
             <p class="prev-next-title">MCAOut</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../../api/spy4cast.plotters.PlotterTS.html" title="next page">
+    <a class='right-next' id="next-link" href="../../api/spy4cast.plotters.Plotter.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">PlotterTS</p>
+        <p class="prev-next-title">Plotter</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

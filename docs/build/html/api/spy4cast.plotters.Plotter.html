@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PlotterTS &#8212; Spy4Cast 0.0.9 documentation</title>
+    <title>Plotter &#8212; Spy4Cast 0.0.9 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -36,8 +36,8 @@
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="PlotterMap" href="spy4cast.plotters.PlotterMap.html" />
-    <link rel="prev" title="Plotter" href="spy4cast.plotters.Plotter.html" />
+    <link rel="next" title="PlotterTS" href="spy4cast.plotters.PlotterTS.html" />
+    <link rel="prev" title="Plotters" href="../toctrees/api-reference-src/plotters.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -301,13 +301,13 @@
      </i>
     </label>
     <ul class="current">
-     <li class="toctree-l3">
-      <a class="reference internal" href="spy4cast.plotters.Plotter.html">
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
        Plotter
       </a>
      </li>
-     <li class="toctree-l3 current active">
-      <a class="current reference internal" href="#">
+     <li class="toctree-l3">
+      <a class="reference internal" href="spy4cast.plotters.PlotterTS.html">
        PlotterTS
       </a>
      </li>
@@ -477,7 +477,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/api/spy4cast.plotters.PlotterTS.rst.txt"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/api/spy4cast.plotters.Plotter.rst.txt"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.rst</button></a>
         <!-- Download PDF via print -->
@@ -509,7 +509,7 @@
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>PlotterTS</h1>
+                <h1>Plotter</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -520,13 +520,15 @@
             
               <div>
                 
-  <div class="section" id="plotterts">
-<h1>PlotterTS<a class="headerlink" href="#plotterts" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="plotter">
+<h1>Plotter<a class="headerlink" href="#plotter" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="spy4cast.plotters.PlotterTS">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.plotters.</span></span><span class="sig-name descname"><span class="pre">PlotterTS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.plotters.PlotterTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="spy4cast.plotters.Plotter.html#spy4cast.plotters.Plotter" title="spy4cast.plotters.Plotter"><code class="xref py py-class docutils literal notranslate"><span class="pre">spy4cast.plotters.Plotter</span></code></a></p>
-<p>Plotter for a time series</p>
+<dt class="sig sig-object py" id="spy4cast.plotters.Plotter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.plotters.</span></span><span class="sig-name descname"><span class="pre">Plotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.plotters.Plotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="spy4cast.read_data.ReadData.html#spy4cast.read_data.ReadData" title="spy4cast.read_data.ReadData"><code class="xref py py-class docutils literal notranslate"><span class="pre">spy4cast.read_data.ReadData</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract base class for every plotter in the API. A Plotter is a class that is in charge
+of creating a plot from the data in a dataset variable.</p>
+<p>Inherits from ReadData class: see <cite>spy4cast.ReadData</cite></p>
 <p class="rubric">Methods Summary</p>
 <table class="longtable table autosummary">
 <colgroup>
@@ -534,31 +536,45 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.plotters.PlotterTS.create_plot" title="spy4cast.plotters.PlotterTS.create_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_plot</span></code></a>([flags])</p></td>
-<td><p>Creates the plot for a time series</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.plotters.Plotter.create_plot" title="spy4cast.plotters.Plotter.create_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_plot</span></code></a>(flags, **kwargs)</p></td>
+<td><p>Abstract method that is used in each specific plotter to create the plot</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.plotters.Plotter.run" title="spy4cast.plotters.Plotter.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([flags])</p></td>
+<td><p>Running method of plotters that processes the flags (see spy4cast.F) passed.</p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="spy4cast.plotters.PlotterTS.create_plot">
-<span class="sig-name descname"><span class="pre">create_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags:</span> <span class="pre">spy4cast.stypes.F</span> <span class="pre">=</span> <span class="pre">F.None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kws:</span> <span class="pre">typing.Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spy4cast.plotters.PlotterTS" title="spy4cast.plotters.PlotterTS"><span class="pre">spy4cast.plotters.PlotterTS</span></a></span></span><a class="headerlink" href="#spy4cast.plotters.PlotterTS.create_plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates the plot for a time series</p>
+<dt class="sig sig-object py" id="spy4cast.plotters.Plotter.create_plot">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.stypes.F.html#spy4cast.stypes.F" title="spy4cast.stypes.F"><span class="pre">spy4cast.stypes.F</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spy4cast.plotters.Plotter" title="spy4cast.plotters.Plotter"><span class="pre">spy4cast.plotters.Plotter</span></a></span></span><a class="headerlink" href="#spy4cast.plotters.Plotter.create_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method that is used in each specific plotter to create the plot</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>flags</strong> (<a class="reference internal" href="spy4cast.F.html#spy4cast.F" title="spy4cast.F"><em>spy4cast.F</em></a>) – F.SAVE_FIG or F.SHOW_PLOT are valid</p></li>
-<li><p><strong>kwargs</strong> – <dl class="simple">
-<dt>color<span class="classifier">Color, default=(.43, .92, .20)</span></dt><dd><p>Color of the line in the plot. Default is green</p>
+<li><p><strong>flags</strong> (<a class="reference internal" href="spy4cast.F.html#spy4cast.F" title="spy4cast.F"><em>F</em></a>) – Flags that indicate wether or not to show the plot, saved the figure …</p></li>
+<li><p><strong>kwargs</strong> – See the specific kwargs for each plotter</p></li>
+</ul>
 </dd>
 </dl>
-</p></li>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spy4cast.plotters.Plotter.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags:</span> <span class="pre">spy4cast.stypes.F</span> <span class="pre">=</span> <span class="pre">F.None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs:</span> <span class="pre">typing.Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spy4cast.plotters.Plotter" title="spy4cast.plotters.Plotter"><span class="pre">spy4cast.plotters.Plotter</span></a></span></span><a class="headerlink" href="#spy4cast.plotters.Plotter.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Running method of plotters that processes the flags (see spy4cast.F) passed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flags</strong> (<a class="reference internal" href="spy4cast.F.html#spy4cast.F" title="spy4cast.F"><em>F</em></a>) – Flags that indicate wether or not to show the plot, saved the figure, raise errors …</p></li>
+<li><p><strong>kwargs</strong> – See the specific kwargs for each plotter</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="spy4cast.errors.DataSavingError.html#spy4cast.errors.DataSavingError" title="spy4cast.errors.DataSavingError"><strong>DataSavingError</strong></a> – </p></li>
 <li><p><a class="reference internal" href="spy4cast.errors.PlotCreationError.html#spy4cast.errors.PlotCreationError" title="spy4cast.errors.PlotCreationError"><strong>PlotCreationError</strong></a> – </p></li>
+<li><p><a class="reference internal" href="spy4cast.errors.PlotShowingError.html#spy4cast.errors.PlotShowingError" title="spy4cast.errors.PlotShowingError"><strong>PlotShowingError</strong></a> – </p></li>
 </ul>
 </dd>
 </dl>
@@ -574,17 +590,17 @@
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="spy4cast.plotters.Plotter.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="../toctrees/api-reference-src/plotters.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Plotter</p>
+            <p class="prev-next-title">Plotters</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="spy4cast.plotters.PlotterMap.html" title="next page">
+    <a class='right-next' id="next-link" href="spy4cast.plotters.PlotterTS.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">PlotterMap</p>
+        <p class="prev-next-title">PlotterTS</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
