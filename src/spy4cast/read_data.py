@@ -178,7 +178,7 @@ class ReadData:
                                                 mask_and_scale=False, decode_times=False, chunks=self._chunks)
 
                 initial_timestamp = datetime.datetime.strptime(self._dataset.time.attrs['units'].split()[2],
-                                                               '%Y-%M-%d')
+                                                               '%Y-%m-%d')
                 final_timestamp = initial_timestamp + pd.DateOffset(months=len(self._dataset.time))
                 self._dataset = self._dataset.assign_coords(
                     time=pd.date_range(initial_timestamp, final_timestamp, freq='M'))
