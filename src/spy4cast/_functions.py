@@ -88,7 +88,7 @@ def slise2str(slise: Slise) -> str:
 
     See Also
     --------
-        `stypes.Slise`
+    stypes.Slise
     """
     sufixes: Dict[str, str] = {'lat_min': '', 'lat_max': '', 'lon_min': '', 'lon_max': ''}
     values: Dict[str, float] = {'lat_min': slise.lat0, 'lat_max': slise.latf,
@@ -130,9 +130,7 @@ def mon2str(month: Month) -> str:
 
     See Also
     --------
-        `Month`
-        `MONTH_TO_STRING`
-        `str2month`
+    Month, MONTH_TO_STRING, str2month
     """
     if not 1 <= month <= 12:
         raise ValueError(f'Expected month number from 1 to 12, got {month}')
@@ -154,9 +152,7 @@ def str2mon(month: str) -> Month:
 
     See Also
     --------
-        `Month`
-        `MONTH_TO_STRING`
-        `mon2str`
+    Month, MONTH_TO_STRING, mon2str
     """
     month = month.upper()[:3]
     if not hasattr(Month, month):
@@ -169,7 +165,7 @@ def debugprint(*msgs: str, **kws: Any) -> None:
 
     See Also
     --------
-        `Settings`
+    Settings
     """
     from . import Settings
     if not Settings.silence:

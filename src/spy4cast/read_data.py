@@ -22,7 +22,7 @@ ReadDataType = TypeVar('ReadDataType', bound='ReadData')
 """Type returned by each ReadData function that enables concatenability
 See Also
 --------
-    `ReadData`
+ReadData
 """
 
 
@@ -145,7 +145,7 @@ class ReadData:
 
         See Also
         --------
-            `ReadData.open_dataset`
+        ReadData.open_dataset
         """
         print('[WARNING] Support for `ReadData.load_dataset` is deprected. Use `ReadData.open_dataset` instead',
               file=sys.stderr)
@@ -263,7 +263,7 @@ class ReadData:
 
         See Also
         --------
-            `stypes.Slise`
+        stypes.Slise
         """
         # debugprint(f"[INFO] <{self.__class__.__name__}> Checking variables for {self._plot_name}")
         if not self._opened_dataset:
@@ -344,7 +344,7 @@ class ReadData:
 
         See Also
         --------
-            `stypes.Slise`
+        stypes.Slise
         """
 
         self.check_variables(slise)

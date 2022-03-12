@@ -73,27 +73,27 @@ class MCAOut:
     Attributes
     ----------
     RUY : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     RUY_sig : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     SUY : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     SUY_sig : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     RUZ : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     RUZ_sig : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     SUZ : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     SUZ_sig : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     Us : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     Vs : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     scf : npt.NDArray[np.float32]
-        TBD
+        .. todo:: Not documented yet
     """
     # TODO: Add docs for MCAOut field
     RUY: npt.NDArray[np.float32]
@@ -124,8 +124,7 @@ def clim(array: xr.DataArray, dim: str = 'time') -> xr.DataArray:
 
     See Also
     --------
-        `plotters.ClimerTS`
-        `plotters.ClimerMap`
+    plotters.ClimerTS, plotters.ClimerMap
 
     Raises
     ------
@@ -173,7 +172,7 @@ def anom(array: xr.DataArray, st: bool = False) -> xr.DataArray:
 
     See Also
     --------
-        `npanom`
+    npanom
     """
     # print(f'[INFO] <meteo.Meteo.anom()> called, st: {st}')
     if not isinstance(array, xr.DataArray):
@@ -233,7 +232,7 @@ def npanom(array: npt.NDArray[np.float32], axis: int = 0, st: bool = False) -> n
 
     See Also
     --------
-        `anom`
+    anom
     """
     b: npt.NDArray[np.float32] = array - array.mean(axis=axis)
     if st:
@@ -262,7 +261,7 @@ def mca(z: npt.NDArray[np.float32], y: npt.NDArray[np.float32], nm: int, alpha: 
 
     See Also
     --------
-        `MCAOut`
+    MCAOut
     """
     nz, nt = z.shape
     ny, nt = y.shape
@@ -391,9 +390,7 @@ def crossvalidation_mp(y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], n
 
     See Also
     -------
-        `CrossvalidationOut`
-        `mca`
-        `crossvalidation`
+    CrossvalidationOut, mca, crossvalidation
     """
     nz, ntz = z.shape
     ny, nty = y.shape
@@ -484,9 +481,7 @@ def crossvalidation(y: npt.NDArray[np.float32], z: npt.NDArray[np.float32], nm: 
 
     See Also
     -------
-        `CrossvalidationOut`
-        `mca`
-        `crossvalidation_mp
+    CrossvalidationOut, mca, crossvalidation_mp
     """
     nz, ntz = z.shape
     ny, nty = y.shape

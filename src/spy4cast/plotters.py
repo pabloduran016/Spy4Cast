@@ -30,10 +30,7 @@ class Plotter(ReadData, ABC):
 
     See Also
     --------
-        `ReadData`
-        `Proker`
-        `PlotterTS`
-        `PlotterMap`
+    spy4cast.ReadData, Proker, PlotterTS, PlotterMap
     """
 
     @abstractmethod
@@ -50,7 +47,7 @@ class Plotter(ReadData, ABC):
 
         See Also
         --------
-            `Plotter.run`
+        Plotter.run
         """
         raise NotImplementedError
 
@@ -73,7 +70,7 @@ class Plotter(ReadData, ABC):
 
         See Also
         --------
-            `spy4cast.F`
+        spy4cast.F
         """
         # Save the data if needed
         if F.SAVE_DATA in flags:
@@ -114,8 +111,7 @@ class PlotterTS(Plotter):
 
     See Also
     --------
-     `Plotter`
-     `PlotterTS`
+    Plotter, PlotterTS
     """
 
     def create_plot(self, flags: F = F(0), **kws: Any) -> 'PlotterTS':
@@ -164,8 +160,7 @@ class PlotterMap(Plotter):
 
     See Also
     --------
-     `Plotter`
-     `PlotterTS`
+    Plotter, PlotterTS
     """
 
     _n_values = 50
@@ -263,11 +258,7 @@ class Proker(ABC):
 
     See Also
     --------
-        `Plotter`
-        `ClimerTS`
-        `ClimerMap`
-        `AnomerTS`
-        `AnomerMap`
+    Plotter, ClimerTS, ClimerMap, AnomerTS, AnomerMap
     """
 
     @abstractmethod
@@ -282,8 +273,7 @@ class ClimerTS(PlotterTS, Proker):
 
     See Also
     --------
-        `ClimerMap`
-        `AnomerTS`
+    ClimerMap, AnomerTS
     """
 
     def apply(self, **kw: Any) -> 'ClimerTS':
@@ -291,7 +281,7 @@ class ClimerTS(PlotterTS, Proker):
 
         See Also
         --------
-            `spy4cast.meteo.clim`
+        spy4cast.meteo.clim
         """
         if len(kw) != 0:
             raise TypeError('`apply` does not accept any keyword arguments')
@@ -307,8 +297,7 @@ class ClimerMap(PlotterMap, Proker):
 
     See Also
     --------
-        `ClimerTS`
-        `AnomerMap`
+    ClimerTS, AnomerMap
     """
 
     def apply(self, **kw: Any) -> 'ClimerMap':
@@ -316,7 +305,7 @@ class ClimerMap(PlotterMap, Proker):
 
         See Also
         --------
-            `spy4cast.meteo.clim`
+        spy4cast.meteo.clim
         """
         if len(kw) != 0:
             raise TypeError('`apply` does not accept any keyword arguments')
@@ -330,8 +319,7 @@ class AnomerTS(PlotterTS, Proker):
 
     See Also
     --------
-        `AnomerMap`
-        `ClimerTS`
+    AnomerMap, ClimerTS`
     """
 
     def apply(self, **kwargs: Any) -> 'AnomerTS':
@@ -344,7 +332,7 @@ class AnomerTS(PlotterTS, Proker):
 
         See Also
         --------
-            `spy4cast.meteo.anom`
+        spy4cast.meteo.anom
         """
         st = kwargs.pop('st') if 'st' in kwargs else False
         if len(kwargs) != 0:
@@ -364,8 +352,7 @@ class AnomerMap(PlotterMap, Proker):
 
     See Also
     --------
-        `AnomerTS`
-        `ClimerMap`
+    AnomerTS, ClimerMap`
     """
 
     def apply(self, **kwargs: Any) -> 'AnomerMap':
@@ -378,7 +365,7 @@ class AnomerMap(PlotterMap, Proker):
 
         See Also
         --------
-            `spy4cast.meteo.anom`
+        spy4cast.meteo.anom
         """
         st = kwargs.pop('st') if 'st' in kwargs else False
         if len(kwargs) != 0:
