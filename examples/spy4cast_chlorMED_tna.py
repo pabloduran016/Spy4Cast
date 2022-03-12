@@ -43,7 +43,7 @@ def main() -> None:
     load = False
     if not load:
         s.open_datasets()
-        s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=0, zskip=0)
+        s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=1, zskip=1)
         s.preprocess()  # Primero sin filtro y luego con filtro de 8 años
         s.mca(nm=nm, alpha=alpha)
         # s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
