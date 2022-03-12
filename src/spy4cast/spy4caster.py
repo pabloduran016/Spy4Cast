@@ -175,7 +175,7 @@ class Spy4Caster:
                 except FileNotFoundError:
                     print(f'\n[ERROR] Could not find file `{path}` for variable `{field}{var}`')
 
-        print(f' took {time_to_here():.03f} seconds')
+        debugprint(f' took {time_to_here():.03f} seconds')
         return self
 
     def load_mca(self, path0: str, prefix: str = '', ext: str = '.npy') -> 'Spy4Caster':
@@ -214,7 +214,7 @@ class Spy4Caster:
             Vs=out['Vs'],
             scf=out['scf'],
         )
-        print(f' took: {time_to_here():.03f}')
+        debugprint(f' took: {time_to_here():.03f}')
         return self
 
     def load_crossvalidation(self, path0: str, prefix: str = '', ext: str = '.npy') -> 'Spy4Caster':
@@ -253,7 +253,7 @@ class Spy4Caster:
             us=out['us'],
             alpha=out['alpha'],
         )
-        print(f' took {time_to_here():.03f} seconds')
+        debugprint(f' took {time_to_here():.03f} seconds')
         return self
 
     def mca(self, nm: int, alpha: float) -> 'Spy4Caster':
@@ -630,7 +630,7 @@ class Spy4Caster:
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
             print('[ERROR] No preprocessed data to save', file=sys.stderr)
         else:
-            print(f'[INFO] Saving Preprocessed data in `{self._plot_data_dir}/save_preprocessed{self._plot_data_sufix}*.npy`')
+            debugprint(f'[INFO] Saving Preprocessed data in `{os.path.join(f"save_preprocessed{self._plot_data_sufix}")}*.npy`')
             assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
             self.save_output(f'{self._plot_data_dir}/save_preprocessed{self._plot_data_sufix}',
                  {
