@@ -1,5 +1,5 @@
 import builtins
-from typing import Union, TypedDict, Tuple, Dict, Optional, Type
+from typing import Union, TypedDict, Tuple, Dict, Optional, TypeVar, cast, Any
 import pandas as pd
 import datetime
 from enum import auto, IntEnum, IntFlag, EnumMeta
@@ -16,10 +16,11 @@ TimeStamp = Union[pd.Timestamp, datetime.datetime]
 """TimeStamp type. Union of standard library `datetime.datetime` and `pandas.Timestamp`"""
 
 
-def _document_enum(cls: EnumMeta) -> EnumMeta:
+T = TypeVar('T')
+def _document_enum(cls: T) -> T:
     try:
         import enum_tools
-        return enum_tools.documentation.document_enum(cls)
+        return cast(T, enum_tools.documentation.document_enum(cast(Any, cls)))
     except ImportError:
         return cls
 
@@ -48,7 +49,7 @@ class Month(IntEnum):
     DEC = auto()
 
 
-def _document_dataclass(cls: type) -> type:
+def _document_dataclass(cls: T) -> T:
     if not getattr(builtins, '__sphinx_build__', False):
         # print('return normal')
         return cls
