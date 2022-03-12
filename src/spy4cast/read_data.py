@@ -378,10 +378,10 @@ class ReadData:
         }]
 
         latskipmask: npt.NDArray[np.bool_] = np.zeros(len(self.lat)).astype(bool)
-        latskipmask[::skip + 2] = True
+        latskipmask[::skip + 1] = True
 
         lonskipmask: npt.NDArray[np.bool_] = np.zeros(len(self.lon)).astype(bool)
-        lonskipmask[::skip + 2] = True
+        lonskipmask[::skip + 1] = True
 
         self._data = self._data[{
             self._lat_key: latskipmask,
