@@ -317,17 +317,17 @@ def index_regression(data: npt.NDArray[np.float32], index: npt.NDArray[np.float3
         reg_sig : npt.NDArray[np.float32] (space)
             Significative regression map
     """
-    n1, n2 = data.shape
+    ns, nt = data.shape
 
-    Cor = np.zeros([n1, ], dtype=np.float32)
-    Pvalue = np.zeros([n1, ], dtype=np.float32)
-    for nn in range(n1):  # Pearson correaltion for every point in the map
+    Cor = np.zeros([ns, ], dtype=np.float32)
+    Pvalue = np.zeros([ns, ], dtype=np.float32)
+    for nn in range(ns):  # Pearson correaltion for every point in the map
         Cor[nn], Pvalue[nn] = stats.pearsonr(data[nn, :], index)
 
     Cor_sig = Cor.copy()
     Cor_sig[Pvalue > alpha] = np.nan
 
-    reg = data.dot(index) / (n2 - 1)
+    reg = data.dot(index) / (nt - 1)
     reg_sig = reg.copy()
     reg_sig[Pvalue > alpha] = np.nan
     return Cor, Pvalue, Cor_sig, reg, reg_sig
