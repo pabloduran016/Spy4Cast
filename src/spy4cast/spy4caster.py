@@ -193,6 +193,7 @@ class Spy4Caster:
             'Us': None,
             'Vs': None,
             'scf': None,
+            'alpha': None,
         }
         for key in out.keys():
             path = os.path.join(path0, f'{prefix}{key}{ext}')
@@ -213,6 +214,7 @@ class Spy4Caster:
             Us=out['Us'],
             Vs=out['Vs'],
             scf=out['scf'],
+            alpha=out['alpha'],
         )
         debugprint(f' took: {time_to_here():.03f}')
         return self
@@ -288,6 +290,13 @@ class Spy4Caster:
             raise ValueError(f'Selected Year {sy} is not valid\nNOTE: Valid years {arr}')
         return index
 
+    def _plot_title(self, fig: plt.Figure, alpha: Optional[float] = None) -> None:
+        fig.suptitle(
+            f'Y: {slise2str(self._rdy._slise)}, '
+            f'Z: {slise2str(self._rdz._slise)}'
+            f'{(f". Alpha: {alpha}" if alpha is not None else "")}'
+        )
+
     def _plot_map(self, arr: npt.NDArray[np.float32], lat: npt.NDArray[np.float32], lon: npt.NDArray[np.float32],
                   fig: plt.Figure, ax: plt.Axes, title: Optional[str] = None,
                   levels: Optional[npt.NDArray[np.float32]] = None,
@@ -355,7 +364,7 @@ class Spy4Caster:
         self._plot_map(y[yindex], self._ylat, self._ylon, fig, axs[0], f'Y on year {self._ytime[yindex]}')
         self._plot_map(z[zindex], self._zlat, self._zlon, fig, axs[1], f'Z on year {self._ztime[zindex]}', cmap=cmap)
 
-        fig.suptitle(f'Y: {slise2str(self._rdy._slise)}, Z: {slise2str(self._rdz._slise)}')
+        self._plot_title(fig)
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mats_plot_name),
                                  flags)
@@ -421,7 +430,7 @@ class Spy4Caster:
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mca_plot_name),
                                  flags)
 
-        fig.suptitle(f'Y: {slise2str(self._rdy._slise)}, Z: {slise2str(self._rdz._slise)}')
+        self._plot_title(fig, self._mca_out.alpha)
 
         return self
 
@@ -464,6 +473,7 @@ class Spy4Caster:
         zlons = self._zlon
         ylons = self._ylon
         zhat = self._crossvalidation_out.zhat
+        alpha = self._crossvalidation_out.alpha
 
         yindex = self._get_index_from_sy(yts, sy)
         zindex = self._get_index_from_sy(zts, sy)
@@ -488,7 +498,7 @@ class Spy4Caster:
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._zhat_plot_name), flags)
 
-        fig.suptitle(f'Y: {slise2str(self._rdy._slise)}, Z: {slise2str(self._rdz._slise)}')
+        self._plot_title(fig, alpha)
 
         return self
 
@@ -584,7 +594,7 @@ class Spy4Caster:
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._cross_plot_name), flags)
 
-        fig.suptitle(f'Y: {slise2str(self._rdy._slise)}, Z: {slise2str(self._rdz._slise)}')
+        self._plot_title(fig, alpha)
 
         return self
 

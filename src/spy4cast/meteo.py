@@ -94,6 +94,8 @@ class MCAOut:
         .. todo:: Not documented yet
     scf : npt.NDArray[np.float32]
         .. todo:: Not documented yet
+    alpha : float
+        Correlation factor
     """
     # TODO: Add docs for MCAOut field
     RUY: npt.NDArray[np.float32]
@@ -107,6 +109,7 @@ class MCAOut:
     Us: npt.NDArray[np.float32]
     Vs: npt.NDArray[np.float32]
     scf: npt.NDArray[np.float32]
+    alpha: float
 
 
 def clim(array: xr.DataArray, dim: str = 'time') -> xr.DataArray:
@@ -293,6 +296,7 @@ def mca(z: npt.NDArray[np.float32], y: npt.NDArray[np.float32], nm: int, alpha: 
         Us=((u - u.mean(0)) / u.std(0)).transpose(),  # Standarized anom across axis 0
         Vs=((v - v.mean(0)) / v.std(0)).transpose(),  # Standarized anom across axis 0
         scf=(d / np.sum(d))[:nm],
+        alpha=alpha,
     )
     pvalruy = np.zeros([ny, nm], dtype=np.float32)
     pvalruz = np.zeros([nz, nm], dtype=np.float32)
