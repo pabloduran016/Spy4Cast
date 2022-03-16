@@ -189,7 +189,7 @@ class ReadData:
             'Use `ReadData.open_dataset` instead',
             file=sys.stderr
         )
-        if self._opened_dataset:
+        if self._opened_ds:
             return self
         self.open_dataset()
         self._ds = self._ds.load()
@@ -207,7 +207,7 @@ class ReadData:
             errors.VariableSelectionError
                 If teh variable selected does not exist or can not be inferred
         """
-        if self._opened_dataset:
+        if self._opened_ds:
             return self
         # debugprint(
         #     f"[INFO] <{self.__class__.__name__}> "
@@ -323,7 +323,7 @@ class ReadData:
             f'Jan to {mon2str(Month(self._ds_timestampf.month))} ' \
             f'{self._timestamp0.year}-{self._ds_timestampf.year} '
 
-        self._opened_dataset = True
+        self._opened_ds = True
 
         return self
 
@@ -357,7 +357,7 @@ class ReadData:
         #     f"[INFO] <{self.__class__.__name__}> Checking variables"
         #     f"for {self._plot_name}"
         # )
-        if not self._opened_dataset:
+        if not self._opened_ds:
             raise ValueError(
                 'The dataset has not been loaded yet. Call load_dataset()'
             )
