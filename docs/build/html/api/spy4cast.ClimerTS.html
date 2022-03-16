@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="F" href="spy4cast.F.html" /><link rel="prev" title="ClimerMap" href="spy4cast.ClimerMap.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="AnomerTS" href="spy4cast.AnomerTS.html" /><link rel="prev" title="Other" href="../toctrees/spy4cast.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
         <title>ClimerTS - Spy4Cast 0.0.9 documentation</title>
@@ -156,19 +156,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../methodologies.html">Methodologies</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../toctrees/spy4cast.html">Spy4Cast</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.set_silence.html">set_silence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.AnomerMap.html">AnomerMap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.AnomerTS.html">AnomerTS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.ClimerMap.html">ClimerMap</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">ClimerTS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.F.html">F</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.AnomerTS.html">AnomerTS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.AnomerMap.html">AnomerMap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.ClimerMap.html">ClimerMap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.Spy4Caster.html">Spy4Caster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.Slise.html">Slise</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.Month.html">Month</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.RDArgs.html">RDArgs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.RDArgsDict.html">RDArgsDict</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.F.html">F</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.ReadData.html">ReadData</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.Settings.html">Settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.Slise.html">Slise</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.Spy4Caster.html">Spy4Caster</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../toctrees/api-reference.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -268,7 +266,8 @@
 <dt class="sig sig-object py" id="spy4cast.ClimerTS">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.</span></span><span class="sig-name descname"><span class="pre">ClimerTS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.ClimerTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="spy4cast.plotters.PlotterTS.html#spy4cast.plotters.PlotterTS" title="spy4cast.plotters.PlotterTS"><code class="xref py py-class docutils literal notranslate"><span class="pre">spy4cast.plotters.PlotterTS</span></code></a>, <a class="reference internal" href="spy4cast.plotters.Proker.html#spy4cast.plotters.Proker" title="spy4cast.plotters.Proker"><code class="xref py py-class docutils literal notranslate"><span class="pre">spy4cast.plotters.Proker</span></code></a></p>
-<p>A proker and a plotter that performs the climatology of a variable on a time series</p>
+<p>A proker and a plotter that performs the climatology
+of a variable on a time series</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="spy4cast.ClimerMap.html#spy4cast.ClimerMap" title="spy4cast.ClimerMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ClimerMap</span></code></a>, <a class="reference internal" href="spy4cast.AnomerTS.html#spy4cast.AnomerTS" title="spy4cast.AnomerTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnomerTS</span></code></a></p>
@@ -289,7 +288,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.ClimerTS.apply">
 <span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="spy4cast.plotters.ClimerTS.html#spy4cast.plotters.ClimerTS" title="spy4cast.plotters.ClimerTS"><span class="pre">spy4cast.plotters.ClimerTS</span></a></span></span><a class="headerlink" href="#spy4cast.ClimerTS.apply" title="Permalink to this definition">#</a></dt>
-<dd><p>Method that applies the climatology. Does not accept any keyword arguments</p>
+<dd><p>Method that applies the climatology.
+Does not accept any keyword arguments</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="spy4cast.meteo.clim.html#spy4cast.meteo.clim" title="spy4cast.meteo.clim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spy4cast.meteo.clim</span></code></a></p>
@@ -303,23 +303,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="spy4cast.F.html">
+          <a class="next-page" href="spy4cast.AnomerTS.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">F</div>
+                <div class="title">AnomerTS</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="spy4cast.ClimerMap.html">
+          <a class="prev-page" href="../toctrees/spy4cast.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">ClimerMap</div>
+                <div class="title">Other</div>
                 
               </div>
             </a>

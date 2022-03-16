@@ -1,3 +1,7 @@
+"""
+Module containing the class to perfor the Spy4Cast methodology
+"""
+
 import sys
 import os
 import traceback
@@ -10,19 +14,32 @@ import numpy.typing as npt
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
-from ._functions import debugprint, time_from_here, time_to_here, slise2str
+from ._functions import \
+    debugprint, time_from_here, time_to_here, slise2str
 from .stypes import Slise, F, RDArgs, RDArgsDict
-from .errors import DataSavingError, Spy4CastError, PlotCreationError
+from .errors import \
+    DataSavingError, Spy4CastError, PlotCreationError
 from .read_data import ReadData, NAN_VAL
-from .meteo import MCAOut, CrossvalidationOut, anom, crossvalidation, crossvalidation_mp, mca
+from .meteo import \
+    MCAOut, CrossvalidationOut, anom, \
+    crossvalidation, crossvalidation_mp, mca
 
 __all__ = ['Spy4Caster']
 
 
 class Spy4Caster:
-    def __init__(self, yargs: Union[RDArgs, RDArgsDict], zargs: Union[RDArgs, RDArgsDict],
-                 plot_dir: str = '', mats_plot_name: str = 'mats_plot.png', mca_plot_name: str = 'mca_plot.png', cross_plot_name: str = 'cross_plot.png',
-                 zhat_plot_name: str = 'zhat_plot.png', plot_data_dir: str = '', plot_data_sufix: str = ''):
+    def __init__(
+        self,
+        yargs: Union[RDArgs, RDArgsDict],
+        zargs: Union[RDArgs, RDArgsDict],
+        plot_dir: str = '',
+        mats_plot_name: str = 'mats_plot.png',
+        mca_plot_name: str = 'mca_plot.png',
+        cross_plot_name: str = 'cross_plot.png',
+        zhat_plot_name: str = 'zhat_plot.png',
+        plot_data_dir: str = '',
+        plot_data_sufix: str = ''
+    ):
         if type(yargs) == RDArgs:
             yargs = yargs.as_dict()
         if type(zargs) == RDArgs:
@@ -50,32 +67,40 @@ class Spy4Caster:
         self._ztime: Optional[npt.NDArray[np.int64]] = None
         self._opened_figs: List[plt.Figure] = []
 
-    def _set_var(self, name: str, value: Union[npt.NDArray[np.float32],
+    def _set_var(self, name: str, val: Union[npt.NDArray[np.float32],
                  npt.NDArray[np.int64], xr.DataArray]) -> None:
         if name == 'z':
-            assert value.dtype == np.float32, f'Invaldid type for `z`, got {value.dtype}, expected {np.float32}'
-            self._z = value.astype(np.float32)
+            assert val.dtype == np.float32, \
+                f'Expacted dtype `{np.float32}` for `z`, got `{val.dtype}`'
+            self._z = val.astype(np.float32)
         elif name == 'zlat':
-            assert value.dtype == np.float32, f'Invalid dtype for `zlat`, got {value.dtype}, expected {np.float32}'
-            self._zlat = value.astype(np.float32)
+            assert val.dtype == np.float32, \
+                f'Expacted dtype `{np.float32}` for `zlat`, got `{val.dtype}`'
+            self._zlat = val.astype(np.float32)
         elif name == 'zlon':
-            assert value.dtype == np.float32, f'Invalid dtype for `zlon`, got {value.dtype}, expected {np.float32}'
-            self._zlon = value.astype(np.float32)
+            assert val.dtype == np.float32, \
+                f'Expacted dtype `{np.float32}` for `zlon`, got `{val.dtype}`'
+            self._zlon = val.astype(np.float32)
         elif name == 'ztime':
-            assert value.dtype == np.int64, f'Invalid dtype for `ztime`, got {value.dtype}, expected {np.int64}'
-            self._ztime = value.astype(np.int64)
+            assert val.dtype == np.int64, \
+                f'Expacted dtype `{np.int64}` for `ztime`, got `{val.dtype}`'
+            self._ztime = val.astype(np.int64)
         elif name == 'y':
-            assert value.dtype == np.float32, f'Invalid dtype for `y`, got {value.dtype}, expected {np.float32}'
-            self._y = value.astype(np.float32)
+            assert val.dtype == np.float32, \
+                f'Expacted dtype `{np.float32}` for `y`, got `{val.dtype}`'
+            self._y = val.astype(np.float32)
         elif name == 'ylat':
-            assert value.dtype == np.float32, f'Invalid dtype for `ylat`, got {value.dtype}, expected {np.float32}'
-            self._ylat = value.astype(np.float32)
+            assert val.dtype == np.float32, \
+                f'Expacted dtype `{np.float32}` for `ylat`, got `{val.dtype}`'
+            self._ylat = val.astype(np.float32)
         elif name == 'ylon':
-            assert value.dtype == np.float32, f'Invalid dtype for `ylon`, got {value.dtype}, expected {np.float32}'
-            self._ylon = value.astype(np.float32)
+            assert val.dtype == np.float32, \
+                f'Expacted dtype `{np.float32}` for `ylon`, got `{val.dtype}`'
+            self._ylon = val.astype(np.float32)
         elif name == 'ytime':
-            assert value.dtype == np.int64, f'Invalid dtype for `ztime`, got {value.dtype}, expected {np.int64}'
-            self._ytime = value.astype(np.int64)
+            assert val.dtype == np.int64,\
+                f'Expacted dtype `{np.int64}` for `ztime`, got `{val.dtype}`'
+            self._ytime = val.astype(np.int64)
         else:
             raise ValueError(f'Unknown variable name {name}')
 
@@ -84,41 +109,53 @@ class Spy4Caster:
             plt.close(fig)
         self._opened_figs = []
 
-    def _new_figure(self, figsize: Optional[Tuple[int, int]] = None) -> plt.Figure:
+    def _new_figure(
+            self, figsize: Optional[Tuple[int, int]] = None
+    ) -> plt.Figure:
         fig = plt.figure(figsize=figsize)
         self._opened_figs.append(fig)
         return fig
 
     def open_datasets(self) -> 'Spy4Caster':
-        debugprint(f'[INFO] Opening datasets', end='')
+        debugprint('[INFO] Opening datasets', end='')
         time_from_here()
         self._rdy.open_dataset()
         self._rdz.open_dataset()
-        self._rdy._data = self._rdy._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdy._lon_key)
-        self._rdz._data = self._rdz._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdz._lon_key)
+        self._rdy._data = self._rdy._data.where(
+            lambda a: abs(a) < NAN_VAL
+        ).sortby(self._rdy._lon_key)
+        self._rdz._data = self._rdz._data.where(
+            lambda a: abs(a) < NAN_VAL
+        ).sortby(self._rdz._lon_key)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
     def load_datasets(self) -> 'Spy4Caster':
-        debugprint(f'[INFO] Loading datasets', end='')
+        debugprint('[INFO] Loading datasets', end='')
         time_from_here()
         self._rdy.load_dataset()
         self._rdz.load_dataset()
-        self._rdy._data = self._rdy._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdy._lon_key)
-        self._rdz._data = self._rdz._data.where(lambda a: abs(a) < NAN_VAL).sortby(self._rdy._lon_key)
+        self._rdy._data = self._rdy._data.where(
+            lambda a: abs(a) < NAN_VAL
+        ).sortby(self._rdy._lon_key)
+        self._rdz._data = self._rdz._data.where(
+            lambda a: abs(a) < NAN_VAL
+        ).sortby(self._rdy._lon_key)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def slice_datasets(self, yslise: Slise, zslise: Slise, yskip: int = 0, zskip: int = 0) -> 'Spy4Caster':
-        debugprint(f'[INFO] Slicing datasets', end='')
+    def slice_datasets(self, yslise: Slise, zslise: Slise,
+                       yskip: int = 0, zskip: int = 0) -> 'Spy4Caster':
+        debugprint('[INFO] Slicing datasets', end='')
         time_from_here()
         self._rdy.slice_dataset(yslise, yskip)
         self._rdz.slice_dataset(zslise, zskip)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def preprocess(self, flags: int = 0, order: Optional[int] = None, period: Optional[float] = None) -> 'Spy4Caster':
-        debugprint(f'[INFO] Preprocessing data', end='')
+    def preprocess(self, flags: int = 0, order: Optional[int] = None,
+                   period: Optional[float] = None) -> 'Spy4Caster':
+        debugprint('[INFO] Preprocessing data', end='')
         flags = F(flags) if type(flags) == int else flags
         assert type(flags) == F
         time_from_here()
@@ -128,9 +165,12 @@ class Spy4Caster:
         self._rdz._time_key = 'year'
 
         if len(self._rdz.time) != len(self._rdy.time):
-            raise ValueError(f'The number of years of the predictand must be the same as the number '
-                             f'of years of the predictor: got {len(self._rdz.time)} and '
-                             f'{len(self._rdy.time)}')
+            raise ValueError(
+                f'The number of years of the predictand must be the '
+                f'same as the number of years of the predictor: '
+                f'got {len(self._rdz.time)} and '
+                f'{len(self._rdy.time)}'
+            )
 
         _z = self._rdz._data
         if F.FILTER in flags:
@@ -139,23 +179,35 @@ class Spy4Caster:
             if period is None:
                 raise TypeError('Missing keyword argument `period`')
 
-            b, a = signal.butter(order, 1 / period, btype='high', analog=False, output='ba', fs=None)
+            b, a = signal.butter(order, 1 / period, btype='high',
+                                 analog=False, output='ba', fs=None)
             _z = xr.apply_ufunc(
                 lambda ts: signal.filtfilt(b, a, ts),
                 _z,
                 dask='allowed',
-                input_core_dims=[[self._rdz._time_key]], output_core_dims=[[self._rdz._time_key]]
+                input_core_dims=[[self._rdz._time_key]],
+                output_core_dims=[[self._rdz._time_key]]
             )
 
         nyt, nylat, nylon = self._rdy._data.shape
         nzt, nzlat, nzlon = self._rdz._data.shape
-        self._z = _z.transpose(self._rdz._time_key, self._rdz._lat_key, self._rdz._lon_key).fillna(0).values.reshape((nzt, nzlat * nzlon)).transpose()
+
+        self._z = _z.transpose(
+            self._rdz._time_key, self._rdz._lat_key,
+            self._rdz._lon_key
+        ).fillna(0).values.reshape(
+            (nzt, nzlat * nzlon)
+        ).transpose()
+
         del _z
         self._zlat = self._rdz.lat.values
         self._zlon = self._rdz.lon.values
         self._ztime = self._rdz.time.values
 
-        self._y = self._rdy._data.fillna(0).values.reshape((nyt, nylat * nylon)).transpose()
+        self._y = self._rdy._data.fillna(0).values.reshape(
+            (nyt, nylat * nylon)
+        ).transpose()
+
         self._ylat = self._rdy.lat.values
         self._ylon = self._rdy.lon.values
         self._ytime = self._rdy.time.values
@@ -163,8 +215,13 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def load_preprocessed(self, path0: str, prefix: str = '', ext: str = '.npy') -> 'Spy4Caster':
-        debugprint(f'[INFO] Loading Preprocessed data from `{path0}/{prefix}*{ext}`', end='')
+    def load_preprocessed(self, path0: str, prefix: str = '',
+                          ext: str = '.npy') -> 'Spy4Caster':
+        debugprint(
+            f'[INFO] Loading Preprocessed data from '
+            f'`{path0}/{prefix}*{ext}`',
+            end=''
+        )
         time_from_here()
 
         for field in ('y', 'z'):
@@ -173,13 +230,20 @@ class Spy4Caster:
                 try:
                     self._set_var(field+var, np.load(path))
                 except FileNotFoundError:
-                    print(f'\n[ERROR] Could not find file `{path}` for variable `{field}{var}`')
+                    print(
+                        f'\n[ERROR] Could not find file `{path}` for '
+                        f'variable `{field}{var}`'
+                    )
 
         debugprint(f' took {time_to_here():.03f} seconds')
         return self
 
-    def load_mca(self, path0: str, prefix: str = '', ext: str = '.npy') -> 'Spy4Caster':
-        debugprint(f'[INFO] Loading MCA data from `{path0}/{prefix}*{ext}`', end='')
+    def load_mca(self, path0: str, prefix: str = '',
+                 ext: str = '.npy') -> 'Spy4Caster':
+        debugprint(
+            f'[INFO] Loading MCA data from `{path0}/{prefix}*{ext}`',
+            end=''
+        )
         time_from_here()
         out: Dict[str, Any] = {
             'RUY': None,
@@ -200,7 +264,10 @@ class Spy4Caster:
             try:
                 out[key] = np.load(path)
             except FileNotFoundError:
-                print(f'\n[ERROR] Could not find file `{path}` for variable `{key}`')
+                print(
+                    f'\n[ERROR] Could not find file `{path}` for '
+                    f'variable `{key}`'
+                )
 
         self._mca_out = MCAOut(
             RUY=out['RUY'],
@@ -219,8 +286,13 @@ class Spy4Caster:
         debugprint(f' took: {time_to_here():.03f}')
         return self
 
-    def load_crossvalidation(self, path0: str, prefix: str = '', ext: str = '.npy') -> 'Spy4Caster':
-        debugprint(f'[INFO] Loading Crossvalidation data from `{path0}/{prefix}*{ext}`', end='')
+    def load_crossvalidation(self, path0: str, prefix: str = '',
+                             ext: str = '.npy') -> 'Spy4Caster':
+        debugprint(
+            f'[INFO] Loading Crossvalidation data from '
+            f'`{path0}/{prefix}*{ext}`',
+            end=''
+        )
         time_from_here()
         out: Dict[str, Any] = {
             'zhat': None,
@@ -239,9 +311,10 @@ class Spy4Caster:
             try:
                 out[key] = np.load(path)
             except FileNotFoundError:
-                print(f'\n[ERROR] Could not find file `{path}` for variable `{key}`')
-            except:
-                raise
+                print(
+                    f'\n[ERROR] Could not find file `{path}` for '
+                    f'variable `{key}`'
+                )
 
         self._crossvalidation_out = CrossvalidationOut(
             zhat=out['zhat'],
@@ -259,35 +332,62 @@ class Spy4Caster:
         return self
 
     def mca(self, nm: int, alpha: float) -> 'Spy4Caster':
-        debugprint(f'[INFO] Applying MCA', end='')
+        debugprint('[INFO] Applying MCA', end='')
         time_from_here()
-        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
-            raise TypeError('Must prprocess data before applying MCA')
+        if any([
+            x is None for x in (
+                self._y, self._ylat, self._ylon, self._ytime,
+                self._z, self._zlat, self._zlon, self._ztime
+            )
+        ]):
+            raise TypeError(
+                'Must prprocess data before applying MCA'
+            )
         assert self._z is not None
         assert self._y is not None
         self._mca_out = mca(self._z, self._y, nm, alpha)
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
-    def crossvalidation(self, nm: int, alpha: float, multiprocessing: bool = False) -> 'Spy4Caster':
-        debugprint(f'[INFO] Applying crossvalidation {"(mp) " if multiprocessing else ""}', end='')
+    def crossvalidation(self, nm: int, alpha: float,
+                        multiprocessing: bool = False) -> 'Spy4Caster':
+        debugprint(
+            f'[INFO] Applying crossvalidation '
+            f'{"(mp) " if multiprocessing else ""}',
+            end=''
+        )
         time_from_here()
-        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
-           raise TypeError('Must preprocess data before applying Crossvalidation')
+        if any([
+            x is None for x in (
+                self._y, self._ylat, self._ylon, self._ytime,
+                self._z, self._zlat, self._zlon, self._ztime
+            )
+        ]):
+            raise TypeError(
+                'Must preprocess data before applying Crossvalidation'
+            )
         assert self._z is not None
         assert self._y is not None
         if multiprocessing:
-            self._crossvalidation_out = crossvalidation_mp(self._y, self._z, nm, alpha)
+            self._crossvalidation_out = crossvalidation_mp(
+                self._y, self._z, nm, alpha
+            )
         else:
-            self._crossvalidation_out = crossvalidation(self._y, self._z, nm, alpha)
+            self._crossvalidation_out = crossvalidation(
+                self._y, self._z, nm, alpha
+            )
         debugprint(f' took: {time_to_here():.03f} seconds')
         return self
 
     def _get_index_from_sy(self, arr: npt.NDArray[np.int64], sy: int) -> int:
         index = 0
-        while index < len(arr) and arr[index] != sy:  index += 1
+        while index < len(arr) and arr[index] != sy:
+            index += 1
+
         if index > len(arr) - 1 or arr[index] > sy:
-            raise ValueError(f'Selected Year {sy} is not valid\nNOTE: Valid years {arr}')
+            raise ValueError(
+                f'Selected Year {sy} is not valid\nNOTE: Valid years {arr}'
+            )
         return index
 
     def _plot_title(self, fig: plt.Figure, alpha: Optional[float] = None,
@@ -300,11 +400,20 @@ class Spy4Caster:
             f'{(f"Alpha: {alpha}" if alpha is not None else "")}'
         )
 
-    def _plot_map(self, arr: npt.NDArray[np.float32], lat: npt.NDArray[np.float32], lon: npt.NDArray[np.float32],
-                  fig: plt.Figure, ax: plt.Axes, title: Optional[str] = None,
-                  levels: Optional[npt.NDArray[np.float32]] = None,
-                  xlim: Optional[Sequence[int]] = None, ylim: Optional[Sequence[int]] = None,
-                  cmap: Optional[str] = None) -> None:
+    def _plot_map(
+        self,
+        arr: npt.NDArray[np.float32],
+        lat: npt.NDArray[np.float32],
+        lon: npt.NDArray[np.float32],
+        fig: plt.Figure,
+        ax: plt.Axes,
+        title: Optional[str] = None,
+        levels: Optional[npt.NDArray[np.float32]] = None,
+        xlim: Optional[Sequence[int]] = None,
+        ylim: Optional[Sequence[int]] = None,
+        cmap: Optional[str] = None
+    ) -> None:
+
         if levels is None:
             n = 30
             _std = np.nanstd(arr)
@@ -317,9 +426,16 @@ class Spy4Caster:
         xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
         ylim = sorted((lat[-1], lat[0])) if ylim is None else ylim
 
-        im = ax.contourf(lon, lat, arr, cmap=cmap, levels=levels, extend='both', transform=ccrs.PlateCarree())
-        fig.colorbar(im, ax=ax, orientation='horizontal', pad=0.02,
-                     ticks=np.concatenate((levels[::n // 4], levels[-1:len(levels)])))
+        im = ax.contourf(
+            lon, lat, arr, cmap=cmap, levels=levels,
+            extend='both', transform=ccrs.PlateCarree()
+        )
+        fig.colorbar(
+            im, ax=ax, orientation='horizontal', pad=0.02,
+            ticks=np.concatenate(
+                (levels[::n // 4], levels[-1:len(levels)])
+            )
+        )
         ax.coastlines()
         ax.set_xlim(*xlim)
         ax.set_ylim(*ylim)
@@ -327,7 +443,8 @@ class Spy4Caster:
         if title is not None:
             ax.set_title(title)
 
-    def _apply_flags_to_fig(self, fig: plt.Figure, path: str, flags: int) -> None:
+    def _apply_flags_to_fig(self, fig: plt.Figure, path: str,
+                            flags: int) -> None:
         if type(flags) == int:
             flags = F(flags)
         assert type(flags) == F
@@ -343,16 +460,39 @@ class Spy4Caster:
         if F.NOT_HALT not in flags:
             plt.show()
 
-    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None, selected_year: Optional[int] = None, cmap: Optional[str] = None,
-                 yslise: Optional[Slise] = None, zslise: Optional[Slise] = None) -> None:
-        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
-           nones = [n for n, v in (
-               ("y", self._y), ("ylat", self._ylat), ("ylon", self._ylon), ("ytime", self._ytime),
-               ("z", self._z), ("zlat", self._zlat), ("zlon", self._zlon), ("ztime", self._ztime)
-           ) if v is None]
-           raise TypeError(f'Must preprocess data before plotting\n'
-                           f'\t{", ".join(nones)} {("does" if len(nones) == 1 else "do")} not exist')
-        assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
+    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None,
+                          selected_year: Optional[int] = None,
+                          cmap: Optional[str] = None,
+                          yslise: Optional[Slise] = None,
+                          zslise: Optional[Slise] = None) -> None:
+        if any([
+            x is None for x in (
+                self._y, self._ylat, self._ylon, self._ytime,
+                self._z, self._zlat, self._zlon, self._ztime
+            )
+        ]):
+            nones = [n for n, v in (
+                ("y", self._y), ("ylat", self._ylat),
+                ("ylon", self._ylon), ("ytime", self._ytime),
+                ("z", self._z), ("zlat", self._zlat),
+                ("zlon", self._zlon), ("ztime", self._ztime)
+            ) if v is None]
+
+            raise TypeError(
+                f'Must preprocess data before plotting\n\t'
+                f'{", ".join(nones)} {("does" if len(nones) == 1 else "do")} '
+                f'not exist'
+            )
+        assert (
+            self._y is not None and
+            self._ylat is not None and
+            self._ylon is not None and
+            self._ytime is not None and
+            self._z is not None and
+            self._zlat is not None and
+            self._zlon is not None and
+            self._ztime is not None
+        )
 
         nyt, nylat, nylon = len(self._ytime), len(self._ylat), len(self._ylon)
         nzt, nzlat, nzlon = len(self._ztime), len(self._zlat), len(self._zlon)
@@ -360,30 +500,64 @@ class Spy4Caster:
         y = self._y.transpose().reshape((nyt, nylat, nylon))
         z = self._z.transpose().reshape((nzt, nzlat, nzlon))
 
-        yindex = 0 if selected_year is None else self._get_index_from_sy(self._ytime, selected_year)
-        zindex = 0 if selected_year is None else self._get_index_from_sy(self._ztime, selected_year)
+        yindex = 0 if selected_year is None \
+            else self._get_index_from_sy(self._ytime, selected_year)
+        zindex = 0 if selected_year is None \
+            else self._get_index_from_sy(self._ztime, selected_year)
 
         fig = self._new_figure(figsize=(15, 10)) if fig is None else fig
         axs = fig.subplots(1, 2, subplot_kw={'projection': ccrs.PlateCarree()})
-        self._plot_map(y[yindex], self._ylat, self._ylon, fig, axs[0], f'Y on year {self._ytime[yindex]}')
-        self._plot_map(z[zindex], self._zlat, self._zlon, fig, axs[1], f'Z on year {self._ztime[zindex]}', cmap=cmap)
+
+        self._plot_map(
+            y[yindex], self._ylat, self._ylon, fig, axs[0],
+            f'Y on year {self._ytime[yindex]}'
+        )
+        self._plot_map(
+            z[zindex], self._zlat, self._zlon, fig, axs[1],
+            f'Z on year {self._ztime[zindex]}',
+            cmap=cmap
+        )
 
         self._plot_title(fig, yslise=yslise, zslise=zslise)
 
-        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mats_plot_name),
-                                 flags)
+        self._apply_flags_to_fig(
+            fig, os.path.join(self._plot_dir, self._mats_plot_name), flags
+        )
 
-
-    def plot_mca(self, flags: int = 0, fig: Optional[plt.Figure] = None, cmap: Optional[str] = None,
-                 yslise: Optional[Slise] = None, zslise: Optional[Slise] = None) -> 'Spy4Caster':
-        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
-            print('[ERROR] Can not plot mca. No preprocessing or data loading', file=sys.stderr)
+    def plot_mca(self, flags: int = 0, fig: Optional[plt.Figure] = None,
+                 cmap: Optional[str] = None,
+                 yslise: Optional[Slise] = None,
+                 zslise: Optional[Slise] = None) -> 'Spy4Caster':
+        if any([
+            x is None for x in (
+                self._y, self._ylat, self._ylon, self._ytime,
+                self._z, self._zlat, self._zlon, self._ztime
+            )]
+        ):
+            print(
+                '[ERROR] Can not plot mca. '
+                'No preprocessing or data loading',
+                file=sys.stderr
+            )
             return self
 
-        assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
+        assert (
+            self._y is not None and
+            self._ylat is not None and
+            self._ylon is not None and
+            self._ytime is not None and
+            self._z is not None and
+            self._zlat is not None and
+            self._zlon is not None and
+            self._ztime is not None
+        )
         cmap = cmap if cmap is not None else 'bwr'
         if self._mca_out is None:
-            print('[ERROR] Can not plot mca. Methodology was not applied or loaded yet', file=sys.stderr)
+            print(
+                '[ERROR] Can not plot mca. '
+                'Methodology was not applied or loaded yet',
+                file=sys.stderr
+            )
             return self
 
         fig = fig if fig is not None else self._new_figure(figsize=(15, 10))
@@ -395,27 +569,40 @@ class Spy4Caster:
         zlats = self._zlat
         zlons = self._zlon
 
+        us = self._mca_out.Us
+        vs = self._mca_out.Vs
+        scf = self._mca_out.scf
+
+        suy = self._mca_out.SUY
+        suz = self._mca_out.SUZ
+
+        ruz_sig = self._mca_out.RUZ_sig
+        ruy_sig = self._mca_out.RUY_sig
+
         nrows = 3
         ncols = 3
-        axs = [plt.subplot(nrows * 100 + ncols * 10 + i, projection=(ccrs.PlateCarree() if i > 3 else None))
-               for i in range(1, ncols * nrows + 1)]
+        axs = [
+            plt.subplot(nrows * 100 + ncols * 10 + i,
+                        projection=(ccrs.PlateCarree() if i > 3 else None))
+            for i in range(1, ncols * nrows + 1)
+        ]
 
         # Plot timeseries
         for i, ax in enumerate(axs[:3]):
             # # ax.margins(0)
-            ax.plot(yts, self._mca_out.Us[i, :], color='green', label=f'Us')
-            ax.plot(zts, self._mca_out.Vs[i, :], color='blue', label=f'Vs')
+            ax.plot(yts, us[i, :], color='green', label='Us')
+            ax.plot(zts, vs[i, :], color='blue', label='Vs')
             ax.grid(True)
             ax.set_title(f'Us Vs mode {i + 1}')
         axs[0].legend(loc='upper left')
 
-        #suy = self._mca_out.SUY
-        #suy[suy == 0.0] = np.nan
+        # suy = SUY
+        # suy[suy == 0.0] = np.nan
 
         n = 20
         for i, (name, su, ru, lats, lons, cm) in enumerate((
-                ('SUY', self._mca_out.SUY, self._mca_out.RUY_sig, ylats, ylons, 'bwr'),
-                ('SUZ', self._mca_out.SUZ, self._mca_out.RUZ_sig, zlats, zlons, cmap)
+                ('SUY', suy, ruy_sig, ylats, ylons, 'bwr'),
+                ('SUZ', suz, ruz_sig, zlats, zlons, cmap)
         )):
             _std = np.nanstd(su)
             _m = np.nanmean(su)
@@ -424,25 +611,34 @@ class Spy4Caster:
             ylim = sorted((lats[-1], lats[0]))
 
             for j, ax in enumerate(axs[3 * (i + 1):3 * (i + 1) + 3]):
-                title = f'{name} mode {j + 1}. SCF={self._mca_out.scf[j]*100:.01f}'
+                title = f'{name} mode {j + 1}. ' \
+                        f'SCF={scf[j]*100:.01f}'
                 t = su[:, j].transpose().reshape((len(lats), len(lons)))
                 th = ru[:, j].transpose().reshape((len(lats), len(lons)))
                 th[t < 0] = np.nan
 
-                self._plot_map(t, lats, lons, fig, ax, title, levels=levels, xlim=xlim, ylim=ylim, cmap=cm)
-                _imh = ax.contourf(lons, lats, th, colors='none', hatches='..', extend='both',
-                                   transform=ccrs.PlateCarree())
+                self._plot_map(
+                    t, lats, lons, fig, ax, title,
+                    levels=levels, xlim=xlim, ylim=ylim, cmap=cm
+                )
+                ax.contourf(
+                    lons, lats, th, colors='none', hatches='..', extend='both',
+                    transform=ccrs.PlateCarree()
+                )
 
-        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mca_plot_name),
-                                 flags)
+        self._apply_flags_to_fig(
+            fig, os.path.join(self._plot_dir, self._mca_plot_name), flags
+        )
 
         self._plot_title(fig, self._mca_out.alpha, yslise=yslise, zslise=zslise)
 
         return self
 
-    def plot_zhat(self, flags: int = 0, fig: Optional[plt.Figure] = None, sy: Optional[int] = None,
+    def plot_zhat(self, flags: int = 0, fig: Optional[plt.Figure] = None,
+                  sy: Optional[int] = None,
                   cmap: Optional[str] = None,
-                 yslise: Optional[Slise] = None, zslise: Optional[Slise] = None) -> 'Spy4Caster':
+                  yslise: Optional[Slise] = None,
+                  zslise: Optional[Slise] = None) -> 'Spy4Caster':
         """
         Paramaters:
           - sy: Predicted year to show
@@ -452,21 +648,44 @@ class Spy4Caster:
         """
         cmap = 'bwr' if cmap is None else cmap
         if sy is None:
-            print(f'[ERROR] Could not create zhat plot, the selected_year was not provided',
-                  file=sys.stderr)
+            print(
+                '[ERROR] Could not create zhat plot, '
+                'the selected_year was not provided',
+                file=sys.stderr
+            )
             return self
 
         if self._crossvalidation_out is None:
-            print(f'[ERROR] Could not create zhat plot, the methodology has not been applied or loaded yet',
-                  file=sys.stderr)
+            print(
+                '[ERROR] Could not create zhat plot, '
+                'the methodology has not been applied or loaded yet',
+                file=sys.stderr
+            )
             return self
 
-        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
-            print(f'[ERROR] Could not create zhat plot, the methodology has not been applied or loaded yet',
-                  file=sys.stderr)
+        if any([
+            x is None for x in (
+                self._y, self._ylat, self._ylon, self._ytime,
+                self._z, self._zlat, self._zlon, self._ztime
+            )]
+        ):
+            print(
+                '[ERROR] Could not create zhat plot, the methodology '
+                'has not been applied or loaded yet',
+                file=sys.stderr
+            )
             return self
 
-        assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
+        assert (
+            self._y is not None and
+            self._ylat is not None and
+            self._ylon is not None and
+            self._ytime is not None and
+            self._z is not None and
+            self._zlat is not None and
+            self._zlon is not None and
+            self._ztime is not None
+        )
 
         fig = self._new_figure(figsize=(15, 10)) if fig is None else fig
         ax0 = plt.subplot(311, projection=ccrs.PlateCarree())
@@ -485,7 +704,6 @@ class Spy4Caster:
         yindex = self._get_index_from_sy(yts, sy)
         zindex = self._get_index_from_sy(zts, sy)
 
-
         nts, nylats, nylons = len(yts), len(ylats), len(ylons)
         d0 = self._y.transpose().reshape((nts, nylats, nylons))
 
@@ -500,23 +718,36 @@ class Spy4Caster:
         _m = np.nanmean(d2[zindex])
         levels = np.linspace(_m - _std, _m + _std, n)
 
-        self._plot_map(d1[zindex], zlats, zlons, fig, ax1, f'Zhat on year {sy}', cmap=cmap, levels=levels)
-        self._plot_map(d2[zindex], zlats, zlons, fig, ax2, f'Z on year {sy}', cmap=cmap, levels=levels)
+        self._plot_map(
+            d1[zindex], zlats, zlons, fig, ax1, f'Zhat on year {sy}',
+            cmap=cmap, levels=levels
+        )
+        self._plot_map(
+            d2[zindex], zlats, zlons, fig, ax2, f'Z on year {sy}',
+            cmap=cmap, levels=levels
+        )
 
-        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._zhat_plot_name), flags)
+        self._apply_flags_to_fig(
+            fig, os.path.join(self._plot_dir, self._zhat_plot_name), flags
+        )
 
         self._plot_title(fig, alpha, yslise=yslise, zslise=zslise)
 
         return self
 
-    def plot_crossvalidation(self, flags: int = 0, fig: Optional[plt.Figure] = None,
+    def plot_crossvalidation(self, flags: int = 0,
+                             fig: Optional[plt.Figure] = None,
                              cmap: Optional[str] = None,
-                 yslise: Optional[Slise] = None, zslise: Optional[Slise] = None) -> 'Spy4Caster':
+                             yslise: Optional[Slise] = None,
+                             zslise: Optional[Slise] = None) -> 'Spy4Caster':
         """
         Plots:
-          - r_z_zhat_s and p_z_zhat_s: Cartopy map of r and then hatches when p is <= alpha
-          - r_z_zhat_t and p_z_zhat_t: Bar plot of r and then points when p is <= alpha
-          - scf: Draw scf for all times for mode i. For the time being all in one plot
+          - r_z_zhat_s and p_z_zhat_s: Cartopy map of r
+            and then hatches when p is <= alpha
+          - r_z_zhat_t and p_z_zhat_t: Bar plot of r
+            and then points when p is <= alpha
+          - scf: Draw scf for all times for mode i.
+            For the time being all in one plot
           - US
         """
 
@@ -525,25 +756,54 @@ class Spy4Caster:
         #       scf           r_uv_1
         #     r_uv_1          r_uv_2
 
-        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime, self._crossvalidation_out)]):
-            print(f'[ERROR] Could not create crossvalidation plot, must apply preprocessing first', file=sys.stderr)
+        if any([
+            x is None for x in (
+                self._y, self._ylat, self._ylon, self._ytime,
+                self._z, self._zlat, self._zlon, self._ztime
+            )
+        ]):
+            print(
+                '[ERROR] Could not create crossvalidation plot, '
+                'must apply preprocessing first',
+                file=sys.stderr
+            )
             return self
         if self._crossvalidation_out is None:
-            print(f'[ERROR] Could not create crossvalidation plot, the methodology has not been applied or loaded yet', file=sys.stderr)
+            print(
+                '[ERROR] Could not create crossvalidation plot, the '
+                'methodology has not been applied or loaded yet',
+                file=sys.stderr
+            )
             return self
         # if self._mca_out is None:
-        #     print(f'[ERROR] Could not create crossvalidation plot, MCA has not been applied or loaded yet', file=sys.stderr)
+        #     print(
+        #         '[ERROR] Could not create crossvalidation plot, MCA has not '
+        #         'been applied or loaded yet',
+        #         file=sys.stderr
+        #     )
         #     return self
 
-        assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
+        assert (
+            self._y is not None and
+            self._ylat is not None and
+            self._ylon is not None and
+            self._ytime is not None and
+            self._z is not None and
+            self._zlat is not None and
+            self._zlon is not None and
+            self._ztime is not None
+        )
 
         cmap = 'bwr' if cmap is None else cmap
 
         fig = self._new_figure(figsize=(15, 10)) if fig is None else fig
         nrows = 3
         ncols = 2
-        axs = [plt.subplot(nrows * 100 + ncols * 10 + i, projection=(ccrs.PlateCarree() if i == 1 else None))
-               for i in range(1, ncols * nrows + 1)]
+        axs = [
+            plt.subplot(nrows * 100 + ncols * 10 + i,
+                        projection=(ccrs.PlateCarree() if i == 1 else None))
+            for i in range(1, ncols * nrows + 1)
+        ]
 
         r_z_zhat_s = self._crossvalidation_out.r_z_zhat_s
         p_z_zhat_s = self._crossvalidation_out.p_z_zhat_s
@@ -566,25 +826,34 @@ class Spy4Caster:
 
         # ------ r_z_zhat_s and p_z_zhat_s ------ #
         d = r_z_zhat_s.transpose().reshape((nzlat, nzlon))
-        self._plot_map(d, zlats, zlons, fig, axs[0], f'Correlation in space between z and zhat',
-                       cmap=cmap)
+        self._plot_map(
+            d, zlats, zlons, fig, axs[0],
+            'Correlation in space between z and zhat',
+            cmap=cmap
+        )
         hatches = d.copy()
         hatches[((p_z_zhat_s > alpha) & (r_z_zhat_s > 0)).transpose().reshape((nzlat, nzlon))] = np.nan
-        _imh = axs[0].contourf(zlons, zlats, hatches,
-                               colors='none', hatches='..', extend='both', transform=ccrs.PlateCarree())
+
+        axs[0].contourf(
+            zlons, zlats, hatches,
+            colors='none', hatches='..', extend='both',
+            transform=ccrs.PlateCarree()
+        )
         # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
 
         # ------ r_z_zhat_t and p_z_zhat_t ------ #
         axs[1].bar(zts, r_z_zhat_t)
-        axs[1].scatter(zts[p_z_zhat_t <= alpha], r_z_zhat_t[p_z_zhat_t <= alpha])
-        axs[1].set_title(f'Correlation in space between z and zhat')
+        axs[1].scatter(
+            zts[p_z_zhat_t <= alpha], r_z_zhat_t[p_z_zhat_t <= alpha]
+        )
+        axs[1].set_title('Correlation in space between z and zhat')
         # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
 
         # ------ scf ------ #
         for mode in range(scf.shape[0]):
             axs[2].plot(yts, scf[mode], label=f'Mode {mode + 1}')
         axs[2].legend()
-        axs[2].set_title(f'Squared convariance fraction')
+        axs[2].set_title('Squared convariance fraction')
         # ^^^^^^ scf ^^^^^^ #
 
         # ^^^^^^ Us ^^^^^^ #
@@ -594,40 +863,76 @@ class Spy4Caster:
         mn = mean - _std
         for mode in range(mean.shape[0]):
             axs[3 + mode].grid(True)
-            axs[3 + mode].bar(yts, mx[mode] - mn[mode], bottom=mn[mode], color='purple', width=.2)
-            axs[3 + mode].plot(yts, mean[mode], label='Mean', color='orange', linewidth=3)
-            axs[3 + mode].plot(yts, mx[mode], label='Mean', color='r', linewidth=.5, alpha=.5)
-            axs[3 + mode].plot(yts, mn[mode], label='Mean', color='r', linewidth=.5, alpha=.5)
-            axs[3 + mode].set_title(f'Us for mode {mode + 1}')
+            axs[3 + mode].bar(
+                yts, mx[mode] - mn[mode], bottom=mn[mode], color='purple',
+                width=.2
+            )
+            axs[3 + mode].plot(
+                yts, mean[mode], label='Mean', color='orange', linewidth=3
+            )
+            axs[3 + mode].plot(
+                yts, mx[mode], label='Mean', color='r', linewidth=.5, alpha=.5
+            )
+            axs[3 + mode].plot(
+                yts, mn[mode], label='Mean', color='r', linewidth=.5, alpha=.5
+            )
+            axs[3 + mode].set_title(
+                f'Us for mode {mode + 1}'
+            )
             axs[3 + mode].legend()
 
-        self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._cross_plot_name), flags)
+        self._apply_flags_to_fig(
+            fig, os.path.join(self._plot_dir, self._cross_plot_name), flags
+        )
 
         self._plot_title(fig, alpha, yslise=yslise, zslise=zslise)
 
         return self
 
-    def create_plot(self, fig: Any = None, **kw: Union[str, int]) -> 'Spy4Caster':
+    def create_plot(
+            self, fig: Any = None, **kw: Union[str, int]
+    ) -> 'Spy4Caster':
+
         sy = kw.pop('sy')
         if sy is not None and type(sy) != int:
             raise TypeError(f'Expected type int for `cmap`, got {type(int)}')
 
         cmap = kw.pop('cmap')
         if cmap is not None and type(cmap) != str:
-            raise TypeError(f'Expected type str for `cmap`, got {type(cmap)}')
+            raise TypeError(
+                f'Expected type str for `cmap`, got {type(cmap)}'
+            )
 
         if len(kw) != 0:
-            raise TypeError(f'`create_plot` only accepts the following keyword arguments: `sy` and `cmap`. '
-                            f'Got: {", ".join(kw.keys())}')
-        self.plot_mca(fig=(fig[0] if fig is not None else None), cmap=cmap)
-        self.plot_crossvalidation(fig=(fig[1] if fig is not None else None), cmap=cmap)
-        self.plot_zhat(fig=(fig[2] if fig is not None else None), cmap=cmap, sy=sy)
+            raise TypeError(
+                f'`create_plot` only accepts the following keyword '
+                f'arguments: `sy` and `cmap`. '
+                f'Got: {", ".join(kw.keys())}'
+            )
+        self.plot_mca(
+            fig=(fig[0] if fig is not None else None), cmap=cmap
+        )
+        self.plot_crossvalidation(
+            fig=(fig[1] if fig is not None else None), cmap=cmap
+        )
+        self.plot_zhat(
+            fig=(fig[2] if fig is not None else None), cmap=cmap, sy=sy
+        )
         self._close_figures()
         return self
 
     @staticmethod
-    def save_output(name: str, variables: Union[Dict[str, Union[npt.NDArray[np.float32], npt.NDArray[np.int64]]],
-                                                MCAOut, CrossvalidationOut]) -> None:
+    def save_output(
+        name: str,
+        variables: Union[
+            Dict[
+                str,
+                Union[
+                     npt.NDArray[np.float32], npt.NDArray[np.int64]
+                ]
+            ], MCAOut, CrossvalidationOut
+        ]
+    ) -> None:
         if type(variables) != dict:
             d = variables.__dict__
         else:
@@ -646,29 +951,60 @@ class Spy4Caster:
                     traceback.print_exc()
 
     def save_fig_data(self) -> 'Spy4Caster':
-        if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
+        if any([
+            x is None for x in (
+                self._y, self._ylat,
+                self._ylon, self._ytime,
+                self._z, self._zlat,
+                self._zlon, self._ztime
+            )]
+        ):
             print('[ERROR] No preprocessed data to save', file=sys.stderr)
         else:
-            debugprint(f'[INFO] Saving Preprocessed data in `{os.path.join(self._plot_data_dir, f"save_preprocessed{self._plot_data_sufix}")}*.npy`')
-            assert self._y is not None and self._ylat is not None and self._ylon is not None and self._ytime is not None and self._z is not None and self._zlat is not None and self._zlon is not None and self._ztime is not None
-            self.save_output(os.path.join(self._plot_data_dir, f'save_preprocessed{self._plot_data_sufix}'),
-                 {
-                     'y': self._y, 'ylat': self._ylat, 'ylon': self._ylon, 'ytime': self._ytime,
-                     'z': self._z, 'zlat': self._zlat, 'zlon': self._zlon, 'ztime': self._ztime,
-                 }
+            path = os.path.join(
+                self._plot_data_dir,
+                f"save_preprocessed{self._plot_data_sufix}"
+            )
+            debugprint(f'[INFO] Saving Preprocessed data in `{path}*.npy`')
+            assert (
+                self._y is not None and
+                self._ylat is not None and
+                self._ylon is not None and
+                self._ytime is not None and
+                self._z is not None and
+                self._zlat is not None and
+                self._zlon is not None and
+                self._ztime is not None
+            )
+            self.save_output(
+                path,
+                {
+                    'y': self._y, 'ylat': self._ylat,
+                    'ylon': self._ylon, 'ytime': self._ytime,
+                    'z': self._z, 'zlat': self._zlat,
+                    'zlon': self._zlon, 'ztime': self._ztime,
+                }
             )
 
         if self._mca_out is None:
             print('[ERROR] No MCA data to save', file=sys.stderr)
         else:
-            debugprint(f'[INFO] Saving MCA data in `{os.path.join(self._plot_data_dir, f"save_mca{self._plot_data_sufix}")}*.npy`')
-            self.save_output(os.path.join(self._plot_data_dir, f'save_mca{self._plot_data_sufix}'), self._mca_out)
+            path = os.path.join(
+                self._plot_data_dir, f"save_mca{self._plot_data_sufix}"
+            )
+            debugprint(f'[INFO] Saving MCA data in `{path}*.npy`')
+            self.save_output(path, self._mca_out)
 
         if self._crossvalidation_out is None:
             print('[ERROR] No Crossvalidation data to save', file=sys.stderr)
         else:
-            debugprint(f'[INFO] Saving crossvalidation data in `{os.path.join(self._plot_data_dir, f"save_cross{self._plot_data_sufix}")}*.npy`')
-            self.save_output(os.path.join(self._plot_data_dir, f'save_cross{self._plot_data_sufix}'), self._crossvalidation_out)
+            path = os.path.join(
+                self._plot_data_dir, f"save_cross{self._plot_data_sufix}"
+            )
+            debugprint(
+                f'[INFO] Saving crossvalidation data in '
+                f'`{path}*.npy`')
+            self.save_output(path, self._crossvalidation_out)
 
         return self
 
@@ -680,8 +1016,11 @@ class Spy4Caster:
         flags = F(flags) if type(flags) == int else flags
         assert type(flags) == F
         if len(kwargs) != 0:
-            raise TypeError(f'`run` takes only the following keyword arguments: `sy` and `cmap`. '
-                            f'Got {", ".join(kwargs.keys())}')
+            raise TypeError(
+                f'`run` takes only the following keyword '
+                f'arguments: `sy` and `cmap`. '
+                f'Got {", ".join(kwargs.keys())}'
+            )
 
         # Save the data if needed
         if F.SAVE_DATA in flags:
@@ -695,9 +1034,15 @@ class Spy4Caster:
         # Create the plot
         if F.SHOW_PLOT in flags or F.SAVE_FIG in flags:
             try:
-                self.plot_mca(flags & ~F.SHOW_PLOT | F.NOT_HALT, cmap=cmap, yslise=yslise, zslise=zslise)
-                self.plot_crossvalidation(flags & ~F.SHOW_PLOT | F.NOT_HALT, cmap=cmap, yslise=yslise, zslise=zslise)
-                self.plot_zhat(flags & ~F.SHOW_PLOT | F.NOT_HALT, sy=sy, cmap=cmap, yslise=yslise, zslise=zslise)
+                self.plot_mca(
+                    flags & ~F.SHOW_PLOT | F.NOT_HALT, cmap=cmap, yslise=yslise, zslise=zslise
+                )
+                self.plot_crossvalidation(
+                    flags & ~F.SHOW_PLOT | F.NOT_HALT, cmap=cmap, yslise=yslise, zslise=zslise
+                )
+                self.plot_zhat(
+                    flags & ~F.SHOW_PLOT | F.NOT_HALT, sy=sy, cmap=cmap, yslise=yslise, zslise=zslise
+                )
                 if flags & F.SHOW_PLOT:
                     plt.show()
                 self._close_figures()

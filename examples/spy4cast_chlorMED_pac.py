@@ -9,7 +9,9 @@ MATS_PLOT_NAME = 'mats_spy4cast_chlorMED_pac.png'
 MCA_PLOT_NAME = 'mca_spy4cast_chlorMED_pac.png'
 CROSS_PLOT_NAME = 'cross_spy4cast_chlorMED_pac.png'
 ZHAT_PLOT_NAME = 'zhat_spy4cast_chlorMED_pac.png'
-chl_1km_monthly_Sep1997_Dec2020 = 'chl_1km_monthly_Sep1997_Dec2020.nc'  # Clorofila perdictando
+chl_1km_monthly_Sep1997_Dec2020 = 'chl_1km_monthly_Sep1997_Dec2020.nc'
+# Clorofila perdictando
+
 oisst_v2_mean_monthly = 'oisst_v2_mean_monthly.nc'  # Clorofila perdictando con años bien
 CHL = 'CHL'
 oisst_v2_mean_monthly_Jan1996_Dec2020 = 'oisst_v2_mean_monthly_Jan1996_Dec2020.nc'  # SST predictor

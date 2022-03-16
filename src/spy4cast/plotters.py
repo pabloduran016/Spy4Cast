@@ -1,5 +1,6 @@
 """
-Collection of plotters that are used to plot maps and apply methodologies to them
+Collection of plotters that are used to plot maps and
+apply methodologies to them
 """
 
 import os
@@ -19,11 +20,21 @@ from .meteo import clim, anom
 from .read_data import ReadData, NAN_VAL
 
 
-__all__ = ['Plotter', 'PlotterTS', 'PlotterMap', 'Proker', 'ClimerTS', 'ClimerMap', 'AnomerTS', 'AnomerMap']
+__all__ = [
+    'Plotter',
+    'PlotterTS',
+    'PlotterMap',
+    'Proker',
+    'ClimerTS',
+    'ClimerMap',
+    'AnomerTS',
+    'AnomerMap'
+]
 
 
 class Plotter(ReadData, ABC):
-    """Abstract base class for every plotter in the API. A Plotter is a class that is in charge
+    """Abstract base class for every plotter in the API.
+    A Plotter is a class that is in charge
     of creating a plot from the data in a dataset variable.
 
     Inherits from ReadData class: see `spy4cast.ReadData`
@@ -35,12 +46,14 @@ class Plotter(ReadData, ABC):
 
     @abstractmethod
     def create_plot(self, flags: F, **kwargs: Any) -> 'Plotter':
-        """Abstract method that is used in each specific plotter to create the plot
+        """Abstract method that is used in each specific plotter
+        to create the plot
 
         Parameters
         ----------
             flags : F
-                Flags that indicate wether or not to show the plot, saved the figure ...
+                Flags that indicate wether or not to show the plot,
+                 saved the figure ...
 
             kwargs
                 See the specific kwargs for each plotter
@@ -52,21 +65,23 @@ class Plotter(ReadData, ABC):
         raise NotImplementedError
 
     def run(self, flags: F = F(0), **kwargs: Any) -> 'Plotter':
-        """Running method of plotters that processes the flags (see spy4cast.F) passed.
+        """Running method of plotters that processes the flags
+        (see spy4cast.F) passed.
 
         Parameters
         ----------
             flags : F
-                Flags that indicate wether or not to show the plot, saved the figure, raise errors ...
+                Flags that indicate wether or not to show the plot,
+                saved the figure, raise errors ...
 
             kwargs
                 See the specific kwargs for each plotter
 
         Raises
         ------
-            `DataSavingError`
-            `PlotCreationError`
-            `PlotShowingError`
+            DataSavingError
+            PlotCreationError
+            PlotShowingError
 
         See Also
         --------
@@ -128,24 +143,31 @@ class PlotterTS(Plotter):
 
         Raises
         ------
-            `TypeError` if other keyword arguments appart from `color` are passed
-            `PlotCreationError` if the shape of the data is not unidimensional
+            TypeError
+                if other keyword arguments appart from `color` are passed
+            PlotCreationError
+                if the shape of the data is not unidimensional
 
         """
         fig = plt.figure()
-        color: Color = (.43, .92, .20) if 'color' not in kws else kws.pop('color')
+        color: Color = (.43, .92, .20)\
+            if 'color' not in kws else kws.pop('color')
         if len(kws) != 0:
-            raise TypeError('`create_plot` only accepts one keyword argument: `color`')
+            raise TypeError(
+                '`create_plot` only accepts one keyword argument: `color`'
+            )
         print(f"[INFO] Creating plot for {self._plot_name}")
         # Create figure
         if len(self.shape) == 1:
-            raise PlotCreationError('Time series arrays must be unidimensional')
+            raise PlotCreationError(
+                'Time series arrays must be unidimensional'
+            )
         to_plot = self._data.where(lambda a: abs(a) < NAN_VAL)
         ax = fig.add_subplot()
         ax.plot(to_plot[self._time_key], to_plot, linewidth=3, color=color)
         ax.set_xlim(to_plot[self._time_key][0], to_plot[self._time_key][-1])
         ax.set_xlabel('Year')
-        ax.set_ylabel(f'{self._variable} ({self._dataset[self._variable].units})')
+        ax.set_ylabel(f'{self._var} ({self._ds[self._var].units})')
         # ax.set_ylim(np.min(self._data), np.max(self._data))
         if F.SAVE_FIG in flags:
             fig.savefig(os.path.join(self._plot_dir, self._plot_name))
@@ -182,25 +204,36 @@ class PlotterMap(Plotter):
 
         Raises
         ------
-            `TypeError` if `slise` keyword argument is not passed or if unknown keyword arguments are passed
-            `SelectedYearError` if the selected year is not valid
-            `PlotDataError` if the shapes are too small
+            TypeError
+                If `slise` keyword argument is not passed or if unknown keyword arguments are passed
+            SelectedYearError
+                If the selected year is not valid
+            PlotDataError
+                If the shapes are too small
 
         """
         fig = plt.figure()
         if 'slise' not in kws:
-            raise TypeError("`create_plot` missing 1 required keyword argument: 'slise'")
+            raise TypeError(
+                "`create_plot` missing 1 required keyword argument: "
+                "`slise`"
+            )
         slise: Slise = kws.pop('slise')
         cmap: str = kws.pop('cmap') if 'cmap' in kws else 'jet'
         if len(kws) != 0:
-            raise TypeError("`create_plot` only accepts two keyword arguments: `cmap` and `slise`")
+            raise TypeError(
+                "`create_plot` only accepts two keyword arguments: "
+                "`cmap` and `slise`"
+            )
         # self.print('Preparing dataset for plotting...')
         if len(self.shape) == 3:
-            assert slise is not None and slise.sy is not None, 'Expected selected year inside of a slise'
+            assert slise is not None and slise.sy is not None,\
+                'Expected selected year inside of a slise'
             if not self._slise.year0 <= slise.sy <= self._slise.yearf:
                 raise SelectedYearError(slise.sy)
             self._plot_data += f' ({slise.sy})'
-            self._time_key = self._time_key if self._time_key in self._data.dims else 'year'
+            self._time_key = self._time_key \
+                if self._time_key in self._data.dims else 'year'
             # .reset_index()?
             to_plot = self._data.sel({self._time_key: slise.sy})
             # to_plot = self._data.sel(year=selected_year)
@@ -208,15 +241,23 @@ class PlotterMap(Plotter):
             to_plot = self._data
 
         # Convert to NaN any number above |NAN_VAL|
-        to_plot = to_plot.where(lambda a: abs(a) < NAN_VAL).sortby(self._lon_key)
+        to_plot = to_plot.where(
+            lambda a: abs(a) < NAN_VAL
+        ).sortby(self._lon_key)
 
         if to_plot.shape[0] < 2 or to_plot.shape[1] < 2:
-            raise PlotDataError(f'Slicing Error, got {to_plot.shape} as slice shapes. Might bee too small')
+            raise PlotDataError(
+                f'Slicing Error, got {to_plot.shape} as slice shapes.'
+                f' Might bee too small'
+            )
 
         # self.print(self._plot_data, selected_year)
-        ax = fig.add_subplot(projection=ccrs.PlateCarree(central_longitude=0))
+        ax = fig.add_subplot(projection=ccrs.PlateCarree())
 
-        lat_mask = (to_plot[self._lat_key] < 50) & (to_plot[self._lat_key] > -50)
+        lat_mask = (
+            (to_plot[self._lat_key] < 50) &
+            (to_plot[self._lat_key] > -50)
+        )
         # Consider any points
         mean = to_plot.where(lat_mask).mean()
         std = to_plot.where(lat_mask).std()
@@ -227,11 +268,13 @@ class PlotterMap(Plotter):
         # self.print('Plotting...')
         # self.print(to_plot.dims)
         # to_plot = to_plot.dropna('latitude').dropna('longitude')
-        im = ax.contourf(to_plot[self._lon_key], to_plot[self._lat_key], to_plot,
-                         cmap=cmap,
-                         levels=np.arange(from_value, to_value, step),
-                         extend='both',
-                         transform=ccrs.PlateCarree(central_longitude=0))
+        im = ax.contourf(
+            to_plot[self._lon_key], to_plot[self._lat_key], to_plot,
+            cmap=cmap,
+            levels=np.arange(from_value, to_value, step),
+            extend='both',
+            transform=ccrs.PlateCarree(central_longitude=0)
+        )
         ax.coastlines()
         fig.colorbar(im, ax=ax, orientation='horizontal', pad=0.02)
 
@@ -239,13 +282,16 @@ class PlotterMap(Plotter):
         ratio = box[2] / box[3]
         fig.set_size_inches(8, 8 / ratio)
         # self.print(self._plot_data, selected_year)
-        plt.suptitle(f'{self._variable.upper()}: {self._plot_data}', fontsize=15, weight='bold')
+        plt.suptitle(f'{self._var.upper()}: {self._plot_data}',
+                     fontsize=15, weight='bold')
         ax.set_title(self._plot_bounds, fontsize=10)
         plt.tight_layout(pad=1)
         plt.margins(1, 1)
 
         if F.SAVE_FIG in flags:
-            fig.savefig(os.path.join(self._plot_dir, self._plot_name))
+            fig.savefig(
+                os.path.join(self._plot_dir, self._plot_name)
+            )
         if F.SHOW_PLOT in flags:
             fig.show()
 
@@ -253,8 +299,9 @@ class PlotterMap(Plotter):
 
 
 class Proker(ABC):
-    """Abstract base class for every Proker in the API. A proker is a class that is in charge
-    of applyinf a methodology for the data in a dataset variable.
+    """Abstract base class for every Proker in the API.
+    A proker is a class that is in charge of applying a
+    methodology for the data in a dataset variable.
 
     See Also
     --------
@@ -269,7 +316,8 @@ class Proker(ABC):
 
 
 class ClimerTS(PlotterTS, Proker):
-    """A proker and a plotter that performs the climatology of a variable on a time series
+    """A proker and a plotter that performs the climatology
+    of a variable on a time series
 
     See Also
     --------
@@ -277,7 +325,8 @@ class ClimerTS(PlotterTS, Proker):
     """
 
     def apply(self, **kw: Any) -> 'ClimerTS':
-        """Method that applies the climatology. Does not accept any keyword arguments
+        """Method that applies the climatology.
+        Does not accept any keyword arguments
 
         See Also
         --------
@@ -293,7 +342,8 @@ class ClimerTS(PlotterTS, Proker):
 
 
 class ClimerMap(PlotterMap, Proker):
-    """A proker and a plotter that performs the climatology of a variable on a map
+    """A proker and a plotter that performs the
+    climatology of a variable on a map
 
     See Also
     --------
@@ -301,21 +351,25 @@ class ClimerMap(PlotterMap, Proker):
     """
 
     def apply(self, **kw: Any) -> 'ClimerMap':
-        """Method that applies the climatology. Does not accept any keyword arguments
+        """Method that applies the climatology.
+        Does not accept any keyword arguments
 
         See Also
         --------
         spy4cast.meteo.clim
         """
         if len(kw) != 0:
-            raise TypeError('`apply` does not accept any keyword arguments')
+            raise TypeError(
+                '`apply` does not accept any keyword arguments'
+            )
         self._data = clim(self._data)
         self._plot_data = 'CLIM ' + self._plot_data
         return self
 
 
 class AnomerTS(PlotterTS, Proker):
-    """A proker and a plotter that performs the anomaly of a variable on a time series
+    """A proker and a plotter that performs the anomaly of a variable
+    on a time series
 
     See Also
     --------
