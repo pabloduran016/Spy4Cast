@@ -45,10 +45,10 @@ def main() -> None:
     load = True
     if not load:
         s.open_datasets()
-        s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=1, zskip=1)
+        s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=0, zskip=3)
         s.preprocess()  # Primero sin filtro y luego con filtro de 8 años
         s.mca(nm=nm, alpha=alpha)
-        # s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
+        s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
         s.run(F.SHOW_PLOT | F.SAVE_FIG | F.SAVE_DATA, sy=selected_year, cmap='viridis')
     else:
         s.load_preprocessed(PLOTS_DATA_DIR, 'save_preprocessed_', '.npy')

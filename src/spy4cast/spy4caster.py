@@ -626,11 +626,11 @@ class Spy4Caster:
                     transform=ccrs.PlateCarree()
                 )
 
+        self._plot_title(fig, self._mca_out.alpha, yslise=yslise, zslise=zslise)
+
         self._apply_flags_to_fig(
             fig, os.path.join(self._plot_dir, self._mca_plot_name), flags
         )
-
-        self._plot_title(fig, self._mca_out.alpha, yslise=yslise, zslise=zslise)
 
         return self
 
@@ -727,11 +727,11 @@ class Spy4Caster:
             cmap=cmap, levels=levels
         )
 
+        self._plot_title(fig, alpha, yslise=yslise, zslise=zslise)
+
         self._apply_flags_to_fig(
             fig, os.path.join(self._plot_dir, self._zhat_plot_name), flags
         )
-
-        self._plot_title(fig, alpha, yslise=yslise, zslise=zslise)
 
         return self
 
@@ -881,11 +881,11 @@ class Spy4Caster:
             )
             axs[3 + mode].legend()
 
+        self._plot_title(fig, alpha, yslise=yslise, zslise=zslise)
+
         self._apply_flags_to_fig(
             fig, os.path.join(self._plot_dir, self._cross_plot_name), flags
         )
-
-        self._plot_title(fig, alpha, yslise=yslise, zslise=zslise)
 
         return self
 
