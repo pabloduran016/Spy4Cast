@@ -6,7 +6,9 @@ DATASET_DIR = '/Users/Shared/datasets/'
 PLOTS_DIR = 'plots'
 PLOTS_DATA_DIR = 'saved-anom-2006/'
 PLOT_NAME = 'anom_chl_2006.png'
-chl_1km_monthly_Sep1997_Dec2020 = 'chl_1km_monthly_Sep1997_Dec2020.nc'  # Clorofila perdictando
+chl_1km_monthly_Sep1997_Dec2020 = 'chl_1km_monthly_Sep1997_Dec2020.nc'
+# Clorofila perdictando
+
 oisst_v2_mean_monthly = 'oisst_v2_mean_monthly.nc'  # Clorofila perdictando con años bien
 CHL = 'CHL'
 oisst_v2_mean_monthly_Jan1996_Dec2020 = 'oisst_v2_mean_monthly_Jan1996_Dec2020.nc'  # SST predictor

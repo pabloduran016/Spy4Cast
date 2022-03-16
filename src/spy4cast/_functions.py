@@ -18,27 +18,38 @@ __all__ = [
 
 
 # Array with the month indices
-MONTH_TO_STRING = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+MONTH_TO_STRING = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+]
 """Array to translate from Month to string"""
 
-VALID_MONTHS = list(filter(lambda x: not x.startswith('_'), Month.__dict__.keys()))
+VALID_MONTHS = list(filter(
+      lambda x: not x.startswith('_'), Month.__dict__.keys()))
 """Array indicating valid months that can be passed to `str2mon`"""
 
 
 _prev: Optional[float] = None
+
+
 def time_from_here() -> None:
-    """Function that is supposed to use in conjunctin with `time_to_here` to time program parts
+    """Function that is supposed to use in conjunctin with `time_to_here`
+    to time program parts
 
     Example
     -------
-        >>> print('Iterating through the first 100 million ints and adding their square to an array ', end='')
+        >>> print(
+        ...     'Iterating through the first 100 million ints and adding their'
+        ...     ' square to an array ', end=''
+        ... )
         ... arr = []
         ... time_from_here()
         ... for i in range(100_000_000):
         ...     arr.append(i ** 2)
         ...
         ... print(f'took: {time_to_here():.02f} seconds')
-        Iterating through the first 100 million ints and adding their square to an array took: 30.27 seconds
+        Iterating through the first 100 million ints and adding their square
+        to an array took: 30.27 seconds
     """
     global _prev
     _prev = perf_counter()
@@ -46,22 +57,29 @@ def time_from_here() -> None:
 
 
 def time_to_here() -> float:
-    """Function that is supposed to use in conjunctin with `time_from_here` to time program parts
+    """Function that is supposed to use in conjunctin with `time_from_here`
+    to time program parts
 
     Example
     -------
-        >>> print('Iterating through the first 100 million ints and adding their square to an array ', end='')
+        >>> print(
+        ...     'Iterating through the first 100 million ints and adding their'
+        ...     ' square to an array ', end=''
+        ... )
         ... arr = []
         ... time_from_here()
         ... for i in range(100_000_000):
         ...     arr.append(i ** 2)
         ...
         ... print(f'took: {time_to_here():.02f} seconds')
-        Iterating through the first 100 million ints and adding their square to an array took: 30.27 seconds
+        Iterating through the first 100 million ints and adding their square
+        to an array took: 30.27 seconds
     """
     global _prev
     if _prev is None:
-        raise ValueError('Expected to call time_from_here() before calling time_to_here()')
+        raise ValueError(
+            'Expected to call time_from_here() before calling time_to_here()'
+        )
     rv = perf_counter() - _prev
     _prev = None
     return rv
@@ -78,7 +96,9 @@ def slise2str(slise: Slise) -> str:
     Returns
     -------
         str
-            Slise fromatted using N (north), W (west), S (south) and E (east) and with the season
+            Slise fromatted using N (north), W (west), S (south) and E (east)
+            for the spacial slice and the first letter of each month of the
+            season for the time slice.
 
     Example
     -------
@@ -90,9 +110,13 @@ def slise2str(slise: Slise) -> str:
     --------
     stypes.Slise
     """
-    sufixes: Dict[str, str] = {'lat_min': '', 'lat_max': '', 'lon_min': '', 'lon_max': ''}
-    values: Dict[str, float] = {'lat_min': slise.lat0, 'lat_max': slise.latf,
-                                'lon_min': slise.lon0, 'lon_max': slise.lonf}
+    sufixes: Dict[str, str] = {
+        'lat_min': '', 'lat_max': '', 'lon_min': '', 'lon_max': ''
+    }
+    values: Dict[str, float] = {
+        'lat_min': slise.lat0, 'lat_max': slise.latf,
+        'lon_min': slise.lon0, 'lon_max': slise.lonf
+    }
     for key in {'lat_min', 'lat_max'}:
         if values[key] >= 0:
             sufixes[key] = 'ºN'
@@ -105,13 +129,19 @@ def slise2str(slise: Slise) -> str:
         else:
             sufixes[key] = 'ºW'
         values[key] = abs(values[key])
-    region = f'{values["lat_min"]}{sufixes["lat_min"]}, {values["lon_min"]}{sufixes["lon_min"]} - ' \
-             f'{values["lat_max"]}{sufixes["lat_max"]}, {values["lon_max"]}{sufixes["lon_max"]}'
+    region = f'{values["lat_min"]}{sufixes["lat_min"]}, ' \
+             f'{values["lon_min"]}{sufixes["lon_min"]} - ' \
+             f'{values["lat_max"]}{sufixes["lat_max"]}, ' \
+             f'{values["lon_max"]}{sufixes["lon_max"]}'
 
     if slise.monthf >= slise.month0:
-        season = ''.join(Month(x).name[0] for x in range(slise.month0, slise.monthf + 1))
+        season = ''.join(
+            Month(x).name[0] for x in range(slise.month0, slise.monthf + 1)
+        )
     else:
-        season = ''.join(Month(x).name[0] for x in range(slise.month0, Month.DEC + 1)) + ''.join(Month(x).name[0] for x in range(1, slise.monthf + 1))
+        season = ''.join(
+            Month(x).name[0] for x in range(slise.month0, Month.DEC + 1)
+        ) + ''.join(Month(x).name[0] for x in range(1, slise.monthf + 1))
 
     return f'{season} ({region})'
 
@@ -126,7 +156,8 @@ def mon2str(month: Month) -> str:
     Returns
     -------
         str
-            String belonging to MONTH_TO_STRING that orresponds to the month inputed
+            String belonging to MONTH_TO_STRING that orresponds to the month
+            inputed
 
     See Also
     --------
@@ -134,7 +165,7 @@ def mon2str(month: Month) -> str:
     """
     if not 1 <= month <= 12:
         raise ValueError(f'Expected month number from 1 to 12, got {month}')
-    # print('[WARNING] <month_to_string()> Changing month indexes!!!!!!!!!!!!!')
+    # print('[WARNING] <month_to_string()> Changing month indexes!!!!!!!!!!!!')
     return MONTH_TO_STRING[month - 1]
 
 
@@ -148,7 +179,8 @@ def str2mon(month: str) -> Month:
     Returns
     -------
         Month
-            Month belonging to `Month` enum that orresponds to the month inputed
+            Month belonging to `Month` enum that
+            corresponds to the month inputed
 
     See Also
     --------
@@ -156,7 +188,10 @@ def str2mon(month: str) -> Month:
     """
     month = month.upper()[:3]
     if not hasattr(Month, month):
-        raise ValueError(f'Month not known, got {month}, valid values: {VALID_MONTHS}')
+        raise ValueError(
+            f'Month not known, got {month}, '
+            f'valid values: {VALID_MONTHS}'
+        )
     return Month[month]
 
 
@@ -170,4 +205,3 @@ def debugprint(*msgs: str, **kws: Any) -> None:
     from . import Settings
     if not Settings.silence:
         print(*msgs, **kws)
-

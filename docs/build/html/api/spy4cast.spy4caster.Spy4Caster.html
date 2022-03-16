@@ -156,19 +156,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../methodologies.html">Methodologies</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../toctrees/spy4cast.html">Spy4Cast</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.set_silence.html">set_silence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.AnomerMap.html">AnomerMap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.AnomerTS.html">AnomerTS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.ClimerMap.html">ClimerMap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.ClimerTS.html">ClimerTS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.F.html">F</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.AnomerTS.html">AnomerTS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.AnomerMap.html">AnomerMap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.ClimerMap.html">ClimerMap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.Spy4Caster.html">Spy4Caster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.Slise.html">Slise</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.Month.html">Month</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.RDArgs.html">RDArgs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.RDArgsDict.html">RDArgsDict</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.F.html">F</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.ReadData.html">ReadData</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.Settings.html">Settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.Slise.html">Slise</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.Spy4Caster.html">Spy4Caster</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../toctrees/api-reference.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -366,9 +364,12 @@
 <span class="sig-name descname"><span class="pre">plot_crossvalidation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">matplotlib.figure.Figure</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#spy4cast.spy4caster.Spy4Caster" title="spy4cast.spy4caster.Spy4Caster"><span class="pre">spy4cast.spy4caster.Spy4Caster</span></a></span></span><a class="headerlink" href="#spy4cast.spy4caster.Spy4Caster.plot_crossvalidation" title="Permalink to this definition">#</a></dt>
 <dd><dl class="simple">
 <dt>Plots:</dt><dd><ul class="simple">
-<li><p>r_z_zhat_s and p_z_zhat_s: Cartopy map of r and then hatches when p is &lt;= alpha</p></li>
-<li><p>r_z_zhat_t and p_z_zhat_t: Bar plot of r and then points when p is &lt;= alpha</p></li>
-<li><p>scf: Draw scf for all times for mode i. For the time being all in one plot</p></li>
+<li><p>r_z_zhat_s and p_z_zhat_s: Cartopy map of r
+and then hatches when p is &lt;= alpha</p></li>
+<li><p>r_z_zhat_t and p_z_zhat_t: Bar plot of r
+and then points when p is &lt;= alpha</p></li>
+<li><p>scf: Draw scf for all times for mode i.
+For the time being all in one plot</p></li>
 <li><p>US</p></li>
 </ul>
 </dd>

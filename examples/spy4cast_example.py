@@ -15,10 +15,8 @@ MSL = 'msl'
 
 
 def main() -> None:
-    order=8
-    period=5.5
-    nm=3
-    alpha=.1
+    order = 8
+    period = 5.5
 
     sst_slise = Slise(
         lat0=20, latf=50,
@@ -42,9 +40,9 @@ def main() -> None:
     s.open_datasets()
     s.slice_datasets(yslise=sst_slise, zslise=slp_slise)
     s.preprocess(F.FILTER, order=order, period=period)
-    # s.mca(nm=nm, alpha=alpha)
+    # s.mca(nm=3, alpha=.1)
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
-    # s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=True)
+    # s.crossvalidation(nm=3, alpha=.1, multiprocessing=True)
     # s.load_ppcessed('./saved', 'save_ppcessed_', '.npy')
     s.load_mca('./saved', 'save_mca_', '.npy')
     s.load_crossvalidation('./saved', 'save_cross_', '.npy')
