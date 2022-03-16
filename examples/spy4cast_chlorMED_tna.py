@@ -51,7 +51,6 @@ def main() -> None:
     else:
         s.load_preprocessed(PLOTS_DATA_DIR, 'save_preprocessed_', '.npy')
         s.load_mca(PLOTS_DATA_DIR, 'save_mca_', '.npy')
-
         # Cor, Pvalue, Cor_sig, reg, reg_sig = index_regression(s._y, s._mca_out.Us[1, :], alpha)
         # lats = s._ylat
         # lons = s._ylon
@@ -66,9 +65,8 @@ def main() -> None:
         # fig.colorbar(im, ax=ax, orientation='horizontal', pad=0.02)
         # ax.coastlines()
         # plt.show()
-
         s.load_crossvalidation(PLOTS_DATA_DIR, 'save_cross_', '.npy')
-        s.run(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year, cmap='viridis')
+        s.run(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year, cmap='viridis', yslise=oisst_slise, zslise=chl_slise)
     # s.plot_preprocessed()
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
     # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)

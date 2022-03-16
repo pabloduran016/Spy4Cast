@@ -290,11 +290,14 @@ class Spy4Caster:
             raise ValueError(f'Selected Year {sy} is not valid\nNOTE: Valid years {arr}')
         return index
 
-    def _plot_title(self, fig: plt.Figure, alpha: Optional[float] = None) -> None:
+    def _plot_title(self, fig: plt.Figure, alpha: Optional[float] = None,
+                    yslise: Optional[Slise] = None, zslise: Optional[Slise] = None) -> None:
         fig.suptitle(
-            f'Y: {slise2str(self._rdy._slise)}, '
-            f'Z: {slise2str(self._rdz._slise)}'
-            f'{(f". Alpha: {alpha}" if alpha is not None else "")}'
+            f'{(f"Y: {slise2str(yslise)}" if yslise is not None else "")}'
+            f'{(", " if yslise is not None and zslise is not None else "")}'
+            f'{(f"Z: {slise2str(zslise)}" if zslise is not None else "")}'
+            f'{(". " if yslise is not None or zslise is not None and alpha is not None else "")}'
+            f'{(f"Alpha: {alpha}" if alpha is not None else "")}'
         )
 
     def _plot_map(self, arr: npt.NDArray[np.float32], lat: npt.NDArray[np.float32], lon: npt.NDArray[np.float32],
@@ -340,7 +343,8 @@ class Spy4Caster:
         if F.NOT_HALT not in flags:
             plt.show()
 
-    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None, selected_year: Optional[int] = None, cmap: Optional[str] = None) -> None:
+    def plot_preprocessed(self, flags: int = 0, fig: plt.Figure = None, selected_year: Optional[int] = None, cmap: Optional[str] = None,
+                 yslise: Optional[Slise] = None, zslise: Optional[Slise] = None) -> None:
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
            nones = [n for n, v in (
                ("y", self._y), ("ylat", self._ylat), ("ylon", self._ylon), ("ytime", self._ytime),
@@ -364,13 +368,14 @@ class Spy4Caster:
         self._plot_map(y[yindex], self._ylat, self._ylon, fig, axs[0], f'Y on year {self._ytime[yindex]}')
         self._plot_map(z[zindex], self._zlat, self._zlon, fig, axs[1], f'Z on year {self._ztime[zindex]}', cmap=cmap)
 
-        self._plot_title(fig)
+        self._plot_title(fig, yslise=yslise, zslise=zslise)
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mats_plot_name),
                                  flags)
 
 
-    def plot_mca(self, flags: int = 0, fig: Optional[plt.Figure] = None, cmap: Optional[str] = None) -> 'Spy4Caster':
+    def plot_mca(self, flags: int = 0, fig: Optional[plt.Figure] = None, cmap: Optional[str] = None,
+                 yslise: Optional[Slise] = None, zslise: Optional[Slise] = None) -> 'Spy4Caster':
         if any([x is None for x in (self._y, self._ylat, self._ylon, self._ytime, self._z, self._zlat, self._zlon, self._ztime)]):
             print('[ERROR] Can not plot mca. No preprocessing or data loading', file=sys.stderr)
             return self
@@ -431,12 +436,13 @@ class Spy4Caster:
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._mca_plot_name),
                                  flags)
 
-        self._plot_title(fig, self._mca_out.alpha)
+        self._plot_title(fig, self._mca_out.alpha, yslise=yslise, zslise=zslise)
 
         return self
 
     def plot_zhat(self, flags: int = 0, fig: Optional[plt.Figure] = None, sy: Optional[int] = None,
-                  cmap: Optional[str] = None) -> 'Spy4Caster':
+                  cmap: Optional[str] = None,
+                 yslise: Optional[Slise] = None, zslise: Optional[Slise] = None) -> 'Spy4Caster':
         """
         Paramaters:
           - sy: Predicted year to show
@@ -499,12 +505,13 @@ class Spy4Caster:
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._zhat_plot_name), flags)
 
-        self._plot_title(fig, alpha)
+        self._plot_title(fig, alpha, yslise=yslise, zslise=zslise)
 
         return self
 
     def plot_crossvalidation(self, flags: int = 0, fig: Optional[plt.Figure] = None,
-                             cmap: Optional[str] = None) -> 'Spy4Caster':
+                             cmap: Optional[str] = None,
+                 yslise: Optional[Slise] = None, zslise: Optional[Slise] = None) -> 'Spy4Caster':
         """
         Plots:
           - r_z_zhat_s and p_z_zhat_s: Cartopy map of r and then hatches when p is <= alpha
@@ -596,7 +603,7 @@ class Spy4Caster:
 
         self._apply_flags_to_fig(fig, os.path.join(self._plot_dir, self._cross_plot_name), flags)
 
-        self._plot_title(fig, alpha)
+        self._plot_title(fig, alpha, yslise=yslise, zslise=zslise)
 
         return self
 
@@ -668,6 +675,8 @@ class Spy4Caster:
     def run(self, flags: int = 0, **kwargs: Any) -> 'Spy4Caster':
         sy = kwargs.pop('sy', None)
         cmap = kwargs.pop('cmap', None)
+        yslise = kwargs.pop('yslise', None)
+        zslise = kwargs.pop('zslise', None)
         flags = F(flags) if type(flags) == int else flags
         assert type(flags) == F
         if len(kwargs) != 0:
@@ -686,9 +695,9 @@ class Spy4Caster:
         # Create the plot
         if F.SHOW_PLOT in flags or F.SAVE_FIG in flags:
             try:
-                self.plot_mca(flags & ~F.SHOW_PLOT | F.NOT_HALT, cmap=cmap)
-                self.plot_crossvalidation(flags & ~F.SHOW_PLOT | F.NOT_HALT, cmap=cmap)
-                self.plot_zhat(flags & ~F.SHOW_PLOT | F.NOT_HALT, sy=sy, cmap=cmap)
+                self.plot_mca(flags & ~F.SHOW_PLOT | F.NOT_HALT, cmap=cmap, yslise=yslise, zslise=zslise)
+                self.plot_crossvalidation(flags & ~F.SHOW_PLOT | F.NOT_HALT, cmap=cmap, yslise=yslise, zslise=zslise)
+                self.plot_zhat(flags & ~F.SHOW_PLOT | F.NOT_HALT, sy=sy, cmap=cmap, yslise=yslise, zslise=zslise)
                 if flags & F.SHOW_PLOT:
                     plt.show()
                 self._close_figures()
