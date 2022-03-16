@@ -40,7 +40,7 @@ def main() -> None:
             plot_data_dir=PLOTS_DATA_DIR)
 
     # TODO: Implement `ray` for multiprocessing in crossvalidation
-    load = False
+    load = True
     if not load:
         s.open_datasets()
         s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=1, zskip=1)

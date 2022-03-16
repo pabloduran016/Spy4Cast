@@ -422,6 +422,7 @@ class Spy4Caster:
                 title = f'{name} mode {j + 1}. SCF={self._mca_out.scf[j]*100:.01f}'
                 t = su[:, j].transpose().reshape((len(lats), len(lons)))
                 th = ru[:, j].transpose().reshape((len(lats), len(lons)))
+                th[t < 0] = np.nan
 
                 self._plot_map(t, lats, lons, fig, ax, title, levels=levels, xlim=xlim, ylim=ylim, cmap=cm)
                 _imh = ax.contourf(lons, lats, th, colors='none', hatches='..', extend='both',
@@ -548,7 +549,8 @@ class Spy4Caster:
         alpha = self._crossvalidation_out.alpha
         # nyt, nylat, nylon = self._y_data.shape
         zlats = self._zlat
-        ts = self._ztime
+        zts = self._ztime
+        yts = self._ytime
         zlons = self._zlon
 
         nzlat = len(zlats)
@@ -560,20 +562,20 @@ class Spy4Caster:
         self._plot_map(d, zlats, zlons, fig, axs[0], f'Correlation in space between z and zhat',
                        cmap=cmap)
         hatches = d.copy()
-        hatches[(p_z_zhat_s > alpha).transpose().reshape((nzlat, nzlon))] = np.nan
+        hatches[((p_z_zhat_s > alpha) & (r_z_zhat_s > 0)).transpose().reshape((nzlat, nzlon))] = np.nan
         _imh = axs[0].contourf(zlons, zlats, hatches,
                                colors='none', hatches='..', extend='both', transform=ccrs.PlateCarree())
         # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
 
         # ------ r_z_zhat_t and p_z_zhat_t ------ #
-        axs[1].bar(ts, r_z_zhat_t)
-        axs[1].scatter(ts[p_z_zhat_t <= alpha], r_z_zhat_t[p_z_zhat_t <= alpha])
+        axs[1].bar(zts, r_z_zhat_t)
+        axs[1].scatter(zts[p_z_zhat_t <= alpha], r_z_zhat_t[p_z_zhat_t <= alpha])
         axs[1].set_title(f'Correlation in space between z and zhat')
         # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
 
         # ------ scf ------ #
         for mode in range(scf.shape[0]):
-            axs[2].plot(ts, scf[mode], label=f'Mode {mode + 1}')
+            axs[2].plot(yts, scf[mode], label=f'Mode {mode + 1}')
         axs[2].legend()
         axs[2].set_title(f'Squared convariance fraction')
         # ^^^^^^ scf ^^^^^^ #
@@ -585,10 +587,10 @@ class Spy4Caster:
         mn = mean - _std
         for mode in range(mean.shape[0]):
             axs[3 + mode].grid(True)
-            axs[3 + mode].bar(ts, mx[mode] - mn[mode], bottom=mn[mode], color='purple', width=.2)
-            axs[3 + mode].plot(ts, mean[mode], label='Mean', color='orange', linewidth=3)
-            axs[3 + mode].plot(ts, mx[mode], label='Mean', color='r', linewidth=.5, alpha=.5)
-            axs[3 + mode].plot(ts, mn[mode], label='Mean', color='r', linewidth=.5, alpha=.5)
+            axs[3 + mode].bar(yts, mx[mode] - mn[mode], bottom=mn[mode], color='purple', width=.2)
+            axs[3 + mode].plot(yts, mean[mode], label='Mean', color='orange', linewidth=3)
+            axs[3 + mode].plot(yts, mx[mode], label='Mean', color='r', linewidth=.5, alpha=.5)
+            axs[3 + mode].plot(yts, mn[mode], label='Mean', color='r', linewidth=.5, alpha=.5)
             axs[3 + mode].set_title(f'Us for mode {mode + 1}')
             axs[3 + mode].legend()
 
