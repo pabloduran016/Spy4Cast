@@ -79,9 +79,9 @@ class Plotter(ReadData, ABC):
 
         Raises
         ------
-            `DataSavingError`
-            `PlotCreationError`
-            `PlotShowingError`
+            DataSavingError
+            PlotCreationError
+            PlotShowingError
 
         See Also
         --------
@@ -143,8 +143,10 @@ class PlotterTS(Plotter):
 
         Raises
         ------
-            `TypeError` if other keyword arguments appart from `color` are passed
-            `PlotCreationError` if the shape of the data is not unidimensional
+            TypeError
+                if other keyword arguments appart from `color` are passed
+            PlotCreationError
+                if the shape of the data is not unidimensional
 
         """
         fig = plt.figure()

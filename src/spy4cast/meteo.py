@@ -128,8 +128,10 @@ def clim(array: xr.DataArray, dim: str = 'time') -> xr.DataArray:
 
     Raises
     ------
-       `TypeError` if array is not an instance of `xr.DataArray`
-       `ValueError` if dim is not `month`, `time` or `year`
+        TypeError
+            If array is not an instance of `xr.DataArray`
+        ValueError
+            If dim is not `month`, `time` or `year`
     """
     if not isinstance(array, xr.DataArray):
         raise TypeError(f"Expected type xarray.DataArray, got {type(array)}")
@@ -173,8 +175,10 @@ def anom(
 
     Raises
     ------
-        `TypeError` if array is not an instance of `xr.DataArray`
-        `ValueError` if the number of dimension of the array is not either 3 (map) or 1 (time series)
+        TypeError
+            If array is not an instance of `xr.DataArray`
+        ValueError
+            If the number of dimension of the array is not either 3 (map) or 1 (time series)
 
     See Also
     --------
@@ -449,7 +453,7 @@ def crossvalidation_mp(
         CrossvalidationOut
 
     See Also
-    -------
+    --------
     CrossvalidationOut, mca, crossvalidation
     """
     nz, ntz = z.shape
@@ -550,7 +554,7 @@ def crossvalidation(
         CrossvalidationOut
 
     See Also
-    -------
+    --------
     CrossvalidationOut, mca, crossvalidation_mp
     """
     nz, ntz = z.shape
