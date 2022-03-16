@@ -301,10 +301,10 @@ class ReadData:
             )
 
         # Check if values are in Kelvin
-        if self._ds.variables[self._vars].attrs['units'] == 'K':
-            self._data = getattr(self._ds, self._vars) - 273.15
+        if self._ds.variables[self._var].attrs['units'] == 'K':
+            self._data = getattr(self._ds, self._var) - 273.15
         else:
-            self._data = getattr(self._ds, self._vars)
+            self._data = getattr(self._ds, self._var)
 
         # Fill nan
         if self._data.attrs.get('missing_value') is not None:
