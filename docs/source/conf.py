@@ -22,7 +22,7 @@ builtins.__sphinx_build__ = True
 project = 'Spy4Cast'
 copyright = '2022, Pablo Duran'
 author = 'Pablo Duran'
-version = '0.0.9'
+version = '0.0.10'
 release = version
 
 # -- General configuration ---------------------------------------------------
