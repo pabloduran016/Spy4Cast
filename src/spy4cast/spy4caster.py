@@ -832,7 +832,7 @@ class Spy4Caster:
             cmap=cmap
         )
         hatches = d.copy()
-        hatches[((p_z_zhat_s > alpha) & (r_z_zhat_s > 0)).transpose().reshape((nzlat, nzlon))] = np.nan
+        hatches[((p_z_zhat_s > alpha) | (r_z_zhat_s <  0)).transpose().reshape((nzlat, nzlon))] = np.nan
 
         axs[0].contourf(
             zlons, zlats, hatches,
