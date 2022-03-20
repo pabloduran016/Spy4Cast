@@ -412,14 +412,19 @@ class Spy4Caster:
         xlim: Optional[Sequence[int]] = None,
         ylim: Optional[Sequence[int]] = None,
         cmap: Optional[str] = None,
-        ticks: Optional[Sequence[float]] = None,
+        ticks: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
     ) -> None:
 
         if levels is None:
             n = 30
             _std = np.nanstd(arr)
             _m = np.nanmean(arr)
-            levels = np.linspace(_m - _std, _m + _std, n)
+            levels = np.array([
+                round(x, 2)
+                for x in np.linspace(_m - _std, _m + _std, n)
+            ])
         else:
             n = len(levels)
 
