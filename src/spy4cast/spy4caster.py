@@ -829,11 +829,16 @@ class Spy4Caster:
         # nztime = len(ts)
 
         # ------ r_z_zhat_s and p_z_zhat_s ------ #
+        # Correlation map
         d = r_z_zhat_s.transpose().reshape((nzlat, nzlon))
+        _mean = np.nanmean(d)
+        _std = np.nanstd(d)
+        mx = _mean + _std
+        mn = _mean - _std
         self._plot_map(
             d, zlats, zlons, fig, axs[0],
             'Correlation in space between z and zhat',
-            cmap=cmap
+            cmap=cmap, ticks=np.arange(round(mn, 1), round(mx, 1) + 0.05, 0.05)
         )
         hatches = d.copy()
         hatches[((p_z_zhat_s > alpha) | (r_z_zhat_s <  0)).transpose().reshape((nzlat, nzlon))] = np.nan
