@@ -22,7 +22,12 @@ builtins.__sphinx_build__ = True
 project = 'Spy4Cast'
 copyright = '2022, Pablo Duran'
 author = 'Pablo Duran'
-version = '0.0.10'
+with open('../../setup.cfg', 'r') as f:
+    content = f.read()
+    start = content.find('version = ')
+    end = content[start:].find('\n') + start
+    version = content[start:end].split(' = ')[-1]
+    print(f'[INFO] Running on version {version}')
 release = version
 
 # -- General configuration ---------------------------------------------------

@@ -3,9 +3,15 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+with open('setup.cfg', 'r') as f:
+    content = f.read()
+    start = content.find('version = ')
+    end = content[start:].find('\n') + start
+    version = content[start:end].split(' = ')[-1]
+    print(f'[INFO] Running on version {version}')
+
 setuptools.setup(
     name="spy4cast",
-    version="0.0.10",
     author="Pablo Duran",
     author_email="pdrm56@gmail.com",
     description="Python API for applying methodologies to .nc Datasets",
