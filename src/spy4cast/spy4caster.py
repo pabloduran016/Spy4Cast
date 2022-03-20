@@ -947,7 +947,7 @@ class Spy4Caster:
                     np.save(name + '_' + k, v)
                     break
                 except FileNotFoundError:
-                    os.mkdir(name.split('/')[0])
+                    os.mkdir(name.split('/')[-2])
                 except Exception:
                     traceback.print_exc()
 
