@@ -615,7 +615,6 @@ class Spy4Caster:
                         f'SCF={scf[j]*100:.01f}'
                 t = su[:, j].transpose().reshape((len(lats), len(lons)))
                 th = ru[:, j].transpose().reshape((len(lats), len(lons)))
-                th[t < 0] = np.nan
 
                 self._plot_map(
                     t, lats, lons, fig, ax, title,
