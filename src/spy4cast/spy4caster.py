@@ -701,13 +701,14 @@ class Spy4Caster:
         zhat = self._crossvalidation_out.zhat
         alpha = self._crossvalidation_out.alpha
 
-        yindex = self._get_index_from_sy(yts, sy)
         zindex = self._get_index_from_sy(zts, sy)
+        y_year = self._ytime[zindex]
+        yindex = zindex
 
         nts, nylats, nylons = len(yts), len(ylats), len(ylons)
         d0 = self._y.transpose().reshape((nts, nylats, nylons))
 
-        self._plot_map(d0[yindex], ylats, ylons, fig, ax0, f'Y on year {sy}')
+        self._plot_map(d0[yindex], ylats, ylons, fig, ax0, f'Y on year {y_year}')
 
         nts, nzlats, nzlons = len(zts), len(zlats), len(zlons)
         d1 = zhat.transpose().reshape((nts, nzlats, nzlons))
