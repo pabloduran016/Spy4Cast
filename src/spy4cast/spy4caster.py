@@ -411,7 +411,8 @@ class Spy4Caster:
         levels: Optional[npt.NDArray[np.float32]] = None,
         xlim: Optional[Sequence[int]] = None,
         ylim: Optional[Sequence[int]] = None,
-        cmap: Optional[str] = None
+        cmap: Optional[str] = None,
+        ticks: Optional[Sequence[float]] = None,
     ) -> None:
 
         if levels is None:
@@ -421,6 +422,11 @@ class Spy4Caster:
             levels = np.linspace(_m - _std, _m + _std, n)
         else:
             n = len(levels)
+
+        if ticks is None:
+            ticks = np.concatenate(
+                (levels[::n // 4], levels[-1:len(levels)])
+            )
 
         cmap = 'bwr' if cmap is None else cmap
         xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
@@ -432,9 +438,7 @@ class Spy4Caster:
         )
         fig.colorbar(
             im, ax=ax, orientation='horizontal', pad=0.02,
-            ticks=np.concatenate(
-                (levels[::n // 4], levels[-1:len(levels)])
-            )
+            ticks=ticks
         )
         ax.coastlines()
         ax.set_xlim(*xlim)
