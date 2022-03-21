@@ -4,6 +4,7 @@ import traceback
 from datetime import datetime
 from typing import Optional, TypeVar, cast, Tuple
 
+import numpy as np
 import pandas as pd
 
 from ._functions import mon2str
@@ -11,6 +12,7 @@ from .errors import DatasetError, DatasetNotFoundError, VariableSelectionError, 
     SelectedYearError
 from .stypes import *
 import xarray as xr
+import numpy.typing as npt
 
 
 _T = TypeVar('_T', bound='Dataset')
@@ -124,11 +126,11 @@ class Dataset:
 
     @property
     def timestamp0(self) -> TimeStamp:
-        return self.data.indexes['time'][0]
+        return self.data.indexes[self._time_key][0]
 
     @property
     def timestampf(self) -> TimeStamp:
-        return self.data.indexes['time'][-1]
+        return self.data.indexes[self._time_key][-1]
 
     @property
     def slise(self) -> Slise:
@@ -285,8 +287,92 @@ class Dataset:
                 f'({", ".join(str(e) for e in self._ds.variables.keys())})'
             )
 
-    def slice(self: _T, slise: Slise) -> _T:
-        raise NotImplementedError
+    def slice(self: _T, slise: Slise, skip: int = 0) -> _T:
+        """Method that slices the dataset accorging to a Slise.
+
+        Args
+        ----
+            slise : Slise
+                Slise to use
+            skip : int
+                Amount of points to skip in the matrix
+
+        Note
+        ----
+            It first calls `check_slise` method
+
+        Note
+        ----
+            If the season contains months from different years
+            (NOV-DEC-JAN-FEB for example) the initial year is applied
+            to the month which comes at last (FEB). In this example, the
+            data that will be used for NOV is on year before the initial
+            year so keep this in mind if your dataset doesn't contain
+            that specific year.
+
+        See Also
+        --------
+        stypes.Slise
+        """
+
+        self._check_slise(slise)
+        self._slise = slise
+
+        # Time slise
+        fro = pd.to_datetime(self.time.values[0])
+        to = fro + pd.DateOffset(months=len(self.time))
+        time = pd.date_range(start=fro, end=to, freq='M')
+        if len(time) == len(self.time) + 1:
+            time = time[:-1]
+
+        if slise.month0 <= slise.monthf:
+            timemask = (
+                    (time.month >= slise.month0) &
+                    (time.month <= slise.monthf) &
+                    (time.year >= slise.year0) &
+                    (time.year <= slise.yearf)
+            )
+        else:
+            timemask = (
+                    (
+                            (time.month >= slise.month0) &
+                            (time.year >= (slise.year0 - 1)) &
+                            (time.year <= (slise.yearf - 1))
+                    ) | (
+                            (time.month <= slise.monthf) &
+                            (time.year >= slise.year0) &
+                            (time.year <= slise.yearf)
+                    )
+            )
+
+        # Space slise
+        latmask = (self.lat >= slise.lat0) & (self.lat <= slise.latf)
+        lonmask = (self.lon >= slise.lon0) & (self.lon <= slise.lonf)
+
+        self.data = self.data[{
+            self._time_key: timemask,
+            self._lat_key: latmask,
+            self._lon_key: lonmask,
+        }]
+
+        latskipmask: npt.NDArray[np.bool_] = np.zeros(
+            len(self.lat)
+        ).astype(bool)
+
+        latskipmask[::skip + 1] = True
+
+        lonskipmask: npt.NDArray[np.bool_] = np.zeros(
+            len(self.lon)
+        ).astype(bool)
+
+        lonskipmask[::skip + 1] = True
+
+        self.data = self.data[{
+            self._lat_key: latskipmask,
+            self._lon_key: lonskipmask,
+        }]
+
+        return self
 
     def _check_slise(
             self: _T, slise: Slise
@@ -391,6 +477,24 @@ class Dataset:
                 raise SelectedYearError(slise.sy)
         return self
 
+    def save_nc(self: _T, name: str, dir: str = '.') -> _T:
+        """Saves the data as a netcdf4 file
+        """
 
-    def save_nc(self: _T) -> _T:
-        raise NotImplementedError
+        fig_data_path = os.path.join(dir, name)
+
+        # REMOVES NAN VALUES TO PREVENT ERRORS
+        if self._lat_key in self.data.dims and \
+                self._lon_key in self.data.dims:
+            to_save = self.data[{
+                self._lat_key: ~np.isnan(self.lat),
+                self._lon_key: ~np.isnan(self.lon)
+            }]
+        else:
+            to_save = self.data[~np.isnan(self.data)]
+
+        self._ds.assign_coords({
+            self.var: to_save
+        }).to_netcdf(fig_data_path)
+
+        return self
