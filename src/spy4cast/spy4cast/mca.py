@@ -3,8 +3,8 @@ from typing import Optional, Tuple
 import numpy as np
 import numpy.typing as npt
 
-from spy4cast._procedure import _Procedure
-from spy4cast.preprocess import Preprocess
+from .._procedure import _Procedure
+from .preprocess import Preprocess
 
 
 class MCA(_Procedure):

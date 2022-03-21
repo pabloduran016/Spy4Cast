@@ -1,7 +1,7 @@
 from typing import Optional
 
-from dataset import Dataset
-from ._procedure import _Procedure
+from ..dataset import Dataset
+from .._procedure import _Procedure
 
 
 class Preprocess(_Procedure):
