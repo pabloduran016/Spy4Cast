@@ -12,8 +12,8 @@ class _Procedure(ABC):
     ) -> None:
         raise NotImplementedError
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def load(self, path: str) -> None:
         raise NotImplementedError
 
