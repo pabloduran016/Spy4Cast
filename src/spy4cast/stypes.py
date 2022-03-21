@@ -2,11 +2,11 @@ import builtins
 from typing import Union, TypedDict, Tuple, Dict, Optional, TypeVar, cast, Any
 import pandas as pd
 import datetime
-from enum import auto, IntEnum, IntFlag, EnumMeta
+from enum import auto, IntEnum, IntFlag
 from dataclasses import dataclass
 
 
-__all__ = ['Slise', 'Color', 'T_FORMAT', 'TimeStamp', 'Month', 'F', 'RDArgs', 'RDArgsDict']
+__all__ = ['Slise', 'Color', 'T_FORMAT', 'TimeStamp', 'Month', 'F', 'RDArgs', 'RDArgsDict', 'ChunkType']
 
 Color = Tuple[float, float, float]
 """Color type. Tuple of 3 floats"""
