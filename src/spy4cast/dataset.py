@@ -47,7 +47,7 @@ class Dataset:
         ...     'example.nc', 'data/'
         ... ).open('var').slice(
         ...     Slise(-20, 20, -10, 0, Month.JAN, Month.FEB, 1870, 2000)
-        ... ).save_nc()
+        ... ).save_nc('data-sliced.nc')
     """
 
     _data: xr.DataArray
@@ -126,10 +126,12 @@ class Dataset:
 
     @property
     def timestamp0(self) -> TimeStamp:
+        """Initial timestamp of the data"""
         return self.data.indexes[self._time_key][0]
 
     @property
     def timestampf(self) -> TimeStamp:
+        """Final timestamp of the data"""
         return self.data.indexes[self._time_key][-1]
 
     @property

@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="F" href="spy4cast.stypes.F.html" /><link rel="prev" title="Slise" href="spy4cast.stypes.Slise.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="TimeStamp" href="spy4cast.stypes.TimeStamp.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>Month - Spy4Cast 0.0.14 documentation</title>
+        <title>ChunkType - Spy4Cast 0.0.14 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
@@ -218,14 +218,14 @@
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../toctrees/api-reference-src/stypes.html">Stypes</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Slise.html">Slise</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Month</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Month.html">Month</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.F.html">F</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.RDArgs.html">RDArgs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.RDArgsDict.html">RDArgsDict</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Color.html">Color</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.T_FORMAT.html">T_FORMAT</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.TimeStamp.html">TimeStamp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.ChunkType.html">ChunkType</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">ChunkType</a></li>
 </ul>
 </li>
 </ul>
@@ -262,71 +262,13 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="month">
-<h1>Month<a class="headerlink" href="#month" title="Permalink to this headline">#</a></h1>
-<dl class="py class enum">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month">
-<em class="property"><span class="pre">enum</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.stypes.</span></span><span class="sig-name descname"><span class="pre">Month</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.stypes.Month" title="Permalink to this definition">#</a></dt>
-<dd><p>Enumeration for Months.</p>
-<p>Useful to use together with <cite>Slise</cite></p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1910</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Member Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-<p>Valid values are as follows:</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.JAN">
-<span class="sig-name descname"><span class="pre">JAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.JAN:</span> <span class="pre">1&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.JAN" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.FEB">
-<span class="sig-name descname"><span class="pre">FEB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.FEB:</span> <span class="pre">2&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.FEB" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.MAR">
-<span class="sig-name descname"><span class="pre">MAR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.MAR:</span> <span class="pre">3&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.MAR" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.APR">
-<span class="sig-name descname"><span class="pre">APR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.APR:</span> <span class="pre">4&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.APR" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.MAY">
-<span class="sig-name descname"><span class="pre">MAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.MAY:</span> <span class="pre">5&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.MAY" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.JUN">
-<span class="sig-name descname"><span class="pre">JUN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.JUN:</span> <span class="pre">6&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.JUN" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.JUL">
-<span class="sig-name descname"><span class="pre">JUL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.JUL:</span> <span class="pre">7&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.JUL" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.AUG">
-<span class="sig-name descname"><span class="pre">AUG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.AUG:</span> <span class="pre">8&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.AUG" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.SEP">
-<span class="sig-name descname"><span class="pre">SEP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.SEP:</span> <span class="pre">9&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.SEP" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.OCT">
-<span class="sig-name descname"><span class="pre">OCT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.OCT:</span> <span class="pre">10&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.OCT" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.NOV">
-<span class="sig-name descname"><span class="pre">NOV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.NOV:</span> <span class="pre">11&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.NOV" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.stypes.Month.DEC">
-<span class="sig-name descname"><span class="pre">DEC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Month.DEC:</span> <span class="pre">12&gt;</span></em><a class="headerlink" href="#spy4cast.stypes.Month.DEC" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+          <div class="section" id="chunktype">
+<h1>ChunkType<a class="headerlink" href="#chunktype" title="Permalink to this headline">#</a></h1>
+<dl class="py data">
+<dt class="sig sig-object py" id="spy4cast.stypes.ChunkType">
+<span class="sig-prename descclassname"><span class="pre">spy4cast.stypes.</span></span><span class="sig-name descname"><span class="pre">ChunkType</span></span><a class="headerlink" href="#spy4cast.stypes.ChunkType" title="Permalink to this definition">#</a></dt>
+<dd><p>Type variable to indicate the types that can be passed into the <cite>chunk</cite> argument in <cite>read_data.ReadData</cite></p>
+<p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, …], <code class="xref py py-class docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, …], …], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
 </dd></dl>
 </div>
 
@@ -335,23 +277,15 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="spy4cast.stypes.F.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">F</div>
-              </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="spy4cast.stypes.Slise.html">
+          
+          <a class="prev-page" href="spy4cast.stypes.TimeStamp.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Slise</div>
+                <div class="title">TimeStamp</div>
                 
               </div>
             </a>

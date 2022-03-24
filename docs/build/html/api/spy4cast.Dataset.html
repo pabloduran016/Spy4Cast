@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Month" href="spy4cast.Month.html" /><link rel="prev" title="Spy4Caster" href="spy4cast.Spy4Caster.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="API Reference" href="../toctrees/api-reference.html" /><link rel="prev" title="ReadData" href="spy4cast.ReadData.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>Slise - Spy4Cast 0.0.14 documentation</title>
+        <title>Dataset - Spy4Cast 0.0.14 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
@@ -161,13 +161,13 @@
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.AnomerMap.html">AnomerMap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.ClimerMap.html">ClimerMap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.Spy4Caster.html">Spy4Caster</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Slise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spy4cast.Slise.html">Slise</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.Month.html">Month</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.RDArgs.html">RDArgs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.RDArgsDict.html">RDArgsDict</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.F.html">F</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spy4cast.ReadData.html">ReadData</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spy4cast.Dataset.html">Dataset</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Dataset</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../toctrees/api-reference.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -262,20 +262,33 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="slise">
-<h1>Slise<a class="headerlink" href="#slise" title="Permalink to this headline">#</a></h1>
+          <div class="section" id="dataset">
+<h1>Dataset<a class="headerlink" href="#dataset" title="Permalink to this headline">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="spy4cast.Slise">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.</span></span><span class="sig-name descname"><span class="pre">Slise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lonf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.stypes.Month.html#spy4cast.stypes.Month" title="spy4cast.stypes.Month"><span class="pre">spy4cast.stypes.Month</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monthf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.stypes.Month.html#spy4cast.stypes.Month" title="spy4cast.stypes.Month"><span class="pre">spy4cast.stypes.Month</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yearf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.Slise" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="spy4cast.Dataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.</span></span><span class="sig-name descname"><span class="pre">Dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.Dataset" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Dataclass to create a <cite>Slise</cite></p>
-<p>A slise is the way of slicing datasets that is convenient to the user and the API</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The developers of this API are aware that the correct slpelling for <cite>slice</cite> is with a <cite>c</cite>.
-However, <cite>slice</cite> is a built-in function in python and in the start of the development of this poject was better to use
-<cite>slise</cite>. This is the reason why this class is spelled with <cite>s</cite> (it wouldn’t conflict with <cite>slice</cite> right now because
-it is capitalised, but it looks good enough, right?)</p>
+<p>This class enables you to load, slice and save the data in a
+netcdf4 file confortably.</p>
+<p>It is concatenable, meaning that the output of most methods is the object
+itself so that you can concatenate methods easily.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>default=''</em>) – Directory where the dataset you want to use is located</p></li>
+<li><p><strong>dir</strong> (<em>str</em><em>, </em><em>default='dataset.nc'</em>) – Name of the dataset</p></li>
+<li><p><strong>chunks</strong> (<cite>stypes.ChunkType</cite>, optional) – Argument passed when loading the datasets
+(see <cite>chunks</cite> in dask library)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Dataset</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">'example.nc'</span><span class="p">,</span> <span class="s1">'data/'</span>
+<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">save_nc</span><span class="p">(</span><span class="s1">'data-sliced.nc'</span><span class="p">)</span>
+</pre></div>
 </div>
 <p class="rubric">Attributes Summary</p>
 <div class="table-wrapper"><table class="longtable docutils align-default">
@@ -284,32 +297,32 @@ it is capitalised, but it looks good enough, right?)</p>
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.lat0" title="spy4cast.Slise.lat0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lat0</span></code></a></p></td>
-<td><p>Minimum latitude</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Dataset.data" title="spy4cast.Dataset.data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data</span></code></a></p></td>
+<td><p>Returns the data contained</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Slise.latf" title="spy4cast.Slise.latf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">latf</span></code></a></p></td>
-<td><p>Maximum latitude</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Dataset.lat" title="spy4cast.Dataset.lat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lat</span></code></a></p></td>
+<td><p>Returns the latitude variable of the data evaluated.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.lon0" title="spy4cast.Slise.lon0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lon0</span></code></a></p></td>
-<td><p>Minimum longitud</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Dataset.lon" title="spy4cast.Dataset.lon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lon</span></code></a></p></td>
+<td><p>Returns the latitude variable of the data evaluated.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Slise.lonf" title="spy4cast.Slise.lonf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lonf</span></code></a></p></td>
-<td><p>Maximum longitud</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Dataset.shape" title="spy4cast.Dataset.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
+<td><p>Returns the shape variable of the data evaluated.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.month0" title="spy4cast.Slise.month0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">month0</span></code></a></p></td>
-<td><p>Starting month of the season to select (included)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Dataset.slise" title="spy4cast.Dataset.slise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slise</span></code></a></p></td>
+<td><p>Returns the actual slise of the data</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Slise.monthf" title="spy4cast.Slise.monthf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">monthf</span></code></a></p></td>
-<td><p>Ending month of the season to select (included)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Dataset.time" title="spy4cast.Dataset.time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time</span></code></a></p></td>
+<td><p>Returns the time variable of the data evaluated.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.sy" title="spy4cast.Slise.sy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sy</span></code></a></p></td>
-<td><p>Selected year used in methodologies like anom where you can only plot a given year</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Dataset.timestamp0" title="spy4cast.Dataset.timestamp0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">timestamp0</span></code></a></p></td>
+<td><p>Initial timestamp of the data</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Slise.year0" title="spy4cast.Slise.year0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">year0</span></code></a></p></td>
-<td><p>Starting year of the period to select (included)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Dataset.timestampf" title="spy4cast.Dataset.timestampf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">timestampf</span></code></a></p></td>
+<td><p>Final timestamp of the data</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.yearf" title="spy4cast.Slise.yearf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">yearf</span></code></a></p></td>
-<td><p>Ending year of the period to select (included)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Dataset.var" title="spy4cast.Dataset.var"><code class="xref py py-obj docutils literal notranslate"><span class="pre">var</span></code></a></p></td>
+<td><p>Return the variable used.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -320,68 +333,123 @@ it is capitalised, but it looks good enough, right?)</p>
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Slise.default" title="spy4cast.Slise.default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default</span></code></a>([month0, monthf, year0, yearf, sy])</p></td>
-<td><p>Alternartive constructor that creates a <cite>Slise</cite> that has the largest spatial region and season possible</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Dataset.open" title="spy4cast.Dataset.open"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open</span></code></a>([var])</p></td>
+<td><p>Opens dataset without loading it into memory</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.Dataset.save_nc" title="spy4cast.Dataset.save_nc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_nc</span></code></a>(name[, dir])</p></td>
+<td><p>Saves the data as a netcdf4 file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.Dataset.slice" title="spy4cast.Dataset.slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slice</span></code></a>(slise[, skip])</p></td>
+<td><p>Method that slices the dataset accorging to a Slise.</p></td>
 </tr>
 </tbody>
 </table></div>
 <p class="rubric">Attributes Documentation</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.lat0">
-<span class="sig-name descname"><span class="pre">lat0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.lat0" title="Permalink to this definition">#</a></dt>
-<dd><p>Minimum latitude</p>
+<dt class="sig sig-object py" id="spy4cast.Dataset.data">
+<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#spy4cast.Dataset.data" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the data contained</p>
 </dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.latf">
-<span class="sig-name descname"><span class="pre">latf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.latf" title="Permalink to this definition">#</a></dt>
-<dd><p>Maximum latitude</p>
+<dt class="sig sig-object py" id="spy4cast.Dataset.lat">
+<span class="sig-name descname"><span class="pre">lat</span></span><a class="headerlink" href="#spy4cast.Dataset.lat" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the latitude variable of the data evaluated.
+They key used is recognised automatically</p>
 </dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.lon0">
-<span class="sig-name descname"><span class="pre">lon0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.lon0" title="Permalink to this definition">#</a></dt>
-<dd><p>Minimum longitud</p>
+<dt class="sig sig-object py" id="spy4cast.Dataset.lon">
+<span class="sig-name descname"><span class="pre">lon</span></span><a class="headerlink" href="#spy4cast.Dataset.lon" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the latitude variable of the data evaluated.
+They key used is recognised automatically</p>
 </dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.lonf">
-<span class="sig-name descname"><span class="pre">lonf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.lonf" title="Permalink to this definition">#</a></dt>
-<dd><p>Maximum longitud</p>
+<dt class="sig sig-object py" id="spy4cast.Dataset.shape">
+<span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#spy4cast.Dataset.shape" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the shape variable of the data evaluated.</p>
 </dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.month0">
-<span class="sig-name descname"><span class="pre">month0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.stypes.Month.html#spy4cast.stypes.Month" title="spy4cast.stypes.Month"><span class="pre">spy4cast.stypes.Month</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.month0" title="Permalink to this definition">#</a></dt>
-<dd><p>Starting month of the season to select (included)</p>
+<dt class="sig sig-object py" id="spy4cast.Dataset.slise">
+<span class="sig-name descname"><span class="pre">slise</span></span><a class="headerlink" href="#spy4cast.Dataset.slise" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the actual slise of the data</p>
 </dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.monthf">
-<span class="sig-name descname"><span class="pre">monthf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.stypes.Month.html#spy4cast.stypes.Month" title="spy4cast.stypes.Month"><span class="pre">spy4cast.stypes.Month</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.monthf" title="Permalink to this definition">#</a></dt>
-<dd><p>Ending month of the season to select (included)</p>
+<dt class="sig sig-object py" id="spy4cast.Dataset.time">
+<span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#spy4cast.Dataset.time" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the time variable of the data evaluated.
+They key used is recognised automatically</p>
 </dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.sy">
-<span class="sig-name descname"><span class="pre">sy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.sy" title="Permalink to this definition">#</a></dt>
-<dd><p>Selected year used in methodologies like anom where you can only plot a given year</p>
+<dt class="sig sig-object py" id="spy4cast.Dataset.timestamp0">
+<span class="sig-name descname"><span class="pre">timestamp0</span></span><a class="headerlink" href="#spy4cast.Dataset.timestamp0" title="Permalink to this definition">#</a></dt>
+<dd><p>Initial timestamp of the data</p>
 </dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.year0">
-<span class="sig-name descname"><span class="pre">year0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.year0" title="Permalink to this definition">#</a></dt>
-<dd><p>Starting year of the period to select (included)</p>
+<dt class="sig sig-object py" id="spy4cast.Dataset.timestampf">
+<span class="sig-name descname"><span class="pre">timestampf</span></span><a class="headerlink" href="#spy4cast.Dataset.timestampf" title="Permalink to this definition">#</a></dt>
+<dd><p>Final timestamp of the data</p>
 </dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.Slise.yearf">
-<span class="sig-name descname"><span class="pre">yearf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spy4cast.Slise.yearf" title="Permalink to this definition">#</a></dt>
-<dd><p>Ending year of the period to select (included)</p>
+<dt class="sig sig-object py" id="spy4cast.Dataset.var">
+<span class="sig-name descname"><span class="pre">var</span></span><a class="headerlink" href="#spy4cast.Dataset.var" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the variable used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the dataset has not been opened yet</p>
+</dd>
+</dl>
 </dd></dl>
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="spy4cast.Slise.default">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">month0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Month.JAN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monthf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Month.DEC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yearf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" title="spy4cast.stypes.Slise"><span class="pre">spy4cast.stypes.Slise</span></a></span></span><a class="headerlink" href="#spy4cast.Slise.default" title="Permalink to this definition">#</a></dt>
-<dd><p>Alternartive constructor that creates a <cite>Slise</cite> that has the largest spatial region and season possible</p>
-<p>It is useful if you want to create fast a <cite>Slise</cite> where you conly want to modify the initial and final year for example</p>
+<dt class="sig sig-object py" id="spy4cast.Dataset.open">
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">spy4cast.dataset._T</span></span></span><a class="headerlink" href="#spy4cast.Dataset.open" title="Permalink to this definition">#</a></dt>
+<dd><p>Opens dataset without loading it into memory</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spy4cast.Slise" title="spy4cast.Slise">Slise</a>(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>var</strong> (<em>optional</em><em>, </em><em>str</em>) – Variable that can be specified. If not it is detected automatically</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="spy4cast.errors.DatasetError.html#spy4cast.errors.DatasetError" title="spy4cast.errors.DatasetError"><strong>errors.DatasetError</strong></a> – If there is an error while opening the dataset</p></li>
+<li><p><a class="reference internal" href="spy4cast.errors.DatasetNotFoundError.html#spy4cast.errors.DatasetNotFoundError" title="spy4cast.errors.DatasetNotFoundError"><strong>errors.DatasetNotFoundError</strong></a> – If the dataset name or dir is not valid</p></li>
+<li><p><a class="reference internal" href="spy4cast.errors.VariableSelectionError.html#spy4cast.errors.VariableSelectionError" title="spy4cast.errors.VariableSelectionError"><strong>errors.VariableSelectionError</strong></a> – If teh variable selected does not exist or can not be inferred</p></li>
+</ul>
 </dd>
 </dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="spy4cast.Dataset.save_nc">
+<span class="sig-name descname"><span class="pre">save_nc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">spy4cast.dataset._T</span></span></span><a class="headerlink" href="#spy4cast.Dataset.save_nc" title="Permalink to this definition">#</a></dt>
+<dd><p>Saves the data as a netcdf4 file</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="spy4cast.Dataset.slice">
+<span class="sig-name descname"><span class="pre">slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" title="spy4cast.stypes.Slise"><span class="pre">spy4cast.stypes.Slise</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">spy4cast.dataset._T</span></span></span><a class="headerlink" href="#spy4cast.Dataset.slice" title="Permalink to this definition">#</a></dt>
+<dd><p>Method that slices the dataset accorging to a Slise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slise</strong> (<a class="reference internal" href="spy4cast.Slise.html#spy4cast.Slise" title="spy4cast.Slise"><em>Slise</em></a>) – Slise to use</p></li>
+<li><p><strong>skip</strong> (<em>int</em>) – Amount of points to skip in the matrix</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It first calls <cite>check_slise</cite> method</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the season contains months from different years
+(NOV-DEC-JAN-FEB for example) the initial year is applied
+to the month which comes at last (FEB). In this example, the
+data that will be used for NOV is on year before the initial
+year so keep this in mind if your dataset doesn’t contain
+that specific year.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" title="spy4cast.stypes.Slise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stypes.Slise</span></code></a></p>
+</div>
 </dd></dl>
 </dd></dl>
 </div>
@@ -391,23 +459,23 @@ it is capitalised, but it looks good enough, right?)</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="spy4cast.Month.html">
+          <a class="next-page" href="../toctrees/api-reference.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Month</div>
+                <div class="title">API Reference</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="spy4cast.Spy4Caster.html">
+          <a class="prev-page" href="spy4cast.ReadData.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Spy4Caster</div>
+                <div class="title">ReadData</div>
                 
               </div>
             </a>
