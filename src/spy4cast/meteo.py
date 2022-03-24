@@ -313,7 +313,7 @@ def mca(
     u = np.dot(np.transpose(y), r[:, :nm])
     # u = np.dot(np.transpose(y), r[:, :nm])
     # calculamos las anomalías estandarizadas
-    v = np.dot(np.transpose(z), q[:, :nm])
+    v = np.dot(np.transpose(z), q[:nm, :].transpose())
     # v = np.dot(np.transpose(z), q[:, :nm])
     out = MCAOut(
         RUY=np.zeros([ny, nm], dtype=np.float32),
