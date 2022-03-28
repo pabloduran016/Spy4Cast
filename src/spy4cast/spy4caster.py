@@ -536,7 +536,8 @@ class Spy4Caster:
     def plot_mca(self, flags: int = 0, fig: Optional[plt.Figure] = None,
                  cmap: Optional[str] = None,
                  yslise: Optional[Slise] = None,
-                 zslise: Optional[Slise] = None) -> 'Spy4Caster':
+                 zslise: Optional[Slise] = None,
+                 sign: bool = False) -> 'Spy4Caster':
         if any([
             x is None for x in (
                 self._y, self._ylat, self._ylon, self._ytime,
@@ -622,8 +623,12 @@ class Spy4Caster:
             for j, ax in enumerate(axs[3 * (i + 1):3 * (i + 1) + 3]):
                 title = f'{name} mode {j + 1}. ' \
                         f'SCF={scf[j]*100:.01f}'
+
                 t = su[:, j].transpose().reshape((len(lats), len(lons)))
                 th = ru[:, j].transpose().reshape((len(lats), len(lons)))
+
+                if sign:
+                    t *= -1
 
                 self._plot_map(
                     t, lats, lons, fig, ax, title,
