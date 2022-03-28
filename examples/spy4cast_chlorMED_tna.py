@@ -69,11 +69,11 @@ def main() -> None:
         # plt.show()
         s.load_crossvalidation(PLOTS_DATA_DIR, 'save_cross_', '.npy')
         s.run(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year, cmap='viridis', yslise=oisst_slise, zslise=chl_slise)
-    # s.plot_preprocessed()
-    # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
-    # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
-    # s.plot_crossvalidation(F.SHOW_PLOT | F.SAVE_FIG)
-    # s.plot_zhat(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year)
+    s.plot_preprocessed()
+    s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
+    s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
+    s.plot_crossvalidation(F.SHOW_PLOT | F.SAVE_FIG)
+    s.plot_zhat(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year)
 
 
 if __name__ == '__main__':
