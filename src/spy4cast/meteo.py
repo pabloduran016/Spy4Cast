@@ -8,6 +8,8 @@ import numpy as np
 from typing import Tuple
 from dataclasses import dataclass
 from scipy import stats
+from scipy import sparse
+import scipy.sparse.linalg
 import scipy
 import numpy.typing as npt
 
@@ -305,15 +307,29 @@ def mca(
     c = np.dot(y, np.transpose(z))
     if type(c) == np.ma.MaskedArray:
         c = c.data
-    r, d, q = scipy.linalg.svd(c)
+
+    # NEW WAY OF PEFORMING SVD: WAAAAAAAY FASTER
+    r, _d, q = sparse.linalg.svds(c, k=nm, which='LM')  # Which LM = Large magnitude
+    # Modes are reversed so we reverse them in r, d and q
+    r = r[:, ::-1]
+    _d = _d[::-1]
+    q = q[::-1, :]
+
+    # OLD WAY OF DOING SVD: REALLY SLOW
+    # r, d, q = scipy.linalg.svd(c)
+    # r = r[:, :nm]
+    # q = r[:nm, :]
+
+    svdvals = scipy.linalg.svdvals(c)
+    scf = svdvals[:10] / np.sum(svdvals)
 
     # y había que transponerla si originariamente era (espacio, tiempo),
     # pero ATN_e es (tiempo, espacio) así
     # que no se transpone
-    u = np.dot(np.transpose(y), r[:, :nm])
+    u = np.dot(np.transpose(y), r)
     # u = np.dot(np.transpose(y), r[:, :nm])
     # calculamos las anomalías estandarizadas
-    v = np.dot(np.transpose(z), q[:nm, :].transpose())
+    v = np.dot(np.transpose(z), q.transpose())
     # v = np.dot(np.transpose(z), q[:, :nm])
     out = MCAOut(
         RUY=np.zeros([ny, nm], dtype=np.float32),
@@ -328,7 +344,7 @@ def mca(
         Us=((u - u.mean(0)) / u.std(0)).transpose(),
         # Standarized anom across axis 0
         Vs=((v - v.mean(0)) / v.std(0)).transpose(),
-        scf=(d / np.sum(d))[:nm],
+        scf=scf,
         alpha=alpha,
     )
     pvalruy = np.zeros([ny, nm], dtype=np.float32)
