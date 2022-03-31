@@ -1,13 +1,54 @@
-from typing import Optional, Tuple
+import os
+import sys
+from typing import Optional, Tuple, Sequence, Any, List
 
 import numpy as np
 import numpy.typing as npt
+from matplotlib import pyplot as plt
+import cartopy.crs as ccrs
+from scipy import sparse
+import scipy.sparse.linalg
+import xarray as xr
+from scipy.stats import stats
 
-from .._procedure import _Procedure
+from .. import Slise, F
+from .._functions import debugprint, time_from_here, time_to_here, slise2str
+from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig
 from .preprocess import Preprocess
 
 
+_VARIABLE_NAMES: Tuple[str, ...] = (
+    'RUY',
+    'RUY_sig',
+    'SUY',
+    'SUY_sig',
+    'RUZ',
+    'RUZ_sig',
+    'SUZ',
+    'SUZ_sig',
+    'Us',
+    'Vs',
+    'scf',
+    'alpha',
+)
+
+
 class MCA(_Procedure):
+    """"Maximum covariance analysis between y (predictor)
+    and Z (predictand)
+
+    Parameters
+    ----------
+        dsz : Preprocess
+            Predictand
+        dsy : Preprocess
+            predictor
+        nm : int
+            Number of modes
+        alpha : float
+            Significance level
+    """
+    # TODO: Document MCA fields
     RUY: npt.NDArray[np.float32]
     RUY_sig: npt.NDArray[np.float32]
     SUY: npt.NDArray[np.float32]
@@ -22,27 +63,270 @@ class MCA(_Procedure):
     alpha: float
 
     def __init__(
-        self,
-        z: Preprocess,
-        y: Preprocess,
-        nm: int, alpha: float
+            self,
+            dsz: Preprocess,
+            dsy: Preprocess,
+            nm: int, alpha: float
     ):
-        raise NotImplementedError
+        self._dsz = dsz
+        self._dsy = dsy
+        z = dsz.data
+        y = dsy.data
+        nz, nt = z.shape
+        ny, nt = y.shape
+
+        debugprint(f"""[INFO] Applying MCA 
+    Shapes: Z({nz}, {nt}) 
+            Y({ny}, {nt}) 
+    Slises: Z {slise2str(self.zslise)} 
+            Y {slise2str(self.yslise)}""",)
+        time_from_here()
+
+        if len(dsz.time) != len(dsy.time):
+            raise ValueError(
+                f'The number of years of the predictand must be the '
+                f'same as the number of years of the predictor: '
+                f'got {len(dsz.time)} and '
+                f'{len(dsy.time)}'
+            )
+
+        # first you calculate the covariance matrix
+        # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
+        c = np.dot(y, np.transpose(z))
+        if type(c) == np.ma.MaskedArray:
+            c = c.data
+
+        # NEW WAY OF PEFORMING SVD: WAAAAAAAY FASTER (> 20 times)
+        r, _d, q = sparse.linalg.svds(c, k=nm, which='LM')  # Which LM = Large magnitude
+        # Modes are reversed so we reverse them in r, d and q
+        r = r[:, ::-1]
+        _d = _d[::-1]
+        q = q[::-1, :]
+
+        # OLD WAY OF DOING SVD: REALLY SLOW
+        # r, d, q = scipy.linalg.svd(c)
+        # r = r[:, :nm]
+        # q = r[:nm, :]
+
+        svdvals = scipy.linalg.svdvals(c)
+        scf = svdvals[:10] / np.sum(svdvals)
+
+        # y había que transponerla si originariamente era (espacio, tiempo),
+        # pero ATN_e es (tiempo, espacio) así
+        # que no se transpone
+        u = np.dot(np.transpose(y), r)
+        # u = np.dot(np.transpose(y), r[:, :nm])
+        # calculamos las anomalías estandarizadas
+        v = np.dot(np.transpose(z), q.transpose())
+        # v = np.dot(np.transpose(z), q[:, :nm])
+
+        self.RUY = np.zeros([ny, nm], dtype=np.float32)
+        self.RUY_sig = np.zeros([ny, nm], dtype=np.float32)
+        self.SUY = np.zeros([ny, nm], dtype=np.float32)
+        self.SUY_sig = np.zeros([ny, nm], dtype=np.float32)
+        self.RUZ = np.zeros([nz, nm], dtype=np.float32)
+        self.RUZ_sig = np.zeros([nz, nm], dtype=np.float32)
+        self.SUZ = np.zeros([nz, nm], dtype=np.float32)
+        self.SUZ_sig = np.zeros([nz, nm], dtype=np.float32)
+        self.Us = ((u - u.mean(0)) / u.std(0)).transpose()  # Standarized anom across axis 0
+        self.Vs = ((v - v.mean(0)) / v.std(0)).transpose()
+        self.scf = scf
+        self.alpha = alpha
+
+        pvalruy = np.zeros([ny, nm], dtype=np.float32)
+        pvalruz = np.zeros([nz, nm], dtype=np.float32)
+        for i in range(nm):
+            self.RUY[:, i], \
+            pvalruy[:, i], \
+            self.RUY_sig[:, i], \
+            self.SUY[:, i], \
+            self.SUY_sig[:, i] \
+                = _index_regression(y, self.Us[i, :], alpha)
+
+            self.RUZ[:, i], \
+            pvalruz[:, i], \
+            self.RUZ_sig[:, i], \
+            self.SUZ[:, i], \
+            self.SUZ_sig[:, i] \
+                = _index_regression(z, self.Us[i, :], alpha)
+        debugprint(f'   Took: {time_to_here():.03f} seconds')
+
+    @property
+    def ydata(self) -> npt.NDArray[np.float32]:
+        return self._dsy.data
+
+    @property
+    def yvar(self) -> str:
+        return self._dsy.var
+
+    @property
+    def yslise(self) -> Slise:
+        return self._dsy.slise
+
+    @property
+    def ytime(self) -> xr.DataArray:
+        return self._dsy.time
+
+    @property
+    def ylat(self) -> xr.DataArray:
+        return self._dsy.lat
+
+    @property
+    def ylon(self) -> xr.DataArray:
+        return self._dsy.lon
+
+    @property
+    def zdata(self) -> npt.NDArray[np.float32]:
+        return self._dsz.data
+
+    @property
+    def zvar(self) -> str:
+        return self._dsz.var
+
+    @property
+    def zslise(self) -> Slise:
+        return self._dsz.slise
+
+    @property
+    def ztime(self) -> xr.DataArray:
+        return self._dsz.time
+
+    @property
+    def zlat(self) -> xr.DataArray:
+        return self._dsz.lat
+
+    @property
+    def zlon(self) -> xr.DataArray:
+        return self._dsz.lon
 
     def plot(
         self,
         flags: int = 0,
+        cmap: str = 'bwr',
+        sign: bool = False,
         dir: Optional[str] = None,
-        name: Optional[str] = None
+        name: Optional[str] = None,
     ) -> None:
-        raise NotImplementedError
+        nrows = 3
+        ncols = 3
+
+        fig = plt.figure()
+
+        axs = [
+            plt.subplot(nrows * 100 + ncols * 10 + i,
+                        projection=(ccrs.PlateCarree() if i > 3 else None))
+            for i in range(1, ncols * nrows + 1)
+        ]
+
+        # Plot timeseries
+        for i, ax in enumerate(axs[:3]):
+            # # ax.margins(0)
+            ax.plot(self.ytime, self.Us[i, :], color='green', label='Us')
+            ax.plot(self.ztime, self.Vs[i, :], color='blue', label='Vs')
+            ax.grid(True)
+            ax.set_title(f'Us Vs mode {i + 1}')
+        axs[0].legend(loc='upper left')
+
+        # suy = SUY
+        # suy[suy == 0.0] = np.nan
+
+        n = 20
+        for i, (name, su, ru, lats, lons, cm) in enumerate((
+                ('SUY', self.SUY, self.RUY_sig, self.ylat, self.ylon, 'bwr'),
+                ('SUZ', self.SUZ, self.RUZ_sig, self.zlat, self.zlon, cmap)
+        )):
+            _std = np.nanstd(su)
+            _m = np.nanmean(su)
+            levels = np.linspace(_m - _std, _m + _std, n)
+            xlim = sorted((lons.values[0], lons.values[-1]))
+            ylim = sorted((lats.values[-1], lats.values[0]))
+
+            for j, ax in enumerate(axs[3 * (i + 1):3 * (i + 1) + 3]):
+                title = f'{name} mode {j + 1}. ' \
+                        f'SCF={self.scf[j]*100:.01f}'
+
+                t = su[:, j].transpose().reshape((len(lats), len(lons)))
+                th = ru[:, j].transpose().reshape((len(lats), len(lons)))
+
+                if sign:
+                    t *= -1
+
+                _plot_map(
+                    t, lats, lons, fig, ax, title,
+                    levels=levels, xlim=xlim, ylim=ylim, cmap=cm
+                )
+                ax.contourf(
+                    lons, lats, th, colors='none', hatches='..', extend='both',
+                    transform=ccrs.PlateCarree()
+                )
+
+        fig.suptitle(
+            f'Z({self.zvar}): {slise2str(self.zslise)}, '
+            f'Y({self.yvar}): {slise2str(self.yslise)}. ',
+            f'Alpha: {self.alpha}',
+            fontweight='bold'
+        )
+
+        if dir is None:
+            dir = '.'
+        if name is None:
+            path = os.path.join(dir, f'mca-plot_z-{self.zvar}_y-{self.yvar}.png')
+        else:
+            path = os.path.join(dir, name)
+
+        _apply_flags_to_fig(
+            fig, path, F(flags)
+        )
 
     @classmethod
-    def load(self, prefix: str, dir: str = '.') -> None:
-        raise NotImplementedError
+    def load(cls, prefix: str, dir: str = '.', *, dsz: Preprocess, dsy: Preprocess) -> 'MCA':
+        prefixed = os.path.join(dir, prefix)
+        debugprint(
+            f'[INFO] Loading MCA data from '
+            f'`{prefixed}*`',
+            end=''
+        )
+        time_from_here()
+
+        self = cls.__new__(cls)
+        self._dsz = dsz
+        self._dsy = dsy
+
+        for name in _VARIABLE_NAMES:
+            path = prefixed + name + '.npy'
+            try:
+                setattr(self, name, np.load(path))
+            except FileNotFoundError:
+                print(
+                    f'\n[ERROR] Could not find file `{path}` to load MCA variable {name}',
+                    file=sys.stderr
+                )
+
+        debugprint(f' took {time_to_here():.03f} seconds')
+        return self
 
     def save(self, prefix: str, dir: str = '.') -> None:
-        raise NotImplementedError
+        prefixed = os.path.join(dir, prefix)
+        debugprint(f'[INFO] Saving MCA data for Z({self.zvar}) and Y({self.yvar}) in `{prefix}*.npy`')
+
+        variables: List[Tuple[str, npt.NDArray[Any]]] = [
+            (name, getattr(self, name))
+            for name in _VARIABLE_NAMES
+        ]
+
+        if not os.path.exists(dir):
+            debugprint(f'[WARNING] Creating path {dir} that did not exist', file=sys.stderr)
+            folders = dir.split('/')
+            for i, folder in enumerate(folders):
+                if os.path.exists('/'.join(folders[:i + 1])):
+                    continue
+                os.mkdir('/'.join(folders[:i + 1]))
+
+        for name, arr in variables:
+            path = prefixed + name
+            if os.path.exists(path):
+                debugprint(f'[WARNING] Found already existing file with path {path}', file=sys.stderr)
+            np.save(path, arr)
 
 
 def _index_regression(
@@ -50,4 +334,42 @@ def _index_regression(
     index: npt.NDArray[np.float32],
     alpha: float
 ) -> Tuple[npt.NDArray[np.float32], ...]:
-    raise NotImplementedError
+
+    """Create correlation (pearson correlation) and regression
+
+    Parameters
+    ----------
+        data : npt.NDArray[np.float32]
+            Data to perform the methodology in (space x time)
+        index : npt.NDArray[np.float32]
+            Unidimensional array: temporal series
+        alpha : float
+            Significance level
+
+    Returns
+    -------
+        Cor : npt.NDArray[np.float32] (space)
+            Correlation map
+        Pvalue : npt.NDArray[np.float32] (space)
+            Map with p values
+        Cor_sig : npt.NDArray[np.float32] (space)
+            Significative corrrelation map
+        reg : npt.NDArray[np.float32] (space)
+            Regression map
+        reg_sig : npt.NDArray[np.float32] (space)
+            Significative regression map
+    """
+    ns, nt = data.shape
+
+    Cor = np.zeros([ns, ], dtype=np.float32)
+    Pvalue = np.zeros([ns, ], dtype=np.float32)
+    for nn in range(ns):  # Pearson correaltion for every point in the map
+        Cor[nn], Pvalue[nn] = stats.pearsonr(data[nn, :], index)
+
+    Cor_sig = Cor.copy()
+    Cor_sig[Pvalue > alpha] = np.nan
+
+    reg = data.dot(index) / (nt - 1)
+    reg_sig = reg.copy()
+    reg_sig[Pvalue > alpha] = np.nan
+    return Cor, Pvalue, Cor_sig, reg, reg_sig
