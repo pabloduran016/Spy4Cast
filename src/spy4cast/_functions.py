@@ -86,7 +86,7 @@ def time_to_here() -> float:
 
 
 def slise2str(slise: Slise) -> str:
-    """Transforms a Slise into a string
+    """Transforms a Slise into a string with 2 decimals for the spatial dimension
 
     Parameters
     ----------
@@ -104,7 +104,7 @@ def slise2str(slise: Slise) -> str:
     -------
         >>> s = Slise(-10, 10, -100, -80, Month.JAN, Month.FEB, 1870, 2020)
         >>> slise2str(s)
-        '10ºS, 100ºW - 10ºN, 80ºW'
+        '10ºS, 10ºN - 100ºW, 80ºW'
 
     See Also
     --------
@@ -129,10 +129,10 @@ def slise2str(slise: Slise) -> str:
         else:
             sufixes[key] = 'ºW'
         values[key] = abs(values[key])
-    region = f'{values["lat_min"]}{sufixes["lat_min"]}, ' \
-             f'{values["lon_min"]}{sufixes["lon_min"]} - ' \
-             f'{values["lat_max"]}{sufixes["lat_max"]}, ' \
-             f'{values["lon_max"]}{sufixes["lon_max"]}'
+    region = f'{values["lat_min"]:.02f}{sufixes["lat_min"]}, ' \
+             f'{values["lat_max"]:.02f}{sufixes["lat_max"]} - ' \
+             f'{values["lon_min"]:.02f}{sufixes["lon_min"]}, ' \
+             f'{values["lon_max"]:.02f}{sufixes["lon_max"]}'
 
     if slise.monthf >= slise.month0:
         season = ''.join(
