@@ -25,6 +25,19 @@ To get the latest stable version:
 Example
 -------
 
+Anomaly
++++++++
+
 Here is an example of how you can use Spy4Cast API to plot the anomaly of a given .nc dataset
 
 .. literalinclude:: ../../examples/anomer_example.py
+
+Spy4Cast MCA and Crossvalidation
+++++++++++++++++++++++++++++++++
+
+Here is an example of how you can use Spy4Cast API to do the full Spy4Cast methodology.
+
+**Click** :download:`here <../../examples/spy4cast-example.py>` **to download**
+
+.. literalinclude:: ../../examples/spy4cast-example.py
+

@@ -1,6 +1,5 @@
 import os
-import sys
-from typing import Optional, Tuple, Sequence, Any, List
+from typing import Optional, Tuple
 
 import numpy as np
 import numpy.typing as npt
@@ -15,22 +14,6 @@ from .. import Slise, F
 from .._functions import debugprint, time_from_here, time_to_here, slise2str
 from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig
 from .preprocess import Preprocess
-
-
-_VARIABLE_NAMES: Tuple[str, ...] = (
-    'RUY',
-    'RUY_sig',
-    'SUY',
-    'SUY_sig',
-    'RUZ',
-    'RUZ_sig',
-    'SUZ',
-    'SUZ_sig',
-    'Us',
-    'Vs',
-    'scf',
-    'alpha',
-)
 
 
 class MCA(_Procedure):
@@ -62,6 +45,23 @@ class MCA(_Procedure):
     scf: npt.NDArray[np.float32]
     alpha: float
 
+    @property
+    def var_names(self) -> Tuple[str, ...]:
+        return (
+            'RUY',
+            'RUY_sig',
+            'SUY',
+            'SUY_sig',
+            'RUZ',
+            'RUZ_sig',
+            'SUZ',
+            'SUZ_sig',
+            'Us',
+            'Vs',
+            'scf',
+            'alpha',
+        )
+
     def __init__(
             self,
             dsz: Preprocess,
@@ -70,16 +70,12 @@ class MCA(_Procedure):
     ):
         self._dsz = dsz
         self._dsy = dsy
-        z = dsz.data
-        y = dsy.data
-        nz, nt = z.shape
-        ny, nt = y.shape
 
         debugprint(f"""[INFO] Applying MCA 
-    Shapes: Z({nz}, {nt}) 
-            Y({ny}, {nt}) 
+    Shapes: Z{dsz.shape} 
+            Y{dsy.shape} 
     Slises: Z {slise2str(self.zslise)} 
-            Y {slise2str(self.yslise)}""",)
+            Y {slise2str(self.yslise)}""", )
         time_from_here()
 
         if len(dsz.time) != len(dsy.time):
@@ -90,8 +86,57 @@ class MCA(_Procedure):
                 f'{len(dsy.time)}'
             )
 
+        self._mca(dsz.data, dsy.data, nm, alpha)
+        debugprint(f'   Took: {time_to_here():.03f} seconds')
+
         # first you calculate the covariance matrix
         # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
+
+    @classmethod
+    def from_nparrays(
+        cls,
+        z: npt.NDArray[np.float32],
+        y: npt.NDArray[np.float32],
+        nm: int,
+        alpha: float,
+    ) -> 'MCA':
+        """
+        Alternative constructor for mca that takes np arrays
+
+        Parameters
+        ----------
+            z : array-like
+                Predictand (space x time)
+            y : array-like
+                Predctor (space x time)
+            nm : int
+                Number of modes
+            alpha : alpha
+               Significance level
+
+        Returns
+        -------
+            MCA
+                MCA object with the methodology performed
+
+        See Also
+        --------
+            MCA
+        """
+        m = cls.__new__(MCA)
+        m._mca(z, y, nm, alpha)
+        return m
+
+    def _mca(
+        self,
+        z: npt.NDArray[np.float32],
+        y: npt.NDArray[np.float32],
+        nm: int,
+        alpha: float,
+    ) -> None:
+        nz, nt = z.shape
+        ny, nt = y.shape
+
         c = np.dot(y, np.transpose(z))
         if type(c) == np.ma.MaskedArray:
             c = c.data
@@ -109,7 +154,7 @@ class MCA(_Procedure):
         # q = r[:nm, :]
 
         svdvals = scipy.linalg.svdvals(c)
-        scf = svdvals[:10] / np.sum(svdvals)
+        scf = svdvals[:nm] / np.sum(svdvals)
 
         # y había que transponerla si originariamente era (espacio, tiempo),
         # pero ATN_e es (tiempo, espacio) así
@@ -149,7 +194,6 @@ class MCA(_Procedure):
             self.SUZ[:, i], \
             self.SUZ_sig[:, i] \
                 = _index_regression(z, self.Us[i, :], alpha)
-        debugprint(f'   Took: {time_to_here():.03f} seconds')
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
@@ -210,7 +254,7 @@ class MCA(_Procedure):
         nrows = 3
         ncols = 3
 
-        fig = plt.figure()
+        fig = plt.figure(figsize=(15, 10))
 
         axs = [
             plt.subplot(nrows * 100 + ncols * 10 + i,
@@ -231,7 +275,7 @@ class MCA(_Procedure):
         # suy[suy == 0.0] = np.nan
 
         n = 20
-        for i, (name, su, ru, lats, lons, cm) in enumerate((
+        for i, (var_name, su, ru, lats, lons, cm) in enumerate((
                 ('SUY', self.SUY, self.RUY_sig, self.ylat, self.ylon, 'bwr'),
                 ('SUZ', self.SUZ, self.RUZ_sig, self.zlat, self.zlon, cmap)
         )):
@@ -242,7 +286,7 @@ class MCA(_Procedure):
             ylim = sorted((lats.values[-1], lats.values[0]))
 
             for j, ax in enumerate(axs[3 * (i + 1):3 * (i + 1) + 3]):
-                title = f'{name} mode {j + 1}. ' \
+                title = f'{var_name} mode {j + 1}. ' \
                         f'SCF={self.scf[j]*100:.01f}'
 
                 t = su[:, j].transpose().reshape((len(lats), len(lons)))
@@ -262,7 +306,7 @@ class MCA(_Procedure):
 
         fig.suptitle(
             f'Z({self.zvar}): {slise2str(self.zslise)}, '
-            f'Y({self.yvar}): {slise2str(self.yslise)}. ',
+            f'Y({self.yvar}): {slise2str(self.yslise)}. '
             f'Alpha: {self.alpha}',
             fontweight='bold'
         )
@@ -279,54 +323,18 @@ class MCA(_Procedure):
         )
 
     @classmethod
-    def load(cls, prefix: str, dir: str = '.', *, dsz: Preprocess, dsy: Preprocess) -> 'MCA':
-        prefixed = os.path.join(dir, prefix)
-        debugprint(
-            f'[INFO] Loading MCA data from '
-            f'`{prefixed}*`',
-            end=''
-        )
-        time_from_here()
+    def load(cls, prefix: str, dir: str = '.', *,
+             dsz: Optional[Preprocess] = None,
+             dsy: Optional[Preprocess] = None) -> 'MCA':
+        if dsz is None or dsy is None:
+            raise TypeError('To load an MCA object you must provide `dsz` and `dsy` keyword arguments')
+        if type(dsz) != Preprocess or type(dsy) != Preprocess:
+            raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
 
-        self = cls.__new__(cls)
+        self: MCA = super().load(prefix, dir)
         self._dsz = dsz
         self._dsy = dsy
-
-        for name in _VARIABLE_NAMES:
-            path = prefixed + name + '.npy'
-            try:
-                setattr(self, name, np.load(path))
-            except FileNotFoundError:
-                print(
-                    f'\n[ERROR] Could not find file `{path}` to load MCA variable {name}',
-                    file=sys.stderr
-                )
-
-        debugprint(f' took {time_to_here():.03f} seconds')
         return self
-
-    def save(self, prefix: str, dir: str = '.') -> None:
-        prefixed = os.path.join(dir, prefix)
-        debugprint(f'[INFO] Saving MCA data for Z({self.zvar}) and Y({self.yvar}) in `{prefix}*.npy`')
-
-        variables: List[Tuple[str, npt.NDArray[Any]]] = [
-            (name, getattr(self, name))
-            for name in _VARIABLE_NAMES
-        ]
-
-        if not os.path.exists(dir):
-            debugprint(f'[WARNING] Creating path {dir} that did not exist', file=sys.stderr)
-            folders = dir.split('/')
-            for i, folder in enumerate(folders):
-                if os.path.exists('/'.join(folders[:i + 1])):
-                    continue
-                os.mkdir('/'.join(folders[:i + 1]))
-
-        for name, arr in variables:
-            path = prefixed + name
-            if os.path.exists(path):
-                debugprint(f'[WARNING] Found already existing file with path {path}', file=sys.stderr)
-            np.save(path, arr)
 
 
 def _index_regression(

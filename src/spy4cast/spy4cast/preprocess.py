@@ -16,9 +16,6 @@ from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags
 from ..meteo import anom
 
 
-_VARIABLE_NAMES: Tuple[str, ...] = (
-    'time', 'lat',  'lon', 'data'
-)
 
 
 class Preprocess(_Procedure):
@@ -28,6 +25,12 @@ class Preprocess(_Procedure):
     _lon: xr.DataArray
 
     _slise: Slise
+
+    @property
+    def var_names(self) -> Tuple[str, ...]:
+        return (
+            'time', 'lat',  'lon', 'data'
+        )
 
     def __init__(
         self,
@@ -125,6 +128,10 @@ class Preprocess(_Procedure):
         self._lon = xr.DataArray(arr, dims=['lon'])
 
     @property
+    def shape(self) -> Tuple[int, ...]:
+        return self._data.shape
+
+    @property
     def data(self) -> npt.NDArray[np.float32]:
         return self._data
 
@@ -184,7 +191,7 @@ class Preprocess(_Procedure):
 
     def plot(
         self,
-        flags: int = 0,
+        flags: F = (0),
         selected_year: Optional[int] = None,
         cmap: str = 'bwr',
         dir: Optional[str] = None,
@@ -217,51 +224,3 @@ class Preprocess(_Procedure):
         _apply_flags_to_fig(
             fig, path, F(flags)
         )
-
-    @classmethod
-    def load(cls, prefix: str, dir: str = '.') -> 'Preprocess':
-        prefixed = os.path.join(dir, prefix)
-        debugprint(
-            f'[INFO] Loading Preprocessed data from '
-            f'`{prefixed}*`',
-            end=''
-        )
-        time_from_here()
-
-        self = cls.__new__(cls)
-
-        for name in _VARIABLE_NAMES:
-            path = prefixed + name + '.npy'
-            try:
-                setattr(self, name, np.load(path))
-            except FileNotFoundError:
-                print(
-                    f'\n[ERROR] Could not find file `{path}` to load preprocessed variable {name}',
-                    file=sys.stderr
-                )
-
-        debugprint(f' took {time_to_here():.03f} seconds')
-        return self
-
-    def save(self, prefix: str, dir: str = '.') -> None:
-        prefixed = os.path.join(dir, prefix)
-        debugprint(f'[INFO] Saving Preprocessed data for {self.var} in `{prefix}*.npy`')
-
-        variables: List[Tuple[str, npt.NDArray[Any]]] = [
-            (name, getattr(self, name))
-            for name in _VARIABLE_NAMES
-        ]
-
-        if not os.path.exists(dir):
-            debugprint(f'[WARNING] Creating path {dir} that did not exist', file=sys.stderr)
-            folders = dir.split('/')
-            for i, folder in enumerate(folders):
-                if os.path.exists('/'.join(folders[:i + 1])):
-                    continue
-                os.mkdir('/'.join(folders[:i + 1]))
-
-        for name, arr in variables:
-            path = prefixed + name
-            if os.path.exists(path):
-                debugprint(f'[WARNING] Found already existing file with path {path}', file=sys.stderr)
-            np.save(path, arr)

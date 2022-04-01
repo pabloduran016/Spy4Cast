@@ -1,6 +1,7 @@
 import os
+import sys
 from abc import ABC, abstractmethod
-from typing import Optional, Sequence, Union, Callable, Dict, TypeVar
+from typing import Optional, Sequence, Union, Callable, Dict, TypeVar, Any, Tuple, List, Type
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -8,19 +9,69 @@ import xarray as xr
 import cartopy.crs as ccrs
 import numpy.typing as npt
 from . import F
+from ._functions import debugprint, time_from_here, time_to_here
 
-
-T = TypeVar('T')
-
+T = TypeVar('T', bound='_Procedure')
 
 class _Procedure(ABC):
     plot: Callable[..., None] = abstractmethod(lambda: None)
 
-    save: Callable[..., None] = abstractmethod(lambda: None)
-    # TODO: Abstract this method out of subclasses
+    @property
+    @abstractmethod
+    def var_names(self) -> Tuple[str, ...]:
+        raise NotImplementedError
 
-    load: Callable[..., '_Procedure'] = abstractmethod(lambda s: s)
-    # TODO: Abstract this method out of subclasses
+    def save(self, prefix: str, dir: str = '.') -> None:
+        clsname = type(self).__name__
+        prefixed = os.path.join(dir, prefix)
+        debugprint(f'[INFO] Saving {clsname} data in `{prefix}*.npy`')
+
+        variables: List[Tuple[str, npt.NDArray[Any]]] = [
+            (name, getattr(self, name))
+            for name in self.var_names
+        ]
+
+        if not os.path.exists(dir):
+            debugprint(f'[WARNING] Creating path {dir} that did not exist', file=sys.stderr)
+            folders = dir.split('/')
+            for i, folder in enumerate(folders):
+                if os.path.exists('/'.join(folders[:i + 1])):
+                    continue
+                os.mkdir('/'.join(folders[:i + 1]))
+
+        for name, arr in variables:
+            path = prefixed + name
+            if os.path.exists(path):
+                debugprint(f'[WARNING] Found already existing file with path {path}', file=sys.stderr)
+            np.save(path, arr)
+
+    @classmethod
+    def load(cls: Type[T], prefix: str, dir: str = '.') -> T:
+        clsname = cls.__name__
+        # print(clsname, cls)
+        prefixed = os.path.join(dir, prefix)
+        debugprint(
+            f'[INFO] Loading {clsname} data from '
+            f'`{prefixed}*`',
+            end=''
+        )
+        time_from_here()
+
+        self = cls.__new__(cls)
+
+        for name in self.var_names:
+            path = prefixed + name + '.npy'
+            try:
+                setattr(self, name, np.load(path))
+            except FileNotFoundError:
+                print(
+                    f'[ERROR] Could not find file `{path}` to load {clsname} variable {name}',
+                    file=sys.stderr
+                )
+                raise
+
+        debugprint(f' took {time_to_here():.03f} seconds')
+        return self
 
 def _plot_map(
     arr: npt.NDArray[np.float32],
@@ -76,8 +127,9 @@ def _apply_flags_to_fig(fig: plt.Figure, path: str,
                         flags: int) -> None:
     if type(flags) == int:
         flags = F(flags)
-    assert type(flags) == F
+    assert type(flags) == F, f"{type(flags)=} {flags=}, {F=}, {type(flags) == F = }, {F.__module__=}, {id(F)=}, {type(flags).__module__=}, {id(type(flags))=}"
     if F.SAVE_FIG in flags:
+        debugprint(f'[INFO] Saving plot with path {path}')
         for i in range(2):
             try:
                 fig.savefig(path)

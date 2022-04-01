@@ -308,7 +308,7 @@ def mca(
     if type(c) == np.ma.MaskedArray:
         c = c.data
 
-    # NEW WAY OF PEFORMING SVD: WAAAAAAAY FASTER
+    # NEW WAY OF PEFORMING SVD: WAAAAAAAY FASTER (> 20 times)
     r, _d, q = sparse.linalg.svds(c, k=nm, which='LM')  # Which LM = Large magnitude
     # Modes are reversed so we reverse them in r, d and q
     r = r[:, ::-1]
