@@ -52,7 +52,7 @@ built-in function called `slice` and in this library we have decided to use `sli
 behaviours. I hope it is not too ugly...
 
 ## Documentation
-The documentation for this project is in [https://www.spy4cast-docs.netlify.app]
+The documentation for this project is in https://www.spy4cast-docs.netlify.app
 
 ## References
 - [xarray](https://www.xarray.pydata.org/en/stable/)
