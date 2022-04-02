@@ -1,6 +1,5 @@
-from spy4cast import F
-from src.spy4cast.dataset import Dataset
-from src.spy4cast import spy4cast, Month, Slise, set_silence
+from spy4cast.dataset import Dataset
+from spy4cast import spy4cast, Month, Slise, set_silence, F
 
 # Enabel debug ouput
 set_silence(False)
@@ -79,7 +78,7 @@ mca.plot(F.SAVE_FIG, cmap='viridis', dir=PLOTS_DIR, name='mca-sst-chl.png')
 
 if LOAD_CROSSVALIDATION:
     # Load the precomputed crossvalidation
-    cross = spy4cast.Crossvalidation.load('save_cross_', PLOT_DATA_DIR)
+    cross = spy4cast.Crossvalidation.load('save_cross_', PLOT_DATA_DIR, dsy=sst_ppcessed, dsz=chl_ppcessed)
 else:
     # Apply the corssvalidation and save the output
     cross = spy4cast.Crossvalidation(sst_ppcessed, chl_ppcessed, nm, alpha)

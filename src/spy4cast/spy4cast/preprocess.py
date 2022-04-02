@@ -1,6 +1,5 @@
 import os
-import sys
-from typing import Optional, Any, Tuple, List
+from typing import Optional, Tuple
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -13,7 +12,7 @@ from .. import Slise, F, Month
 from .._functions import debugprint, time_from_here, time_to_here, slise2str
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig
-from ..meteo import anom
+from ..meteo import Anom
 
 
 
@@ -40,7 +39,7 @@ class Preprocess(_Procedure):
     ):
         debugprint(f'[INFO] Preprocessing data for variable {ds.var}', end='')
         time_from_here()
-        anomaly = anom(ds.data)
+        anomaly = Anom.from_xrarray(ds.data)
         self._ds: Dataset = ds
         self._time_key: str = 'year'
         self._lon_key: str = ds._lon_key
@@ -191,7 +190,7 @@ class Preprocess(_Procedure):
 
     def plot(
         self,
-        flags: F = (0),
+        flags: F = F(0),
         selected_year: Optional[int] = None,
         cmap: str = 'bwr',
         dir: Optional[str] = None,

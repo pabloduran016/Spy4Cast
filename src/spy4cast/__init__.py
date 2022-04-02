@@ -1,22 +1,12 @@
-from .plotters import ClimerTS, AnomerTS, AnomerMap, ClimerMap
-from .spy4caster import Spy4Caster
 from .dataset import Dataset
 from .stypes import Slise, Month, RDArgs, RDArgsDict, F
-from .read_data import ReadData
-
 
 __all__ = [
-    'ClimerTS',
-    'AnomerTS',
-    'AnomerMap',
-    'ClimerMap',
-    'Spy4Caster',
     'Slise',
     'Month',
     'RDArgs',
     'RDArgsDict',
     'F',
-    'ReadData',
     'Dataset',
 ]
 

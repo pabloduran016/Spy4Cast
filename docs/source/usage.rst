@@ -30,7 +30,7 @@ Anomaly
 
 Here is an example of how you can use Spy4Cast API to plot the anomaly of a given .nc dataset
 
-.. literalinclude:: ../../examples/anomer_example.py
+.. literalinclude:: ../../examples/anomer-example.py
 
 Spy4Cast MCA and Crossvalidation
 ++++++++++++++++++++++++++++++++

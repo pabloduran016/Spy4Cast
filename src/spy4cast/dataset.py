@@ -68,6 +68,24 @@ class Dataset:
         self.dir: str = dir
         self._chunks: Optional[ChunkType]  = chunks
 
+    @classmethod
+    def from_xrarray(cls, array: xr.DataArray) -> 'Dataset':
+        ds = cls.__new__(cls)
+        ds._data = array
+        for var in ('lat', 'latitude'):
+            if var in array.dims:
+                ds._lat_key = var
+                break
+        for var in ('lon', 'longitude'):
+            if var in array.dims:
+                ds._lon_key = var
+                break
+        for var in ('year', 'time'):
+            if var in array.dims:
+                ds._time_key = var
+                break
+        return ds
+
     @property
     def data(self) -> xr.DataArray:
         """

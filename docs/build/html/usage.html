@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Methodologies" href="methodologies.html" /><link rel="prev" title="Welcome to Spy4Cast’s documentation!" href="index.html" />
 
     <link rel="shortcut icon" href="_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>Usage - Spy4Cast 0.0.17 documentation</title>
+        <title>Usage - Spy4Cast 0.0.18 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
@@ -121,7 +121,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Spy4Cast 0.0.17 documentation</div></a>
+      <a href="index.html"><div class="brand">Spy4Cast 0.0.18 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -144,7 +144,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">Spy4Cast 0.0.17 documentation</span>
+  <span class="sidebar-brand-text">Spy4Cast 0.0.18 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -285,31 +285,26 @@
 <div class="section" id="anomaly">
 <h3>Anomaly<a class="headerlink" href="#anomaly" title="Permalink to this headline">#</a></h3>
 <p>Here is an example of how you can use Spy4Cast API to plot the anomaly of a given .nc dataset</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">spy4cast</span> <span class="k">as</span> <span class="nn">spy</span>
-<span class="kn">from</span> <span class="nn">spy4cast.stypes</span> <span class="kn">import</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">F</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">AnomerMap</span>
 
 
 <span class="n">DATASETS_DIR</span> <span class="o">=</span> <span class="s1">'/Users/Shared/datasets/'</span>
 <span class="n">HadISST_sst</span> <span class="o">=</span> <span class="s1">'HadISST_sst.nc'</span>
 
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">sl</span> <span class="o">=</span> <span class="n">Slise</span><span class="p">(</span>
-        <span class="n">lat0</span><span class="o">=-</span><span class="mi">45</span><span class="p">,</span> <span class="n">latf</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span>
-        <span class="n">lon0</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span> <span class="n">lonf</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-        <span class="n">month0</span><span class="o">=</span><span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">monthf</span><span class="o">=</span><span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span>
-        <span class="n">year0</span><span class="o">=</span><span class="mi">1871</span><span class="p">,</span> <span class="n">yearf</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span>
-        <span class="n">sy</span><span class="o">=</span><span class="mi">1990</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">spy</span><span class="o">.</span><span class="n">AnomerMap</span><span class="p">(</span><span class="n">dataset_dir</span><span class="o">=</span><span class="n">DATASETS_DIR</span><span class="p">,</span> <span class="n">dataset_name</span><span class="o">=</span><span class="n">HadISST_sst</span><span class="p">)</span> \
-        <span class="o">.</span><span class="n">open_dataset</span><span class="p">()</span> \
-        <span class="o">.</span><span class="n">slice_dataset</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span> \
-        <span class="o">.</span><span class="n">apply</span><span class="p">()</span> \
-        <span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">SHOW_PLOT</span> <span class="o">|</span> <span class="n">F</span><span class="o">.</span><span class="n">SAVE_FIG</span><span class="p">,</span> <span class="n">slise</span><span class="o">=</span><span class="n">sl</span><span class="p">)</span>
 
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span>
+<span class="n">sl</span> <span class="o">=</span> <span class="n">Slise</span><span class="p">(</span>
+    <span class="n">lat0</span><span class="o">=-</span><span class="mi">45</span><span class="p">,</span> <span class="n">latf</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span>
+    <span class="n">lon0</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span> <span class="n">lonf</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">month0</span><span class="o">=</span><span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">monthf</span><span class="o">=</span><span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span>
+    <span class="n">year0</span><span class="o">=</span><span class="mi">1871</span><span class="p">,</span> <span class="n">yearf</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span>
+    <span class="n">sy</span><span class="o">=</span><span class="mi">1990</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">AnomerMap</span><span class="p">(</span><span class="n">dataset_dir</span><span class="o">=</span><span class="n">DATASETS_DIR</span><span class="p">,</span> <span class="n">dataset_name</span><span class="o">=</span><span class="n">HadISST_sst</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">slice_dataset</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">SHOW_PLOT</span> <span class="o">|</span> <span class="n">F</span><span class="o">.</span><span class="n">SAVE_FIG</span><span class="p">,</span> <span class="n">slise</span><span class="o">=</span><span class="n">sl</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -317,9 +312,8 @@
 <h3>Spy4Cast MCA and Crossvalidation<a class="headerlink" href="#spy4cast-mca-and-crossvalidation" title="Permalink to this headline">#</a></h3>
 <p>Here is an example of how you can use Spy4Cast API to do the full Spy4Cast methodology.</p>
 <p><strong>Click</strong> <a class="reference download internal" download="" href="_downloads/8e7aff2e36c0806c85d6dc45c8f98dac/spy4cast-example.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a> <strong>to download</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">F</span>
-<span class="kn">from</span> <span class="nn">src.spy4cast.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
-<span class="kn">from</span> <span class="nn">src.spy4cast</span> <span class="kn">import</span> <span class="n">spy4cast</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">set_silence</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">spy4cast</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">set_silence</span><span class="p">,</span> <span class="n">F</span>
 
 <span class="c1"># Enabel debug ouput</span>
 <span class="n">set_silence</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -398,7 +392,7 @@
 
 <span class="k">if</span> <span class="n">LOAD_CROSSVALIDATION</span><span class="p">:</span>
     <span class="c1"># Load the precomputed crossvalidation</span>
-    <span class="n">cross</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Crossvalidation</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_cross_'</span><span class="p">,</span> <span class="n">PLOT_DATA_DIR</span><span class="p">)</span>
+    <span class="n">cross</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Crossvalidation</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_cross_'</span><span class="p">,</span> <span class="n">PLOT_DATA_DIR</span><span class="p">,</span> <span class="n">dsy</span><span class="o">=</span><span class="n">sst_ppcessed</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">chl_ppcessed</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="c1"># Apply the corssvalidation and save the output</span>
     <span class="n">cross</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Crossvalidation</span><span class="p">(</span><span class="n">sst_ppcessed</span><span class="p">,</span> <span class="n">chl_ppcessed</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>

@@ -1,5 +1,6 @@
 import os
 import sys
+import traceback
 from abc import ABC, abstractmethod
 from typing import Optional, Sequence, Union, Callable, Dict, TypeVar, Any, Tuple, List, Type
 
@@ -10,6 +11,8 @@ import cartopy.crs as ccrs
 import numpy.typing as npt
 from . import F
 from ._functions import debugprint, time_from_here, time_to_here
+from .errors import PlotCreationError
+from .stypes import Color
 
 T = TypeVar('T', bound='_Procedure')
 
@@ -46,7 +49,8 @@ class _Procedure(ABC):
             np.save(path, arr)
 
     @classmethod
-    def load(cls: Type[T], prefix: str, dir: str = '.') -> T:
+    def load(cls: Type[T], prefix: str, dir: str = '.', **kwargs) -> T:
+
         clsname = cls.__name__
         # print(clsname, cls)
         prefixed = os.path.join(dir, prefix)
@@ -58,11 +62,20 @@ class _Procedure(ABC):
         time_from_here()
 
         self = cls.__new__(cls)
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
         for name in self.var_names:
             path = prefixed + name + '.npy'
             try:
                 setattr(self, name, np.load(path))
+            except AttributeError:
+                print(
+                    f'[ERROR] Could not set variable `{name}`',
+                    file=sys.stderr
+                )
+                traceback.print_exc()
+                exit(1)
             except FileNotFoundError:
                 print(
                     f'[ERROR] Could not find file `{path}` to load {clsname} variable {name}',
@@ -122,6 +135,30 @@ def _plot_map(
     # # axs.margins(0)
     if title is not None:
         ax.set_title(title)
+
+
+def _plot_ts(
+    time: npt.NDArray[np.float32],
+    arr: npt.NDArray[np.float32],
+    ax: plt.Axes,
+    title: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    color: Optional[Color] = None,
+    xtickslabels: Optional[List[Union[str, int]]] = None,
+) -> None:
+    assert len(time.shape) == 1
+    assert len(arr.shape) == 1
+
+    ax.plot(time, arr, linewidth=3, color=color)
+    ax.set_xlim(time[0], time[-1])
+    if xtickslabels is not None:
+        ax.set_xticklabels(xtickslabels)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    if title is not None:
+        ax.set_title(title)
+
 
 def _apply_flags_to_fig(fig: plt.Figure, path: str,
                         flags: int) -> None:

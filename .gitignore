@@ -14,6 +14,7 @@ Makefile
 
 tests/
 other/
+examples/old/
 
 examples/plots
 examples/saved*
