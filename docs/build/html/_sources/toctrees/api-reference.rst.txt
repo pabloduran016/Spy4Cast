@@ -4,9 +4,8 @@ API Reference
 .. toctree::
    :maxdepth: 4
 
-   Errors  <api-reference-src/errors>
+   Dataset  <api-reference-src/dataset>
    Meteo <api-reference-src/meteo>
-   Plotters <api-reference-src/plotters>
-   Read_data <api-reference-src/read_data>
-   Spy4caster <api-reference-src/spy4caster>
+   Spy4cast <api-reference-src/spy4cast>
    Stypes <api-reference-src/stypes>
+   Errors  <api-reference-src/errors>

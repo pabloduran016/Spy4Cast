@@ -39,7 +39,7 @@ class Preprocess(_Procedure):
     ):
         debugprint(f'[INFO] Preprocessing data for variable {ds.var}', end='')
         time_from_here()
-        anomaly = Anom.from_xrarray(ds.data)
+        anomaly = Anom.from_xrarray(ds.data).data
         self._ds: Dataset = ds
         self._time_key: str = 'year'
         self._lon_key: str = ds._lon_key

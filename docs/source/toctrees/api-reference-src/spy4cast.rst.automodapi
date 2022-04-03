@@ -1,0 +1,16 @@
+Spy4Cast
+========
+
+
+ 
+
+
+.. automodule:: spy4cast.spy4cast
+
+Classes
+^^^^^^^
+
+.. automodsumm:: spy4cast.spy4cast
+    :classes-only:
+    :toctree: ../../api
+

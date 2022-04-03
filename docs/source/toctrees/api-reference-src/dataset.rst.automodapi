@@ -1,0 +1,23 @@
+Dataset
+=======
+
+
+ 
+
+
+.. automodule:: spy4cast.dataset
+
+Classes
+^^^^^^^
+
+.. automodsumm:: spy4cast.dataset
+    :classes-only:
+    :toctree: ../../api
+
+Variables
+^^^^^^^^^
+
+.. automodsumm:: spy4cast.dataset
+    :variables-only:
+    :toctree: ../../api
+

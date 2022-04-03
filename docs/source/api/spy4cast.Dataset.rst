@@ -24,6 +24,7 @@ Dataset
 
    .. autosummary::
 
+      ~Dataset.from_xrarray
       ~Dataset.open
       ~Dataset.save_nc
       ~Dataset.slice
@@ -42,6 +43,7 @@ Dataset
 
    .. rubric:: Methods Documentation
 
+   .. automethod:: from_xrarray
    .. automethod:: open
    .. automethod:: save_nc
    .. automethod:: slice
