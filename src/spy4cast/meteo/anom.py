@@ -19,7 +19,7 @@ T = TypeVar('T')
 
 
 class Anom(_Procedure):
-    """Procedure to create th eanomaly of a `Dataset`
+    """Procedure to create the anomaly of a `Dataset`
 
     Parameters
     ----------
@@ -97,6 +97,12 @@ class Anom(_Procedure):
 
     @lat.setter
     def lat(self, value: npt.NDArray[np.float32]):
+        if self.type == _PlotType.TS:
+            raise TypeError('Latitude can not be set on a TS')
+        elif self.type == _PlotType.MAP:
+            pass
+        else:
+            assert False, 'Unreachable'
         if type(value) != np.ndarray:
             raise ValueError(f'Type of `lat` has to be `np.ndarray` got {type(value)}')
         if np.dtype(value.dtype) != np.dtype('float32'):
@@ -105,7 +111,7 @@ class Anom(_Procedure):
         if len(value) != self.data.shape[1]:
             raise ValueError(f'Unmatching shapes for `lat` and `data` variables')
 
-        self._lat = value
+        self._lat = xr.DataArray(value)
         self._data = self.data.assign_coords({self._lat_key: value})
 
     @property
@@ -116,6 +122,12 @@ class Anom(_Procedure):
 
     @lon.setter
     def lon(self, value: npt.NDArray[np.float32]):
+        if self.type == _PlotType.TS:
+            raise TypeError('Latitude can not be set on a TS')
+        elif self.type == _PlotType.MAP:
+            pass
+        else:
+            assert False, 'Unreachable'
         if type(value) != np.ndarray:
             raise ValueError(f'Type of `lon` has to be `np.ndarray` got {type(value)}')
         if np.dtype(value.dtype) != np.dtype('float32'):
@@ -124,7 +136,7 @@ class Anom(_Procedure):
         if len(value) != self.data.shape[2]:
             raise ValueError(f'Unmatching shapes for `lon` and `data` variables')
 
-        self._lon = value
+        self._lon = xr.DataArray(value)
         self._data = self.data.assign_coords({self._lon_key: value})
 
 
@@ -149,12 +161,12 @@ class Anom(_Procedure):
         if hasattr(self, '_slise'):
             return self._slise
         else:
-            # TODO: Replace la0, lon0, altf, lonf, month0, monthf with meaninful values
+            # TODO: Replace month0 and monthf with meaninful values
             self._slise = Slise(
-                lat0=-90,
-                latf=90,
-                lon0=-180,
-                lonf=180,
+                lat0=self.lat.values[0],
+                latf=self.lat.values[-1],
+                lon0=self.lon.values[0],
+                lonf=self.lon.values[-1],
                 month0=Month.JAN,
                 monthf=Month.DEC,
                 year0=self.time.values[0],
@@ -192,7 +204,7 @@ class Anom(_Procedure):
             self._lon_key = 'lon'
             self._lat_key = 'lat'
         else:
-            raise ValueError(f'Array to set must be 3-dimensional')
+            raise ValueError(f'Array to set must be 3-dimensional or 1-dimensional')
 
         self._time_key = 'year'
 
@@ -233,13 +245,13 @@ class Anom(_Procedure):
         return obj
 
     def plot(self,
-         flags: F = F(0),
-         /,
-         year: Optional[int] = None,
-         cmap: Optional[str] = None,
-         color: Optional[Color] = None,
-         dir: str = '.',
-         name: str = 'anomaly.png'
+        flags: F = F(0),
+        *,
+        year: Optional[int] = None,
+        cmap: Optional[str] = None,
+        color: Optional[Color] = None,
+        dir: str = '.',
+        name: str = 'anomaly.png'
     ) -> None:
         fig = plt.figure(figsize=(10, 10))
         if self._type == _PlotType.TS:
