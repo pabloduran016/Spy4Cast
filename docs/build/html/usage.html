@@ -284,16 +284,46 @@
 <span class="n">ts_clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">SHOW_PLOT</span> <span class="o">|</span> <span class="n">F</span><span class="o">.</span><span class="n">SAVE_FIG</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'clim-ts-example.png'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Output:</strong>
-.. image:: ../_static/cilm-map-example.png</p>
-<img alt="../_static/cilm-ts-example.png" src="../_static/cilm-ts-example.png"/>
+<p><strong>Output:</strong></p>
+<a class="reference internal image-reference" href="_images/clim-map-example.png"><img alt="Output for clim map" class="align-center" src="_images/clim-map-example.png" style="height: 25em;"/></a>
+<a class="reference internal image-reference" href="_images/clim-ts-example.png"><img alt="Output for clim ts" class="align-center" src="_images/clim-ts-example.png" style="height: 25em;"/></a>
 </div>
 <div class="section" id="anomaly">
 <h3>Anomaly<a class="headerlink" href="#anomaly" title="Permalink to this headline">#</a></h3>
 <p>Here is an example of how you can use Spy4Cast API to plot the anomaly of a given .nc dataset</p>
-<p><strong>Output:</strong>
-.. image:: ../_static/anom-map-example.png</p>
-<img alt="../_static/anom-ts-example.png" src="../_static/anom-ts-example.png"/>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Anom</span>
+<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">set_silence</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">F</span>
+
+<span class="c1"># Enabel debug ouput</span>
+<span class="n">set_silence</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Define constants ---------------------------------------------------------------------------------- #</span>
+<span class="n">DATASET_DIR</span> <span class="o">=</span> <span class="s1">'/Users/Shared/datasets/'</span>
+<span class="n">PLOTS_DIR</span> <span class="o">=</span> <span class="s1">'plots'</span>
+<span class="n">PLOT_DATA_DIR</span> <span class="o">=</span> <span class="s1">'data-anom'</span>
+
+<span class="n">chl_1km_monthly_Sep1997_Dec2020</span> <span class="o">=</span> <span class="s1">'chl_1km_monthly_Sep1997_Dec2020.nc'</span>
+<span class="n">CHL</span> <span class="o">=</span> <span class="s1">'CHL'</span>
+
+<span class="n">chl_slise</span> <span class="o">=</span> <span class="n">Slise</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">APR</span><span class="p">,</span> <span class="mi">1998</span><span class="p">,</span> <span class="mi">2020</span><span class="p">)</span>
+
+<span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">chl_1km_monthly_Sep1997_Dec2020</span><span class="p">,</span> <span class="n">DATASET_DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">CHL</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">chl_slise</span><span class="p">)</span>
+
+<span class="n">map_anom</span> <span class="o">=</span> <span class="n">Anom</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>
+
+<span class="n">map_anom</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'map_anomaly'</span><span class="p">,</span> <span class="n">PLOT_DATA_DIR</span><span class="p">)</span>
+<span class="c1"># map_anom = Anom.load('map_anomaly', PLOT_DATA_DIR, type='map')</span>
+<span class="n">map_anom</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">SHOW_PLOT</span> <span class="o">|</span> <span class="n">F</span><span class="o">.</span><span class="n">SAVE_FIG</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="mi">1999</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'anom-map-example.png'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">)</span>
+
+<span class="n">ts_anom</span> <span class="o">=</span> <span class="n">Anom</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'ts'</span><span class="p">)</span>
+<span class="n">ts_anom</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'ts_anomaly'</span><span class="p">,</span> <span class="n">PLOT_DATA_DIR</span><span class="p">)</span>
+<span class="c1"># ts_anom = Anom.load('ts_anomaly', PLOT_DATA_DIR, type='ts')</span>
+<span class="n">ts_anom</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">SHOW_PLOT</span> <span class="o">|</span> <span class="n">F</span><span class="o">.</span><span class="n">SAVE_FIG</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'anom-ts-example.png'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<a class="reference internal image-reference" href="_images/anom-map-example.png"><img alt="Output for anom map" class="align-center" src="_images/anom-map-example.png" style="height: 25em;"/></a>
+<a class="reference internal image-reference" href="_images/anom-ts-example.png"><img alt="Output for anom ts" class="align-center" src="_images/anom-ts-example.png" style="height: 25em;"/></a>
 </div>
 <div class="section" id="spy4cast-preprocess-mca-and-crossvalidation">
 <h3>Spy4Cast: Preprocess, MCA and Crossvalidation<a class="headerlink" href="#spy4cast-preprocess-mca-and-crossvalidation" title="Permalink to this headline">#</a></h3>
