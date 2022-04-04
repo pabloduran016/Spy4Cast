@@ -108,14 +108,14 @@ def _plot_map(
         levels = np.array([
             round(x, 2)
             for x in np.linspace(_m - _std, _m + _std, n)
-        ])
+        ]).sort()
     else:
         n = len(levels)
 
     if ticks is None:
         ticks = np.concatenate(
             (levels[::n // 4], levels[-1:len(levels)])
-        )
+        ).sort()
 
     cmap = 'bwr' if cmap is None else cmap
     xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
