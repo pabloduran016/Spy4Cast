@@ -205,10 +205,23 @@ class Dataset:
                     chunks=self._chunks
                 )
 
-                ts0 = datetime.strptime(
-                    self._ds.time.attrs['units'].split()[2],
-                    '%Y-%m-%d'
-                )
+                try:
+                    ts0 = datetime.strptime(
+                        self._ds.time.attrs['units'].split()[2],
+                        '%Y-%m-%d'
+                    )
+                except ValueError:
+                    # This may occur in some datasets with the time variable starting from year 0
+                    values = self._ds.time.attrs['units'].split()[2].split('-')
+                    if len(values) != 3:
+                        raise
+                    year, month, day = map(int, values)
+                    if year < 1667:
+                        print(f"[WARNING] Can not load dataset with initial year being {year}. "
+                              "Loading it with year=2000 so keep it in mind for slises", file=sys.stderr)
+                        year = 2000
+                    ts0 = datetime(year=year, month=month, day=day)
+
                 tsf = ts0 + pd.DateOffset(months=len(self._ds.time))
                 self._ds = self._ds.assign_coords(
                     time=pd.date_range(
