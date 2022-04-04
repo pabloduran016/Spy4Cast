@@ -39,7 +39,8 @@ class Preprocess(_Procedure):
     ):
         debugprint(f'[INFO] Preprocessing data for variable {ds.var}', end='')
         time_from_here()
-        anomaly = Anom.from_xrarray(ds.data).data
+        anomaly = Anom.from_xrarray(ds.data)
+        anomaly_data = anomaly.data
         self._ds: Dataset = ds
         self._time_key: str = 'year'
         self._lon_key: str = ds._lon_key
@@ -47,9 +48,9 @@ class Preprocess(_Procedure):
 
         if order is not None and period is not None:
             b, a = signal.butter(order, 1 / period, btype='high', analog=False, output='ba', fs=None)
-            anomaly = xr.apply_ufunc(
+            anomaly_data = xr.apply_ufunc(
                 lambda ts: signal.filtfilt(b, a, ts),
-                anomaly,
+                anomaly_data,
                 dask='allowed',
                 input_core_dims=[[self._time_key]],
                 output_core_dims=[[self._time_key]]
@@ -62,9 +63,9 @@ class Preprocess(_Procedure):
             else:
                 assert False, 'Unreachable'
 
-        nt, nlat, nlon = anomaly.shape
+        nt, nlat, nlon = anomaly_data.shape
 
-        self._data = anomaly.transpose(
+        self._data = anomaly_data.transpose(
             self._time_key, self._lat_key,  self._lon_key
         ).fillna(0).values.reshape(
             (nt, nlat * nlon)
