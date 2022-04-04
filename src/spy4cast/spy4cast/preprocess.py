@@ -71,8 +71,8 @@ class Preprocess(_Procedure):
         ).transpose()
 
         self._time = anomaly[self._time_key]
-        self._lat = anomaly.lat
-        self._lon = anomaly.lon
+        self._lat = anomaly[self._lat_key]
+        self._lon = anomaly[self._lon_key]
 
         debugprint(f' took: {time_to_here():.03f} seconds')
 
