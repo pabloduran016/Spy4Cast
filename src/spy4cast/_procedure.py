@@ -112,6 +112,8 @@ def _plot_map(
     else:
         n = len(levels)
 
+    levels = np.unique(levels)
+
     if ticks is None:
         ticks = np.sort(np.concatenate(
             (levels[::n // 4], levels[-1:len(levels)])
