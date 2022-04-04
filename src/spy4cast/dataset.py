@@ -173,6 +173,11 @@ class Dataset:
     def open(self: _T, var: Optional[str] = None) -> _T:
         """Opens dataset without loading it into memory
 
+        .. warning::
+
+            If the dataset says that the dataset starts from a year smaller than 1678
+            (minimum for pandas), it will be loaded with initial year = 2000
+
         Parameters
         ----------
             var : optional, str
@@ -205,6 +210,10 @@ class Dataset:
                     chunks=self._chunks
                 )
 
+                date_type = self._ds.time.attrs['units'].split()[0]
+                if date_type != 'months':
+                    raise ValueError(f'Datasets can only be loaded without decoded times if they are monthly data, got: {date_type}')
+
                 try:
                     ts0 = datetime.strptime(
                         self._ds.time.attrs['units'].split()[2],
@@ -216,7 +225,7 @@ class Dataset:
                     if len(values) != 3:
                         raise
                     year, month, day = map(int, values)
-                    if year < 1667:
+                    if year < 1678:
                         print(f"[WARNING] Can not load dataset with initial year being {year}. "
                               "Loading it with year=2000 so keep it in mind for slises", file=sys.stderr)
                         year = 2000
