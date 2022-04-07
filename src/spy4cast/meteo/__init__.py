@@ -13,3 +13,9 @@ class _PlotType(Enum):
 
 from .anom import Anom
 from .clim import Clim
+
+
+__all__ = [
+    'Anom',
+    'Clim',
+]

@@ -11,10 +11,19 @@ import cartopy.crs as ccrs
 import numpy.typing as npt
 from . import F
 from ._functions import debugprint, time_from_here, time_to_here
-from .errors import PlotCreationError
 from .stypes import Color
 
 T = TypeVar('T', bound='_Procedure')
+
+
+__all__ = [
+    '_Procedure',
+    '_plot_map',
+    '_plot_ts',
+    '_apply_flags_to_fig',
+    '_get_index_from_sy',
+]
+
 
 class _Procedure(ABC):
     plot: Callable[..., None] = abstractmethod(lambda: None)

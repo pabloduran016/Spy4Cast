@@ -6,7 +6,17 @@ from enum import auto, IntEnum, IntFlag
 from dataclasses import dataclass
 
 
-__all__ = ['Slise', 'Color', 'T_FORMAT', 'TimeStamp', 'Month', 'F', 'RDArgs', 'RDArgsDict', 'ChunkType']
+__all__ = [
+    'Slise',
+    'Color',
+    'T_FORMAT',
+    'TimeStamp',
+    'Month',
+    'F',
+    'RDArgs',
+    'RDArgsDict',
+    'ChunkType'
+]
 
 Color = Tuple[float, float, float]
 """Color type. Tuple of 3 floats"""

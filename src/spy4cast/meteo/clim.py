@@ -15,6 +15,12 @@ import pandas as pd
 
 from ..stypes import Color
 
+
+__all__ = [
+    'Clim',
+]
+
+
 T = TypeVar('T')
 
 

@@ -16,6 +16,11 @@ from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig
 from .preprocess import Preprocess
 
 
+__all__ = [
+    'MCA',
+]
+
+
 class MCA(_Procedure):
     """"Maximum covariance analysis between y (predictor)
     and Z (predictand)

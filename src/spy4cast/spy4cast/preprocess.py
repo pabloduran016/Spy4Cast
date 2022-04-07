@@ -15,6 +15,9 @@ from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags
 from ..meteo import Anom
 
 
+__all__ = [
+    'Preprocess',
+]
 
 
 class Preprocess(_Procedure):

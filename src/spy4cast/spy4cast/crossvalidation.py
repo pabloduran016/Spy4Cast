@@ -15,6 +15,11 @@ from .preprocess import Preprocess
 import xarray as xr
 
 
+__all__ = [
+    'Crossvalidation',
+]
+
+
 class Crossvalidation(_Procedure):
     """Perform crossvalidation methodology
 

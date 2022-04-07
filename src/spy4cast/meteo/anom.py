@@ -15,6 +15,11 @@ from . import _PlotType
 from ..stypes import Color, Month
 
 
+__all__ = [
+    'Anom',
+]
+
+
 T = TypeVar('T')
 
 

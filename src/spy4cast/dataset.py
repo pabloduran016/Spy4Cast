@@ -15,13 +15,16 @@ import xarray as xr
 import numpy.typing as npt
 
 
-_T = TypeVar('_T', bound='Dataset')
+__all__ = [
+    'Dataset',
+]
 
 
 _INVALID_VARS = {
     'lon', 'longitude', 'lon_bnds', 'lat', 'latitude', 'lat_bnds',
     'time', 'time_bnds', 'average_DT'
 }
+_T = TypeVar('_T', bound='Dataset')
 
 
 class Dataset:
