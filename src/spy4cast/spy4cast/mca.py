@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 
 import numpy as np
 import numpy.typing as npt
@@ -330,7 +330,10 @@ class MCA(_Procedure):
     @classmethod
     def load(cls, prefix: str, dir: str = '.', *,
              dsz: Optional[Preprocess] = None,
-             dsy: Optional[Preprocess] = None) -> 'MCA':
+             dsy: Optional[Preprocess] = None,
+             **attrs: Any) -> 'MCA':
+        if len(attrs) != 0:
+            raise TypeError('Load only takes two keyword arguments: dsy and dsz')
         if dsz is None or dsy is None:
             raise TypeError('To load an MCA object you must provide `dsz` and `dsy` keyword arguments')
         if type(dsz) != Preprocess or type(dsy) != Preprocess:

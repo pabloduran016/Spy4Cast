@@ -58,7 +58,7 @@ class _Procedure(ABC):
             np.save(path, arr)
 
     @classmethod
-    def load(cls: Type[T], prefix: str, dir: str = '.', **kwargs) -> T:
+    def load(cls: Type[T], prefix: str, dir: str = '.', **attrs: Any) -> T:
 
         clsname = cls.__name__
         # print(clsname, cls)
@@ -71,7 +71,7 @@ class _Procedure(ABC):
         time_from_here()
 
         self = cls.__new__(cls)
-        for k, v in kwargs.items():
+        for k, v in attrs.items():
             setattr(self, k, v)
 
         for name in self.var_names:

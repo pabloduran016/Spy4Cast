@@ -1,9 +1,9 @@
 import os
-from typing import Type, TypeVar, Tuple, Optional
+from typing import Type, TypeVar, Tuple, Optional, Union, Any
 
 from matplotlib import pyplot as plt
 
-from . import _PlotType
+from . import _PlotType, _get_type
 from .. import Slise, Dataset, Month, F
 from .._functions import slise2str
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_ts, _plot_map
@@ -21,10 +21,7 @@ __all__ = [
 ]
 
 
-T = TypeVar('T')
-
-
-class Clim(_Procedure):
+class Clim(_Procedure, object):
     """Procedure to create the climatology of a dataset
 
     Parameters
@@ -55,7 +52,7 @@ class Clim(_Procedure):
     _type: _PlotType
 
     def __init__(self, ds: Dataset, type: str):
-        self.type = type
+        self.type = _get_type(type)
         self._ds = ds
         self._slise = ds.slise
         self._data = ds.data
@@ -73,18 +70,12 @@ class Clim(_Procedure):
             assert False, 'Unreachable'
 
     @property
-    def type(self):
+    def type(self) -> _PlotType:
         return self._type
 
     @type.setter
-    def type(self, val: str):
-        if val not in _PlotType.values():
-            raise TypeError(
-                f'Exected type to be one of '
-                f'{{{", ".join(_PlotType.values())}}}, '
-                f'but got `{val}`'
-            )
-        self._type = _PlotType(val)
+    def type(self, val: _PlotType) -> None:
+        self._type = val
 
     @property
     def lat(self) -> xr.DataArray:
@@ -93,7 +84,7 @@ class Clim(_Procedure):
         return self._lat
 
     @lat.setter
-    def lat(self, value: npt.NDArray[np.float32]):
+    def lat(self, value: npt.NDArray[np.float32]) -> None:
         if self.type == _PlotType.TS:
             raise TypeError('Latitude can not be set on a TS')
         elif self.type == _PlotType.MAP:
@@ -118,7 +109,7 @@ class Clim(_Procedure):
         return self._lon
 
     @lon.setter
-    def lon(self, value: npt.NDArray[np.float32]):
+    def lon(self, value: npt.NDArray[np.float32]) -> None:
         if self.type == _PlotType.TS:
             raise TypeError('Longitude can not be set on a TS')
         elif self.type == _PlotType.MAP:
@@ -148,7 +139,7 @@ class Clim(_Procedure):
         return self._data[self._time_key]
 
     @time.setter
-    def time(self, value: npt.NDArray[int]):
+    def time(self, value: npt.NDArray[Union[np.uint, np.datetime64]]) -> None:
         if self.type == _PlotType.MAP:
             raise TypeError('Time can not be set on a Map')
         elif self.type == _PlotType.TS:
@@ -202,17 +193,17 @@ class Clim(_Procedure):
             assert False, 'Unreachable'
 
     @property
-    def data(self) -> xr.DataArray:
-        return self._data
-
-    @property
     def var(self) -> str:
         if hasattr(self, '_ds'):
             return self._ds.var
         return ''
 
+    @property
+    def data(self) -> xr.DataArray:
+        return self._data
+
     @data.setter
-    def data(self, value: npt.NDArray[np.float32]):
+    def data(self, value: npt.NDArray[np.float32]) -> None:
         if type(value) != np.ndarray:
             raise ValueError(f'Type of `data` has to be `np.ndarray` got {type(value)}')
         if np.dtype(value.dtype) != np.dtype('float32'):
@@ -284,12 +275,12 @@ class Clim(_Procedure):
         )
 
     @classmethod
-    def load(cls: Type[T], prefix: str, dir: str = '.', *, type: str = None, **kwargs) -> T:
-        if len(kwargs) != 0:
+    def load(cls: Type['Clim'], prefix: str, dir: str = '.', *, type: Optional[str] = None, **attrs: Any) -> 'Clim':
+        if len(attrs) != 0:
             raise TypeError('Only accepetd kwarg `type` accepted for load method')
         if type is None:
             raise TypeError('`type` is a required kwarg')
-        return super().load(prefix, dir, type=type)
+        return super().load(prefix, dir, type=_get_type(type))
 
     @property
     def var_names(self) -> Tuple[str, ...]:

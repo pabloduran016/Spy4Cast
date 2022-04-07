@@ -1,5 +1,5 @@
 import os
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Any
 
 import numpy as np
 import numpy.typing as npt
@@ -376,7 +376,7 @@ class Crossvalidation(_Procedure):
     def plot_zhat(
         self,
         year: int,
-        flags: F = (0),
+        flags: F = F(0),
         dir: Optional[str] = None,
         name: Optional[str] = None,
         cmap: str = 'bwr'
@@ -436,7 +436,10 @@ class Crossvalidation(_Procedure):
     @classmethod
     def load(cls, prefix: str, dir: str = '.', *,
              dsz: Optional[Preprocess] = None,
-             dsy: Optional[Preprocess] = None) -> 'Crossvalidation':
+             dsy: Optional[Preprocess] = None,
+             **attrs: Any) -> 'Crossvalidation':
+        if len(attrs) != 0:
+            raise TypeError('Load only takes two keyword arguments: dsz and dsy')
         if dsz is None or dsy is None:
             raise TypeError('To load an Crossvalidation object you must provide `dsz` and `dsy` keyword arguments')
         if type(dsz) != Preprocess or type(dsy) != Preprocess:
