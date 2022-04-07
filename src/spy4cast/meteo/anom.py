@@ -160,7 +160,20 @@ class Anom(_Procedure):
     def slise(self) -> Slise:
         if hasattr(self, '_slise'):
             return self._slise
-        else:
+        elif self.type == _PlotType.TS:
+            # TODO: Replace month0 and monthf with meaninful values
+            self._slise = Slise(
+                lat0=-90,
+                latf=90,
+                lon0=-180,
+                lonf=180,
+                month0=Month.JAN,
+                monthf=Month.DEC,
+                year0=self.time.values[0],
+                yearf=self.time.values[-1],
+            )
+            return self._slise
+        elif self.type == _PlotType.MAP:
             # TODO: Replace month0 and monthf with meaninful values
             self._slise = Slise(
                 lat0=self.lat.values[0],
@@ -173,6 +186,8 @@ class Anom(_Procedure):
                 yearf=self.time.values[-1],
             )
             return self._slise
+        else:
+            assert False, 'Unreachable'
 
     @property
     def data(self) -> xr.DataArray:

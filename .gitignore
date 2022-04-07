@@ -1,5 +1,6 @@
 .idea/
 .venv/
+dist/
 
 mypy.ini
 .mypy_cache/
