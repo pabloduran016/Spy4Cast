@@ -6,6 +6,7 @@ mypy.ini
 
 TODO.txt
 DOING.txt
+.DS_Store
 
 __pycache__/
 
