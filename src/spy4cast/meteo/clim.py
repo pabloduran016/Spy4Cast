@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from . import _PlotType, _get_type
 from .. import Slise, Dataset, Month, F
 from .._functions import slise2str
-from .._procedure import _Procedure, _apply_flags_to_fig, _plot_ts, _plot_map
+from .._procedure import _Procedure, _apply_flags_to_fig, _plot_ts, _plot_map, _calculate_figsize, MAX_WIDTH, MAX_HEIGHT
 import numpy as np
 import cartopy.crs as ccrs
 import xarray as xr
@@ -232,8 +232,8 @@ class Clim(_Procedure, object):
         dir: str = '.',
         name: str = 'anomaly.png'
     ) -> None:
-        fig = plt.figure(figsize=(10, 10))
         if self._type == _PlotType.TS:
+            fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if cmap is not None:
                 raise TypeError('cmap parameter is not valid to plot a time series anomaly')
             ax = fig.add_subplot()
@@ -251,6 +251,8 @@ class Clim(_Procedure, object):
                 fontweight='bold'
             )
         elif self._type == _PlotType.MAP:
+            nlat, nlon = len(self.lat), len(self.lon)
+            fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if color is not None:
                 raise TypeError('Color parameter is not valid to plot a map anomaly')
             ax = fig.add_subplot(projection=ccrs.PlateCarree())

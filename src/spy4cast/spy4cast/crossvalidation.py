@@ -10,7 +10,8 @@ from scipy import stats
 from . import MCA
 from .. import Slise, F
 from .._functions import debugprint, slise2str, time_from_here, time_to_here
-from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy
+from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
+    MAX_HEIGHT
 from .preprocess import Preprocess
 import xarray as xr
 
@@ -280,7 +281,7 @@ class Crossvalidation(_Procedure):
         #       scf           r_uv_1
         #     r_uv_1          r_uv_2
 
-        fig = plt.figure(figsize=(15, 10))
+        fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
         nrows = 3
         ncols = 2
         axs = [
@@ -381,24 +382,27 @@ class Crossvalidation(_Procedure):
         name: Optional[str] = None,
         cmap: str = 'bwr'
     ) -> None:
+        nts, nylat, nylon = len(self.ytime), len(self.ylat), len(self.ylon)
+        nts, nzlat, nzlon = len(self.ztime), len(self.zlat), len(self.zlon)
 
-        fig = plt.figure(figsize=(15, 10))
+        height = nylat + nzlat + nzlat
+        width = max(nzlon, nylon)
+
+        fig = plt.figure(figsize=_calculate_figsize(height / width, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
         ax0 = plt.subplot(311, projection=ccrs.PlateCarree())
         ax1 = plt.subplot(312, projection=ccrs.PlateCarree())
         ax2 = plt.subplot(313, projection=ccrs.PlateCarree())
 
         zindex = _get_index_from_sy(self.ztime, year)
         yindex = zindex
-        y_year = self.ytime[yindex]
+        y_year = self.ytime.values[yindex]
 
-        nts, nylats, nylons = len(self.ytime), len(self.ylat), len(self.ylon)
-        d0 = self.ydata.transpose().reshape((nts, nylats, nylons))
+        d0 = self.ydata.transpose().reshape((nts, nylat, nylon))
 
         _plot_map(d0[yindex], self.ylat, self.ylon, fig, ax0, f'Y on year {y_year}')
 
-        nts, nzlats, nzlons = len(self.ztime), len(self.zlat), len(self.zlon)
-        d1 = self.zhat.transpose().reshape((nts, nzlats, nzlons))
-        d2 = self.zdata.transpose().reshape((nts, nzlats, nzlons))
+        d1 = self.zhat.transpose().reshape((nts, nzlat, nzlon))
+        d2 = self.zdata.transpose().reshape((nts, nzlat, nzlon))
 
         n = 30
         _std = np.nanstd(d2[zindex])
