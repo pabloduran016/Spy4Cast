@@ -363,6 +363,8 @@ class Crossvalidation(_Procedure):
             fontweight='bold'
         )
 
+        fig.subplots_adjust(hspace=.4)
+
         if dir is None:
             dir = '.'
         if name is None:
@@ -424,6 +426,8 @@ class Crossvalidation(_Procedure):
             f'Alpha: {self.alpha}',
             fontweight='bold'
         )
+
+        fig.subplots_adjust(hspace=.4)
 
         if dir is None:
             dir = '.'
