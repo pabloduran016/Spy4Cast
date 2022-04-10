@@ -9,7 +9,7 @@ from scipy import stats
 
 from . import MCA
 from .. import Slise, F
-from .._functions import debugprint, slise2str, time_from_here, time_to_here
+from .._functions import debugprint, slise2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT
 from .preprocess import Preprocess
@@ -104,7 +104,7 @@ class Crossvalidation(_Procedure):
         nz, ntz = self.zdata.shape
         ny, nty = self.ydata.shape
 
-        debugprint(f"""[INFO] Applying Crossvalidation 
+        _debuginfo(f"""Applying Crossvalidation 
     Shapes: Z{dsz.shape} 
             Y{dsy.shape} 
     Slises: Z {slise2str(self.zslise)} 
@@ -186,7 +186,7 @@ class Crossvalidation(_Procedure):
         """Function of internal use that processes a single year for
         crossvalidation"""
 
-        print('\tyear:', year, 'of', nt)
+        debugprint('\tyear:', year, 'of', nt)
         z2 = z[:, yrs != year]
         y2 = y[:, yrs != year]
         mca_out = MCA.from_nparrays(z2, y2, nm, alpha)

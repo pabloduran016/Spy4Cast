@@ -9,7 +9,7 @@ import xarray as xr
 import cartopy.crs as ccrs
 
 from .. import Slise, F, Month
-from .._functions import debugprint, time_from_here, time_to_here, slise2str
+from .._functions import debugprint, time_from_here, time_to_here, slise2str, _debuginfo
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT
@@ -41,7 +41,7 @@ class Preprocess(_Procedure):
         order: Optional[int] = None,
         period: Optional[int] = None
     ):
-        debugprint(f'[INFO] Preprocessing data for variable {ds.var}', end='')
+        _debuginfo(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
         anomaly = Anom.from_xrarray(ds.data).data
         self._ds: Dataset = ds
@@ -78,7 +78,7 @@ class Preprocess(_Procedure):
         self._lat = anomaly[self._lat_key]
         self._lon = anomaly[self._lon_key]
 
-        debugprint(f' took: {time_to_here():.03f} seconds')
+        _debuginfo(f' took: {time_to_here():.03f} seconds')
 
     @property
     def time(self) -> xr.DataArray:

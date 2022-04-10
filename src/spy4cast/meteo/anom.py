@@ -333,7 +333,6 @@ class Anom(_Procedure):
 def _anom(
         array: xr.DataArray, st: bool = False
 ) -> xr.DataArray:
-    # print(f'[INFO] <meteo.Meteo.anom()> called, st: {st}')
     if not isinstance(array, xr.DataArray):
         raise TypeError(f"Invalid type for array: {type(array)}")
 
@@ -360,7 +359,6 @@ def _anom(
         a = arr.groupby('year').mean()
         b: xr.DataArray = a - a.mean('year')
         if st:
-            # print('[INFO] <meteo.Meteo.anom()> standarzing')
             rv: xr.DataArray = b / b.std()
             return rv
         return b
@@ -374,7 +372,6 @@ def _anom(
         a = arr.mean('month')
         b = a - a.mean('year')
         if st:
-            # print('[INFO] <meteo.Meteo.anom()> standarzing')
             rv = b / b.std()
             return rv
         return b

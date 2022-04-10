@@ -1,5 +1,4 @@
 import os
-import sys
 import traceback
 from abc import ABC, abstractmethod
 from typing import Optional, Sequence, Union, Callable,\
@@ -11,7 +10,7 @@ import xarray as xr
 import cartopy.crs as ccrs
 import numpy.typing as npt
 from . import F
-from ._functions import debugprint, time_from_here, time_to_here
+from ._functions import debugprint, time_from_here, time_to_here, _warning, _error, _debuginfo
 from .stypes import Color
 
 T = TypeVar('T', bound='_Procedure')
@@ -43,7 +42,7 @@ class _Procedure(ABC):
     def save(self, prefix: str, dir: str = '.') -> None:
         clsname = type(self).__name__
         prefixed = os.path.join(dir, prefix)
-        debugprint(f'[INFO] Saving {clsname} data in `{prefix}*.npy`')
+        _debuginfo(f'Saving {clsname} data in `{prefix}*.npy`')
 
         variables: List[Tuple[str, npt.NDArray[Any]]] = [
             (name, getattr(self, name))
@@ -51,7 +50,7 @@ class _Procedure(ABC):
         ]
 
         if not os.path.exists(dir):
-            debugprint(f'[WARNING] Creating path {dir} that did not exist', file=sys.stderr)
+            _warning(f'Creating path {dir} that did not exist')
             folders = dir.split('/')
             for i, folder in enumerate(folders):
                 if os.path.exists('/'.join(folders[:i + 1])):
@@ -61,7 +60,7 @@ class _Procedure(ABC):
         for name, arr in variables:
             path = prefixed + name
             if os.path.exists(path):
-                debugprint(f'[WARNING] Found already existing file with path {path}', file=sys.stderr)
+                _warning(f'Found already existing file with path {path}')
             np.save(path, arr)
 
     @classmethod
@@ -70,11 +69,7 @@ class _Procedure(ABC):
         clsname = cls.__name__
         # print(clsname, cls)
         prefixed = os.path.join(dir, prefix)
-        debugprint(
-            f'[INFO] Loading {clsname} data from '
-            f'`{prefixed}*`',
-            end=''
-        )
+        _debuginfo(f'Loading {clsname} data from `{prefixed}*`', end='')
         time_from_here()
 
         self = cls.__new__(cls)
@@ -86,20 +81,14 @@ class _Procedure(ABC):
             try:
                 setattr(self, name, np.load(path))
             except AttributeError:
-                print(
-                    f'[ERROR] Could not set variable `{name}`',
-                    file=sys.stderr
-                )
+                _error(f'Could not set variable `{name}`')
                 traceback.print_exc()
                 exit(1)
             except FileNotFoundError:
-                print(
-                    f'[ERROR] Could not find file `{path}` to load {clsname} variable {name}',
-                    file=sys.stderr
-                )
+                _error(f'Could not find file `{path}` to load {clsname} variable {name}')
                 raise
 
-        debugprint(f' took {time_to_here():.03f} seconds')
+        _debuginfo(f' took {time_to_here():.03f} seconds')
         return self
 
 def _plot_map(
@@ -189,7 +178,7 @@ def _apply_flags_to_fig(fig: plt.Figure, path: str,
         flags = F(flags)
     assert type(flags) == F, f"{type(flags)=} {flags=}, {F=}, {type(flags) == F = }, {F.__module__=}, {id(F)=}, {type(flags).__module__=}, {id(type(flags))=}"
     if F.SAVE_FIG in flags:
-        debugprint(f'[INFO] Saving plot with path {path}')
+        _debuginfo(f'Saving plot with path {path}')
         for i in range(2):
             try:
                 fig.savefig(path)

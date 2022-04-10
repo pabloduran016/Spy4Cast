@@ -1,7 +1,8 @@
 """
 Collection of functions used across the api and for the users convenience
 """
-from typing import Optional, Dict, Any
+import sys
+from typing import Optional, Dict, Any, Union
 from .stypes import Month, Slise
 from time import perf_counter
 
@@ -14,6 +15,10 @@ __all__ = [
     'mon2str',
     'str2mon',
     'debugprint',
+
+    '_warning',
+    '_error',
+    '_debuginfo',
 ]
 
 
@@ -195,7 +200,7 @@ def str2mon(month: str) -> Month:
     return Month[month]
 
 
-def debugprint(*msgs: str, **kws: Any) -> None:
+def debugprint(*msgs: Union[str, int], **kws: Any) -> None:
     """Function that only prints if `Settings.silence` is True
 
     See Also
@@ -205,3 +210,15 @@ def debugprint(*msgs: str, **kws: Any) -> None:
     from . import Settings
     if not Settings.silence:
         print(*msgs, **kws)
+
+def _warning(msg: str) -> None:
+    """Print a warning into the stderr"""
+    print(f'[WARNING] {msg}', file=sys.stderr)
+
+def _error(msg: str) -> None:
+    """Print an error into the stderr"""
+    print(f'[ERROR] {msg}', file=sys.stderr)
+
+def _debuginfo(msg: str, end: Optional[str] = None) -> None:
+    """Print an info message into the stdout in debug"""
+    debugprint(f'[INFO] {msg}', end=end)

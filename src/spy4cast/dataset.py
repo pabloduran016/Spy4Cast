@@ -1,5 +1,4 @@
 import os
-import sys
 import traceback
 from datetime import datetime
 from typing import Optional, TypeVar, cast, Tuple
@@ -7,7 +6,7 @@ from typing import Optional, TypeVar, cast, Tuple
 import numpy as np
 import pandas as pd
 
-from ._functions import mon2str
+from ._functions import mon2str, _error, _warning
 from .errors import DatasetError, DatasetNotFoundError, VariableSelectionError, TimeBoundsSelectionError, \
     SelectedYearError
 from .stypes import *
@@ -229,8 +228,10 @@ class Dataset:
                         raise
                     year, month, day = map(int, values)
                     if year < 1678:
-                        print(f"[WARNING] Can not load dataset with initial year being {year}. "
-                              "Loading it with year=2000 so keep it in mind for slises", file=sys.stderr)
+                        _warning(
+                            f"Can not load dataset with initial year being {year}. "
+                            "Loading it with year=2000 so keep it in mind for slises"
+                        )
                         year = 2000
                     ts0 = datetime(year=year, month=month, day=day)
 
@@ -242,10 +243,8 @@ class Dataset:
                 )
             except Exception as e:
                 traceback.print_exc()
-                print(
-                    f"[ERROR] <{self.__class__.__name__}> Could not load "
-                    f"dataset {self.name}",
-                    file=sys.stderr
+                _error(
+                    f"<{self.__class__.__name__}> Could not load dataset {self.name}"
                 )
                 raise DatasetError from e
         except FileNotFoundError as e:

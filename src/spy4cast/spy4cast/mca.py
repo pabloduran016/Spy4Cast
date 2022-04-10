@@ -11,7 +11,7 @@ import xarray as xr
 from scipy.stats import stats
 
 from .. import Slise, F
-from .._functions import debugprint, time_from_here, time_to_here, slise2str
+from .._functions import debugprint, time_from_here, time_to_here, slise2str, _debuginfo
 from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH
 from .preprocess import Preprocess
 
@@ -76,7 +76,7 @@ class MCA(_Procedure):
         self._dsz = dsz
         self._dsy = dsy
 
-        debugprint(f"""[INFO] Applying MCA 
+        _debuginfo(f"""Applying MCA 
     Shapes: Z{dsz.shape} 
             Y{dsy.shape} 
     Slises: Z {slise2str(self.zslise)} 
@@ -92,7 +92,7 @@ class MCA(_Procedure):
             )
 
         self._mca(dsz.data, dsy.data, nm, alpha)
-        debugprint(f'   Took: {time_to_here():.03f} seconds')
+        _debuginfo(f'   Took: {time_to_here():.03f} seconds')
 
         # first you calculate the covariance matrix
         # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
