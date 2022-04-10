@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple, Any
+from typing import Optional, Tuple, Any, Sequence
 
 import numpy as np
 import numpy.typing as npt
@@ -12,7 +12,7 @@ from scipy.stats import stats
 
 from .. import Slise, F
 from .._functions import debugprint, time_from_here, time_to_here, slise2str
-from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig
+from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH
 from .preprocess import Preprocess
 
 
@@ -250,15 +250,38 @@ class MCA(_Procedure):
 
     def plot(
         self,
-        flags: int = 0,
+        flags: F = F(0),
         cmap: str = 'bwr',
+        signs: Sequence[bool] = None,
         dir: Optional[str] = None,
         name: Optional[str] = None,
     ) -> None:
+        """
+
+        Parameters
+        ----------
+            flags : F
+                ...
+            cmap : str
+                ...
+            signs : optional, array-like[bool]
+                Indicates for each mode wether to change the sign
+            dir : str
+                ....
+            name : str
+                ...
+        """
+        nm = 3
+        if signs is not None:
+            if len(signs) != nm:
+                raise TypeError(f'Expected signs to be a sequence of the same length as number of modes ({nm})')
+            if any(type(x) != bool for x in signs):
+                raise TypeError(f'Expected signs to be a sequence of boolean: either True or False, got {signs}')
+
         nrows = 3
         ncols = 3
 
-        fig = plt.figure(figsize=(15, 10))
+        fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
 
         axs = [
             plt.subplot(nrows * 100 + ncols * 10 + i,
@@ -296,6 +319,10 @@ class MCA(_Procedure):
                 t = su[:, j].transpose().reshape((len(lats), len(lons)))
                 th = ru[:, j].transpose().reshape((len(lats), len(lons)))
 
+                if signs is not None:
+                    if signs[j]:
+                        t *= -1
+
                 _plot_map(
                     t, lats, lons, fig, ax, title,
                     levels=levels, xlim=xlim, ylim=ylim, cmap=cm
@@ -311,6 +338,8 @@ class MCA(_Procedure):
             f'Alpha: {self.alpha}',
             fontweight='bold'
         )
+
+        fig.subplots_adjust(hspace=.4)
 
         if dir is None:
             dir = '.'

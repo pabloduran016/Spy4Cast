@@ -1,6 +1,5 @@
 .idea/
 .venv/
-dist/
 
 mypy.ini
 .mypy_cache/
@@ -14,7 +13,8 @@ __pycache__/
 
 Makefile
 
-tests/
+dist/
+trying/
 other/
 examples/old/
 

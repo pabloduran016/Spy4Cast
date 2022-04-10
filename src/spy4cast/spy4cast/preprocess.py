@@ -11,7 +11,8 @@ import cartopy.crs as ccrs
 from .. import Slise, F, Month
 from .._functions import debugprint, time_from_here, time_to_here, slise2str
 from ..dataset import Dataset
-from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig
+from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
+    MAX_HEIGHT
 from ..meteo import Anom
 
 
@@ -206,7 +207,7 @@ class Preprocess(_Procedure):
         index = 0 if selected_year is None \
             else _get_index_from_sy(self.time, selected_year)
 
-        fig = plt.figure(figsize=(15, 10))
+        fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
         ax = fig.add_subplot(projection=ccrs.PlateCarree())
 
         _plot_map(

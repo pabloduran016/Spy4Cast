@@ -2,7 +2,8 @@ import os
 import sys
 import traceback
 from abc import ABC, abstractmethod
-from typing import Optional, Sequence, Union, Callable, Dict, TypeVar, Any, Tuple, List, Type
+from typing import Optional, Sequence, Union, Callable,\
+    TypeVar, Any, Tuple, List, Type
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -22,7 +23,13 @@ __all__ = [
     '_plot_ts',
     '_apply_flags_to_fig',
     '_get_index_from_sy',
+    '_calculate_figsize',
+    'MAX_WIDTH',
+    'MAX_HEIGHT',
 ]
+
+MAX_WIDTH = 17
+MAX_HEIGHT = 8
 
 
 class _Procedure(ABC):
@@ -199,3 +206,35 @@ def _get_index_from_sy(arr: Union[xr.DataArray, npt.NDArray[np.float32]], sy: in
             f'Selected Year {sy} is not valid\nNOTE: Valid years {arr}'
         )
     return index
+
+def _calculate_figsize(ratio: Optional[float], maxwidth: float, maxheight: float) -> Tuple[float, float]:
+    """Caluculate figsize from ratio and maxwidth and minwidth
+
+    Parameters
+    ----------
+        ratio : float
+            height / width
+        maxwidth : float
+            Maximum value for the width
+        maxheight : float
+            Maximum value for the height
+
+    Returns
+    -------
+        tuple[float, float]
+             Figsize ready to pass into matplotlib
+    """
+    if ratio is None:
+        return (maxwidth, maxheight)
+    if maxheight / ratio <= maxwidth:
+        w = maxheight / ratio
+        h = maxheight
+    else:
+        h = maxwidth * ratio
+        w = maxwidth
+
+    assert abs((h / w) - ratio) < 0.00001, f'{h / w = }, {ratio = }'
+    assert h <= maxheight, f"{h = }, {maxheight = }, {ratio = }"
+    assert w <= maxwidth, f"{w = }, {maxwidth = }, {ratio = }"
+
+    return (w, h)
