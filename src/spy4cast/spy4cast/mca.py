@@ -252,7 +252,6 @@ class MCA(_Procedure):
         self,
         flags: int = 0,
         cmap: str = 'bwr',
-        sign: bool = False,
         dir: Optional[str] = None,
         name: Optional[str] = None,
     ) -> None:
@@ -296,9 +295,6 @@ class MCA(_Procedure):
 
                 t = su[:, j].transpose().reshape((len(lats), len(lons)))
                 th = ru[:, j].transpose().reshape((len(lats), len(lons)))
-
-                if sign:
-                    t *= -1
 
                 _plot_map(
                     t, lats, lons, fig, ax, title,
