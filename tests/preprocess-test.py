@@ -1,6 +1,5 @@
 from spy4cast.dataset import Dataset
-from spy4cast import spy4cast, Month, Slise, set_silence
-
+from spy4cast import spy4cast, Month, Slise, set_silence, F
 
 set_silence(False)
 
@@ -38,8 +37,8 @@ chl = Dataset(
 sst_ppcessed = spy4cast.Preprocess(sst)  # Optional keyword arguments for order and period to apply filter
 chl_ppcessed = spy4cast.Preprocess(chl)
 
-sst_ppcessed.plot()
-chl_ppcessed.plot(cmap='viridis')
+sst_ppcessed.plot(F.SHOW_PLOT)
+chl_ppcessed.plot(F.SHOW_PLOT, cmap='viridis')
 
 sst_ppcessed.save('save_preprocessed_y_', dir=PLOT_DATA_DIR)
 chl_ppcessed.save('save_preprocessed_z_', dir=PLOT_DATA_DIR)
@@ -47,8 +46,8 @@ chl_ppcessed.save('save_preprocessed_z_', dir=PLOT_DATA_DIR)
 sst_ppcessed_loaded = spy4cast.Preprocess.load('save_preprocessed_y_', dir=PLOT_DATA_DIR)
 chl_ppcessed_loaded = spy4cast.Preprocess.load('save_preprocessed_z_', dir=PLOT_DATA_DIR)
 
-sst_ppcessed_loaded.plot()
-chl_ppcessed_loaded.plot(cmap='viridis')
+sst_ppcessed_loaded.plot(F.SHOW_PLOT)
+chl_ppcessed_loaded.plot(F.SHOW_PLOT, cmap='viridis')
 
 assert (sst_ppcessed_loaded.data == sst_ppcessed.data).all()
 assert (chl_ppcessed_loaded.data == chl_ppcessed.data).all()
@@ -58,3 +57,4 @@ assert (sst_ppcessed_loaded.lat == sst_ppcessed.lat).all()
 assert (chl_ppcessed_loaded.lat == chl_ppcessed.lat).all()
 assert (sst_ppcessed_loaded.lon == sst_ppcessed.lon).all()
 assert (chl_ppcessed_loaded.lon == chl_ppcessed.lon).all()
+assert (chl_ppcessed_loaded.slise.as_numpy() == chl_ppcessed.slise.as_numpy()).all()

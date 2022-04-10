@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -9,7 +9,7 @@ import xarray as xr
 import cartopy.crs as ccrs
 
 from .. import Slise, F, Month
-from .._functions import debugprint, time_from_here, time_to_here, slise2str, _debuginfo
+from .._functions import time_from_here, time_to_here, slise2str, _debuginfo
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT
@@ -28,11 +28,12 @@ class Preprocess(_Procedure):
     _lon: xr.DataArray
 
     _slise: Slise
+    _var: str
 
     @property
     def var_names(self) -> Tuple[str, ...]:
         return (
-            'time', 'lat',  'lon', 'data'
+            'time', 'lat',  'lon', 'data', 'meta'
         )
 
     def __init__(
@@ -45,9 +46,6 @@ class Preprocess(_Procedure):
         time_from_here()
         anomaly = Anom.from_xrarray(ds.data).data
         self._ds: Dataset = ds
-        self._time_key: str = 'year'
-        self._lon_key: str = ds._lon_key
-        self._lat_key: str = ds._lat_key
 
         if order is not None and period is not None:
             b, a = signal.butter(order, 1 / period, btype='high', analog=False, output='ba', fs=None)
@@ -55,8 +53,8 @@ class Preprocess(_Procedure):
                 lambda ts: signal.filtfilt(b, a, ts),
                 anomaly,
                 dask='allowed',
-                input_core_dims=[[self._time_key]],
-                output_core_dims=[[self._time_key]]
+                input_core_dims=[['year']],
+                output_core_dims=[['year']]
             )
         elif order is not None or period is not None:
             if order is None:
@@ -69,16 +67,29 @@ class Preprocess(_Procedure):
         nt, nlat, nlon = anomaly.shape
 
         self._data = anomaly.transpose(
-            self._time_key, self._lat_key,  self._lon_key
+            'year', ds._lat_key,  ds._lon_key
         ).fillna(0).values.reshape(
             (nt, nlat * nlon)
         ).transpose()
 
-        self._time = anomaly[self._time_key]
-        self._lat = anomaly[self._lat_key]
-        self._lon = anomaly[self._lon_key]
+        self._time = anomaly['year']
+        self._lat = anomaly[ds._lat_key]
+        self._lon = anomaly[ds._lon_key]
 
         _debuginfo(f' took: {time_to_here():.03f} seconds')
+
+    @property
+    def meta(self) -> npt.NDArray[Any]:
+        """Returns an np.ndarray containg information about the preprocess
+
+        First 9 values is slise as numpy, then variable as str
+        """
+        return np.concatenate((self._slise.as_numpy(), [self.var]))
+
+    @meta.setter
+    def meta(self, arr: npt.NDArray[Any]):
+        self._slise = Slise.from_numpy(arr[:9].astype(np.float32))
+        self.var = str(arr[9])
 
     @property
     def time(self) -> xr.DataArray:
@@ -169,7 +180,15 @@ class Preprocess(_Procedure):
 
     @property
     def var(self) -> str:
-        return self._ds.var if hasattr(self, '_ds') else ''
+        return self._var if hasattr(self, '_var') else self._ds.var if hasattr(self, '_ds') else ''
+
+    @var.setter
+    def var(self, value: str):
+        if hasattr(self, '_ds'):
+            raise TypeError('Can not set var in Preprocess')
+        if type(value) != str:
+            raise TypeError(f'Expected type string for var, got {type(value)}')
+        self._var = value
 
     @property
     def slise(self) -> Slise:
