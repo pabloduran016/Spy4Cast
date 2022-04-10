@@ -125,15 +125,19 @@ def _plot_map(
             round(x, 2)
             for x in np.linspace(_m - _std, _m + _std, n)
         ]))
-    else:
-        n = len(levels)
 
     levels = np.unique(levels)
 
     if ticks is None:
-        ticks = np.sort(np.concatenate(
-            (levels[::n // 4], levels[-1:len(levels)])
-        ))
+        nticks = 6
+        n0 = round(levels[0], 1)
+        nf = levels[-1]
+        step = abs((nf - n0) / nticks)
+        i = 0
+        while step * (10**i) < 1:
+            i += 1
+
+        ticks = np.arange(n0, nf, round(step, i))
 
     cmap = 'bwr' if cmap is None else cmap
     xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
@@ -143,11 +147,12 @@ def _plot_map(
         lon, lat, arr, cmap=cmap, levels=levels,
         extend='both', transform=ccrs.PlateCarree()
     )
-    fig.colorbar(
+    cb = fig.colorbar(
         im, ax=ax, orientation='horizontal', pad=0.02,
-        ticks=ticks
+        ticks=ticks,
     )
     ax.coastlines()
+    cb.ax.tick_params(labelsize=11)
     ax.set_xlim(*xlim)
     ax.set_ylim(*ylim)
     # # axs.margins(0)
