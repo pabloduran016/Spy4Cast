@@ -1,5 +1,5 @@
-from src.spy4cast.meteo import Anom
-from src.spy4cast import Month, Slise, set_silence, Dataset, F
+from spy4cast.meteo import Anom
+from spy4cast import Month, Slise, set_silence, Dataset, F
 
 # Enabel debug ouput
 set_silence(False)

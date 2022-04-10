@@ -1,5 +1,5 @@
-from src.spy4cast.dataset import Dataset
-from src.spy4cast import spy4cast, Month, Slise, set_silence
+from spy4cast.dataset import Dataset
+from spy4cast import spy4cast, Month, Slise, set_silence
 
 
 set_silence(False)

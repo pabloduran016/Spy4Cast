@@ -1,5 +1,5 @@
 import unittest
-from src.spy4cast import Dataset
+from spy4cast import Dataset
 
 
 class TestDataset(unittest.TestCase):

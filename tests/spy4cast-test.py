@@ -1,6 +1,6 @@
-from src.spy4cast import F
-from src.spy4cast.dataset import Dataset
-from src.spy4cast import spy4cast, Month, Slise, set_silence
+from spy4cast import F
+from spy4cast.dataset import Dataset
+from spy4cast import spy4cast, Month, Slise, set_silence
 
 # Enabel debug ouput
 set_silence(False)

@@ -252,7 +252,7 @@ class MCA(_Procedure):
         self,
         flags: F = F(0),
         cmap: str = 'bwr',
-        signs: Sequence[bool] = None,
+        signs: Optional[Sequence[bool]] = None,
         dir: Optional[str] = None,
         name: Optional[str] = None,
     ) -> None:
