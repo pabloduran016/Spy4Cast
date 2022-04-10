@@ -1,9 +1,12 @@
 import builtins
-from typing import Union, TypedDict, Tuple, Dict, Optional, TypeVar, cast, Any
+from typing import Union, TypedDict, Tuple, Dict, Optional, TypeVar, cast, Any, List
+
+import numpy as np
 import pandas as pd
 import datetime
 from enum import auto, IntEnum, IntFlag
 from dataclasses import dataclass
+import numpy.typing as npt
 
 
 __all__ = [
@@ -115,6 +118,45 @@ class Slise:
         -------
             Slise(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)"""
         return Slise(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)
+
+    @classmethod
+    def from_numpy(cls, arr: npt.NDArray[Union[np.float32, np.uint]]) -> 'Slise':
+        """Alternative constructor for slise:
+            lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy
+        """
+        attrs: List[Union[int, float, None]] = [x for x in arr]
+        if len(attrs) != 9:
+            raise TypeError(f'Invalid dimensions for array expected 9 fields, got {len(attrs)}')
+
+        lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy = attrs
+
+        return Slise(
+            lat0=float(lat0),
+            latf=float(latf),
+            lon0=float(lon0),
+            lonf=float(lonf),
+            month0=Month(int(month0)),
+            monthf=Month(int(monthf)),
+            year0=int(year0),
+            yearf=int(yearf),
+            sy=(int(sy) if not np.isnan(sy) else None),
+        )
+
+    def as_numpy(self) -> npt.NDArray[Union[np.float32, np.uint]]:
+        """Converts slise to np array with fields:
+            lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy
+        """
+        return np.array([
+            self.lat0,
+            self.latf,
+            self.lon0,
+            self.lonf,
+            self.month0,
+            self.monthf,
+            self.year0,
+            self.yearf,
+            (self.sy if self.sy is not None else np.nan)
+        ])
 
 
 # class SliseDict(TypedDict):
