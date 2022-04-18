@@ -20,9 +20,9 @@ map_anom = Anom(ds, 'map')
 
 map_anom.save('map_anomaly', PLOT_DATA_DIR)
 map_anom = Anom.load('map_anomaly', PLOT_DATA_DIR, type='map')
-map_anom.plot(F.SHOW_PLOT | F.SAVE_FIG, year=1999, name='anom-map-example.png', cmap='jet')
+map_anom.plot(F.SHOW_PLOT | F.SAVE_FIG, year=1999, name='anom-map-example.png', cmap='jet', dir=PLOTS_DIR)
 
 ts_anom = Anom(ds, 'ts')
 ts_anom.save('ts_anomaly', PLOT_DATA_DIR)
 ts_anom = Anom.load('ts_anomaly', PLOT_DATA_DIR, type='ts')
-ts_anom.plot(F.SHOW_PLOT | F.SAVE_FIG, name='anom-ts-example.png')
+ts_anom.plot(F.SHOW_PLOT | F.SAVE_FIG, name='anom-ts-example.png', dir=PLOTS_DIR)

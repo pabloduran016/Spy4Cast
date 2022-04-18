@@ -84,7 +84,7 @@ class Preprocess(_Procedure):
 
         First 9 values is slise as numpy, then variable as str
         """
-        return np.concatenate((self._slise.as_numpy(), [self.var]))
+        return np.concatenate((self.slise.as_numpy(), [self.var]))
 
     @meta.setter
     def meta(self, arr: npt.NDArray[Any]):
