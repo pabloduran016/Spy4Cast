@@ -147,12 +147,14 @@ class Dataset:
     @property
     def timestamp0(self) -> TimeStamp:
         """Initial timestamp of the data"""
-        return self.data.indexes[self._time_key][0]
+        return cast(TimeStamp, pd.to_datetime(self.data[self._time_key][0].values))
+
 
     @property
     def timestampf(self) -> TimeStamp:
         """Final timestamp of the data"""
-        return self.data.indexes[self._time_key][-1]
+        return cast(TimeStamp, pd.to_datetime(self.data[self._time_key][-1].values))
+
 
     @property
     def slise(self) -> Slise:
