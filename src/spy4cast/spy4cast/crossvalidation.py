@@ -322,6 +322,7 @@ class Crossvalidation(_Procedure):
             self.ztime[self.p_z_zhat_t <= self.alpha], self.r_z_zhat_t[self.p_z_zhat_t <= self.alpha]
         )
         axs[1].set_title('Correlation in space between z and zhat')
+        axs[1].grid(True)
         # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
 
         # ------ scf ------ #
@@ -329,6 +330,7 @@ class Crossvalidation(_Procedure):
             axs[2].plot(self.ytime, self.scf[mode], label=f'Mode {mode + 1}')
         axs[2].legend()
         axs[2].set_title('Squared convariance fraction')
+        axs[2].grid(True)
         # ^^^^^^ scf ^^^^^^ #
 
         # ^^^^^^ Us ^^^^^^ #
