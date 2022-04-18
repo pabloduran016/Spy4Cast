@@ -340,16 +340,16 @@ class Crossvalidation(_Procedure):
             axs[3 + mode].grid(True)
             axs[3 + mode].bar(
                 self.ytime, mx[mode] - mn[mode], bottom=mn[mode], color='purple',
-                width=.2
+                width=.2, label='std'
             )
             axs[3 + mode].plot(
                 self.ytime, mean[mode], label='Mean', color='orange', linewidth=3
             )
             axs[3 + mode].plot(
-                self.ytime, mx[mode], label='Mean', color='r', linewidth=.5, alpha=.5
+                self.ytime, mx[mode], color='r', linewidth=.5, alpha=.5
             )
             axs[3 + mode].plot(
-                self.ytime, mn[mode], label='Mean', color='r', linewidth=.5, alpha=.5
+                self.ytime, mn[mode], color='r', linewidth=.5, alpha=.5
             )
             axs[3 + mode].set_title(
                 f'Us for mode {mode + 1}'
