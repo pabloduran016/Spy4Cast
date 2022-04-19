@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple, Any, Sequence
+from typing import Optional, Tuple, Any, Sequence, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -255,6 +255,12 @@ class MCA(_Procedure):
         signs: Optional[Sequence[bool]] = None,
         dir: Optional[str] = None,
         name: Optional[str] = None,
+        suy_ticks: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
+        suz_ticks: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
     ) -> None:
         """
 
@@ -302,9 +308,9 @@ class MCA(_Procedure):
         # suy[suy == 0.0] = np.nan
 
         n = 20
-        for i, (var_name, su, ru, lats, lons, cm) in enumerate((
-                ('SUY', self.SUY, self.RUY_sig, self.ylat, self.ylon, 'bwr'),
-                ('SUZ', self.SUZ, self.RUZ_sig, self.zlat, self.zlon, cmap)
+        for i, (var_name, su, ru, lats, lons, cm, ticks) in enumerate((
+                ('SUY', self.SUY, self.RUY_sig, self.ylat, self.ylon, 'bwr', suy_ticks),
+                ('SUZ', self.SUZ, self.RUZ_sig, self.zlat, self.zlon, cmap, suz_ticks)
         )):
             _std = np.nanstd(su)
             _m = np.nanmean(su)
@@ -325,7 +331,7 @@ class MCA(_Procedure):
 
                 _plot_map(
                     t, lats, lons, fig, ax, title,
-                    levels=levels, xlim=xlim, ylim=ylim, cmap=cm
+                    levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
                 )
                 ax.contourf(
                     lons, lats, th, colors='none', hatches='..', extend='both',
