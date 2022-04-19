@@ -264,7 +264,10 @@ class Crossvalidation(_Procedure):
         flags: int = 0,
         dir: Optional[str] = None,
         name: Optional[str] = None,
-        cmap: str = 'bwr'
+        cmap: str = 'bwr',
+        map_ticks: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None
     ) -> None:
         """
         Plots:
@@ -305,7 +308,7 @@ class Crossvalidation(_Procedure):
         _plot_map(
             d, self.zlat, self.zlon, fig, axs[0],
             'Correlation in space between z and zhat',
-            cmap=cmap, ticks=np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1)
+            cmap=cmap, ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None else map_ticks)
         )
         hatches = d.copy()
         hatches[((self.p_z_zhat_s > self.alpha) | (self.r_z_zhat_s < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
