@@ -1,5 +1,6 @@
 import os
-from typing import Tuple, Optional, Any
+from math import floor
+from typing import Tuple, Optional, Any, Union, Sequence
 
 import numpy as np
 import numpy.typing as npt
@@ -304,7 +305,7 @@ class Crossvalidation(_Procedure):
         _plot_map(
             d, self.zlat, self.zlon, fig, axs[0],
             'Correlation in space between z and zhat',
-            cmap=cmap, ticks=np.arange(round(mn, 1), round(mx, 1) + 0.05, 0.05)
+            cmap=cmap, ticks=np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1)
         )
         hatches = d.copy()
         hatches[((self.p_z_zhat_s > self.alpha) | (self.r_z_zhat_s < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
@@ -335,23 +336,11 @@ class Crossvalidation(_Procedure):
 
         # ^^^^^^ Us ^^^^^^ #
         mean = self.us.mean(2)
-        _std = np.std(self.us, axis=2)
-        mx = mean + _std
-        mn = mean - _std
+        std = np.std(self.us, axis=2)
         for mode in range(mean.shape[0]):
             axs[3 + mode].grid(True)
-            axs[3 + mode].bar(
-                self.ytime, mx[mode] - mn[mode], bottom=mn[mode], color='purple',
-                width=.2, label='std'
-            )
-            axs[3 + mode].plot(
-                self.ytime, mean[mode], label='Mean', color='orange', linewidth=3
-            )
-            axs[3 + mode].plot(
-                self.ytime, mx[mode], color='r', linewidth=.5, alpha=.5
-            )
-            axs[3 + mode].plot(
-                self.ytime, mn[mode], color='r', linewidth=.5, alpha=.5
+            axs[3 + mode].errorbar(
+                self.ytime, mean[mode], yerr=np.abs(std[mode]), label='std', color='orange', linewidth=3, ecolor='purple'
             )
             axs[3 + mode].set_title(
                 f'Us for mode {mode + 1}'
@@ -384,7 +373,13 @@ class Crossvalidation(_Procedure):
         flags: F = F(0),
         dir: Optional[str] = None,
         name: Optional[str] = None,
-        cmap: str = 'bwr'
+        cmap: str = 'bwr',
+        yticks: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
+        zticks: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
     ) -> None:
         nts, nylat, nylon = len(self.ytime), len(self.ylat), len(self.ylon)
         nts, nzlat, nzlon = len(self.ztime), len(self.zlat), len(self.zlon)
@@ -403,7 +398,7 @@ class Crossvalidation(_Procedure):
 
         d0 = self.ydata.transpose().reshape((nts, nylat, nylon))
 
-        _plot_map(d0[yindex], self.ylat, self.ylon, fig, ax0, f'Y on year {y_year}')
+        _plot_map(d0[yindex], self.ylat, self.ylon, fig, ax0, f'Y on year {y_year}', ticks=yticks)
 
         d1 = self.zhat.transpose().reshape((nts, nzlat, nzlon))
         d2 = self.zdata.transpose().reshape((nts, nzlat, nzlon))
@@ -415,11 +410,11 @@ class Crossvalidation(_Procedure):
 
         _plot_map(
             d1[zindex], self.zlat, self.zlon, fig, ax1, f'Zhat on year {year}',
-            cmap=cmap, levels=levels
+            cmap=cmap, levels=levels, ticks=zticks
         )
         _plot_map(
             d2[zindex], self.zlat, self.zlon, fig, ax2, f'Z on year {year}',
-            cmap=cmap, levels=levels
+            cmap=cmap, levels=levels, ticks=zticks
         )
 
         fig.suptitle(

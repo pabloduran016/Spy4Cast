@@ -1,6 +1,7 @@
 import os
 import traceback
 from abc import ABC, abstractmethod
+from math import floor, ceil
 from typing import Optional, Sequence, Union, Callable,\
     TypeVar, Any, Tuple, List, Type
 
@@ -119,14 +120,14 @@ def _plot_map(
 
     if ticks is None:
         nticks = 6
-        n0 = round(levels[0], 1)
-        nf = levels[-1]
+        n0 = round(levels[0] * 10) / 10
+        nf = round(levels[-1] * 10) / 10
         step = abs((nf - n0) / nticks)
         i = 0
         while step * (10**i) < 1:
             i += 1
-
-        ticks = np.arange(n0, nf, round(step, i))
+        ticks = np.arange(n0, nf + round(step, i) / 2, round(step, i))
+        ticks = [t for t in ticks if levels[0] < t < levels[-1]]
 
     cmap = 'bwr' if cmap is None else cmap
     xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
