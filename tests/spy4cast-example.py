@@ -81,7 +81,7 @@ else:
     cross.save('save_cross_', dir=PLOT_DATA_DIR)
 
 # Plot crossvalidation and zhat but not showing it yet
-cross.plot(F.SAVE_FIG, name='crossvalidation.png', dir=PLOTS_DIR)
+cross.plot(F.SAVE_FIG, name='crossvalidation.png', dir=PLOTS_DIR, map_ticks=[-.1, 0, 1])
 cross.plot_zhat(2006, F.SAVE_FIG, name='zhat-2006.png', dir=PLOTS_DIR, cmap='viridis')
 
 # Show all the created plots

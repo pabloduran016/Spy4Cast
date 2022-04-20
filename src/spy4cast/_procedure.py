@@ -111,9 +111,12 @@ def _plot_map(
         n = 30
         _std = np.nanstd(arr)
         _m = np.nanmean(arr)
+
+        bound = max(abs(_m - _std),  abs(_m + _std))
+
         levels = np.sort(np.array([
             round(x, 2)
-            for x in np.linspace(_m - _std, _m + _std, n)
+            for x in np.linspace(-bound, bound, n)
         ]))
 
     levels = np.unique(levels)

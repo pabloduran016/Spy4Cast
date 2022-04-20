@@ -314,7 +314,8 @@ class MCA(_Procedure):
         )):
             _std = np.nanstd(su)
             _m = np.nanmean(su)
-            levels = np.linspace(- _m - _std, _m + _std, n)
+            bound = max(abs(_m - _std), abs(_m + _std))
+            levels = np.linspace(-bound, bound, n)
             xlim = sorted((lons.values[0], lons.values[-1]))
             ylim = sorted((lats.values[-1], lats.values[0]))
 

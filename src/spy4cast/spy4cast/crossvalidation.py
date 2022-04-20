@@ -409,7 +409,8 @@ class Crossvalidation(_Procedure):
         n = 30
         _std = np.nanstd(d2[zindex])
         _m = np.nanmean(d2[zindex])
-        levels = np.linspace(_m - _std, _m + _std, n)
+        bound = max(abs(_m - _std), abs(_m + _std))
+        levels = np.linspace(-bound, bound, n)
 
         _plot_map(
             d1[zindex], self.zlat, self.zlon, fig, ax1, f'Zhat on year {year}',
