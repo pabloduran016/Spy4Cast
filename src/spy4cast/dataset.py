@@ -276,7 +276,7 @@ class Dataset:
         """
         Roll longitude if it iis from 0 to 360
         """
-        if max(self._ds[self._lon_key]) > 180:
+        if self._ds[self._lon_key].max() > 180:
             self._ds = self._ds.assign_coords({
                 self._lon_key: (
                     ((self._ds[self._lon_key] + 180) % 360) - 180
