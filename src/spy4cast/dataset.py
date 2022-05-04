@@ -152,7 +152,7 @@ class Dataset:
             return cast(TimeStamp, pd.to_datetime(t0))
         except TypeError:
             _warning('Couldnt convert initial timestamp to pandas TimeStamp')
-            return cast(TimeStamp, t0)
+            return cast(TimeStamp, pd.Timestamp(str(t0)))
 
     @property
     def timestampf(self) -> TimeStamp:
@@ -162,7 +162,7 @@ class Dataset:
             return cast(TimeStamp, pd.to_datetime(tf))
         except TypeError:
             _warning('Couldnt convert final timestamp to pandas TimeStamp')
-            return cast(TimeStamp, tf)
+            return cast(TimeStamp, pd.Timestamp(str(tf)))
 
 
     @property
@@ -374,7 +374,7 @@ class Dataset:
         self._slise = slise
 
         # Time slise
-        fro = pd.to_datetime(self.time.values[0])
+        fro = self.timestamp0
         to = fro + pd.DateOffset(months=len(self.time))
         time = pd.date_range(start=fro, end=to, freq='M')
         if len(time) == len(self.time) + 1:
