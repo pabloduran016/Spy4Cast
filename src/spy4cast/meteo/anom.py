@@ -350,8 +350,8 @@ def _anom(
         raise ValueError('Unkpected time variable. Try slicing the dataset')
     if len(array.shape) == 3:  # 3d array
         # Reshape time variable
-        lat_key = 'latitude' if 'latitude' in array.dims else 'lat'
-        lon_key = 'longitude' if 'longitude' in array.dims else 'lon'
+        lat_key = 'latitude' if 'latitude' in array.dims else 'j' if 'j' in array.dims else 'lat'
+        lon_key = 'longitude' if 'longitude' in array.dims else 'i' if 'i' in array.dims else 'lon'
         assert lat_key in array.dims and lon_key in array.dims,\
             'Can\'t recognise keys'
         arr = array.assign_coords(time=('time', ind))
