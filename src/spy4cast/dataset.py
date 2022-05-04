@@ -147,13 +147,22 @@ class Dataset:
     @property
     def timestamp0(self) -> TimeStamp:
         """Initial timestamp of the data"""
-        return cast(TimeStamp, pd.to_datetime(self.data[self._time_key][0].values))
-
+        t0 = self.data[self._time_key].values[0]
+        try:
+            return cast(TimeStamp, pd.to_datetime(t0))
+        except TypeError:
+            _warning('Couldnt convert initial timestamp to pandas TimeStamp')
+            return cast(TimeStamp, t0)
 
     @property
     def timestampf(self) -> TimeStamp:
         """Final timestamp of the data"""
-        return cast(TimeStamp, pd.to_datetime(self.data[self._time_key][-1].values))
+        tf = self.data[self._time_key].values[-1]
+        try:
+            return cast(TimeStamp, pd.to_datetime(tf))
+        except TypeError:
+            _warning('Couldnt convert final timestamp to pandas TimeStamp')
+            return cast(TimeStamp, tf)
 
 
     @property
