@@ -296,13 +296,11 @@ class Dataset:
         """
         Detect variables in dataset
         """
-        ds_vars = [x for x in self._ds.variables if len(self._ds[x].shape) == 1]
+        ds_vars = self._ds.variables
         if 'longitude' in ds_vars:
             self._lon_key = 'longitude'
         elif 'lon' in ds_vars:
             self._lon_key = 'lon'
-        elif 'i' in ds_vars:
-            self._lon_key = 'i'
         else:
             raise DatasetError(
                 f'Can\'t recognise dataset longitude variable key: '
@@ -314,8 +312,6 @@ class Dataset:
             self._lat_key = 'latitude'
         elif 'lat' in ds_vars:
             self._lat_key = 'lat'
-        elif 'j' in ds_vars:
-            self._lat_key = 'j'
         else:
             raise DatasetError(
                 f'Can\'t recognise dataset latitude variable key: '
