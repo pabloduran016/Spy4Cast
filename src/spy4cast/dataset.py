@@ -6,7 +6,7 @@ from typing import Optional, TypeVar, cast, Tuple
 import numpy as np
 import pandas as pd
 
-from ._functions import mon2str, _error, _warning
+from ._functions import mon2str, _error, _warning, _debuginfo
 from .errors import DatasetError, DatasetNotFoundError, VariableSelectionError, TimeBoundsSelectionError, \
     SelectedYearError
 from .stypes import *
@@ -290,35 +290,67 @@ class Dataset:
                 self._lon_key: (
                     ((self._ds[self._lon_key] + 180) % 360) - 180
                 )
-            })
+            }).sortby('lon')
 
     def _detect_vars(self) -> None:
         """
         Detect variables in dataset
         """
-        ds_vars = self._ds.variables
-        if 'longitude' in ds_vars:
+        ds_dims = self._ds.dims
+        not_found_lon = False
+        if 'longitude' in ds_dims:
             self._lon_key = 'longitude'
-        elif 'lon' in ds_vars:
+        elif 'lon' in ds_dims:
             self._lon_key = 'lon'
         else:
-            raise DatasetError(
-                f'Can\'t recognise dataset longitude variable key: '
-                f'{self.name}\n'
-                f'NOTE: variables={ds_vars}'
-            )
+            not_found_lon = True
 
-        if 'latitude' in ds_vars:
+        not_found_lat = False
+        if 'latitude' in ds_dims:
             self._lat_key = 'latitude'
-        elif 'lat' in ds_vars:
+        elif 'lat' in ds_dims:
             self._lat_key = 'lat'
         else:
-            raise DatasetError(
-                f'Can\'t recognise dataset latitude variable key: '
-                f'{self.name}\n'
-                f'NOTE: variables={ds_vars}'
-            )
+            not_found_lat = True
 
+        '''
+        # There are some datasets that sore latitude
+        # and longitde in other datavars that are accessed by an
+        # index in the dimension i and j. We solve this by asserting
+        # that the columns in the longitude matrix are the same and the
+        # rows in the latitude matrix too and create new coordinates that
+        # follow the usual expected structure
+        if not_found_lat and not_found_lon and (
+            'i' in ds_dims and
+            'j' in ds_dims and
+            'latitude' in self._ds.variables and
+            'longitude' in self._ds.variables
+        ):
+            lon = self._ds.longitude
+            lat = self._ds.latitude
+            assert all((lat[:, col] == lat[:, col + 1]).all() for col in range(lat.shape[1] - 1))
+            assert all((lon[row, :] == lon[row + 1, :]).all() for row in range(lon.shape[0] - 1))
+            # i: longitude
+            # j: longitude
+            self._ds = self._ds.assign_coords({
+                'unidimensional_latitude': lat[:, 0],
+                'unidimensional_longitude': lon[0, :]
+            })
+            self._lat_key = 'unidimensional_latitude'
+            self._lon_key = 'unidimensional_longitude'
+        '''
+        if not_found_lon:
+            raise DatasetError(
+                f'Can\'t recognise dataset longitude dimension key: '
+                f'{self.name}\n'
+                f'NOTE: dims={ds_dims}'
+            )
+        elif not_found_lat:
+            raise DatasetError(
+                f'Can\'t recognise dataset latitude dimension key: '
+                f'{self.name}\n'
+                f'NOTE: dims={ds_dims}'
+            )
 
         d_keys = [
             str(e) for e in self._ds.variables.keys() if str(e) not in _INVALID_VARS
@@ -330,6 +362,7 @@ class Dataset:
                 )
 
             self._var = d_keys[0]
+            _debuginfo(f'Detected variable {self._var}')
 
         if self.var not in self._ds.variables:
             raise VariableSelectionError(

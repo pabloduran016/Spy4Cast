@@ -125,7 +125,11 @@ def _plot_map(
         nticks = 6
         n0 = round(levels[0] * 10) / 10
         nf = round(levels[-1] * 10) / 10
+        if n0 == nf:
+            n0 -= 0.05
+            nf += 0.05
         step = abs((nf - n0) / nticks)
+        assert step != 0
         i = 0
         while step * (10**i) < 1:
             i += 1
