@@ -26,7 +26,7 @@ chl_slise = Slise(36, 37, -5.3, -2, Month.MAR, Month.APR, 1998, 2020)
 
 # Indicates if get the already conputed data -------------------------------------------------------- #
 LOAD_PREPROCESSED = True
-LOAD_MCA = True
+LOAD_MCA = False
 LOAD_CROSSVALIDATION = True
 
 # Settings ------------------------------------------------------------------------------------------ #

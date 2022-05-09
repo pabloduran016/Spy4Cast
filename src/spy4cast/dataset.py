@@ -72,6 +72,7 @@ class Dataset:
 
     @classmethod
     def from_xrarray(cls, array: xr.DataArray) -> 'Dataset':
+        """Create a dataset from a xarray"""
         ds = cls.__new__(cls)
         ds._data = array
         for var in ('lat', 'latitude'):
@@ -496,6 +497,20 @@ class Dataset:
 
         assert type(slise.year0) == int, \
             f'Invalid type for initial_year: {type(slise.year0)}'
+        assert type(slise.yearf) == int, \
+            f"Invalid type for final_year: {type(slise.yearf)}"
+        assert type(slise.monthf) == int or type(slise.monthf) == Month, \
+            "Invalid type for final_month: %s" % type(slise.monthf)
+        assert type(slise.month0) == int or type(slise.month0) == Month, \
+            f"Invalid type for initial_month: {type(slise.month0)}"
+        if not 1 <= slise.month0 <= 12:
+            raise TimeBoundsSelectionError(
+                'Initial month not valid, must be int from 0 to 11'
+            )
+        if not 1 <= slise.monthf <= 12:
+            raise TimeBoundsSelectionError(
+                'Final month not valid, must be int from 0 to 11'
+            )
         if slise.year0 > self.timestampf.year:
             raise TimeBoundsSelectionError(
                 f"Initial year not valid. Dataset finishes in "
@@ -507,8 +522,6 @@ class Dataset:
                 f"Initial year not valid. Dataset starts in "
                 f"{self.timestamp0.year}, got {slise.year0}"
             )
-        assert type(slise.yearf) == int,\
-            f"Invalid type for final_year: {type(slise.yearf)}"
         if slise.yearf > self.timestampf.year:
             raise TimeBoundsSelectionError(
                 f"Final Year out of bounds. Dataset finishes in "
@@ -519,10 +532,6 @@ class Dataset:
                 f"Final year not valid. Dataset starts in "
                 f"{self.timestamp0.year}, got {slise.year0}"
             )
-        assert type(slise.yearf) == int,\
-            "Invalid type for final_year: %s" % type(slise.yearf)
-        assert type(slise.monthf) == int or type(slise.monthf) == Month, \
-            "Invalid type for final_month: %s" % type(slise.monthf)
         if slise.yearf >= self.timestampf.year and \
                 slise.monthf > self.timestampf.month:
             raise TimeBoundsSelectionError(
@@ -531,27 +540,11 @@ class Dataset:
                 f"{self.timestampf.year}, got "
                 f"{mon2str(Month(slise.monthf))} {slise.yearf}"
             )
-        assert type(slise.yearf) == int, \
-            "Invalid type for final_year: %s" % type(slise.yearf)
-        assert type(slise.year0) == int,\
-            f"Invalid type for initial_year: {type(slise.year0)}"
         if slise.year0 > slise.yearf:
             raise TimeBoundsSelectionError(
                 f"Initial year bigger than final year\n"
                 f'NOTE: initial_year={slise.year0}, '
                 f'final_year={slise.yearf}'
-            )
-        assert type(slise.month0) == int or type(slise.month0) == Month, \
-            f"Invalid type for initial_month: {type(slise.month0)}"
-        if not 1 <= slise.month0 <= 12:
-            raise TimeBoundsSelectionError(
-                'Initial month not valid, must be int from 0 to 11'
-            )
-        assert type(slise.monthf) == int or type(slise.monthf) == Month, \
-            "Invalid type for final_month: %s" % type(slise.monthf)
-        if not 1 <= slise.monthf <= 12:
-            raise TimeBoundsSelectionError(
-                'Final month not valid, must be int from 0 to 11'
             )
         if slise.month0 > slise.monthf and \
                 slise.year0 - 1 < self.timestamp0.year:
