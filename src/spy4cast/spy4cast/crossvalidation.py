@@ -6,6 +6,7 @@ import numpy as np
 import numpy.typing as npt
 from matplotlib import pyplot as plt
 import cartopy.crs as ccrs
+from matplotlib.ticker import MaxNLocator
 from scipy import stats
 
 from . import MCA
@@ -321,7 +322,9 @@ class Crossvalidation(_Procedure):
         # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
 
         # ------ r_z_zhat_t and p_z_zhat_t ------ #
-        axs[1].bar(self.ztime, self.r_z_zhat_t)
+        axs[1].bar(self.ztime.values, self.r_z_zhat_t)
+        axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
+
         axs[1].scatter(
             self.ztime[self.p_z_zhat_t <= self.alpha], self.r_z_zhat_t[self.p_z_zhat_t <= self.alpha]
         )
