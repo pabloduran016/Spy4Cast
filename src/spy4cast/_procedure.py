@@ -10,6 +10,8 @@ from matplotlib import pyplot as plt
 import xarray as xr
 import cartopy.crs as ccrs
 import numpy.typing as npt
+from matplotlib.ticker import MaxNLocator
+
 from . import F
 from ._functions import debugprint, time_from_here, time_to_here, _warning, _error, _debuginfo
 from .stypes import Color
@@ -164,13 +166,15 @@ def _plot_ts(
     title: Optional[str] = None,
     ylabel: Optional[str] = None,
     xlabel: Optional[str] = None,
-    color: Optional[Color] = None,
+    color: Union[Color, str, None] = None,
     xtickslabels: Optional[List[Union[str, int]]] = None,
+    only_int_xlabels: bool = True,
+    label: Optional[str] = None,
 ) -> None:
     assert len(time.shape) == 1
     assert len(arr.shape) == 1
 
-    ax.plot(time, arr, linewidth=3, color=color)
+    ax.plot(time, arr, linewidth=3, color=color, label=label)
     ax.set_xlim(time[0], time[-1])
     if xtickslabels is not None:
         ax.set_xticklabels(xtickslabels)
@@ -178,6 +182,8 @@ def _plot_ts(
     ax.set_ylabel(ylabel)
     if title is not None:
         ax.set_title(title)
+    if only_int_xlabels:
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
 
 def _apply_flags_to_fig(fig: plt.Figure, path: str,

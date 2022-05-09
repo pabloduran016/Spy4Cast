@@ -12,7 +12,7 @@ from scipy.stats import stats
 
 from .. import Slise, F
 from .._functions import debugprint, time_from_here, time_to_here, slise2str, _debuginfo
-from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH
+from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts
 from .preprocess import Preprocess
 
 
@@ -298,10 +298,24 @@ class MCA(_Procedure):
         # Plot timeseries
         for i, ax in enumerate(axs[:3]):
             # # ax.margins(0)
-            ax.plot(self.ytime, self.Us[i, :], color='green', label='Us')
-            ax.plot(self.ztime, self.Vs[i, :], color='blue', label='Vs')
+            _plot_ts(
+                time=self.ytime.values,
+                arr=self.Us[i, :],
+                ax=ax,
+                title=f'Us Vs mode {i + 1}',
+                color='green',
+                label='Us'
+            )
+            _plot_ts(
+                time=self.ztime.values,
+                arr=self.Vs[i, :],
+                ax=ax,
+                title=None,
+                color='blue',
+                label='Vs'
+            )
+            ax.legend()
             ax.grid(True)
-            ax.set_title(f'Us Vs mode {i + 1}')
         axs[0].legend(loc='upper left')
 
         # suy = SUY

@@ -12,7 +12,7 @@ from . import MCA
 from .. import Slise, F
 from .._functions import debugprint, slise2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
-    MAX_HEIGHT
+    MAX_HEIGHT, _plot_ts
 from .preprocess import Preprocess
 import xarray as xr
 
@@ -331,9 +331,14 @@ class Crossvalidation(_Procedure):
 
         # ------ scf ------ #
         for mode in range(self.scf.shape[0]):
-            axs[2].plot(self.ytime, self.scf[mode], label=f'Mode {mode + 1}')
+            _plot_ts(
+                time=self.ytime.values,
+                arr=self.scf[mode],
+                ax=axs[2],
+                label=f'Mode {mode + 1}',
+                title='Squared convariance fraction'
+            )
         axs[2].legend()
-        axs[2].set_title('Squared convariance fraction')
         axs[2].grid(True)
         # ^^^^^^ scf ^^^^^^ #
 
