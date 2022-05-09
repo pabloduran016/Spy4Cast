@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as npt
 from matplotlib import pyplot as plt
 import cartopy.crs as ccrs
-from scipy import sparse
+from scipy import sparse, signal
 import scipy.sparse.linalg
 import xarray as xr
 from scipy.stats import stats
@@ -142,7 +142,7 @@ class MCA(_Procedure):
         nz, nt = z.shape
         ny, nt = y.shape
 
-        c = np.dot(y, np.transpose(z))
+        c = np.dot(signal.detrend(y), np.transpose(z))
         if type(c) == np.ma.MaskedArray:
             c = c.data
 
