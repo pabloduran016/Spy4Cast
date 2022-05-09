@@ -1,11 +1,9 @@
 from .dataset import Dataset
-from .stypes import Slise, Month, RDArgs, RDArgsDict, F
+from .stypes import Slise, Month, F
 
 __all__ = [
     'Slise',
     'Month',
-    'RDArgs',
-    'RDArgsDict',
     'F',
     'Dataset',
 ]

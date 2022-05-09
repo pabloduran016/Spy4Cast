@@ -109,7 +109,7 @@ def slise2str(slise: Slise) -> str:
     -------
         >>> s = Slise(-10, 10, -100, -80, Month.JAN, Month.FEB, 1870, 2020)
         >>> slise2str(s)
-        '10ºS, 10ºN - 100ºW, 80ºW'
+        'JF (10.00ºS, 10.00ºN - 100.00ºW, 80.00ºW)'
 
     See Also
     --------
@@ -151,7 +151,7 @@ def slise2str(slise: Slise) -> str:
     return f'{season} ({region})'
 
 
-def mon2str(month: Month) -> str:
+def mon2str(month: Union[Month, int]) -> str:
     """Function that turns `Month` enum value into a string
 
     Parameters

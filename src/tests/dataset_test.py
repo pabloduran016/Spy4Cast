@@ -13,7 +13,9 @@ import xarray as xr
 DATASETS_DIR = '/Users/Shared/datasets'
 DATA_DIR = 'src/tests/data'
 HadISST_sst = 'HadISST_sst.nc'
+chlos_bscr_1958_2016 = 'chlos_bscr_1958_2016.nc'
 SST = 'sst'
+CHLOS = 'chlos'
 
 class DatasetTest(BaseTestCase):
     def test_from_xrarray(self) -> None:
@@ -79,9 +81,15 @@ class DatasetTest(BaseTestCase):
         ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST)
         self.assertTrue(type(ds.timestamp0) == pd.Timestamp)
 
+        ds2 = Dataset(chlos_bscr_1958_2016, DATASETS_DIR).open(CHLOS)
+        self.assertTrue(type(ds2.timestamp0) == pd.Timestamp)
+
     def test_get_timestampf(self) -> None:
         ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST)
         self.assertTrue(type(ds.timestampf) == pd.Timestamp)
+
+        ds2 = Dataset(chlos_bscr_1958_2016, DATASETS_DIR).open(CHLOS)
+        self.assertTrue(type(ds2.timestampf) == pd.Timestamp)
 
     def test_get_slise(self) -> None:
         ds = Dataset(HadISST_sst, DATASETS_DIR)

@@ -1,5 +1,5 @@
 import builtins
-from typing import Union, TypedDict, Tuple, Dict, Optional, TypeVar, cast, Any, List
+from typing import Union, Tuple, Dict, Optional, TypeVar, cast, Any, List
 
 import numpy as np
 import pandas as pd
@@ -16,8 +16,6 @@ __all__ = [
     'TimeStamp',
     'Month',
     'F',
-    'RDArgs',
-    'RDArgsDict',
     'ChunkType'
 ]
 
@@ -30,7 +28,7 @@ TimeStamp = Union[pd.Timestamp, datetime.datetime]
 
 
 T = TypeVar('T')
-def _document_enum(cls: T) -> T:
+def _document_enum(cls: T) -> T:  # pragma: no cover
     try:
         import enum_tools
         return cast(T, enum_tools.documentation.document_enum(cast(Any, cls)))
@@ -62,7 +60,7 @@ class Month(IntEnum):
     DEC = auto()
 
 
-def _document_dataclass(cls: T) -> T:
+def _document_dataclass(cls: T) -> T:  # pragma: no cover
     if not getattr(builtins, '__sphinx_build__', False):
         # print('return normal')
         return cls
@@ -124,7 +122,7 @@ class Slise:
         """Alternative constructor for slise:
             lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy
         """
-        attrs: List[Union[int, float, None]] = [x for x in arr]
+        attrs: List[float] = [x for x in arr]
         if len(attrs) != 9:
             raise TypeError(f'Invalid dimensions for array expected 9 fields, got {len(attrs)}')
 
@@ -198,34 +196,6 @@ class F(IntFlag):
 
 ChunkType = Union[int, Tuple[int, ...], Tuple[Tuple[int, ...] ,...], Dict[Union[str, int], int]]
 """Type variable to indicate the types that can be passed into the `chunk` argument in `read_data.ReadData`
-"""
-
-
-@dataclass
-class RDArgs():
-    """Dataclass to convientely pass arguements for a `ReadData` constructor
-
-    It is mainly used with `spy4cast.Spy4Caster` when you create to ReadData objects
-    """
-    dataset_dir: Optional[str] = None
-    dataset_name: Optional[str] = None
-    variable: Optional[str] = None
-    chunks: Optional[ChunkType] = None
-
-    def as_dict(self) -> 'RDArgsDict':
-        """Method to translate a `RDArgs` into `RDArgsDict`
-        """
-        return {'dataset_dir': self.dataset_dir,
-                'dataset_name': self.dataset_name,
-                'variable': self.variable,
-                'chunks': self.chunks}
-
-
-RDArgsDict = TypedDict('RDArgsDict', {'dataset_dir': Optional[str], 'dataset_name': Optional[str],
-                                      'variable': Optional[str], 'chunks': Optional[ChunkType]})
-"""Typed dict to set as as a type and indicate the arguments that should be passes into `read_data.ReadData`
-
-It is used mainly as an alternative to `RDArgs`
 """
 
 

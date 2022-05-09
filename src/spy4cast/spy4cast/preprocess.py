@@ -84,10 +84,10 @@ class Preprocess(_Procedure):
 
         First 9 values is slise as numpy, then variable as str
         """
-        return np.concatenate((self.slise.as_numpy(), [self.var]))
+        return np.concatenate((self.slise.as_numpy(), np.array([self.var])))
 
     @meta.setter
-    def meta(self, arr: npt.NDArray[Any]):
+    def meta(self, arr: npt.NDArray[Any]) -> None:
         self._slise = Slise.from_numpy(arr[:9].astype(np.float32))
         self.var = str(arr[9])
 
@@ -183,7 +183,7 @@ class Preprocess(_Procedure):
         return self._var if hasattr(self, '_var') else self._ds.var if hasattr(self, '_ds') else ''
 
     @var.setter
-    def var(self, value: str):
+    def var(self, value: str) -> None:
         if hasattr(self, '_ds'):
             raise TypeError('Can not set var in Preprocess')
         if type(value) != str:
