@@ -24,7 +24,9 @@ Slise
 
    .. autosummary::
 
+      ~Slise.as_numpy
       ~Slise.default
+      ~Slise.from_numpy
 
    .. rubric:: Attributes Documentation
 
@@ -40,4 +42,6 @@ Slise
 
    .. rubric:: Methods Documentation
 
+   .. automethod:: as_numpy
    .. automethod:: default
+   .. automethod:: from_numpy

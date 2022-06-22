@@ -13,6 +13,7 @@ Preprocess
       ~Preprocess.data
       ~Preprocess.lat
       ~Preprocess.lon
+      ~Preprocess.meta
       ~Preprocess.shape
       ~Preprocess.slise
       ~Preprocess.time
@@ -30,6 +31,7 @@ Preprocess
    .. autoattribute:: data
    .. autoattribute:: lat
    .. autoattribute:: lon
+   .. autoattribute:: meta
    .. autoattribute:: shape
    .. autoattribute:: slise
    .. autoattribute:: time

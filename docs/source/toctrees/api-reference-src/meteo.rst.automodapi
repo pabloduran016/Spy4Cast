@@ -14,10 +14,3 @@ Classes
     :classes-only:
     :toctree: ../../api
 
-Variables
-^^^^^^^^^
-
-.. automodsumm:: spy4cast.meteo
-    :variables-only:
-    :toctree: ../../api
-
