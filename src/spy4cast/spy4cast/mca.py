@@ -262,7 +262,7 @@ class MCA(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
     ) -> None:
-        """
+        """Plot MCA results
 
         Parameters
         ----------
