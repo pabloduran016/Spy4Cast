@@ -37,7 +37,7 @@ class TestInit(BaseTestCase):
         set_silence(False)
         self.assertEqual(Settings.silence, False)
         with self.assertRaises(ValueError):
-            set_silence('False')
+            set_silence('False')  # type: ignore
 
 from spy4cast import *
 from spy4cast.meteo import *
