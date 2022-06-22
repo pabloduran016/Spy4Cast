@@ -1,5 +1,5 @@
 import builtins
-from typing import Union, Tuple, Dict, Optional, TypeVar, cast, Any, List
+from typing import Union, Tuple, Dict, Optional, TypeVar, cast, Any, List, Callable
 
 import numpy as np
 import pandas as pd
@@ -28,7 +28,7 @@ TimeStamp = Union[pd.Timestamp, datetime.datetime]
 
 
 T = TypeVar('T')
-def _document_enum(cls: T) -> T:  # pragma: no cover
+def _document_enum(cls: T) -> T:
     try:
         import enum_tools
         return cast(T, enum_tools.documentation.document_enum(cast(Any, cls)))
@@ -60,18 +60,6 @@ class Month(IntEnum):
     DEC = auto()
 
 
-def _document_dataclass(cls: T) -> T:  # pragma: no cover
-    if not getattr(builtins, '__sphinx_build__', False):
-        # print('return normal')
-        return cls
-    # print('return modified')
-    for attr, typ in cls.__annotations__.items():
-        setattr(cls, attr, None)
-
-    return cls
-
-
-@_document_dataclass
 @dataclass
 class Slise:
     """Dataclass to create a `Slise`
@@ -157,6 +145,20 @@ class Slise:
         ])
 
 
+CLS = TypeVar('CLS')
+
+
+def _document_dataclass(cls: CLS) -> CLS:
+    if not getattr(builtins, '__sphinx_build__', False):
+        # print('return normal')
+        return cls
+    # print('return modified')
+    for attr, typ in cls.__annotations__.items():
+        setattr(cls, attr, None)
+    return cls
+
+
+_document_dataclass(Slise)
 # class SliseDict(TypedDict):
 #     latitude_min: Union[float, int]
 #     latitude_max: Union[float, int]
