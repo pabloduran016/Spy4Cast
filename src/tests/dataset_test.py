@@ -144,7 +144,7 @@ class DatasetTest(BaseTestCase):
         # type(slise.year0) == int
         with self.assertRaises(AssertionError):
             ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, '1870', 1990)
+                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, '1870', 1990)  # type: ignore
             )
         # not slise.year0 > self.timestampf.year
         with self.assertRaises(TimeBoundsSelectionError):
@@ -159,7 +159,7 @@ class DatasetTest(BaseTestCase):
         # type(slise.yearf) == int
         with self.assertRaises(AssertionError):
             ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, '2040')
+                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, '2040')  # type: ignore
             )
         # not slise.yearf > self.timestampf.year
         with self.assertRaises(TimeBoundsSelectionError):
@@ -174,7 +174,7 @@ class DatasetTest(BaseTestCase):
         # type(slise.monthf) == int or type(slise.monthf) == Month
         with self.assertRaises(AssertionError):
             ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, 'Month.MAR', 1870, 2020)
+                Slise(19, 21, 30, 45, Month.JAN, 'Month.MAR', 1870, 2020)  # type: ignore
             )
         # not slise.yearf >= self.timestampf.year and \
         #         slise.monthf > self.timestampf.month
@@ -190,7 +190,7 @@ class DatasetTest(BaseTestCase):
         # type(slise.month0) == int or type(slise.month0) == Month
         with self.assertRaises(AssertionError):
             ds._check_slise(
-                Slise(19, 21, 30, 45, 'Month.JAN', Month.MAR, 1870, 2020)
+                Slise(19, 21, 30, 45, 'Month.JAN', Month.MAR, 1870, 2020)  # type: ignore
             )
         # 1 <= slise.month0 <= 12
         with self.assertRaises(TimeBoundsSelectionError):
