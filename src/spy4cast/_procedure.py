@@ -138,7 +138,7 @@ def _plot_map(
         ticks = np.arange(n0, nf + round(step, i) / 2, round(step, i))
         ticks = [t for t in ticks if levels[0] < t < levels[-1]]
         if len(ticks) <= 1:
-            _warning('Could not atmatically create ticks. Customize it yourself')
+            _warning('Could not autmatically create ticks. Customize it yourself')
             ticks = None
 
     cmap = 'bwr' if cmap is None else cmap

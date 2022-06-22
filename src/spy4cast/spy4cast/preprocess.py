@@ -231,10 +231,10 @@ class Preprocess(_Procedure):
 
         _plot_map(
             plotable[index], self.lat, self.lon, fig, ax,
-            f'Y on year {self.time[index]}',
+            f'Year {self.time[index].values}',
             cmap=cmap,
         )
-        ax.set_title(f'{self.var}: {slise2str(self.slise)}', fontweight='bold')
+        fig.suptitle(f'{self.var}: {slise2str(self.slise)}', fontweight='bold')
 
         if dir is None:
             dir = '.'
