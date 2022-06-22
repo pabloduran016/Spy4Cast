@@ -30,7 +30,7 @@ setuptools.setup(
     package_dir={"": "src"},
     packages=setuptools.find_packages(where=""),
     install_requires=[
-        'numpy', 'matplotlib', 'xarray', 'dask', 'pandas', 'netcdf4'
+        'numpy', 'matplotlib', 'xarray', 'dask', 'pandas', 'netcdf4', 'cartopy'
     ],
     python_requires=">=3.6",
 )
