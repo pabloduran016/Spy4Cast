@@ -382,8 +382,8 @@ class Dataset:
 
         Args
         ----
-            slise : Slise
-                Slise to use
+            slise : spy4cast.stypes.Slise
+                spy4cast.stypes.Slise to use
             skip : int
                 Amount of points to skip in the matrix
 

@@ -21,12 +21,12 @@ __all__ = [
 
 
 class Anom(_Procedure):
-    """Procedure to create the anomaly of a `Dataset`
+    """Procedure to create the anomaly of a `spy4cast.dataset.Dataset`
 
     Parameters
     ----------
-        ds : Dataset
-            Dataset on to which perform the anomaly
+        ds : spy4cast.dataset.Dataset
+            spy4cast.dataset.Dataset on to which perform the anomaly
 
         type : {'map', 'ts'}
             Perform the anomaly and outputting a map (will result in a series of maps)
@@ -37,7 +37,7 @@ class Anom(_Procedure):
 
     See Also
     --------
-        Dataset, Clim
+        spy4cast.dataset.Dataset, Clim
 
     """
 

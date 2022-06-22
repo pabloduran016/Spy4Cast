@@ -26,8 +26,8 @@ class Clim(_Procedure, object):
 
     Parameters
     ----------
-        ds : Dataset
-            Dataset onto which perform the anomaly
+        ds : spy4cast.dataset.Dataset
+            spy4cast.dataset.Dataset onto which perform the anomaly
 
         type : {'map', 'ts'}
             Perform the climatology and outputting a map by doing the mean across time
