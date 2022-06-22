@@ -266,7 +266,7 @@ class MCA(_Procedure):
 
         Parameters
         ----------
-            flags : F
+            flags : spy4cast.stypes.F
                 ...
             cmap : str
                 ...
