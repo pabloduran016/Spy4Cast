@@ -235,7 +235,7 @@ def _calculate_figsize(ratio: Optional[float], maxwidth: float, maxheight: float
         tuple[float, float]
              Figsize ready to pass into matplotlib
     """
-    if ratio is None:
+    if ratio is None or ratio == 0:
         return (maxwidth, maxheight)
     if maxheight / ratio <= maxwidth:
         w = maxheight / ratio
