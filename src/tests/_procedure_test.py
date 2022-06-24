@@ -6,7 +6,13 @@ import numpy as np
 
 from . import BaseTestCase
 from spy4cast import F
-from spy4cast._procedure import _calculate_figsize, _get_index_from_sy, _plot_map, _plot_ts, _apply_flags_to_fig
+from spy4cast._procedure import (
+    _calculate_figsize,
+    _get_index_from_sy,
+    _plot_map,
+    _plot_ts,
+    _apply_flags_to_fig
+)
 
 
 class ProcedureTest(BaseTestCase):

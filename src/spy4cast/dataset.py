@@ -224,8 +224,10 @@ class Dataset:
                     chunks=self._chunks
                 )
 
+                # TODO: Some datasets may not even have the 'units' attr
                 date_type = self._ds.time.attrs['units'].split()[0]
                 if date_type != 'months':
+                    # TODO: Look for a dataset that suffers from this. To add into the tests
                     raise ValueError(f'Datasets can only be loaded without decoded times if they are monthly data, got: {date_type}')
 
                 try:
@@ -234,6 +236,7 @@ class Dataset:
                         '%Y-%m-%d'
                     )
                 except ValueError:
+                    # TODO: Look for a dataset that suffers from this. To add into the tests
                     # This may occur in some datasets with the time variable starting from year 0
                     values = self._ds.time.attrs['units'].split()[2].split('-')
                     if len(values) != 3:
@@ -270,6 +273,7 @@ class Dataset:
 
         # Check if values are in Kelvin
         if 'units' in self._ds.variables[self.var].attrs and self._ds.variables[self.var].attrs['units'] == 'K':
+            # TODO: Look for a dataset that suffers from this. To add into the tests
             self.data = getattr(self._ds, self.var) - 273.15
         else:
             self.data = getattr(self._ds, self.var)

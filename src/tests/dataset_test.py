@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from spy4cast import Slise, Month
-from spy4cast.errors import TimeBoundsSelectionError, SelectedYearError
+from spy4cast.errors import TimeBoundsSelectionError, SelectedYearError, DatasetError, DatasetNotFoundError
 from . import BaseTestCase
 from spy4cast.dataset import Dataset
 import xarray as xr
@@ -13,6 +13,8 @@ import xarray as xr
 DATASETS_DIR = '/Users/Shared/datasets'
 DATA_DIR = 'src/tests/data'
 HadISST_sst = 'HadISST_sst.nc'
+oisst_v2_mean_monthly = 'oisst_v2_mean_monthly.nc'
+Spain02_v5_0_MM_010reg_aa3d_pr = "Spain02_v5.0_MM_010reg_aa3d_pr.nc"
 chlos_bscr_1958_2016 = 'chlos_bscr_1958_2016.nc'
 SST = 'sst'
 CHLOS = 'chlos'
@@ -107,6 +109,17 @@ class DatasetTest(BaseTestCase):
         self.assertHasAttr(ds, '_ds')
         self.assertHasAttr(ds, '_data')
         self.assertHasAttr(ds, '_var')
+        ds.open(SST)  # Behaviour when opening an already-opened Dataset
+
+        _ = Dataset(oisst_v2_mean_monthly, DATASETS_DIR).open()  # Decode times.open(
+        with self.assertRaises(DatasetError):
+            corrupted_dataset = 'corrupted-dataset.nc'
+            with open(corrupted_dataset, 'w') as f:
+                f.write('nothing')
+            _ = Dataset(corrupted_dataset).open()
+            os.remove(corrupted_dataset)
+        with self.assertRaises(DatasetNotFoundError):
+            _ = Dataset('non_existing_dataset.nc', DATASETS_DIR).open()
 
     def test__roll_lon(self) -> None:
         ds = Dataset(HadISST_sst, DATASETS_DIR)
@@ -126,18 +139,21 @@ class DatasetTest(BaseTestCase):
         self.assertHasAttr(ds, '_var')
 
     def test_slice(self) -> None:
-        ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
-            Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, 1990)
-        )
-        self.assertTrue(abs(ds.lat.min().values - 19) <= 0.5)
-        self.assertTrue(abs(ds.lat.max().values - 21) <= 0.5)
-        self.assertTrue(abs(ds.lon.min().values - 30) <= 0.5)
-        self.assertTrue(abs(ds.lon.max().values - 45) <= 0.5)
-        self.assertEqual(ds.timestamp0.month, Month.JAN)
-        self.assertEqual(ds.timestamp0.year, 1870)
-        self.assertEqual(ds.timestampf.month, Month.MAR)
-        self.assertEqual(ds.timestampf.year, 1990)
-        self.assertHasAttr(ds, '_slise')
+        for slise, year0, yearf, month0, monthf in (
+            (Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, 1990), 1870, 1990, Month.JAN, Month.MAR),
+            (Slise(19, 21, 30, 45, Month.NOV, Month.MAR, 1871, 1990), 1870, 1990, Month.NOV, Month.MAR),
+        ):
+            print(slise)
+            ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(slise)
+            self.assertTrue(abs(ds.lat.min().values - 19) <= 0.5)
+            self.assertTrue(abs(ds.lat.max().values - 21) <= 0.5)
+            self.assertTrue(abs(ds.lon.min().values - 30) <= 0.5)
+            self.assertTrue(abs(ds.lon.max().values - 45) <= 0.5)
+            self.assertEqual(ds.timestamp0.month, month0)
+            self.assertEqual(ds.timestamp0.year, year0)
+            self.assertEqual(ds.timestampf.month, monthf)
+            self.assertEqual(ds.timestampf.year, yearf)
+            self.assertHasAttr(ds, '_slise')
 
     def test__check_slise(self) -> None:
         ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST)
@@ -169,7 +185,7 @@ class DatasetTest(BaseTestCase):
         # not slise.yearf < self.timestamp0.year
         with self.assertRaises(TimeBoundsSelectionError):
             ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1810, 1850)
+                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1900, 1850)
             )
         # type(slise.monthf) == int or type(slise.monthf) == Month
         with self.assertRaises(AssertionError):
@@ -180,7 +196,7 @@ class DatasetTest(BaseTestCase):
         #         slise.monthf > self.timestampf.month
         with self.assertRaises(TimeBoundsSelectionError):
             ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, 2040)
+                Slise(19, 21, 30, 45, Month.JAN, Month.JUN, 1870, 2020)
             )
         # not slise.year0 > slise.yearf
         with self.assertRaises(TimeBoundsSelectionError):
@@ -227,10 +243,12 @@ class DatasetTest(BaseTestCase):
         name = 'test_save_nc.nc'
         sl = Slise(-20, 20, -10, 20, Month.JAN, Month.MAR, 1870, 1990)
         ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(sl)
-        ds2 = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(sl)
+        ds.save_nc(name)
+        ds2 = Dataset(name).open(SST).slice(sl)
         self.assertTrue(
             np.isclose(
                 ds.data.values[~np.isnan(ds.data.values)],
                 ds2.data.values[~np.isnan(ds2.data.values)]
             ).all()
         )
+        os.remove(name)
