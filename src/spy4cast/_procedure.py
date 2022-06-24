@@ -189,8 +189,13 @@ def _plot_ts(
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
 
-def _apply_flags_to_fig(fig: plt.Figure, path: str,
-                        flags: int) -> None:
+def _apply_flags_to_fig(
+    fig: plt.Figure,
+    path: str,
+    flags: int,
+    *,
+    block: bool = True  # Only for testing purposes
+) -> None:
     if type(flags) == int:
         flags = F(flags)
     assert type(flags) == F, f"{type(flags)=} {flags=}, {F=}, {type(flags) == F = }, {F.__module__=}, {id(F)=}, {type(flags).__module__=}, {id(type(flags))=}"
@@ -201,11 +206,11 @@ def _apply_flags_to_fig(fig: plt.Figure, path: str,
                 fig.savefig(path)
                 break
             except FileNotFoundError:
-                os.mkdir("/".join(path.split('/')[:i + 1]))
+                os.makedirs(os.path.dirname(path))
     if F.SHOW_PLOT in flags:
         fig.show()
     if F.SHOW_PLOT in flags and F.NOT_HALT not in flags:
-        plt.show()
+        plt.show(block=block)
 
 def _get_index_from_sy(arr: Union[xr.DataArray, npt.NDArray[np.float32]], sy: int) -> int:
     index = 0

@@ -30,15 +30,6 @@ class BaseTestCase(TestCase):
                 self.fail(NOT_HAS_ATTR_MESSAGE.format(obj=obj, attrname=attrname))
 
 
-class TestInit(BaseTestCase):
-    def test_set_silence(self) -> None:
-        set_silence(True)
-        self.assertEqual(Settings.silence, True)
-        set_silence(False)
-        self.assertEqual(Settings.silence, False)
-        with self.assertRaises(ValueError):
-            set_silence('False')  # type: ignore
-
 from spy4cast import *
 from spy4cast.meteo import *
 from spy4cast.spy4cast import *
