@@ -135,7 +135,6 @@ class Anom(_Procedure):
         self._lon = xr.DataArray(value)
         self._data = self.data.assign_coords({self._lon_key: value})
 
-
     @property
     def time(self) -> xr.DataArray:
         return self._data[self._time_key].astype(np.uint)
@@ -248,9 +247,11 @@ class Anom(_Procedure):
         --------
         npanom
         """
+        if len(array.shape) != 3 and len(array.shape) != 2:
+            raise TypeError('Dimensions for array must be either 3 (MAP) or 2 (TS)')
         obj = Anom.__new__(Anom)
         obj._ds = Dataset.from_xrarray(array)
-
+        obj.type = _PlotType.MAP if len(array.shape) == 3 else _PlotType.TS
         obj._data = _anom(array, st)
         obj._time_key = 'year'
         return obj
