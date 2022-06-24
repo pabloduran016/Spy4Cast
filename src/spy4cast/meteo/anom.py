@@ -247,8 +247,8 @@ class Anom(_Procedure):
         --------
         npanom
         """
-        if len(array.shape) != 3 and len(array.shape) != 2:
-            raise TypeError('Dimensions for array must be either 3 (MAP) or 2 (TS)')
+        if len(array.shape) != 3 and len(array.shape) != 1:
+            raise TypeError('Dimensions for array must be either 3 (MAP) or 1 (TS)')
         obj = Anom.__new__(Anom)
         obj._ds = Dataset.from_xrarray(array)
         obj.type = _PlotType.MAP if len(array.shape) == 3 else _PlotType.TS
