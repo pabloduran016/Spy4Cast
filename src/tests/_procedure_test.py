@@ -115,6 +115,7 @@ class ProcedureTest(BaseTestCase):
 
         with self.assertRaises(ValueError):
             _ = _get_index_from_sy(arr, 1980)
+        with self.assertRaises(ValueError):
             _ = _get_index_from_sy(arr, 2030)
 
 

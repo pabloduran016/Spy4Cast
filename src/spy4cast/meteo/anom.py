@@ -1,5 +1,5 @@
 import os
-from typing import Tuple, Optional, TypeVar, Type, Any
+from typing import Tuple, Optional, Type, Any, cast
 
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
@@ -252,8 +252,10 @@ class Anom(_Procedure):
         obj = Anom.__new__(Anom)
         obj._ds = Dataset.from_xrarray(array)
         obj.type = _PlotType.MAP if len(array.shape) == 3 else _PlotType.TS
-        obj._data = _anom(array, st)
-        obj._time_key = 'year'
+        obj.data = _anom(array, st).values
+        if obj.type == _PlotType.MAP:
+            obj.lat = obj._ds.lat.values
+            obj.lon = obj._ds.lon.values
         return obj
 
     def plot(self,
@@ -268,9 +270,9 @@ class Anom(_Procedure):
         if self._type == _PlotType.TS:
             fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if year is not None:
-                raise TypeError('year parameter is not valid to plot a time series anomaly')
+                raise TypeError('`year` parameter is not valid to plot a time series anomaly')
             if cmap is not None:
-                raise TypeError('cmap parameter is not valid to plot a time series anomaly')
+                raise TypeError('`cmap` parameter is not valid to plot a time series anomaly')
             ax = fig.add_subplot()
             _plot_ts(
                 time=self.time.values,
@@ -289,9 +291,9 @@ class Anom(_Procedure):
             nlat, nlon = len(self.lat), len(self.lon)
             fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if color is not None:
-                raise TypeError('Color parameter is not valid to plot a map anomaly')
+                raise TypeError('`color` parameter is not valid to plot a map anomaly')
             if year is None:
-                raise TypeError(f'Year is a required argument for plotting an anomaly map')
+                raise TypeError(f'`year` is a required argument for plotting an anomaly map')
             ax = fig.add_subplot(projection=ccrs.PlateCarree())
             _plot_map(
                 arr=self.data.sel({self._time_key: year}).values,
@@ -318,8 +320,8 @@ class Anom(_Procedure):
         if len(attrs) != 0:
             raise TypeError('Only accepetd kwarg `type` accepted for load method')
         if type is None:
-            raise TypeError('`type` is a required kwarg')
-        return super().load(prefix, dir, type=_get_type(type))
+            raise TypeError('`type` is a required keyword argument')
+        return cast(Anom, super().load(prefix, dir, type=_get_type(type)))
 
     @property
     def var_names(self) -> Tuple[str, ...]:
@@ -348,7 +350,7 @@ def _anom(
         names=('year', 'month')
     )
     if len(array.time) != len(ind):
-        raise ValueError('Unkpected time variable. Try slicing the dataset')
+        raise ValueError('Strange time variable. Try slicing the dataset')
     if len(array.shape) == 3:  # 3d array
         # Reshape time variable
         lat_key = 'latitude' if 'latitude' in array.dims else 'lat'
