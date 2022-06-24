@@ -153,7 +153,7 @@ class Crossvalidation(_Procedure):
                     self.us[:, [x for x in range(nt) if x != i], i] = values
         else:
             for i in yrs:
-                out= self._crossvalidate_year(
+                out = self._crossvalidate_year(
                     year=i, z=self.zdata, y=self.ydata, nt=nt, ny=ny, yrs=yrs,
                     nm=nm, alpha=alpha
                 )
@@ -192,17 +192,7 @@ class Crossvalidation(_Procedure):
         z2 = z[:, yrs != year]
         y2 = y[:, yrs != year]
         mca_out = MCA.from_nparrays(z2, y2, nm, alpha)
-
-        psi = np.dot(
-            np.dot(
-                np.dot(
-                    mca_out.SUY, np.linalg.inv(
-                        np.dot(mca_out.Us, np.transpose(mca_out.Us))
-                    )
-                ), mca_out.Us
-            ), np.transpose(z2)
-        ) * nt * nm / ny
-        zhat = np.dot(np.transpose(y[:, year]), psi)
+        zhat = np.dot(np.transpose(y[:, year]), mca_out.psi)
 
         r_uv = np.zeros(nm, dtype=np.float32)
         p_uv = np.zeros(nm, dtype=np.float32)

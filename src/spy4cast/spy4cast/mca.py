@@ -49,6 +49,7 @@ class MCA(_Procedure):
     Vs: npt.NDArray[np.float32]
     scf: npt.NDArray[np.float32]
     alpha: float
+    psi: npt.NDArray[np.float32]
 
     @property
     def var_names(self) -> Tuple[str, ...]:
@@ -65,6 +66,7 @@ class MCA(_Procedure):
             'Vs',
             'scf',
             'alpha',
+            'psi',
         )
 
     def __init__(
@@ -182,6 +184,16 @@ class MCA(_Procedure):
         self.Vs = ((v - v.mean(0)) / v.std(0)).transpose()
         self.scf = scf
         self.alpha = alpha
+
+        self.psi = np.dot(
+            np.dot(
+                np.dot(
+                    self.SUY, np.linalg.inv(
+                        np.dot(self.Us, np.transpose(self.Us))
+                    )
+                ), self.Us
+            ), np.transpose(z)
+        ) * nt * nm / ny
 
         pvalruy = np.zeros([ny, nm], dtype=np.float32)
         pvalruz = np.zeros([nz, nm], dtype=np.float32)
