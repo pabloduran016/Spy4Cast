@@ -7,7 +7,7 @@ set_silence(False)
 # Define constants ------------------------------------------------------------------ #
 DATASET_DIR = '/Users/Shared/datasets/'
 PLOTS_DIR = 'plots'
-PLOT_DATA_DIR = 'data-tna'
+PLOT_DATA_DIR = 'saved_tna'
 
 MCA_PLOT_NAME = 'mca_spy4cast_chlorMED_tna.png'
 CROSS_PLOT_NAME = 'cross_spy4cast_chlorMED_tna.png'

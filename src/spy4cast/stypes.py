@@ -68,7 +68,7 @@ class Slise:
 
     Note
     ----
-        The developers of this API are aware that the correct slpelling for `slice` is with a `c`.
+        The developers of this API are aware that the correct spelling for `slice` is with a `c`.
         However, `slice` is a built-in function in python and in the start of the development of this poject was better to use
         `slise`. This is the reason why this class is spelled with `s` (it wouldn't conflict with `slice` right now because
         it is capitalised, but it looks good enough, right?)
