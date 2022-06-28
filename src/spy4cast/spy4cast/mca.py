@@ -185,16 +185,6 @@ class MCA(_Procedure):
         self.scf = scf
         self.alpha = alpha
 
-        self.psi = np.dot(
-            np.dot(
-                np.dot(
-                    self.SUY, np.linalg.inv(
-                        np.dot(self.Us, np.transpose(self.Us))
-                    )
-                ), self.Us
-            ), np.transpose(z)
-        ) * nt * nm / ny
-
         pvalruy = np.zeros([ny, nm], dtype=np.float32)
         pvalruz = np.zeros([nz, nm], dtype=np.float32)
         for i in range(nm):
@@ -211,6 +201,17 @@ class MCA(_Procedure):
             self.SUZ[:, i], \
             self.SUZ_sig[:, i] \
                 = _index_regression(z, self.Us[i, :], alpha)
+
+        self.psi = np.dot(
+            np.dot(
+                np.dot(
+                    self.SUY, np.linalg.inv(
+                        np.dot(self.Us, np.transpose(self.Us))
+                    )
+                ), self.Us
+            ), np.transpose(z)
+        ) * nt * nm / ny
+
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
