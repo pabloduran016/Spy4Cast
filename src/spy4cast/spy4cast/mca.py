@@ -403,7 +403,7 @@ class MCA(_Procedure):
         if type(dsz) != Preprocess or type(dsy) != Preprocess:
             raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
 
-        self: MCA = cast(MCA, super().load(prefix, dir))
+        self: MCA = super().load(prefix, dir)
         self._dsz = dsz
         self._dsy = dsy
         return self

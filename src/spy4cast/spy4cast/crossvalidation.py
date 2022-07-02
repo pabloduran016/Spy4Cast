@@ -457,7 +457,7 @@ class Crossvalidation(_Procedure):
         if type(dsz) != Preprocess or type(dsy) != Preprocess:
             raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
 
-        self: Crossvalidation = cast(Crossvalidation, super().load(prefix, dir))
+        self: Crossvalidation = super().load(prefix, dir)
         self._dsz = dsz
         self._dsy = dsy
         return self

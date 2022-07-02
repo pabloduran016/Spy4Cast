@@ -1,4 +1,5 @@
 import os
+from typing import Any
 
 import numpy as np
 import xarray as xr
@@ -17,7 +18,7 @@ CHLOS = 'chlos'
 
 
 class AnomTest(BaseTestCase):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
             Slise(-45, 45, -25, 25, Month.JAN, Month.MAR, 1870, 1990)

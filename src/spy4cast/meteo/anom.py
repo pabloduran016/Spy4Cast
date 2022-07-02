@@ -322,7 +322,7 @@ class Anom(_Procedure):
             raise TypeError('Only accepetd kwarg `type` accepted for load method')
         if type is None:
             raise TypeError('`type` is a required keyword argument')
-        return cast(Anom, super().load(prefix, dir, type=_get_type(type)))
+        return super().load(prefix, dir, type=_get_type(type))
 
     @property
     def var_names(self) -> Tuple[str, ...]:

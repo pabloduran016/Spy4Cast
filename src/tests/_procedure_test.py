@@ -63,17 +63,17 @@ class ProcedureTest(BaseTestCase):
         path = "./plot.png"
         if os.path.exists(path):
             os.remove(path)
-        flags = F.NOT_HALT
+        flags_1 = F.NOT_HALT
         self.assertFalse(os.path.exists(path))
-        _apply_flags_to_fig(fig, path, flags)
+        _apply_flags_to_fig(fig, path, flags_1)
         self.assertFalse(os.path.exists(path))
         plt.close(fig)
 
         fig = plt.figure()
         path = "./plot.png"
         self.assertFalse(os.path.exists(path))
-        flags = int(F.SAVE_FIG | F.SHOW_PLOT | F.NOT_HALT)
-        _apply_flags_to_fig(fig, path, flags)
+        flags_2 = int(F.SAVE_FIG | F.SHOW_PLOT | F.NOT_HALT)
+        _apply_flags_to_fig(fig, path, flags_2)
         self.assertTrue(os.path.exists(path))
         os.remove(path)
         plt.close(fig)
@@ -81,8 +81,8 @@ class ProcedureTest(BaseTestCase):
         fig = plt.figure()
         path = "./plots/plot.png"
         self.assertFalse(os.path.exists(path))
-        flags = int(F.SAVE_FIG | F.SHOW_PLOT)
-        _apply_flags_to_fig(fig, path, flags, block=False)
+        flags_3 = int(F.SAVE_FIG | F.SHOW_PLOT)
+        _apply_flags_to_fig(fig, path, flags_3, block=False)
         self.assertTrue(os.path.exists(path))
         os.remove(path)
         os.removedirs(os.path.dirname(path))

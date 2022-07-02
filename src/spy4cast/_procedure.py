@@ -162,8 +162,8 @@ def _plot_map(
 
 
 def _plot_ts(
-    time: npt.NDArray[np.float32],
-    arr: npt.NDArray[np.float32],
+    time: npt.NDArray[np.int_],
+    arr: npt.NDArray[np.float_],
     ax: plt.Axes,
     title: Optional[str] = None,
     ylabel: Optional[str] = None,
