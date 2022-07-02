@@ -88,7 +88,6 @@ class ProcedureTest(BaseTestCase):
         os.removedirs(os.path.dirname(path))
         plt.close(fig)
 
-
         # def _apply_flags_to_fig(fig: plt.Figure, path: str,
         #                         flags: int) -> None:
         #     if type(flags) == int:
@@ -115,9 +114,9 @@ class ProcedureTest(BaseTestCase):
 
         with self.assertRaises(ValueError):
             _ = _get_index_from_sy(arr, 1980)
+
         with self.assertRaises(ValueError):
             _ = _get_index_from_sy(arr, 2030)
-
 
     def test__calculate_figsize(self) -> None:
         w, h = _calculate_figsize(16 / 9, 17, 8)

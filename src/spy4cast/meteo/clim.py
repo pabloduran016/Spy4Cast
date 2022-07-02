@@ -1,5 +1,5 @@
 import os
-from typing import Type, TypeVar, Tuple, Optional, Union, Any
+from typing import Type, Tuple, Optional, Union, Any
 
 from matplotlib import pyplot as plt
 
@@ -127,7 +127,6 @@ class Clim(_Procedure, object):
         self._lon = xr.DataArray(value)
         self._data = self.data.assign_coords({self._lon_key: value})
 
-
     @property
     def time(self) -> xr.DataArray:
         if self.type == _PlotType.MAP:
@@ -224,7 +223,8 @@ class Clim(_Procedure, object):
         else:
             raise ValueError(f'Array to set must be 2-dimensional or 1-dimensional')
 
-    def plot(self,
+    def plot(
+        self,
         flags: F = F(0),
         *,
         cmap: Optional[str] = None,
@@ -287,9 +287,9 @@ class Clim(_Procedure, object):
     @property
     def var_names(self) -> Tuple[str, ...]:
         if self._type == _PlotType.TS:
-            return ('data', 'time')
+            return 'data', 'time'
         elif self._type == _PlotType.MAP:
-            return ('data', 'lat', 'lon')
+            return 'data', 'lat', 'lon'
         else:
             assert False, 'Unreachable'
 
@@ -334,7 +334,7 @@ def _clim(array: xr.DataArray, dim: str = 'time') -> xr.DataArray:
         arr = array.assign_coords(
             time=('time', ind)
         ).unstack('time').transpose('year', 'month')
-        rv: xr.DataArray =  arr.mean(dim=dim)
+        rv: xr.DataArray = arr.mean(dim=dim)
     elif dim == 'time':  # Apply across year and month
         assert 'time' in array.dims
         rv = array.mean(dim=dim)

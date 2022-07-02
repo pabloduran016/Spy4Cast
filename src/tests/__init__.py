@@ -1,13 +1,13 @@
 from typing import Optional
 from unittest import TestCase
 
-from spy4cast import set_silence, Settings
 
 HAS_ATTR_MESSAGE = 'Expected object {obj} to have attribute {attrname}'
 NOT_HAS_ATTR_MESSAGE = 'Expected object {obj} to not have attribute {attrname}'
 
 class BaseTestCase(TestCase):
-    def assertHasAttr(self,
+    def assertHasAttr(
+        self,
         obj: object,
         attrname: str,
         message: Optional[str] = None
@@ -18,7 +18,8 @@ class BaseTestCase(TestCase):
             else:
                 self.fail(HAS_ATTR_MESSAGE.format(obj=obj, attrname=attrname))
 
-    def assertNotHasAttr(self,
+    def assertNotHasAttr(
+        self,
         obj: object,
         attrname: str,
         message: Optional[str] = None

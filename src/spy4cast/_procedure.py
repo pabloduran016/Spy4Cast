@@ -1,7 +1,6 @@
 import os
 import traceback
 from abc import ABC, abstractmethod
-from math import floor, ceil
 from typing import Optional, Sequence, Union, Callable,\
     TypeVar, Any, Tuple, List, Type
 
@@ -13,7 +12,7 @@ import numpy.typing as npt
 from matplotlib.ticker import MaxNLocator
 
 from . import F
-from ._functions import debugprint, time_from_here, time_to_here, _warning, _error, _debuginfo
+from ._functions import time_from_here, time_to_here, _warning, _error, _debuginfo
 from .stypes import Color
 
 T = TypeVar('T', bound='_Procedure')
@@ -241,7 +240,7 @@ def _calculate_figsize(ratio: Optional[float], maxwidth: float, maxheight: float
              Figsize ready to pass into matplotlib
     """
     if ratio is None or ratio == 0:
-        return (maxwidth, maxheight)
+        return maxwidth, maxheight
     if maxheight / ratio <= maxwidth:
         w = maxheight / ratio
         h = maxheight
@@ -253,4 +252,4 @@ def _calculate_figsize(ratio: Optional[float], maxwidth: float, maxheight: float
     assert h <= maxheight, f"{h = }, {maxheight = }, {ratio = }"
     assert w <= maxwidth, f"{w = }, {maxwidth = }, {ratio = }"
 
-    return (w, h)
+    return w, h

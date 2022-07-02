@@ -258,7 +258,8 @@ class Anom(_Procedure):
             obj.lon = obj._ds.lon.values
         return obj
 
-    def plot(self,
+    def plot(
+        self,
         flags: F = F(0),
         *,
         year: Optional[int] = None,
@@ -326,9 +327,9 @@ class Anom(_Procedure):
     @property
     def var_names(self) -> Tuple[str, ...]:
         if self._type == _PlotType.TS:
-            return ('data', 'time')
+            return 'data', 'time'
         elif self._type == _PlotType.MAP:
-            return ('data', 'time', 'lat', 'lon')
+            return 'data', 'time', 'lat', 'lon'
         else:
             assert False, f'Unreachable: {self._type}'
 

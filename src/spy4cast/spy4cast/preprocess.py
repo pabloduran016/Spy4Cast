@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple, Any
+from typing import Optional, Tuple, Any, cast
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -48,7 +48,7 @@ class Preprocess(_Procedure):
         self._ds: Dataset = ds
 
         if order is not None and period is not None:
-            b, a = signal.butter(order, 1 / period, btype='high', analog=False, output='ba', fs=None)
+            b, a = cast(Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]], signal.butter(order, 1 / period, btype='high', analog=False, output='ba', fs=None))
             anomaly = xr.apply_ufunc(
                 lambda ts: signal.filtfilt(b, a, ts),
                 anomaly,
@@ -80,7 +80,7 @@ class Preprocess(_Procedure):
 
     @property
     def meta(self) -> npt.NDArray[Any]:
-        """Returns an np.ndarray containg information about the preprocess
+        """Returns a np.ndarray containg information about the preprocessing
 
         First 9 values is slise as numpy, then variable as str
         """

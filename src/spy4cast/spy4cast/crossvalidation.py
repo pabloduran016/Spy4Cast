@@ -1,6 +1,6 @@
 import os
 from math import floor
-from typing import Tuple, Optional, Any, Union, Sequence
+from typing import Tuple, Optional, Any, Union, Sequence, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -28,9 +28,9 @@ class Crossvalidation(_Procedure):
 
     Parameters
     ----------
-        y : Preprocess
+        dsy : Preprocess
             Predictor field
-        z : Preprocess
+        dsz : Preprocess
             Predictand field
         nm : int
             Number of modes
@@ -142,7 +142,7 @@ class Crossvalidation(_Procedure):
                 for i in yrs:
                     # print(f'applying async on process {i=}')
                     p = pool.apply_async(self._crossvalidate_year, kwds={
-                        'year': i, 'z': self.zdata, 'y': self.ydata, 'nt': nt, 'ny': ny, 'yrs': yrs,
+                        'year': i, 'z': self.zdata, 'y': self.ydata, 'nt': nt, 'yrs': yrs,
                         'nm': nm, 'alpha': alpha
                     })
                     processes.append(p)
@@ -150,11 +150,12 @@ class Crossvalidation(_Procedure):
                 for i in yrs:
                     values = processes[i].get()
                     self.scf[:, i], self.zhat[:, i], self.r_uv[:, i], self.p_uv[:, i], \
-                    self.us[:, [x for x in range(nt) if x != i], i] = values
+                    self.us[:, [x for x in range(nt) if x != i], i] \
+                        = values
         else:
             for i in yrs:
                 out = self._crossvalidate_year(
-                    year=i, z=self.zdata, y=self.ydata, nt=nt, ny=ny, yrs=yrs,
+                    year=i, z=self.zdata, y=self.ydata, nt=nt, yrs=yrs,
                     nm=nm, alpha=alpha
                 )
                 self.scf[:, i], self.zhat[:, i], self.r_uv[:, i], self.p_uv[:, i], \
@@ -180,7 +181,6 @@ class Crossvalidation(_Procedure):
         z: npt.NDArray[np.float32],
         y: npt.NDArray[np.float32],
         nt: int,
-        ny: int,
         yrs: npt.NDArray[np.int32],
         nm: int,
         alpha: float
@@ -441,10 +441,15 @@ class Crossvalidation(_Procedure):
 
 
     @classmethod
-    def load(cls, prefix: str, dir: str = '.', *,
-             dsz: Optional[Preprocess] = None,
-             dsy: Optional[Preprocess] = None,
-             **attrs: Any) -> 'Crossvalidation':
+    def load(
+        cls,
+        prefix: str,
+        dir: str = '.',
+        *,
+        dsz: Optional[Preprocess] = None,
+        dsy: Optional[Preprocess] = None,
+        **attrs: Any
+    ) -> 'Crossvalidation':
         if len(attrs) != 0:
             raise TypeError('Load only takes two keyword arguments: dsz and dsy')
         if dsz is None or dsy is None:
@@ -452,7 +457,7 @@ class Crossvalidation(_Procedure):
         if type(dsz) != Preprocess or type(dsy) != Preprocess:
             raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
 
-        self: Crossvalidation = super().load(prefix, dir)
+        self: Crossvalidation = cast(Crossvalidation, super().load(prefix, dir))
         self._dsz = dsz
         self._dsy = dsy
         return self

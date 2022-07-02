@@ -190,7 +190,7 @@ class AnomTest(BaseTestCase):
     def test_load(self) -> None:
         dir = 'anom-data'
         self.map_anom.save('anom_', dir)
-        anom = Anom.load('anom_', dir, type='map')
+        _ = Anom.load('anom_', dir, type='map')
         with self.assertRaises(TypeError):
             _ = Anom.load('anom_', dir, type='map', hello='hello')
         with self.assertRaises(TypeError):

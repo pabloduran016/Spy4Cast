@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple, Any, Sequence, Union
+from typing import Optional, Tuple, Any, Sequence, Union, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -11,7 +11,7 @@ import xarray as xr
 from scipy.stats import stats
 
 from .. import Slise, F
-from .._functions import debugprint, time_from_here, time_to_here, slise2str, _debuginfo
+from .._functions import time_from_here, time_to_here, slise2str, _debuginfo
 from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts
 from .preprocess import Preprocess
 
@@ -22,7 +22,7 @@ __all__ = [
 
 
 class MCA(_Procedure):
-    """"Maximum covariance analysis between y (predictor)
+    """Maximum covariance analysis between y (predictor)
     and Z (predictand)
 
     Parameters
@@ -188,19 +188,21 @@ class MCA(_Procedure):
         pvalruy = np.zeros([ny, nm], dtype=np.float32)
         pvalruz = np.zeros([nz, nm], dtype=np.float32)
         for i in range(nm):
-            self.RUY[:, i], \
-            pvalruy[:, i], \
-            self.RUY_sig[:, i], \
-            self.SUY[:, i], \
-            self.SUY_sig[:, i] \
-                = _index_regression(y, self.Us[i, :], alpha)
+            (
+                self.RUY[:, i],
+                pvalruy[:, i],
+                self.RUY_sig[:, i],
+                self.SUY[:, i],
+                self.SUY_sig[:, i]
+            ) = _index_regression(y, self.Us[i, :], alpha)
 
-            self.RUZ[:, i], \
-            pvalruz[:, i], \
-            self.RUZ_sig[:, i], \
-            self.SUZ[:, i], \
-            self.SUZ_sig[:, i] \
-                = _index_regression(z, self.Us[i, :], alpha)
+            (
+                self.RUZ[:, i],
+                pvalruz[:, i],
+                self.RUZ_sig[:, i],
+                self.SUZ[:, i],
+                self.SUZ_sig[:, i]
+            ) = _index_regression(z, self.Us[i, :], alpha)
 
         self.psi = np.dot(
             np.dot(
@@ -211,7 +213,6 @@ class MCA(_Procedure):
                 ), self.Us
             ), np.transpose(z)
         ) * nt * nm / ny
-
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
@@ -288,6 +289,10 @@ class MCA(_Procedure):
             dir : str
                 ....
             name : str
+                ...
+            suy_ticks : str
+                ...
+            suz_ticks : str
                 ...
         """
         nm = 3
@@ -398,7 +403,7 @@ class MCA(_Procedure):
         if type(dsz) != Preprocess or type(dsy) != Preprocess:
             raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
 
-        self: MCA = super().load(prefix, dir)
+        self: MCA = cast(MCA, super().load(prefix, dir))
         self._dsz = dsz
         self._dsy = dsy
         return self
@@ -436,15 +441,15 @@ def _index_regression(
     """
     ns, nt = data.shape
 
-    Cor = np.zeros([ns, ], dtype=np.float32)
-    Pvalue = np.zeros([ns, ], dtype=np.float32)
+    cor = np.zeros([ns, ], dtype=np.float32)
+    pvalue = np.zeros([ns, ], dtype=np.float32)
     for nn in range(ns):  # Pearson correaltion for every point in the map
-        Cor[nn], Pvalue[nn] = stats.pearsonr(data[nn, :], index)
+        cor[nn], pvalue[nn] = stats.pearsonr(data[nn, :], index)
 
-    Cor_sig = Cor.copy()
-    Cor_sig[Pvalue > alpha] = np.nan
+    cor_sig = cor.copy()
+    cor_sig[pvalue > alpha] = np.nan
 
     reg = data.dot(index) / (nt - 1)
     reg_sig = reg.copy()
-    reg_sig[Pvalue > alpha] = np.nan
-    return Cor, Pvalue, Cor_sig, reg, reg_sig
+    reg_sig[pvalue > alpha] = np.nan
+    return cor, pvalue, cor_sig, reg, reg_sig

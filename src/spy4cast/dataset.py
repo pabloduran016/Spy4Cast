@@ -68,7 +68,7 @@ class Dataset:
     ):
         self.name: str = name
         self.dir: str = dir
-        self._chunks: Optional[ChunkType]  = chunks
+        self._chunks: Optional[ChunkType] = chunks
 
     @classmethod
     def from_xrarray(cls, array: xr.DataArray) -> 'Dataset':
@@ -164,7 +164,6 @@ class Dataset:
         except TypeError:
             _warning('Couldnt convert final timestamp to pandas TimeStamp')
             return cast(TimeStamp, pd.Timestamp(str(tf)))
-
 
     @property
     def slise(self) -> Slise:
@@ -281,7 +280,7 @@ class Dataset:
         # Fill nan
         if self.data.attrs.get('missing_value') is not None:
             self.data = self.data.where(
-                lambda e: e != self.data.attrs['missing_value']
+                lambda x: x != self.data.attrs['missing_value']
             )
 
         return self

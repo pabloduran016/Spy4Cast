@@ -1,5 +1,5 @@
 import builtins
-from typing import Union, Tuple, Dict, Optional, TypeVar, cast, Any, List, Callable
+from typing import Union, Tuple, Dict, Optional, TypeVar, cast, Any, List
 
 import numpy as np
 import pandas as pd
@@ -196,7 +196,7 @@ class F(IntFlag):
         return F(res)
 
 
-ChunkType = Union[int, Tuple[int, ...], Tuple[Tuple[int, ...] ,...], Dict[Union[str, int], int]]
+ChunkType = Union[int, Tuple[int, ...], Tuple[Tuple[int, ...], ...], Dict[Union[str, int], int]]
 """Type variable to indicate the types that can be passed into the `chunk` argument in `read_data.ReadData`
 """
 
