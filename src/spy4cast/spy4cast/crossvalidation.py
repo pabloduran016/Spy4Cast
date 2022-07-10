@@ -100,8 +100,8 @@ class Crossvalidation(_Procedure):
         alpha: float,
         multiprocessed: bool = False
     ):
-        self._dsz = dsz
         self._dsy = dsy
+        self._dsz = dsz
 
         nz, ntz = self.zdata.shape
         ny, nty = self.ydata.shape

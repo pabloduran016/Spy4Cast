@@ -71,8 +71,8 @@ class MCA(_Procedure):
 
     def __init__(
             self,
-            dsz: Preprocess,
             dsy: Preprocess,
+            dsz: Preprocess,
             nm: int, alpha: float
     ):
         self._dsz = dsz
@@ -404,6 +404,7 @@ class MCA(_Procedure):
             raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
 
         self: MCA = super().load(prefix, dir)
+
         self._dsz = dsz
         self._dsy = dsy
         return self

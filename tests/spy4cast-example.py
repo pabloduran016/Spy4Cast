@@ -66,7 +66,7 @@ if LOAD_MCA:
     mca = spy4cast.MCA.load('save_mca_', PLOT_DATA_DIR, dsy=sst_ppcessed, dsz=chl_ppcessed)
 else:
     # Apply MCA procedure and save the ouput for future loading
-    mca = spy4cast.MCA(chl_ppcessed, sst_ppcessed, nm, alpha)
+    mca = spy4cast.MCA(sst_ppcessed, chl_ppcessed, nm, alpha)
     mca.save('save_mca_', dir=PLOT_DATA_DIR)
 
 # Here we plot the MCA but we wait t o show it until the end of the file
