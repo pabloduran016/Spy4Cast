@@ -1,5 +1,4 @@
 numpy
-cartopy
 matplotlib
 xarray
 dask
