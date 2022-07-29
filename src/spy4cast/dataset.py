@@ -294,7 +294,7 @@ class Dataset:
                 self._lon_key: (
                     ((self._ds[self._lon_key] + 180) % 360) - 180
                 )
-            }).sortby('lon')
+            }).sortby(self._lon_key)
 
     def _detect_vars(self) -> None:
         """

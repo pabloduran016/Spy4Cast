@@ -44,7 +44,8 @@ class Preprocess(_Procedure):
     ):
         _debuginfo(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
-        anomaly = Anom.from_xrarray(ds.data).data
+        typ = 'map' if len(ds.data.dims) == 3 else 'ts'
+        anomaly = Anom(ds, typ).data
         self._ds: Dataset = ds
 
         if order is not None and period is not None:
