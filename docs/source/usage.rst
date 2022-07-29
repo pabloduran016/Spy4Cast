@@ -8,13 +8,23 @@ To use Spy4Cast, first install it using git:
 
 To get the latest version:
 
+.. warning::
+
+   The environment must be compatible with all the dependencies and Cartopy probably needs it to be 3.9 or lower
+
 .. code-block:: console
 
     $ conda create -n <your-env-name>
     $ conda activate <your-env-name>
     (<your-env-name>) $ conda install pip
+    (<your-env-name>) $ conda install cartopy
     (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
     (<your-env-name>) $ conda install cartopy
+
+.. note::
+
+    Cartopy has to be installed with conda because pip version does not work
+
 
 To get the latest stable version:
 

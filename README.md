@@ -5,12 +5,15 @@ Python framework for working with .nc files and applying methodologies to them a
 
 
 ## Installation
+**WARNING**: The environment must be compatible with all the dependencies and Cartopy probably needs it to be 3.9 or lower
+**NOTE**: Cartopy has to be installed with conda because pip version does not work
 
 To get the latest version:
 ```console
     $ conda create -n <your-env-name>
     $ conda activate <your-env-name>
     (<your-env-name>) $ conda install pip
+    (<your-env-name>) $ conda install cartopy
     (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
     (<your-env-name>) $ conda install cartopy
 ```
@@ -23,24 +26,36 @@ To get the latest stable version:
 ## Example
 
 ```python
-from spy4cast import AnomerMap, Slise, Month, F
+from spy4cast.meteo import Anom
+from spy4cast import Month, Slise, set_silence, Dataset, F
 
-DATASETS_DIR = "/datasets/"
-HadISST_sst = "HadISST_sst.nc"
+# Enabel debug ouput
+set_silence(False)
 
-sl = Slise(
-    lat0=-45, latf=45,
-    lon0=-100, lonf=100,
-    month0=Month.JAN, monthf=Month.MAR,
-    year0=1871, yearf=2020,
-    sy=1990,
-)
-AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst) \ 
-    .open_dataset() \
-    .slice_dataset(sl) \
-    .apply() \
-    .run(F.SHOW_PLOT | F.SAVE_FIG, slise=sl)
+# Define constants ---------------------------------------------------------------------------------- #
+DATASET_DIR = '/Users/Shared/datasets/'
+PLOTS_DIR = 'plots'
+PLOT_DATA_DIR = 'data-anom'
+
+chl_1km_monthly_Sep1997_Dec2020 = 'chl_1km_monthly_Sep1997_Dec2020.nc'
+CHL = 'CHL'
+
+chl_slise = Slise(30, 90, -5.3, -2, Month.MAR, Month.APR, 1998, 2020)
+
+ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASET_DIR).open(CHL).slice(chl_slise)
+
+map_anom = Anom(ds, 'map')
+
+map_anom.save('map_anomaly', PLOT_DATA_DIR)
+# map_anom = Anom.load('map_anomaly', PLOT_DATA_DIR, type='map')
+map_anom.plot(F.SHOW_PLOT | F.SAVE_FIG, year=1999, name='anom-map-example.png', cmap='jet')
+
+ts_anom = Anom(ds, 'ts')
+ts_anom.save('ts_anomaly', PLOT_DATA_DIR)
+# ts_anom = Anom.load('ts_anomaly', PLOT_DATA_DIR, type='ts')
+ts_anom.plot(F.SHOW_PLOT | F.SAVE_FIG, name='anom-ts-example.png')
 ```
+
 **Output:**    
   
 ![Example 1 plot](examples/anomer_example.png)
