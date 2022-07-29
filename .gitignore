@@ -2,6 +2,8 @@
 .venv/
 .coverage
 
+data-tna
+
 mypy.ini
 .mypy_cache/
 
