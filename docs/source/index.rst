@@ -19,6 +19,7 @@ Welcome to Spy4Cast's documentation! |ICON|
    :maxdepth: 1
    
    usage
+   tutorial
    methodologies
    Spy4Cast <toctrees/spy4cast>
    API Reference <toctrees/api-reference>

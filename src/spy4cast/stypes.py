@@ -90,8 +90,8 @@ class Slise:
     """Starting year of the period to select (included)"""
     yearf: int
     """Ending year of the period to select (included)"""
-    sy: Optional[int] = None
-    """Selected year used in methodologies like anom where you can only plot a given year"""
+    sy: Optional[int] = None  # Should not be used
+    """DEPRECATED. Selected year used in methodologies like anom where you can only plot a given year"""
 
     @classmethod
     def default(cls, month0: int = Month.JAN, monthf: int = Month.DEC, year0: int = 0, yearf: int = 2000,

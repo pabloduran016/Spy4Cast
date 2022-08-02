@@ -230,7 +230,7 @@ class Clim(_Procedure, object):
         cmap: Optional[str] = None,
         color: Optional[Color] = None,
         dir: str = '.',
-        name: str = 'anomaly.png'
+        name: str = 'clim.png'
     ) -> None:
         if self._type == _PlotType.TS:
             fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
