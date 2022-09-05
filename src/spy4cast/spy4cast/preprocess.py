@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple, Any, cast
+from typing import Optional, Tuple, Any, cast, Sequence
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -219,7 +219,7 @@ class Preprocess(_Procedure):
         cmap: str = 'bwr',
         dir: Optional[str] = None,
         name: Optional[str] = None
-    ) -> None:
+    ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         nt, nlat, nlon = len(self.time), len(self.lat), len(self.lon)
 
         plotable = self.data.transpose().reshape((nt, nlat, nlon))
@@ -247,3 +247,4 @@ class Preprocess(_Procedure):
         _apply_flags_to_fig(
             fig, path, F(flags)
         )
+        return fig, [ax]

@@ -1,5 +1,5 @@
 import os
-from typing import Tuple, Optional, Type, Any, cast
+from typing import Tuple, Optional, Type, Any, cast, Sequence
 
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
@@ -267,7 +267,7 @@ class Anom(_Procedure):
         color: Optional[Color] = None,
         dir: str = '.',
         name: str = 'anomaly.png'
-    ) -> None:
+    ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         if self._type == _PlotType.TS:
             fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if year is not None:
@@ -315,6 +315,7 @@ class Anom(_Procedure):
         _apply_flags_to_fig(
             fig, path, F(flags)
         )
+        return fig, [ax]
 
     @classmethod
     def load(cls: Type['Anom'], prefix: str, dir: str = '.', *, type: Optional[str] = None, **attrs: Any) -> 'Anom':

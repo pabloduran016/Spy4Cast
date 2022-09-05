@@ -275,7 +275,7 @@ class MCA(_Procedure):
         suz_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-    ) -> None:
+    ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot MCA results
 
         Parameters
@@ -390,6 +390,8 @@ class MCA(_Procedure):
         _apply_flags_to_fig(
             fig, path, F(flags)
         )
+
+        return fig, axs
 
     @classmethod
     def load(cls, prefix: str, dir: str = '.', *,

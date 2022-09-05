@@ -34,7 +34,7 @@ MAX_HEIGHT = 8
 
 
 class _Procedure(ABC):
-    plot: Callable[..., None] = abstractmethod(lambda: None)
+    plot: Callable[..., Tuple[plt.Figure, Sequence[plt.Axes]]] = abstractmethod(lambda: (plt.figure(), []))
 
     @property
     @abstractmethod

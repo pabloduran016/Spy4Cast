@@ -259,7 +259,7 @@ class Crossvalidation(_Procedure):
         map_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None
-    ) -> None:
+    ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """
         Plots:
           - r_z_zhat_s and p_z_zhat_s: Cartopy map of r
@@ -367,6 +367,7 @@ class Crossvalidation(_Procedure):
         _apply_flags_to_fig(
             fig, path, F(flags)
         )
+        return fig, axs
 
     def plot_zhat(
         self,

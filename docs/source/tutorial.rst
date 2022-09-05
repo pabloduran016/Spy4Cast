@@ -45,7 +45,7 @@ Most of the times you would like to slice a region of the dataset. You will need
         lonf=40,
         month0=Month.DEC,
         monthf=Month.MAR,
-        # If the initial month is bigger than the initial month (DEC --> MAR)
+        # If the initial month is bigger than the final month (DEC --> MAR)
         # the dataset uses the year before for the initial month (1874 in thiss case)
         year0=1875,
         yearf=1990,
