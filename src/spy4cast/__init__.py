@@ -6,6 +6,7 @@ __all__ = [
     'Month',
     'F',
     'Dataset',
+    'set_silence'
 ]
 
 
