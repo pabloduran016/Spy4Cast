@@ -27,16 +27,20 @@ class MCA(_Procedure):
 
     Parameters
     ----------
-        dsz : Preprocess
-            Predictand
         dsy : Preprocess
             predictor
+        dsz : Preprocess
+            Predictand
         nm : int
             Number of modes
         alpha : float
             Significance level
         sig : {'monte-carlo', 'test-t'}
             Signification technique: monte-carlo or test-t
+        dsy_index_regression : optional, Preprocess
+            Predictor to send to index regression. Degault is the same as y
+        dsz_index_regression : optional, Preprocess
+            Predictand to send to index regression. Degault is the same as z
     """
     # TODO: Document MCA fields
     RUY: npt.NDArray[np.float32]
@@ -76,6 +80,8 @@ class MCA(_Procedure):
         nm: int,
         alpha: float,
         sig: str = 'test-t',
+        dsy_index_regression: Optional[Preprocess] = None,
+        dsz_index_regression: Optional[Preprocess] = None,
     ):
         self._dsz = dsz
         self._dsy = dsy
@@ -95,7 +101,10 @@ class MCA(_Procedure):
                 f'{len(dsy.time)}'
             )
 
-        self._mca(dsz.data, dsy.data, nm, alpha, sig)
+        z_index_regression = dsz_index_regression.data if dsz_index_regression is not None else None
+        y_index_regression = dsy_index_regression.data if dsy_index_regression is not None else None
+
+        self._mca(dsz.data, dsy.data, nm, alpha, sig, z_index_regression, y_index_regression)
         debugprint(f'       Took: {time_to_here():.03f} seconds')
 
         # first you calculate the covariance matrix
@@ -109,6 +118,8 @@ class MCA(_Procedure):
         nm: int,
         alpha: float,
         sig: str = 'test-t',
+        z_index_regression: Optional[npt.NDArray[np.float32]] = None,
+        y_index_regression: Optional[npt.NDArray[np.float32]] = None,
     ) -> 'MCA':
         """
         Alternative constructor for mca that takes np arrays
@@ -125,6 +136,10 @@ class MCA(_Procedure):
                Significance level
             sig : {'monte-carlo', 'test-t'}
                 Signification technique: monte-carlo or test-t
+            z_index_regression : optional, array-like
+                Predictand (space x time) to send to index regression. Degault is the same as z
+            y_index_regression : optional, array-like
+                Predictor (space x time) to send to index regression. Degault is the same as y
 
         Returns
         -------
@@ -136,7 +151,7 @@ class MCA(_Procedure):
             MCA
         """
         m = cls.__new__(MCA)
-        m._mca(z, y, nm, alpha, sig)
+        m._mca(z, y, nm, alpha, sig, z_index_regression, y_index_regression)
         return m
 
     def _mca(
@@ -146,7 +161,14 @@ class MCA(_Procedure):
         nm: int,
         alpha: float,
         sig: str,
+        z_index_regression: Optional[npt.NDArray[np.float32]] = None,
+        y_index_regression: Optional[npt.NDArray[np.float32]] = None,
     ) -> None:
+        if y_index_regression is None:
+            y_index_regression = y
+        if z_index_regression is None:
+            z_index_regression = z
+
         nz, nt = z.shape
         ny, nt = y.shape
 
@@ -200,7 +222,7 @@ class MCA(_Procedure):
                 self.RUY_sig[:, i],
                 self.SUY[:, i],
                 self.SUY_sig[:, i]
-            ) = _index_regression(y, self.Us[i, :], alpha, sig)
+            ) = _index_regression(y_index_regression, self.Us[i, :], alpha, sig)
 
             (
                 self.RUZ[:, i],
@@ -208,7 +230,7 @@ class MCA(_Procedure):
                 self.RUZ_sig[:, i],
                 self.SUZ[:, i],
                 self.SUZ_sig[:, i]
-            ) = _index_regression(z, self.Us[i, :], alpha, sig)
+            ) = _index_regression(z_index_regression, self.Us[i, :], alpha, sig)
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
@@ -445,10 +467,6 @@ def _index_regression(
         reg_sig : npt.NDArray[np.float32] (space)
             Significative regression map
     """
-    if sig == 'monte-carlo':
-        if montecarlo_iterations is None:
-            raise ValueError('Expected argument `montecarlo_iteration`for `monte-carlo` sig')
-
     ns, nt = data.shape
 
     cor = np.zeros([ns, ], dtype=np.float32)
@@ -464,6 +482,9 @@ def _index_regression(
         cor_sig[pvalue > alpha] = np.nan
         reg_sig[pvalue > alpha] = np.nan
     elif sig == 'monte-carlo':
+        if montecarlo_iterations is None:
+            raise ValueError('Expected argument `montecarlo_iteration`for `monte-carlo` sig')
+
         corp = np.empty([ns, montecarlo_iterations])
         for p in range(montecarlo_iterations):
             corp[:, p] = pearsonr_2d(data, np.random.permutation(index))
@@ -487,5 +508,5 @@ def _index_regression(
 def pearsonr_2d(y: npt.NDArray[np.float_], x: npt.NDArray[np.float_]) -> npt.NDArray[np.float_]:
     upper = np.sum((x - np.mean(x)) * (y - np.mean(y, axis=1)[:, None]), axis=1)
     lower = np.sqrt(np.sum(np.power(x - np.mean(x), 2)) * np.sum(np.power(y - np.mean(y, axis=1)[:, None], 2), axis=1))
-    rho = upper / lower
+    rho: npt.NDArray[np.float_] = upper / lower
     return rho
