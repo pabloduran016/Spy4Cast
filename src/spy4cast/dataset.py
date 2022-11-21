@@ -1,5 +1,6 @@
 import os
 import traceback
+import warnings
 from datetime import datetime
 from typing import Optional, TypeVar, cast, Tuple
 
@@ -12,6 +13,9 @@ from .errors import DatasetError, DatasetNotFoundError, VariableSelectionError, 
 from .stypes import *
 import xarray as xr
 import numpy.typing as npt
+
+
+warnings.filterwarnings('ignore')
 
 
 __all__ = [

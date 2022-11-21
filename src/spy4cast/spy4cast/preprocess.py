@@ -9,7 +9,7 @@ import xarray as xr
 import cartopy.crs as ccrs
 
 from .. import Slise, F, Month
-from .._functions import time_from_here, time_to_here, slise2str, _debuginfo
+from .._functions import time_from_here, time_to_here, slise2str, _debuginfo, debugprint
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT
@@ -77,7 +77,7 @@ class Preprocess(_Procedure):
         self._lat = anomaly[ds._lat_key]
         self._lon = anomaly[ds._lon_key]
 
-        _debuginfo(f' took: {time_to_here():.03f} seconds')
+        debugprint(f' took: {time_to_here():.03f} seconds')
 
     @property
     def meta(self) -> npt.NDArray[Any]:

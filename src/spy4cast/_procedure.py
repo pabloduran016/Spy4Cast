@@ -1,8 +1,8 @@
 import os
 import traceback
 from abc import ABC, abstractmethod
-from typing import Optional, Sequence, Union, Callable,\
-    TypeVar, Any, Tuple, List, Type
+from typing import Optional, Sequence, Union, Callable, \
+    TypeVar, Any, Tuple, List, Type, cast
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -120,7 +120,7 @@ def _plot_map(
             for x in np.linspace(-bound, bound, n)
         ]))
 
-    levels = np.unique(levels)
+    levels = cast(npt.NDArray[np.float_], np.unique(levels))
 
     if ticks is None:
         nticks = 6

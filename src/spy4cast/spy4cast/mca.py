@@ -11,7 +11,7 @@ import xarray as xr
 from scipy.stats import stats
 
 from .. import Slise, F
-from .._functions import time_from_here, time_to_here, slise2str, _debuginfo
+from .._functions import time_from_here, time_to_here, slise2str, _debuginfo, debugprint
 from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts
 from .preprocess import Preprocess
 
@@ -35,6 +35,8 @@ class MCA(_Procedure):
             Number of modes
         alpha : float
             Significance level
+        sig : {'monte-carlo', 'test-t'}
+            Signification technique: monte-carlo or test-t
     """
     # TODO: Document MCA fields
     RUY: npt.NDArray[np.float32]
@@ -68,10 +70,12 @@ class MCA(_Procedure):
         )
 
     def __init__(
-            self,
-            dsy: Preprocess,
-            dsz: Preprocess,
-            nm: int, alpha: float
+        self,
+        dsy: Preprocess,
+        dsz: Preprocess,
+        nm: int,
+        alpha: float,
+        sig: str = 'test-t',
     ):
         self._dsz = dsz
         self._dsy = dsy
@@ -91,8 +95,8 @@ class MCA(_Procedure):
                 f'{len(dsy.time)}'
             )
 
-        self._mca(dsz.data, dsy.data, nm, alpha)
-        _debuginfo(f'   Took: {time_to_here():.03f} seconds')
+        self._mca(dsz.data, dsy.data, nm, alpha, sig)
+        debugprint(f'       Took: {time_to_here():.03f} seconds')
 
         # first you calculate the covariance matrix
         # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
@@ -104,6 +108,7 @@ class MCA(_Procedure):
         y: npt.NDArray[np.float32],
         nm: int,
         alpha: float,
+        sig: str = 'test-t',
     ) -> 'MCA':
         """
         Alternative constructor for mca that takes np arrays
@@ -113,11 +118,13 @@ class MCA(_Procedure):
             z : array-like
                 Predictand (space x time)
             y : array-like
-                Predctor (space x time)
+                Predictor (space x time)
             nm : int
                 Number of modes
             alpha : alpha
                Significance level
+            sig : {'monte-carlo', 'test-t'}
+                Signification technique: monte-carlo or test-t
 
         Returns
         -------
@@ -129,7 +136,7 @@ class MCA(_Procedure):
             MCA
         """
         m = cls.__new__(MCA)
-        m._mca(z, y, nm, alpha)
+        m._mca(z, y, nm, alpha, sig)
         return m
 
     def _mca(
@@ -138,6 +145,7 @@ class MCA(_Procedure):
         y: npt.NDArray[np.float32],
         nm: int,
         alpha: float,
+        sig: str,
     ) -> None:
         nz, nt = z.shape
         ny, nt = y.shape
@@ -192,7 +200,7 @@ class MCA(_Procedure):
                 self.RUY_sig[:, i],
                 self.SUY[:, i],
                 self.SUY_sig[:, i]
-            ) = _index_regression(y, self.Us[i, :], alpha)
+            ) = _index_regression(y, self.Us[i, :], alpha, sig)
 
             (
                 self.RUZ[:, i],
@@ -200,7 +208,7 @@ class MCA(_Procedure):
                 self.RUZ_sig[:, i],
                 self.SUZ[:, i],
                 self.SUZ_sig[:, i]
-            ) = _index_regression(z, self.Us[i, :], alpha)
+            ) = _index_regression(z, self.Us[i, :], alpha, sig)
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
@@ -403,9 +411,10 @@ class MCA(_Procedure):
 def _index_regression(
     data: npt.NDArray[np.float32],
     index: npt.NDArray[np.float32],
-    alpha: float
+    alpha: float,
+    sig: str,
+    montecarlo_iterations: Optional[int] = None
 ) -> Tuple[npt.NDArray[np.float32], ...]:
-
     """Create correlation (pearson correlation) and regression
 
     Parameters
@@ -430,17 +439,28 @@ def _index_regression(
         reg_sig : npt.NDArray[np.float32] (space)
             Significative regression map
     """
+    if sig == 'monte-carlo':
+        if montecarlo_iterations is None:
+            raise ValueError('Expected argument `montecarlo_iteration`for `monte-carlo` sig')
+
     ns, nt = data.shape
 
     cor = np.zeros([ns, ], dtype=np.float32)
     pvalue = np.zeros([ns, ], dtype=np.float32)
-    for nn in range(ns):  # Pearson correaltion for every point in the map
-        cor[nn], pvalue[nn] = stats.pearsonr(data[nn, :], index)
-
-    cor_sig = cor.copy()
-    cor_sig[pvalue > alpha] = np.nan
-
     reg = data.dot(index) / (nt - 1)
-    reg_sig = reg.copy()
-    reg_sig[pvalue > alpha] = np.nan
+
+    if sig == 'test-t':
+        for nn in range(ns):  # Pearson correaltion for every point in the map
+            cor[nn], pvalue[nn] = stats.pearsonr(data[nn, :], index)
+
+        cor_sig = cor.copy()
+        cor_sig[pvalue > alpha] = np.nan
+
+        reg_sig = reg.copy()
+        reg_sig[pvalue > alpha] = np.nan
+    elif sig == 'monte-carlo':
+        raise NotImplementedError('Implement monte-carlo')
+    else:
+        assert False, 'Unreachable'
+
     return cor, pvalue, cor_sig, reg, reg_sig
