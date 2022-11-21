@@ -414,7 +414,13 @@ def _index_regression(
     alpha: float,
     sig: str,
     montecarlo_iterations: Optional[int] = None
-) -> Tuple[npt.NDArray[np.float32], ...]:
+) -> Tuple[
+    npt.NDArray[np.float32],
+    npt.NDArray[np.float32],
+    npt.NDArray[np.float32],
+    npt.NDArray[np.float32],
+    npt.NDArray[np.float32]
+]:
     """Create correlation (pearson correlation) and regression
 
     Parameters
@@ -448,19 +454,38 @@ def _index_regression(
     cor = np.zeros([ns, ], dtype=np.float32)
     pvalue = np.zeros([ns, ], dtype=np.float32)
     reg = data.dot(index) / (nt - 1)
+    cor_sig = cor.copy()
+    reg_sig = reg.copy()
 
     if sig == 'test-t':
         for nn in range(ns):  # Pearson correaltion for every point in the map
             cor[nn], pvalue[nn] = stats.pearsonr(data[nn, :], index)
 
-        cor_sig = cor.copy()
         cor_sig[pvalue > alpha] = np.nan
-
-        reg_sig = reg.copy()
         reg_sig[pvalue > alpha] = np.nan
     elif sig == 'monte-carlo':
-        raise NotImplementedError('Implement monte-carlo')
+        corp = np.empty([ns, montecarlo_iterations])
+        for p in range(montecarlo_iterations):
+            corp[:, p] = pearsonr_2d(data, np.random.permutation(index))
+
+        for nn in range(ns):
+            bb = stats.pearsonr(data[nn, :], index)
+            cor[nn] = bb[0]
+
+            hcor = np.count_nonzero((cor[nn] > 0) & (corp[nn, :] < cor[nn]) | (cor[nn] < 0) & (corp[nn, :] > cor[nn]))
+            # nivel de confianza
+            pvalue[nn] = hcor / montecarlo_iterations
+
+        cor_sig[pvalue >= (1 - alpha)] = np.nan
+        reg_sig[pvalue >= (1 - alpha)] = np.nan
     else:
         assert False, 'Unreachable'
 
     return cor, pvalue, cor_sig, reg, reg_sig
+
+
+def pearsonr_2d(y: npt.NDArray[np.float_], x: npt.NDArray[np.float_]) -> npt.NDArray[np.float_]:
+    upper = np.sum((x - np.mean(x)) * (y - np.mean(y, axis=1)[:, None]), axis=1)
+    lower = np.sqrt(np.sum(np.power(x - np.mean(x), 2)) * np.sum(np.power(y - np.mean(y, axis=1)[:, None], 2), axis=1))
+    rho = upper / lower
+    return rho
