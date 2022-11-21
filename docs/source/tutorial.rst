@@ -218,3 +218,8 @@ Visualization
 
     import matplotlib.pyplot as plt
     plt.show()
+
+Customization
++++++++++++++
+
+.. todo:: Not implemented

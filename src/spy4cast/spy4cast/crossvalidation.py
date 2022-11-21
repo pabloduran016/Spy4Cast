@@ -75,6 +75,7 @@ class Crossvalidation(_Procedure):
     r_uv: npt.NDArray[np.float32]
     p_uv: npt.NDArray[np.float32]
     us: npt.NDArray[np.float32]
+    psi: npt.NDArray[np.float32]
     alpha: float
 
     @property
@@ -89,6 +90,7 @@ class Crossvalidation(_Procedure):
             'r_uv',
             'p_uv',
             'us',
+            'psi',
             'alpha',
         )
 
@@ -127,6 +129,7 @@ class Crossvalidation(_Procedure):
         self.scf = np.zeros([nm, nt], dtype=np.float32)
         self.r_uv = np.zeros([nm, nt], dtype=np.float32)
         self.p_uv = np.zeros([nm, nt], dtype=np.float32)
+        self.psi = np.zeros([nt, ny, nz], dtype=np.float32)
         # crosvalidated year on axis 2
         self.us = np.zeros([nm, nt, nt], dtype=np.float32)
         # estimación de self.zhat para cada año
@@ -150,8 +153,8 @@ class Crossvalidation(_Procedure):
                 for i in yrs:
                     values = processes[i].get()
                     self.scf[:, i], self.zhat[:, i], self.r_uv[:, i], self.p_uv[:, i], \
-                    self.us[:, [x for x in range(nt) if x != i], i] \
-                        = values
+                        self.us[:, [x for x in range(nt) if x != i], i], self.psi[:, i] \
+                           = values
         else:
             for i in yrs:
                 out = self._crossvalidate_year(
@@ -159,7 +162,7 @@ class Crossvalidation(_Procedure):
                     nm=nm, alpha=alpha
                 )
                 self.scf[:, i], self.zhat[:, i], self.r_uv[:, i], self.p_uv[:, i], \
-                self.us[:, [x for x in range(nt) if x != i], i] = out
+                    self.us[:, [x for x in range(nt) if x != i], i], self.psi[i, :, :] = out
 
         self.r_z_zhat_t = np.zeros(nt, dtype=np.float32)
         self.p_z_zhat_t = np.zeros(nt, dtype=np.float32)
@@ -192,7 +195,19 @@ class Crossvalidation(_Procedure):
         z2 = z[:, yrs != year]
         y2 = y[:, yrs != year]
         mca_out = MCA.from_nparrays(z2, y2, nm, alpha)
-        zhat = np.dot(np.transpose(y[:, year]), mca_out.psi)
+        ny, _ = y2.shape
+
+        psi = np.dot(
+            np.dot(
+                np.dot(
+                    mca_out.SUY, np.linalg.inv(
+                        np.dot(mca_out.Us, np.transpose(mca_out.Us))
+                    )
+                ), mca_out.Us
+            ), np.transpose(z2)
+        ) * nt * nm / ny
+
+        zhat = np.dot(np.transpose(y[:, year]), psi)
 
         r_uv = np.zeros(nm, dtype=np.float32)
         p_uv = np.zeros(nm, dtype=np.float32)
@@ -200,7 +215,7 @@ class Crossvalidation(_Procedure):
             r_uv[m], p_uv[m] = stats.pearsonr(mca_out.Us[m, :], mca_out.Vs[m, :])
 
         scf = mca_out.scf
-        return scf, zhat, r_uv, p_uv, mca_out.Us
+        return scf, zhat, r_uv, p_uv, mca_out.Us, psi
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
@@ -382,7 +397,7 @@ class Crossvalidation(_Procedure):
         zticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-    ) -> None:
+    ) -> Tuple[plt.Figure, Tuple[plt.Axes, plt.Axes, plt.Axes]]:
         nts, nylat, nylon = len(self.ytime), len(self.ylat), len(self.ylon)
         nts, nzlat, nzlon = len(self.ztime), len(self.zlat), len(self.zlon)
 
@@ -439,6 +454,8 @@ class Crossvalidation(_Procedure):
         _apply_flags_to_fig(
             fig, path, flags
         )
+
+        return fig, (ax0, ax1, ax2)
 
 
     @classmethod
