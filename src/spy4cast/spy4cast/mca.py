@@ -468,35 +468,36 @@ def _index_regression(
             Significative regression map
     """
     ns, nt = data.shape
-
-    cor = np.zeros([ns, ], dtype=np.float32)
-    pvalue = np.zeros([ns, ], dtype=np.float32)
     reg = data.dot(index) / (nt - 1)
-    cor_sig = cor.copy()
-    reg_sig = reg.copy()
 
     if sig == 'test-t':
-        for nn in range(ns):  # Pearson correaltion for every point in the map
-            cor[nn], pvalue[nn] = stats.pearsonr(data[nn, :], index)
+        result = np.apply_along_axis(stats.pearsonr, 1, data, index)
+        cor = result[:, 0]
+        pvalue = result[:, 1]
 
+        cor_sig = cor.copy()
+        reg_sig = reg.copy()
         cor_sig[pvalue > alpha] = np.nan
         reg_sig[pvalue > alpha] = np.nan
     elif sig == 'monte-carlo':
         if montecarlo_iterations is None:
-            raise ValueError('Expected argument `montecarlo_iteration`for `monte-carlo` sig')
+            raise ValueError('Expected argument `montecarlo_iteration` for `monte-carlo` sig')
 
         corp = np.empty([ns, montecarlo_iterations])
         for p in range(montecarlo_iterations):
             corp[:, p] = pearsonr_2d(data, np.random.permutation(index))
 
-        for nn in range(ns):
-            bb = stats.pearsonr(data[nn, :], index)
-            cor[nn] = bb[0]
+        result = np.apply_along_axis(stats.pearsonr, 1, data, index)
+        cor = result[:, 0]
 
+        pvalue = np.zeros([ns, ], dtype=np.float32)
+        for nn in range(ns):
             hcor = np.count_nonzero((cor[nn] > 0) & (corp[nn, :] < cor[nn]) | (cor[nn] < 0) & (corp[nn, :] > cor[nn]))
             # nivel de confianza
             pvalue[nn] = hcor / montecarlo_iterations
 
+        cor_sig = cor.copy()
+        reg_sig = reg.copy()
         cor_sig[pvalue >= (1 - alpha)] = np.nan
         reg_sig[pvalue >= (1 - alpha)] = np.nan
     else:

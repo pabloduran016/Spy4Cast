@@ -66,31 +66,47 @@ class Crossvalidation(_Procedure):
     --------
         MCA
     """
-    zhat: npt.NDArray[np.float32]
     scf: npt.NDArray[np.float32]
-    r_z_zhat_t: npt.NDArray[np.float32]
-    p_z_zhat_t: npt.NDArray[np.float32]
-    r_z_zhat_s: npt.NDArray[np.float32]
-    p_z_zhat_s: npt.NDArray[np.float32]
     r_uv: npt.NDArray[np.float32]
     p_uv: npt.NDArray[np.float32]
     us: npt.NDArray[np.float32]
-    psi: npt.NDArray[np.float32]
+    zhat_separated_modes: npt.NDArray[np.float32]
+    zhat_accumulated_modes: npt.NDArray[np.float32]
+    psi_separated_modes: npt.NDArray[np.float32]
+    psi_accumulated_modes: npt.NDArray[np.float32]
+    r_z_zhat_t_accumulated_modes: npt.NDArray[np.float32]
+    p_z_zhat_t_accumulated_modes: npt.NDArray[np.float32]
+    r_z_zhat_t_separated_modes: npt.NDArray[np.float32]
+    p_z_zhat_t_separated_modes: npt.NDArray[np.float32]
+    r_z_zhat_s_accumulated_modes: npt.NDArray[np.float32]
+    p_z_zhat_s_accumulated_modes: npt.NDArray[np.float32]
+    r_z_zhat_s_separated_modes: npt.NDArray[np.float32]
+    p_z_zhat_s_separated_modes: npt.NDArray[np.float32]
     alpha: float
 
     @property
     def var_names(self) -> Tuple[str, ...]:
         return (
-            'zhat',
             'scf',
-            'r_z_zhat_t',
-            'p_z_zhat_t',
-            'r_z_zhat_s',
-            'p_z_zhat_s',
             'r_uv',
             'p_uv',
             'us',
-            'psi',
+
+            'zhat_accumulated_modes',
+            'zhat_separated_modes',
+
+            'r_z_zhat_t_accumulated_modes',
+            'p_z_zhat_t_accumulated_modes',
+            'r_z_zhat_t_separated_modes',
+            'p_z_zhat_t_separated_modes',
+
+            'r_z_zhat_s_accumulated_modes',
+            'p_z_zhat_s_accumulated_modes',
+            'r_z_zhat_s_separated_modes',
+            'p_z_zhat_s_separated_modes',
+
+            'psi_accumulated_modes',
+            'psi_separated_modes',
             'alpha',
         )
 
@@ -125,11 +141,13 @@ class Crossvalidation(_Procedure):
 
         nt = ntz
 
-        self.zhat = np.zeros_like(self.zdata, dtype=np.float32)
         self.scf = np.zeros([nm, nt], dtype=np.float32)
         self.r_uv = np.zeros([nm, nt], dtype=np.float32)
         self.p_uv = np.zeros([nm, nt], dtype=np.float32)
-        self.psi = np.zeros([nt, ny, nz], dtype=np.float32)
+        self.zhat_separated_modes = np.zeros([nm, nz, nt], dtype=np.float32)
+        self.zhat_accumulated_modes = np.zeros([nm, nz, nt], dtype=np.float32)
+        self.psi_separated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
+        self.psi_accumulated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
         # crosvalidated year on axis 2
         self.us = np.zeros([nm, nt, nt], dtype=np.float32)
         # estimación de self.zhat para cada año
@@ -152,29 +170,49 @@ class Crossvalidation(_Procedure):
 
                 for i in yrs:
                     values = processes[i].get()
-                    self.scf[:, i], self.zhat[:, i], self.r_uv[:, i], self.p_uv[:, i], \
-                        self.us[:, [x for x in range(nt) if x != i], i], self.psi[:, i] \
-                           = values
+                    self.scf[:, i], self.r_uv[:, i], self.p_uv[:, i], \
+                        self.us[:, [x for x in range(nt) if x != i], i], \
+                        self.psi_separated_modes[:, i, :, :], self.psi_accumulated_modes[:, i, :, :], \
+                        self.zhat_separated_modes[:, :, i], self.zhat_accumulated_modes[:, :, i] = values
         else:
             for i in yrs:
                 out = self._crossvalidate_year(
                     year=i, z=self.zdata, y=self.ydata, nt=nt, yrs=yrs,
                     nm=nm, alpha=alpha
                 )
-                self.scf[:, i], self.zhat[:, i], self.r_uv[:, i], self.p_uv[:, i], \
-                    self.us[:, [x for x in range(nt) if x != i], i], self.psi[i, :, :] = out
+                self.scf[:, i], self.r_uv[:, i], self.p_uv[:, i], \
+                    self.us[:, [x for x in range(nt) if x != i], i], \
+                    self.psi_separated_modes[:, i, :, :], self.psi_accumulated_modes[:, i, :, :], \
+                    self.zhat_separated_modes[:, :, i], self.zhat_accumulated_modes[:, :, i] = out
 
-        self.r_z_zhat_t = np.zeros(nt, dtype=np.float32)
-        self.p_z_zhat_t = np.zeros(nt, dtype=np.float32)
+        self.r_z_zhat_t_accumulated_modes = np.zeros([nm, nt], dtype=np.float32)
+        self.p_z_zhat_t_accumulated_modes = np.zeros([nm, nt], dtype=np.float32)
+        self.r_z_zhat_t_separated_modes = np.zeros([nm, nt], dtype=np.float32)
+        self.p_z_zhat_t_separated_modes = np.zeros([nm, nt], dtype=np.float32)
         for j in range(nt):
-            rtt = stats.pearsonr(self.zhat[:, j], self.zdata[:, j])  # serie de skill
-            self.r_z_zhat_t[j] = rtt[0]
-            self.p_z_zhat_t[j] = rtt[1]
+            for mode in range(nm):
+                rtt_sep = stats.pearsonr(self.zhat_separated_modes[mode, :, j], self.zdata[:, j])  # serie de skill
+                self.r_z_zhat_t_separated_modes[mode, j] = rtt_sep[0]
+                self.p_z_zhat_t_separated_modes[mode, j] = rtt_sep[1]
 
-        self.r_z_zhat_s = np.zeros([nz], dtype=np.float32)
-        self.p_z_zhat_s = np.zeros([nz], dtype=np.float32)
+                rtt_acc = stats.pearsonr(self.zhat_accumulated_modes[mode, :, j], self.zdata[:, j])  # serie de skill
+                self.r_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[0]
+                self.p_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[1]
+
+        self.r_z_zhat_s_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
+        self.p_z_zhat_s_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
+        self.r_z_zhat_s_separated_modes = np.zeros([nm, nz], dtype=np.float32)
+        self.p_z_zhat_s_separated_modes = np.zeros([nm, nz], dtype=np.float32)
         for i in range(nz):
-            self.r_z_zhat_s[i], self.p_z_zhat_s[i] = stats.pearsonr(self.zhat[i, :], self.zdata[i, :])
+            for mode in range(nm):
+                rtt_sep = stats.pearsonr(self.zhat_separated_modes[mode, i, :], self.zdata[i, :])  # serie de skill
+                self.r_z_zhat_s_separated_modes[mode, j] = rtt_sep[0]
+                self.p_z_zhat_s_separated_modes[mode, j] = rtt_sep[1]
+
+                rtt_acc = stats.pearsonr(self.zhat_accumulated_modes[mode, i, :], self.zdata[i, :])  # serie de skill
+                self.r_z_zhat_s_accumulated_modes[mode, j] = rtt_acc[0]
+                self.p_z_zhat_s_accumulated_modes[mode, j] = rtt_acc[1]
+
         self.alpha = alpha
         debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
 
@@ -196,18 +234,18 @@ class Crossvalidation(_Procedure):
         y2 = y[:, yrs != year]
         mca_out = MCA.from_nparrays(z2, y2, nm, alpha)
         ny, _ = y2.shape
+        nz, _ = z2.shape
 
-        psi = np.dot(
-            np.dot(
-                np.dot(
-                    mca_out.SUY, np.linalg.inv(
-                        np.dot(mca_out.Us, np.transpose(mca_out.Us))
-                    )
-                ), mca_out.Us
-            ), np.transpose(z2)
-        ) * nt * nm / ny
+        psi_separated_modes = np.zeros([nm, ny, nz], dtype=np.float32)
+        psi_accumulated_modes = np.zeros([nm, ny, nz], dtype=np.float32)
+        zhat_separated_modes = np.zeros([nm, nz], dtype=np.float32)
+        zhat_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
+        for mode in range(nm):
+            psi_separated_modes[mode, :, :] = _calculate_psi(mca_out.SUY[:, mode:mode+1], mca_out.Us[mode:mode+1, :], z2, nt, 1, ny)
+            psi_accumulated_modes[mode, :, :] = _calculate_psi(mca_out.SUY[:, :mode+1], mca_out.Us[:mode+1, :], z2, nt, mode+1, ny)
 
-        zhat = np.dot(np.transpose(y[:, year]), psi)
+            zhat_separated_modes[mode, :] = np.dot(np.transpose(y[:, year]), psi_separated_modes[mode, :, :])
+            zhat_accumulated_modes[mode, :] = np.dot(np.transpose(y[:, year]), psi_accumulated_modes[mode, :, :])
 
         r_uv = np.zeros(nm, dtype=np.float32)
         p_uv = np.zeros(nm, dtype=np.float32)
@@ -215,7 +253,7 @@ class Crossvalidation(_Procedure):
             r_uv[m], p_uv[m] = stats.pearsonr(mca_out.Us[m, :], mca_out.Vs[m, :])
 
         scf = mca_out.scf
-        return scf, zhat, r_uv, p_uv, mca_out.Us, psi
+        return scf, r_uv, p_uv, mca_out.Us, psi_separated_modes, psi_accumulated_modes, zhat_separated_modes, zhat_accumulated_modes
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
@@ -306,7 +344,7 @@ class Crossvalidation(_Procedure):
 
         # ------ r_z_zhat_s and p_z_zhat_s ------ #
         # Correlation map
-        d = self.r_z_zhat_s.transpose().reshape((nzlat, nzlon))
+        d = self.r_z_zhat_s_accumulated_modes[-1, :].transpose().reshape((nzlat, nzlon))
         _mean = np.nanmean(d)
         _std = np.nanstd(d)
         mx = _mean + _std
@@ -317,7 +355,7 @@ class Crossvalidation(_Procedure):
             cmap=cmap, ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None else map_ticks)
         )
         hatches = d.copy()
-        hatches[((self.p_z_zhat_s > self.alpha) | (self.r_z_zhat_s < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
+        hatches[((self.p_z_zhat_s_accumulated_modes[-1, :] > self.alpha) | (self.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
 
         axs[0].contourf(
             self.zlon, self.zlat, hatches,
@@ -327,11 +365,12 @@ class Crossvalidation(_Procedure):
         # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
 
         # ------ r_z_zhat_t and p_z_zhat_t ------ #
-        axs[1].bar(self.ztime.values, self.r_z_zhat_t)
+        axs[1].bar(self.ztime.values, self.r_z_zhat_t_accumulated_modes[-1, :])
         axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
 
         axs[1].scatter(
-            self.ztime[self.p_z_zhat_t <= self.alpha], self.r_z_zhat_t[self.p_z_zhat_t <= self.alpha]
+            self.ztime[self.p_z_zhat_t_accumulated_modes[-1, :] <= self.alpha],
+            self.p_z_zhat_t_accumulated_modes[-1, :][self.p_z_zhat_t_accumulated_modes[-1, :] <= self.alpha]
         )
         axs[1].set_title('Correlation in space between z and zhat')
         axs[1].grid(True)
@@ -417,7 +456,7 @@ class Crossvalidation(_Procedure):
 
         _plot_map(d0[yindex], self.ylat, self.ylon, fig, ax0, f'Y on year {y_year}', ticks=yticks)
 
-        d1 = self.zhat.transpose().reshape((nts, nzlat, nzlon))
+        d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
         d2 = self.zdata.transpose().reshape((nts, nzlat, nzlon))
 
         n = 30
@@ -457,7 +496,6 @@ class Crossvalidation(_Procedure):
 
         return fig, (ax0, ax1, ax2)
 
-
     @classmethod
     def load(
         cls,
@@ -480,3 +518,16 @@ class Crossvalidation(_Procedure):
         self._dsy = dsy
         return self
 
+
+def _calculate_psi(
+    suy: npt.NDArray[np.float32],
+    us: npt.NDArray[np.float32],
+    z: npt.NDArray[np.float32],
+    nt: int,
+    nm: int,
+    ny: int,
+) -> npt.NDArray[np.float32]:
+    # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
+    return cast(
+        npt.NDArray[np.float32],
+        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt * nm / ny)

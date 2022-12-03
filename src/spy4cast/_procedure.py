@@ -113,32 +113,14 @@ def _plot_map(
         _std = np.nanstd(arr)
         _m = np.nanmean(arr)
 
-        bound = max(abs(_m - _std),  abs(_m + _std))
+        levels = np.unique(np.linspace(_m - _std, _m + _std, n))
 
-        levels = np.sort(np.array([
-            round(x, 2)
-            for x in np.linspace(-bound, bound, n)
-        ]))
+        if len(levels) <= 1:
+            levels = None
 
-    levels = cast(npt.NDArray[np.float_], np.unique(levels))
-
-    if ticks is None:
+    if ticks is None and levels is not None:
         nticks = 6
-        n0 = round(levels[0] * 10) / 10
-        nf = round(levels[-1] * 10) / 10
-        if n0 == nf:
-            n0 -= 0.05
-            nf += 0.05
-        step = abs((nf - n0) / nticks)
-        assert step != 0
-        i = 0
-        while step * (10**i) < 1:
-            i += 1
-        ticks = np.arange(n0, nf + round(step, i) / 2, round(step, i))
-        ticks = [t for t in ticks if levels[0] < t < levels[-1]]
-        if len(ticks) <= 1:
-            _warning('Could not autmatically create ticks. Customize it yourself')
-            ticks = None
+        ticks = levels[np.arange(0, len(levels), len(levels) // nticks)]
 
     cmap = 'bwr' if cmap is None else cmap
     xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
