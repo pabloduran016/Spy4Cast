@@ -18,6 +18,7 @@ from .preprocess import Preprocess
 
 __all__ = [
     'MCA',
+    'index_regression',
 ]
 
 
@@ -51,6 +52,8 @@ class MCA(_Procedure):
     RUZ_sig: npt.NDArray[np.float32]
     SUZ: npt.NDArray[np.float32]
     SUZ_sig: npt.NDArray[np.float32]
+    pvalruz: npt.NDArray[np.float32]
+    pvalruy: npt.NDArray[np.float32]
     Us: npt.NDArray[np.float32]
     Vs: npt.NDArray[np.float32]
     scf: npt.NDArray[np.float32]
@@ -67,6 +70,8 @@ class MCA(_Procedure):
             'RUZ_sig',
             'SUZ',
             'SUZ_sig',
+            'pvalruz',
+            'pvalruy',
             'Us',
             'Vs',
             'scf',
@@ -213,24 +218,24 @@ class MCA(_Procedure):
         self.scf = scf
         self.alpha = alpha
 
-        pvalruy = np.zeros([ny, nm], dtype=np.float32)
-        pvalruz = np.zeros([nz, nm], dtype=np.float32)
+        self.pvalruy = np.zeros([ny, nm], dtype=np.float32)
+        self.pvalruz = np.zeros([nz, nm], dtype=np.float32)
         for i in range(nm):
             (
                 self.RUY[:, i],
-                pvalruy[:, i],
+                self.pvalruy[:, i],
                 self.RUY_sig[:, i],
                 self.SUY[:, i],
                 self.SUY_sig[:, i]
-            ) = _index_regression(y_index_regression, self.Us[i, :], alpha, sig)
+            ) = index_regression(y_index_regression, self.Us[i, :], alpha, sig)
 
             (
                 self.RUZ[:, i],
-                pvalruz[:, i],
+                self.pvalruz[:, i],
                 self.RUZ_sig[:, i],
                 self.SUZ[:, i],
                 self.SUZ_sig[:, i]
-            ) = _index_regression(z_index_regression, self.Us[i, :], alpha, sig)
+            ) = index_regression(z_index_regression, self.Us[i, :], alpha, sig)
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
@@ -430,7 +435,7 @@ class MCA(_Procedure):
         return self
 
 
-def _index_regression(
+def index_regression(
     data: npt.NDArray[np.float32],
     index: npt.NDArray[np.float32],
     alpha: float,
@@ -453,6 +458,10 @@ def _index_regression(
             Unidimensional array: temporal series
         alpha : float
             Significance level
+        sig : str, {'monte-carlo', 'test-t'}
+            Type of sygnificance
+        montecarlo_iterations : optional, int
+            Number of iterations for monte-carlo sig
 
     Returns
     -------

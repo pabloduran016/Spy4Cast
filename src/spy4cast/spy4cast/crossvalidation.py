@@ -650,7 +650,7 @@ def _plot_crossvalidation_elena(
         gl = ax2.gridlines(draw_labels=True)
         gl.ylabels_right = False
         gl.xlabels_top = False
-        ax2.set_extent([min(cross.zlon), max(cross.zlon), min(cross.zlon), max(cross.zlon)])
+        ax2.set_extent([min(cross.zlon), max(cross.zlon), min(cross.zlat), max(cross.zlat)])
         ax2.set_title(f'ACC {n_mode + 1} modes', weight='bold', fontsize=8)
         # ax2.set_title(f'ACC {n_mode + 1} modes', fontsize=20, weight='bold', y=1.02)
 
@@ -679,7 +679,7 @@ def _plot_crossvalidation_elena(
             ax04.plot(cross.ztime, msess[1, :], color='green')
             ax04.plot(cross.ztime, msess[0, :], color='blue')
             # ax02.set_ylabel('%',fontsize=20,weight='bold')
-            ax3.legend(loc='upper center', ncol=3)
+            ax3.legend(loc='upper center', bbox_to_anchor=(0.7, -.25), ncol=3, columnspacing=1)
             # ax3.legend(fontsize=20, loc='upper center', bbox_to_anchor=(0.7, 1.2), ncol=3, columnspacing=1)
             ax3.grid()
             ax3.set_title('Skill (bars), \n MSESS (lines)', weight='bold', fontsize=8)
