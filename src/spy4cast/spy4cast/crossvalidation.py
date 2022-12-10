@@ -9,7 +9,6 @@ import matplotlib.gridspec as gridspec
 import cartopy.crs as ccrs
 from matplotlib.ticker import MaxNLocator
 from scipy import stats
-from global_land_mask import globe
 
 
 from . import MCA
