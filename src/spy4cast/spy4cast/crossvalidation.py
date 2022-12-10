@@ -1,15 +1,19 @@
 import os
 from math import floor
-from typing import Tuple, Optional, Any, Union, Sequence, cast
+from typing import Tuple, Optional, Any, Union, Sequence, cast, Literal, List
 
 import numpy as np
 import numpy.typing as npt
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import cartopy.crs as ccrs
 from matplotlib.ticker import MaxNLocator
 from scipy import stats
+from global_land_mask import globe
+
 
 from . import MCA
+from .mca import index_regression
 from .. import Slise, F
 from .._functions import debugprint, slise2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
@@ -38,27 +42,55 @@ class Crossvalidation(_Procedure):
             Significance coeficient
         multiprocessed : bool
             Use multiprocessing for the methodology
+        sig : {'monte-carlo', 'test-t'}
+            Signification technique: monte-carlo or test-t
 
     Attributes
     ----------
-        zhat : npt.NDArray[float32]
-            Hindcast of field to predict using crosvalidation
+        zhat_separated_modes : npt.NDArray[float32]
+            Hindcast of field to predict using crosvalidation for each mode separated
+        zhat_accumulated_modes : npt.NDArray[float32]
+            Hindcast of field to predict using crosvalidation accumulating modes (1, 1->2, ..., 1->nm)
         scf : npt.NDArray[float32]
             Squared covariance fraction of the mca for each mode
-        r_z_zhat_t : npt.NDArray[float32]
-            Correlation between zhat and Z for each time (time series)
-        p_z_zhat_t : npt.NDArray[float32]
-            P values of rt
-        r_z_zhat_s : npt.NDArray[float32]
-            Correlation between time series (for each point) of zhat and z (map)
-        p_z_zhat_s : npt.NDArray[float32]
-            P values of rr
+        r_z_zhat_t_separated_modes : npt.NDArray[float32]
+            Correlation between zhat and Z for each time (time series) for each mode separated
+        r_z_zhat_t_accumulated_modes : npt.NDArray[float32]
+            Correlation between zhat and Z for each time (time series) accumulating modes (1, 1->2, ..., 1->nm)
+        p_z_zhat_t_separated_modes : npt.NDArray[float32]
+            P values of rt for each mode separated
+        p_z_zhat_t_accumulated_modes : npt.NDArray[float32]
+            P values of rt accumulating modes (1, 1->2, ..., 1->nm)
+        r_z_zhat_s_separated_modes : npt.NDArray[float32]
+            Correlation between time series (for each point) of zhat and z (map) for each mode separated
+        r_z_zhat_s_accumulated_modes : npt.NDArray[float32]
+            Correlation between time series (for each point) of zhat and z (map) accumulating modes (1, 1->2, ..., 1->nm)
+        p_z_zhat_s_separated_modes : npt.NDArray[float32]
+            P values of rr for each mode separated
+        p_z_zhat_s_accumulated_modes : npt.NDArray[float32]
+            P values of rr accumulating modes (1, 1->2, ..., 1->nm)
         r_uv : npt.NDArray[float32]
             Correlation score betweeen u and v for each mode
+        r_uv_sig : npt.NDArray[float32]
+            Correlation score betweeen u and v for each mode where significative
         p_uv : npt.NDArray[float32]
             P value of ruv
+        psi_separated_modes : npt.NDArray[np.float32]
+            Skill for each mode separated
+        psi_accumulated_modes : npt.NDArray[np.float32]
+            Skill accumulating modes (1, 1->2, ..., 1->nm)
+        suy : npt.NDArray[np.float32]
+            SUY
+        suz : npt.NDArray[np.float32]
+            SUZ
+        suy_sig : npt.NDArray[np.float32]
+            SUY_sig
+        suz_sig : npt.NDArray[np.float32]
+            SUZ_sig
         us : npt.NDArray[float32]
             crosvalidated year on axis 2
+        vs : npt.NDArray[float32]
+            ...
         alpha : float
             Correlation factor
 
@@ -68,8 +100,10 @@ class Crossvalidation(_Procedure):
     """
     scf: npt.NDArray[np.float32]
     r_uv: npt.NDArray[np.float32]
+    r_uv_sig: npt.NDArray[np.float32]
     p_uv: npt.NDArray[np.float32]
     us: npt.NDArray[np.float32]
+    vs: npt.NDArray[np.float32]
     zhat_separated_modes: npt.NDArray[np.float32]
     zhat_accumulated_modes: npt.NDArray[np.float32]
     psi_separated_modes: npt.NDArray[np.float32]
@@ -82,6 +116,10 @@ class Crossvalidation(_Procedure):
     p_z_zhat_s_accumulated_modes: npt.NDArray[np.float32]
     r_z_zhat_s_separated_modes: npt.NDArray[np.float32]
     p_z_zhat_s_separated_modes: npt.NDArray[np.float32]
+    suy: npt.NDArray[np.float32]
+    suz: npt.NDArray[np.float32]
+    suy_sig: npt.NDArray[np.float32]
+    suz_sig: npt.NDArray[np.float32]
     alpha: float
 
     @property
@@ -89,8 +127,10 @@ class Crossvalidation(_Procedure):
         return (
             'scf',
             'r_uv',
+            'r_uv_sig',
             'p_uv',
             'us',
+            'vs',
 
             'zhat_accumulated_modes',
             'zhat_separated_modes',
@@ -105,6 +145,11 @@ class Crossvalidation(_Procedure):
             'r_z_zhat_s_separated_modes',
             'p_z_zhat_s_separated_modes',
 
+            'suy',
+            'suz',
+            'suy_sig',
+            'suz_sig',
+
             'psi_accumulated_modes',
             'psi_separated_modes',
             'alpha',
@@ -116,7 +161,8 @@ class Crossvalidation(_Procedure):
         dsz: Preprocess,
         nm: int,
         alpha: float,
-        multiprocessed: bool = False
+        multiprocessed: bool = False,
+        sig: str = 'test-t'
     ):
         self._dsy = dsy
         self._dsz = dsz
@@ -143,13 +189,19 @@ class Crossvalidation(_Procedure):
 
         self.scf = np.zeros([nm, nt], dtype=np.float32)
         self.r_uv = np.zeros([nm, nt], dtype=np.float32)
+        self.r_uv_sig = np.zeros([nm, nt], dtype=np.float32)
         self.p_uv = np.zeros([nm, nt], dtype=np.float32)
         self.zhat_separated_modes = np.zeros([nm, nz, nt], dtype=np.float32)
         self.zhat_accumulated_modes = np.zeros([nm, nz, nt], dtype=np.float32)
         self.psi_separated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
         self.psi_accumulated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
+        self.suy = np.zeros([ny, nt, nm], dtype=np.float32)
+        self.suy_sig = np.zeros([ny, nt, nm], dtype=np.float32)
+        self.suz = np.zeros([nz, nt, nm], dtype=np.float32)
+        self.suz_sig = np.zeros([nz, nt, nm], dtype=np.float32)
         # crosvalidated year on axis 2
         self.us = np.zeros([nm, nt, nt], dtype=np.float32)
+        self.vs = np.zeros([nm, nt, nt], dtype=np.float32)
         # estimación de self.zhat para cada año
         yrs = np.arange(nt)
 
@@ -164,26 +216,30 @@ class Crossvalidation(_Procedure):
                     # print(f'applying async on process {i=}')
                     p = pool.apply_async(self._crossvalidate_year, kwds={
                         'year': i, 'z': self.zdata, 'y': self.ydata, 'nt': nt, 'yrs': yrs,
-                        'nm': nm, 'alpha': alpha
+                        'nm': nm, 'alpha': alpha, 'sig': sig
                     })
                     processes.append(p)
 
                 for i in yrs:
                     values = processes[i].get()
-                    self.scf[:, i], self.r_uv[:, i], self.p_uv[:, i], \
+                    self.scf[:, i], self.r_uv[:, i], self.r_uv_sig[:, i], self.p_uv[:, i], \
                         self.us[:, [x for x in range(nt) if x != i], i], \
+                        self.vs[:, [x for x in range(nt) if x != i], i], \
                         self.psi_separated_modes[:, i, :, :], self.psi_accumulated_modes[:, i, :, :], \
-                        self.zhat_separated_modes[:, :, i], self.zhat_accumulated_modes[:, :, i] = values
+                        self.zhat_separated_modes[:, :, i], self.zhat_accumulated_modes[:, :, i], \
+                        self.suy[:, i, :], self.suy_sig[:, i, :], self.suz[:, i, :], self.suz_sig[:, i, :] = values
         else:
             for i in yrs:
                 out = self._crossvalidate_year(
                     year=i, z=self.zdata, y=self.ydata, nt=nt, yrs=yrs,
-                    nm=nm, alpha=alpha
+                    nm=nm, alpha=alpha, sig=sig,
                 )
-                self.scf[:, i], self.r_uv[:, i], self.p_uv[:, i], \
+                self.scf[:, i], self.r_uv[:, i], self.r_uv_sig[:, i], self.p_uv[:, i], \
                     self.us[:, [x for x in range(nt) if x != i], i], \
+                    self.vs[:, [x for x in range(nt) if x != i], i], \
                     self.psi_separated_modes[:, i, :, :], self.psi_accumulated_modes[:, i, :, :], \
-                    self.zhat_separated_modes[:, :, i], self.zhat_accumulated_modes[:, :, i] = out
+                    self.zhat_separated_modes[:, :, i], self.zhat_accumulated_modes[:, :, i], \
+                    self.suy[:, i, :], self.suy_sig[:, i, :], self.suz[:, i, :], self.suz_sig[:, i, :] = out
 
         self.r_z_zhat_t_accumulated_modes = np.zeros([nm, nt], dtype=np.float32)
         self.p_z_zhat_t_accumulated_modes = np.zeros([nm, nt], dtype=np.float32)
@@ -206,12 +262,12 @@ class Crossvalidation(_Procedure):
         for i in range(nz):
             for mode in range(nm):
                 rtt_sep = stats.pearsonr(self.zhat_separated_modes[mode, i, :], self.zdata[i, :])  # serie de skill
-                self.r_z_zhat_s_separated_modes[mode, j] = rtt_sep[0]
-                self.p_z_zhat_s_separated_modes[mode, j] = rtt_sep[1]
+                self.r_z_zhat_s_separated_modes[mode, i] = rtt_sep[0]
+                self.p_z_zhat_s_separated_modes[mode, i] = rtt_sep[1]
 
                 rtt_acc = stats.pearsonr(self.zhat_accumulated_modes[mode, i, :], self.zdata[i, :])  # serie de skill
-                self.r_z_zhat_s_accumulated_modes[mode, j] = rtt_acc[0]
-                self.p_z_zhat_s_accumulated_modes[mode, j] = rtt_acc[1]
+                self.r_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[0]
+                self.p_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[1]
 
         self.alpha = alpha
         debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
@@ -224,7 +280,8 @@ class Crossvalidation(_Procedure):
         nt: int,
         yrs: npt.NDArray[np.int32],
         nm: int,
-        alpha: float
+        alpha: float,
+        sig: str,
     ) -> Tuple[npt.NDArray[np.float32], ...]:
         """Function of internal use that processes a single year for
         crossvalidation"""
@@ -248,12 +305,19 @@ class Crossvalidation(_Procedure):
             zhat_accumulated_modes[mode, :] = np.dot(np.transpose(y[:, year]), psi_accumulated_modes[mode, :, :])
 
         r_uv = np.zeros(nm, dtype=np.float32)
+        r_uv_sig = np.zeros(nm, dtype=np.float32)
         p_uv = np.zeros(nm, dtype=np.float32)
         for m in range(nm):
-            r_uv[m], p_uv[m] = stats.pearsonr(mca_out.Us[m, :], mca_out.Vs[m, :])
+            r_uv[m], p_uv[m], r_uv_sig[m], _, _ = index_regression(mca_out.Us[m:m+1, :], mca_out.Vs[m:m+1, :].T, alpha, sig)
 
         scf = mca_out.scf
-        return scf, r_uv, p_uv, mca_out.Us, psi_separated_modes, psi_accumulated_modes, zhat_separated_modes, zhat_accumulated_modes
+        return (
+            scf, r_uv, r_uv_sig, p_uv, mca_out.Us, mca_out.Vs,
+            psi_separated_modes, psi_accumulated_modes,
+            zhat_separated_modes, zhat_accumulated_modes,
+            mca_out.SUY, mca_out.SUY_sig,
+            mca_out.SUZ, mca_out.SUZ_sig
+        )
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
@@ -311,105 +375,20 @@ class Crossvalidation(_Procedure):
         cmap: str = 'bwr',
         map_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
-        ] = None
+        ] = None,
+        version: Literal["default", "elena"] = "default",
+        mca: Optional[MCA] = None
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
-        """
-        Plots:
-          - r_z_zhat_s and p_z_zhat_s: Cartopy map of r
-            and then hatches when p is <= alpha
-          - r_z_zhat_t and p_z_zhat_t: Bar plot of r
-            and then points when p is <= alpha
-          - scf: Draw scf for all times for mode i.
-            For the time being all in one plot
-          - US
-        """
-
-        # Layout:
-        #    r_z_zhat_s    r_z_zhat_t
-        #       scf           r_uv_1
-        #     r_uv_1          r_uv_2
-
-        fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
-        nrows = 3
-        ncols = 2
-        axs = [
-            plt.subplot(nrows * 100 + ncols * 10 + i,
-                        projection=(ccrs.PlateCarree() if i == 1 else None))
-            for i in range(1, ncols * nrows + 1)
-        ]
-
-        nzlat = len(self.zlat)
-        nzlon = len(self.zlon)
-        # nztime = len(ts)
-
-        # ------ r_z_zhat_s and p_z_zhat_s ------ #
-        # Correlation map
-        d = self.r_z_zhat_s_accumulated_modes[-1, :].transpose().reshape((nzlat, nzlon))
-        _mean = np.nanmean(d)
-        _std = np.nanstd(d)
-        mx = _mean + _std
-        mn = _mean - _std
-        _plot_map(
-            d, self.zlat, self.zlon, fig, axs[0],
-            'Correlation in space between z and zhat',
-            cmap=cmap, ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None else map_ticks)
-        )
-        hatches = d.copy()
-        hatches[((self.p_z_zhat_s_accumulated_modes[-1, :] > self.alpha) | (self.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
-
-        axs[0].contourf(
-            self.zlon, self.zlat, hatches,
-            colors='none', hatches='..', extend='both',
-            transform=ccrs.PlateCarree()
-        )
-        # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
-
-        # ------ r_z_zhat_t and p_z_zhat_t ------ #
-        axs[1].bar(self.ztime.values, self.r_z_zhat_t_accumulated_modes[-1, :])
-        axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
-
-        axs[1].scatter(
-            self.ztime[self.p_z_zhat_t_accumulated_modes[-1, :] <= self.alpha],
-            self.p_z_zhat_t_accumulated_modes[-1, :][self.p_z_zhat_t_accumulated_modes[-1, :] <= self.alpha]
-        )
-        axs[1].set_title('Correlation in space between z and zhat')
-        axs[1].grid(True)
-        # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
-
-        # ------ scf ------ #
-        for mode in range(self.scf.shape[0]):
-            _plot_ts(
-                time=self.ytime.values,
-                arr=self.scf[mode],
-                ax=axs[2],
-                label=f'Mode {mode + 1}',
-                title='Squared convariance fraction'
-            )
-        axs[2].legend()
-        axs[2].grid(True)
-        # ^^^^^^ scf ^^^^^^ #
-
-        # ^^^^^^ Us ^^^^^^ #
-        mean = self.us.mean(2)
-        std = np.std(self.us, axis=2)
-        for mode in range(mean.shape[0]):
-            axs[3 + mode].grid(True)
-            axs[3 + mode].errorbar(
-                self.ytime, mean[mode], yerr=np.abs(std[mode]), label='std', color='orange', linewidth=3, ecolor='purple'
-            )
-            axs[3 + mode].set_title(
-                f'Us for mode {mode + 1}'
-            )
-            axs[3 + mode].legend()
-
-        fig.suptitle(
-            f'Z({self.zvar}): {slise2str(self.zslise)}, '
-            f'Y({self.yvar}): {slise2str(self.yslise)}. '
-            f'Alpha: {self.alpha}',
-            fontweight='bold'
-        )
-
-        fig.subplots_adjust(hspace=.4)
+        fig: plt.Figure
+        axs: Sequence[plt.Axes]
+        if version == "default":
+            fig, axs = _plot_crossvalidation_default(self, cmap, map_ticks)
+        elif version == "elena":
+            if mca is None:
+                raise TypeError("Expected argument mca for version `helena`")
+            fig, axs = _plot_crossvalidation_elena(self, cmap, map_ticks, mca)
+        else:
+            raise ValueError(f"Version can only be one of: `elena`, `default`")
 
         if dir is None:
             dir = '.'
@@ -421,6 +400,7 @@ class Crossvalidation(_Procedure):
         _apply_flags_to_fig(
             fig, path, F(flags)
         )
+
         return fig, axs
 
     def plot_zhat(
@@ -531,3 +511,303 @@ def _calculate_psi(
     return cast(
         npt.NDArray[np.float32],
         np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt * nm / ny)
+
+
+def _plot_crossvalidation_elena(
+    cross: Crossvalidation,
+    cmap: str,
+    map_ticks: Optional[
+        Union[npt.NDArray[np.float32], Sequence[float]]
+    ],
+    mca: MCA,
+) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
+    fig = plt.figure(figsize=(24, 8.5))
+    # fig = plt.figure(figsize=(28, 24))
+
+    nm = cross.us.shape[0]
+    nt = cross.us.shape[1]
+    nlat = cross.zlat.shape[0]
+    nlon = cross.zlon.shape[0]
+
+    spec = gridspec.GridSpec(
+        ncols=3, nrows=4, figure=fig, wspace=0.4, hspace=0.6, width_ratios=[1, 1, 1],
+        height_ratios=[1.3, 1.3, 2, 2]
+    )
+
+    axs: List[plt.Axes] = []
+
+    # fig.suptitle('Crossvalidation',fontsize=20,weight='bold')
+    for n_mode in range(nm):
+        us_2 = cross.us[n_mode, :, :].copy()
+        vs_2 = cross.vs[n_mode, :, :].copy()
+        for year in range(nt):
+            u_r, _u_pvalue = stats.pearsonr(mca.Us[n_mode, :], cross.us[n_mode, :, year])
+            if u_r < 0:
+                us_2[:, year] *= -1
+                # cross.us[n_mode, :, year] *= -1
+                # cross.suy[:, year, n_mode] *= -1
+                # cross.suy_sig[:, year, n_mode] *= -1
+                # cross.suz[:, year, n_mode] *= -1
+                # cross.suz_sig[:, year, n_mode] *= -1
+            v_r, _v_pvalue = stats.pearsonr(mca.Vs[n_mode, :], cross.vs[n_mode, :, year])
+            if v_r < 0:
+                # cross.vs[n_mode, :, year] *= -1
+                vs_2[:, year] *= -1
+            # us_2[:, year] = cross.us[n_mode, :, year]
+            # vs_2[:, year] = cross.vs[n_mode, :, year]
+
+        error_u = np.nanstd(us_2[:, :], 1)
+        error_v = np.nanstd(vs_2[:, :], 1)
+
+        # Coeficientes expansión
+        ax0 = fig.add_subplot(spec[0, n_mode])
+        axs.append(ax0)
+
+        # ax0.errorbar(cross.ztime, mca.Us[n_mode, :], yerr=error_u, capsize=3, linewidth=2, color='blue', ecolor='k', label='Us')
+        # ax0.errorbar(cross.ztime, mca.Vs[n_mode, :], yerr=error_v, capsize=3, linewidth=2, color='green', ecolor='k', label='Vs')
+        ax0.errorbar(cross.ztime, mca.Us[n_mode, :], yerr=error_u, color='blue', ecolor='k', label='Us')
+        ax0.errorbar(cross.ztime, mca.Vs[n_mode, :], yerr=error_v, color='green', ecolor='k', label='Vs')
+        # ax0.plot(cross.ztime,index_an/np.std(index_an),linewidth=1.5,linestyle='--',color='green',label='index')
+        ax0.grid()
+        ax0.set_xlabel('Years', weight='bold', fontsize=8)
+        # ax0.set_xlabel('Years', fontsize=20, weight='bold')
+
+        if n_mode == 0:
+            ax0.legend(ncol=3)
+            # ax0.legend(fontsize=20, ncol=3)
+            ax0.set_ylabel('nº std', weight='bold', fontsize=8)
+            # ax0.set_ylabel('nº std', fontsize=20, weight='bold')
+
+        r_uv, p_value, _ruv_sig, _reg, _reg_sig = index_regression(
+            mca.Us[n_mode:n_mode+1, :], mca.Vs[n_mode:n_mode+1, :].T, cross.alpha, 'test-t', 1000)
+
+        # plt.xticks()
+        # plt.yticks()
+        ax0.set_ylim(-5.5, 5.5)
+        ax0.set_title(f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0][0]):.2f} p={1 - p_value[0]:.3f}', fontweight='bold', fontsize=8)
+        # ax0.set_title(
+        #     f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0][0]):.2f} p={1 - p_value[0]:.3f}', fontsize=20,
+        #     weight='bold', y=1.02)
+
+        # Evolución scf y ruv
+        ax1 = fig.add_subplot(spec[1, n_mode])
+        axs.append(ax1)
+        ax1.plot(cross.ztime, abs(cross.r_uv[n_mode, :]), color='cornflowerblue', label='ruv')
+        ax1.scatter(cross.ztime, abs(cross.r_uv_sig[n_mode, :]), color='cornflowerblue')
+        ax1.plot(cross.ztime, [abs(r_uv[0][0])] * len(cross.ztime), color='cornflowerblue')
+        ax1.scatter([], [], color='purple', marker='o', label='scf')
+        # ax1.scatter([], [], linewidth=2, color='purple', marker='o', label='scf')
+        ax1.grid()
+        ax1.set_ylim(0, round(np.max(cross.r_uv[n_mode]), 1) + 0.1)
+        ax1.set_xlabel('Years', weight='bold', fontsize=8)
+        # ax1.set_xlabel('Years', fontsize=20, weight='bold')
+        # if i == 2:
+        #     ax0.legend(fontsize=20)
+        ax01 = ax1.twinx()
+        ax01.scatter(cross.ztime, cross.scf[n_mode, :] * 100, color='purple', marker='o', label='scf')
+        # ax01.scatter(cross.ztime, cross.scf[n_mode, :] * 100, linewidth=2, color='purple', marker='o', label='scf')
+        ax01.plot(cross.ztime, [cross.scf[n_mode, :] * 100] * len(cross.ztime), color='purple')
+        ax01.set_ylim([np.min(cross.scf[n_mode]) * 100 + 2, np.max(cross.scf[n_mode, :]) * 100 + 2])
+
+        if n_mode == 0:
+            ax1.set_ylabel('|ruv|', weight='bold', fontsize=8)
+            # ax1.set_ylabel('|ruv|', fontsize=20, weight='bold')
+            ax1.legend(loc='lower right')
+            # ax1.legend(loc='lower right', fontsize=20)
+
+        if n_mode == 2:
+            ax01.set_ylabel('%', weight='bold', fontsize=8)
+            # ax01.set_ylabel('%', fontsize=20, weight='bold')
+
+        # ax01.set_ylabel('scf',fontsize=20,weight='bold')
+        ax1.set_title(
+            f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0][0]):.2f} , scf={mca.scf[n_mode] * 100:.2f}%',
+            weight='bold', fontsize=8)
+        # ax1.set_title(
+        #     f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0][0]):.2f} , scf={mca.scf[n_mode] * 100:.2f}%',
+        #     fontsize=20, weight='bold', y=1.02)
+
+        # Skill
+        levels = np.arange(-1, 1.1, 0.1)
+
+        # o, s = ('horizontal', 0.6) if region == 'Ecuador' or region == 'Ecuador2' else ('vertical', 1)
+
+        # lon_grid, lat_grid = np.meshgrid(cross.zlon, cross.zlat)
+        # is_on_land = globe.is_land(lat_grid, lon_grid)
+
+        sk = cross.r_z_zhat_s_accumulated_modes[n_mode, :].reshape(nlat, nlon)
+        r_sig = cross.r_z_zhat_s_accumulated_modes[n_mode, :].copy()
+        r_sig[cross.p_z_zhat_s_accumulated_modes[n_mode] > cross.alpha] = np.nan
+        sk_sig = r_sig.reshape(nlat, nlon)
+
+        ax2 = fig.add_subplot(spec[2, n_mode], projection=ccrs.PlateCarree())
+        axs.append(ax2)
+        im = ax2.contourf(cross.zlon, cross.zlat, sk, levels=levels, cmap='coolwarm', transform=ccrs.PlateCarree())
+        ax2.contourf(cross.zlon, cross.zlat, sk_sig, levels=levels, cmap='coolwarm', hatches='.', transform=ccrs.PlateCarree())
+        ax2.coastlines()
+        if n_mode == 3:
+            _cbar = fig.colorbar(im, ax2)
+        gl = ax2.gridlines(draw_labels=True)
+        gl.ylabels_right = False
+        gl.xlabels_top = False
+        ax2.set_extent([min(cross.zlon), max(cross.zlon), min(cross.zlon), max(cross.zlon)])
+        ax2.set_title(f'ACC {n_mode + 1} modes', weight='bold', fontsize=8)
+        # ax2.set_title(f'ACC {n_mode + 1} modes', fontsize=20, weight='bold', y=1.02)
+
+        if n_mode == 0:
+            ax3 = fig.add_subplot(spec[3, n_mode])
+            width = 0.3
+            # Evolución r y rmse
+            r_sig = cross.r_z_zhat_t_accumulated_modes.copy()
+            r_sig[cross.p_z_zhat_t_accumulated_modes > cross.alpha] = np.nan
+            ax3.bar(cross.ztime - 0.3, cross.r_z_zhat_t_accumulated_modes[0, :], width, color='blue', label='1')
+            ax3.bar(cross.ztime - 0.3, r_sig[0, :], width, color='blue', hatch='-')
+            ax3.bar(cross.ztime, cross.r_z_zhat_t_accumulated_modes[1, :], width, color='green', label='2')
+            ax3.bar(cross.ztime, r_sig[1, :], width, color='green', hatch='-')
+            ax3.bar(cross.ztime + 0.3, cross.r_z_zhat_t_accumulated_modes[2, :], width, color='orange', label='3')
+            ax3.bar(cross.ztime + 0.3, r_sig[2, :], width, color='orange', hatch='-')
+            ax3.set_ylim(-0.65, 0.65)
+            # ax3.set_ylabel('r',fontsize=20,weight='bold')
+            ax04 = ax3.twinx()
+            # ax02.plot(cross.ztime,rmse_r[2,:]*100/abs(index),color='orange')
+            # ax02.plot(cross.ztime,rmse_r[1,:]*100/abs(index),color='green')
+            # ax02.plot(cross.ztime,rmse_r[0,:]*100/abs(index),color='blue')
+            mse = np.mean((cross.zhat_accumulated_modes - cross.zdata)**2, axis=1)
+            mse_clim = np.std(cross.zdata, axis=0)
+            msess = 1 - mse / mse_clim
+            ax04.plot(cross.ztime, msess[2, :], color='orange')
+            ax04.plot(cross.ztime, msess[1, :], color='green')
+            ax04.plot(cross.ztime, msess[0, :], color='blue')
+            # ax02.set_ylabel('%',fontsize=20,weight='bold')
+            ax3.legend(loc='upper center', ncol=3)
+            # ax3.legend(fontsize=20, loc='upper center', bbox_to_anchor=(0.7, 1.2), ncol=3, columnspacing=1)
+            ax3.grid()
+            ax3.set_title('Skill (bars), \n MSESS (lines)', weight='bold', fontsize=8)
+            # ax3.set_title('Skill (bars), \n MSESS (lines)', fontsize=20, weight='bold', x=0.2, y=1.02)
+        else:
+            sk_i = cross.r_z_zhat_s_accumulated_modes[n_mode - 1, :].reshape(nlat, nlon)
+            # Skill modos
+            ax3 = fig.add_subplot(spec[3, n_mode], projection=ccrs.PlateCarree())
+            im = ax3.contourf(cross.zlon, cross.zlat, sk - sk_i, levels=levels, cmap='coolwarm', transform=ccrs.PlateCarree())
+            # ax2.contourf(cross.zlon,cross.zlat,skill_sig[i,:,:],levels=levels,cmap='coolwarm',hatches='.',transform = ccrs.PlateCarree())
+            ax3.coastlines()
+            if n_mode == 3:
+                _cbar = fig.colorbar(im, ax3)
+            gl = ax3.gridlines(draw_labels=True)
+            gl.ylabels_right = False
+            gl.xlabels_top = False
+            ax3.set_extent([min(cross.zlon), max(cross.zlon), min(cross.zlat), max(cross.zlat)])
+            ax3.set_title(f'ACC {np.arange(n_mode + 1) + 1}) - {np.arange(n_mode) + 1}', weight='bold', fontsize=8)
+            # ax3.set_title(f'ACC {np.arange(n_mode + 1) + 1}) - {np.arange(n_mode) + 1}', fontsize=20, weight='bold', y=1.02)
+        axs.append(ax3)
+    return fig, tuple(axs)
+
+
+def _plot_crossvalidation_default(
+    cross: Crossvalidation,
+    cmap: str,
+    map_ticks: Optional[
+        Union[npt.NDArray[np.float32], Sequence[float]]
+    ]
+) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
+    """
+    Plots:
+      - r_z_zhat_s and p_z_zhat_s: Cartopy map of r
+        and then hatches when p is <= alpha
+      - r_z_zhat_t and p_z_zhat_t: Bar plot of r
+        and then points when p is <= alpha
+      - scf: Draw scf for all times for mode i.
+        For the time being all in one plot
+      - US
+    """
+
+    # Layout:
+    #    r_z_zhat_s    r_z_zhat_t
+    #       scf           r_uv_1
+    #     r_uv_1          r_uv_2
+
+    fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+    nrows = 3
+    ncols = 2
+    axs = tuple(
+        plt.subplot(nrows * 100 + ncols * 10 + i,
+                    projection=(ccrs.PlateCarree() if i == 1 else None))
+        for i in range(1, ncols * nrows + 1)
+    )
+
+    nzlat = len(cross.zlat)
+    nzlon = len(cross.zlon)
+    # nztime = len(ts)
+
+    # ------ r_z_zhat_s and p_z_zhat_s ------ #
+    # Correlation map
+    d = cross.r_z_zhat_s_accumulated_modes[-1, :].transpose().reshape((nzlat, nzlon))
+    _mean = np.nanmean(d)
+    _std = np.nanstd(d)
+    mx = _mean + _std
+    mn = _mean - _std
+    _plot_map(
+        d, cross.zlat, cross.zlon, fig, axs[0],
+        'Correlation in space between z and zhat',
+        cmap=cmap,
+        ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None else map_ticks)
+    )
+    hatches = d.copy()
+    hatches[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (
+                cross.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
+
+    axs[0].contourf(
+        cross.zlon, cross.zlat, hatches,
+        colors='none', hatches='..', extend='both',
+        transform=ccrs.PlateCarree()
+    )
+    # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
+
+    # ------ r_z_zhat_t and p_z_zhat_t ------ #
+    axs[1].bar(cross.ztime.values, cross.r_z_zhat_t_accumulated_modes[-1, :])
+    axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
+
+    axs[1].scatter(
+        cross.ztime[cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha],
+        cross.p_z_zhat_t_accumulated_modes[-1, :][cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha]
+    )
+    axs[1].set_title('Correlation in space between z and zhat')
+    axs[1].grid(True)
+    # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
+
+    # ------ scf ------ #
+    for mode in range(cross.scf.shape[0]):
+        _plot_ts(
+            time=cross.ytime.values,
+            arr=cross.scf[mode],
+            ax=axs[2],
+            label=f'Mode {mode + 1}',
+            title='Squared convariance fraction'
+        )
+    axs[2].legend()
+    axs[2].grid(True)
+    # ^^^^^^ scf ^^^^^^ #
+
+    # ^^^^^^ Us ^^^^^^ #
+    mean = cross.us.mean(2)
+    std = np.std(cross.us, axis=2)
+    for mode in range(mean.shape[0]):
+        axs[3 + mode].grid(True)
+        axs[3 + mode].errorbar(
+            cross.ytime, mean[mode], yerr=np.abs(std[mode]), label='std', color='orange', linewidth=3, ecolor='purple'
+        )
+        axs[3 + mode].set_title(
+            f'Us for mode {mode + 1}'
+        )
+        axs[3 + mode].legend()
+
+    fig.suptitle(
+        f'Z({cross.zvar}): {slise2str(cross.zslise)}, '
+        f'Y({cross.yvar}): {slise2str(cross.yslise)}. '
+        f'Alpha: {cross.alpha}',
+        fontweight='bold'
+    )
+
+    fig.subplots_adjust(hspace=.4)
+
+    return fig, axs
