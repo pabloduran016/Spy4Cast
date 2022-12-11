@@ -1,6 +1,6 @@
 import numpy as np
 
-from spy4cast import Slise, Month, F
+from spy4cast import Slise, Month
 from . import BaseTestCase
 
 
@@ -25,9 +25,3 @@ class SliseTest(BaseTestCase):
         numpy_sl = Slise(-90, 90, -180, 180, Month.JAN, Month.DEC, 0, 2000, None).as_numpy()
         self.assertTrue(np.isclose(numpy_sl[:-1], np.array([-90, 90, -180, 180, 1, 12, 0, 2000])).all())
         self.assertTrue(np.isnan(numpy_sl[-1]))
-
-class StypesTest(BaseTestCase):
-    def test_F(self) -> None:
-        self.assertEqual(type(F.FILTER * 1), F)
-        self.assertEqual(type(F.FILTER * 0), F)
-        self.assertEqual(type(F.FILTER * 3), int)

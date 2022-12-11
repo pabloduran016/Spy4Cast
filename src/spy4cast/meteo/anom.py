@@ -4,7 +4,7 @@ from typing import Tuple, Optional, Type, Any, cast, Sequence
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
-from .. import Dataset, Slise, F
+from .. import Dataset, Slise
 from .._functions import slise2str
 from .._procedure import _Procedure, _plot_map, _plot_ts, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH
 import xarray as xr
@@ -260,8 +260,10 @@ class Anom(_Procedure):
 
     def plot(
         self,
-        flags: F = F(0),
         *,
+        save_fig: bool = False,
+        show_plot: bool = False,
+        halt_program: bool = False,
         year: Optional[int] = None,
         cmap: Optional[str] = None,
         color: Optional[Color] = None,
@@ -313,7 +315,10 @@ class Anom(_Procedure):
 
         path = os.path.join(dir, name)
         _apply_flags_to_fig(
-            fig, path, F(flags)
+            fig, path,
+            save_fig=save_fig,
+            show_plot=show_plot,
+            halt_program=halt_program
         )
         return fig, [ax]
 

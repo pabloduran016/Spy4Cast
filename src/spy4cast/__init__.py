@@ -1,10 +1,9 @@
 from .dataset import Dataset
-from .stypes import Slise, Month, F
+from .stypes import Slise, Month
 
 __all__ = [
     'Slise',
     'Month',
-    'F',
     'Dataset',
     'set_silence'
 ]

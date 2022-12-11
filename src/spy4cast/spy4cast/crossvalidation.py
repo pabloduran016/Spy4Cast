@@ -13,7 +13,7 @@ from scipy import stats
 
 from . import MCA
 from .mca import index_regression
-from .. import Slise, F
+from .. import Slise
 from .._functions import debugprint, slise2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, _plot_ts
@@ -368,7 +368,9 @@ class Crossvalidation(_Procedure):
 
     def plot(
         self,
-        flags: int = 0,
+        save_fig: bool = False,
+        show_plot: bool = False,
+        halt_program: bool = False,
         dir: Optional[str] = None,
         name: Optional[str] = None,
         cmap: str = 'bwr',
@@ -397,7 +399,10 @@ class Crossvalidation(_Procedure):
             path = os.path.join(dir, name)
 
         _apply_flags_to_fig(
-            fig, path, F(flags)
+            fig, path,
+            save_fig=save_fig,
+            show_plot=show_plot,
+            halt_program=halt_program
         )
 
         return fig, axs
@@ -405,7 +410,9 @@ class Crossvalidation(_Procedure):
     def plot_zhat(
         self,
         year: int,
-        flags: F = F(0),
+        save_fig: bool = False,
+        show_plot: bool = False,
+        halt_program: bool = False,
         dir: Optional[str] = None,
         name: Optional[str] = None,
         cmap: str = 'bwr',
@@ -470,7 +477,10 @@ class Crossvalidation(_Procedure):
             path = os.path.join(dir, name)
 
         _apply_flags_to_fig(
-            fig, path, flags
+            fig, path,
+            save_fig=save_fig,
+            show_plot=show_plot,
+            halt_program=halt_program
         )
 
         return fig, (ax0, ax1, ax2)

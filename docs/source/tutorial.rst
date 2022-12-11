@@ -76,7 +76,7 @@ Clim performs the climatology for the given region
         Slise(-90, 90, -180, 180, Month.JAN, Month.MAR, 1870, 1995)
     )
     clim = Clim(ds, 'map')  # You can plot a time series with Clim(ds, 'ts')
-    clim.plot(F.SHOW_PLOT | F.SAVE_FIG, cmap='jet', dir='plots', name='plot.png')
+    clim.plot(show_plot=True, save_fig=True, cmap='jet', dir='plots', name='plot.png')
 
 You can slice a dataset with only a Month and a year (:code:`Slise(-90, 90, -180, 180, Month.JAN, Month.JAN, 1900, 1900)`)
 and plot the clmatollogy of this dataset if you want to plot a certain month and year.
@@ -100,7 +100,7 @@ Anom performs the anomaly for the given region
     )
     anom = Anom(ds, 'map')  # You can plot a time series with Clim(ds, 'ts')
     # A year is needed because Anom produces lots of maps (if you use 'ts', the year parameter becomes invalid)
-    anom.plot(F.SHOW_PLOT | F.SAVE_FIG, year=1990, cmap='jet', dir='plots', name='plot.png')
+    anom.plot(show_plot=True, save_fig=True, year=1990, cmap='jet', dir='plots', name='plot.png')
 
 
 Save
@@ -120,7 +120,7 @@ Every methodology can be saved for future usage
         Slise(-90, 90, -180, 180, Month.JAN, Month.MAR, 1870, 1995)
     )
     clim = Clim(ds, 'map')  # You can plot a time series with Clim(ds, 'ts')
-    clim.plot(F.SHOW_PLOT | F.SAVE_FIG, cmap='jet', dir='plots', name='plot.png')
+    clim.plot(show_plot=True, save_fig=True, cmap='jet', dir='plots', name='plot.png')
     # --- new --- #
     clim.save('save_clim_', dir='saved')
 
@@ -135,7 +135,7 @@ You can use the saved data with a simple line of code
     from spy4cast.meteo import Clim
 
     clim.load('save_clim_', dir='saved')
-    clim.plot(F.SHOW_PLOT | F.SAVE_FIG, cmap='jet', dir='plots', name='plot.png')
+    clim.plot(show_plot=True, save_fig=True, cmap='jet', dir='plots', name='plot.png')
 
 
 .. note::

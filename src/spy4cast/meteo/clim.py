@@ -4,7 +4,7 @@ from typing import Type, Tuple, Optional, Union, Any, Sequence
 from matplotlib import pyplot as plt
 
 from . import _PlotType, _get_type
-from .. import Slise, Dataset, Month, F
+from .. import Slise, Dataset, Month
 from .._functions import slise2str
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_ts, _plot_map, _calculate_figsize, MAX_WIDTH, MAX_HEIGHT
 import numpy as np
@@ -225,8 +225,10 @@ class Clim(_Procedure, object):
 
     def plot(
         self,
-        flags: F = F(0),
         *,
+        save_fig: bool = False,
+        show_plot: bool = False,
+        halt_program: bool = False,
         cmap: Optional[str] = None,
         color: Optional[Color] = None,
         dir: str = '.',
@@ -273,7 +275,10 @@ class Clim(_Procedure, object):
 
         path = os.path.join(dir, name)
         _apply_flags_to_fig(
-            fig, path, F(flags)
+            fig, path,
+            save_fig=save_fig,
+            show_plot=show_plot,
+            halt_program=halt_program,
         )
         return fig, [ax]
 

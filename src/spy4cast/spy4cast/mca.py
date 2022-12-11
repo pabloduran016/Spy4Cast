@@ -10,7 +10,7 @@ import scipy.sparse.linalg
 import xarray as xr
 from scipy.stats import stats
 
-from .. import Slise, F
+from .. import Slise
 from .._functions import time_from_here, time_to_here, slise2str, _debuginfo, debugprint
 from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts
 from .preprocess import Preprocess
@@ -287,7 +287,9 @@ class MCA(_Procedure):
 
     def plot(
         self,
-        flags: F = F(0),
+        save_fig: bool = False,
+        show_plot: bool = False,
+        halt_program: bool = False,
         cmap: str = 'bwr',
         signs: Optional[Sequence[bool]] = None,
         dir: Optional[str] = None,
@@ -411,7 +413,10 @@ class MCA(_Procedure):
             path = os.path.join(dir, name)
 
         _apply_flags_to_fig(
-            fig, path, F(flags)
+            fig, path,
+            save_fig=save_fig,
+            show_plot=show_plot,
+            halt_program=halt_program,
         )
 
         return fig, axs

@@ -4,7 +4,7 @@ from typing import Union, Tuple, Dict, Optional, TypeVar, cast, Any, List
 import numpy as np
 import pandas as pd
 import datetime
-from enum import auto, IntEnum, IntFlag
+from enum import auto, IntEnum
 from dataclasses import dataclass
 import numpy.typing as npt
 
@@ -15,7 +15,6 @@ __all__ = [
     'T_FORMAT',
     'TimeStamp',
     'Month',
-    'F',
     'ChunkType'
 ]
 
@@ -168,33 +167,6 @@ _document_dataclass(Slise)
 #     final_month: int
 #     initial_year: int
 #     final_year: int
-
-@_document_enum
-class F(IntFlag):
-    """Flags"""
-
-    SAVE_DATA = auto()  # doc: Save data. Check documentation for each specific function you pass this flag into
-    SAVE_FIG = auto()  # doc: Save fig (calls matplotlib.pyplot.Figure.savefig)
-    SILENT_ERRORS = auto()  # doc: If an exception is raise in `Plotter.run`, the program won`t be halted
-    SHOW_PLOT = auto()  # doc: Shows the figure (calls matplotlib.pyplot.Figure.show() and matplotlib.pyplot.show if `NOT_HALT` is not set)
-    FILTER = auto()  # doc: Perform butterworth filter in preprocesseing. Only for spy4caster.Spy4Caster
-    NOT_HALT = auto()  # doc: Not halt the program after showing (don't run matplotlib.pyplot.show)
-
-    def __mul__(self, other: int) -> Union[int, 'F']:
-        """Returns normal multiplication unless the value is 1 or 0. In that case it will return the same value or F(0)
-
-        Useful to annulate flags by multiplying them by 0 and setting and unsetting them easily
-
-        Example
-        -------
-            F.SHOW_PLOT * 0 = F(0)
-            F.SHOW_PLOT * 1 = F.SHOW_PLOT
-        """
-        res = super().__mul__(other)
-        if other != 1 and other != 0:
-            return res
-        return F(res)
-
 
 ChunkType = Union[int, Tuple[int, ...], Tuple[Tuple[int, ...], ...], Dict[Union[str, int], int]]
 """Type variable to indicate the types that can be passed into the `chunk` argument in `read_data.ReadData`

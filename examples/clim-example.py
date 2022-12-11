@@ -1,5 +1,5 @@
 from spy4cast.meteo import Clim
-from spy4cast import Month, Slise, set_silence, Dataset, F
+from spy4cast import Month, Slise, set_silence, Dataset
 
 # Enabel debug ouput
 set_silence(False)
@@ -20,10 +20,10 @@ map_clim = Clim(ds, 'map')
 map_clim.save('map_climatology', PLOT_DATA_DIR)
 map_clim = Clim.load('map_climatology', PLOT_DATA_DIR, type='map')
 
-map_clim.plot(F.SHOW_PLOT | F.SAVE_FIG, name='clim-map-example.png', cmap='jet')
+map_clim.plot(show_plot=True, save_fig=True, name='clim-map-example.png', cmap='jet')
 
 ts_clim = Clim(ds, 'ts')
 ts_clim.save('ts_climatology', PLOT_DATA_DIR)
 ts_clim = Clim.load('ts_climatology', PLOT_DATA_DIR, type='ts')
 
-ts_clim.plot(F.SHOW_PLOT | F.SAVE_FIG, name='clim-ts-example.png')
+ts_clim.plot(show_plot=True, save_fig=True, name='clim-ts-example.png')

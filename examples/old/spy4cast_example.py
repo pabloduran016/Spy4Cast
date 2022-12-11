@@ -41,16 +41,16 @@ def main() -> None:
     s.slice_datasets(yslise=sst_slise, zslise=slp_slise)
     s.preprocess(F.FILTER, order=order, period=period)
     # s.mca(nm=3, alpha=.1)
-    # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
+    # s.plot_mca(show_plot=True, save_fig=True)
     # s.crossvalidation(nm=3, alpha=.1, multiprocessing=True)
     # s.load_ppcessed('./saved', 'save_ppcessed_', '.npy')
     s.load_mca('./saved', 'save_mca_', '.npy')
     s.load_crossvalidation('./saved', 'save_cross_', '.npy')
-    # s.plot_mca(F.SHOW_PLOT | F.SAVE_FIG)
-    # s.plot_crossvalidation(F.SHOW_PLOT | F.SAVE_FIG)
+    # s.plot_mca(show_plot=True, save_fig=True)
+    # s.plot_crossvalidation(show_plot=True, save_fig=True)
     selected_year = 1986
-    # s.plot_zhat(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year)
-    s.run(F.SHOW_PLOT | F.SAVE_FIG | 0*F.SAVE_DATA, sy=selected_year)
+    # s.plot_zhat(show_plot=True, save_fig=True, sy=selected_year)
+    s.run(show_plot=True, save_fig=True | 0*F.SAVE_DATA, sy=selected_year)
 
 
 if __name__ == '__main__':

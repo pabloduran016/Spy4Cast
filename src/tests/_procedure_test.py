@@ -5,7 +5,6 @@ import cartopy.crs as ccrs
 import numpy as np
 
 from . import BaseTestCase
-from spy4cast import F
 from spy4cast._procedure import (
     _calculate_figsize,
     _get_index_from_sy,
@@ -63,17 +62,15 @@ class ProcedureTest(BaseTestCase):
         path = "./plot.png"
         if os.path.exists(path):
             os.remove(path)
-        flags_1 = F.NOT_HALT
         self.assertFalse(os.path.exists(path))
-        _apply_flags_to_fig(fig, path, flags_1)
+        _apply_flags_to_fig(fig, path, halt_program=False)
         self.assertFalse(os.path.exists(path))
         plt.close(fig)
 
         fig = plt.figure()
         path = "./plot.png"
         self.assertFalse(os.path.exists(path))
-        flags_2 = int(F.SAVE_FIG | F.SHOW_PLOT | F.NOT_HALT)
-        _apply_flags_to_fig(fig, path, flags_2)
+        _apply_flags_to_fig(fig, path, save_fig=True, show_plot=True, halt_program=False)
         self.assertTrue(os.path.exists(path))
         os.remove(path)
         plt.close(fig)
@@ -81,8 +78,7 @@ class ProcedureTest(BaseTestCase):
         fig = plt.figure()
         path = "./plots/plot.png"
         self.assertFalse(os.path.exists(path))
-        flags_3 = int(F.SAVE_FIG | F.SHOW_PLOT)
-        _apply_flags_to_fig(fig, path, flags_3, block=False)
+        _apply_flags_to_fig(fig, path, save_fig=True, show_plot=True, halt_program=True, _block=False)
         self.assertTrue(os.path.exists(path))
         os.remove(path)
         os.removedirs(os.path.dirname(path))

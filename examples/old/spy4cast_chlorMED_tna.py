@@ -49,12 +49,12 @@ def main() -> None:
         s.load_preprocessed(PLOTS_DATA_DIR, 'save_preprocessed_', '.npy')  # s.preprocess()  # Primero sin filtro y luego con filtro de 8 años
         s.mca(nm=nm, alpha=alpha)
         s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
-        s.run(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year, cmap='viridis', yslise=oisst_slise, zslise=chl_slise)
+        s.run(show_plot=True, save_fig=True, sy=selected_year, cmap='viridis', yslise=oisst_slise, zslise=chl_slise)
     else:
         s.load_preprocessed(PLOTS_DATA_DIR, 'save_preprocessed_', '.npy')
         s.load_mca(PLOTS_DATA_DIR, 'save_mca_', '.npy')
         s.load_crossvalidation(PLOTS_DATA_DIR, 'save_cross_', '.npy')
-        s.run(F.SHOW_PLOT | F.SAVE_FIG, sy=selected_year, cmap='viridis', yslise=oisst_slise, zslise=chl_slise)
+        s.run(show_plot=True, save_fig=True, sy=selected_year, cmap='viridis', yslise=oisst_slise, zslise=chl_slise)
 
 if __name__ == '__main__':
     spy.set_silence(False)

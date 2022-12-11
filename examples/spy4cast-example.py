@@ -1,5 +1,5 @@
 from spy4cast.dataset import Dataset
-from spy4cast import spy4cast, Month, Slise, set_silence, F
+from spy4cast import spy4cast, Month, Slise, set_silence
 
 # Enabel debug ouput
 set_silence(False)
@@ -58,7 +58,7 @@ else:
 
 # Plot the matrices. Use `F.SHOW_PLOT` if you want to show it right away.
 # This will only plot and later we will call `plt.show()` and show all the plots at once
-sst_ppcessed.plot(F.SAVE_FIG, selected_year=2005, dir=PLOTS_DIR,
+sst_ppcessed.plot(save_fig=True, selected_year=2005, dir=PLOTS_DIR,
                   name='sst-2005.png')
 chl_ppcessed.plot(cmap='viridis', selected_year=2006, dir=PLOTS_DIR,
                   name='chl-2006.png')
@@ -74,7 +74,7 @@ else:
     mca.save('save_mca_', dir=PLOT_DATA_DIR)
 
 # Here we plot the MCA but we wait t o show it until the end of the file
-mca.plot(F.SAVE_FIG, cmap='viridis', dir=PLOTS_DIR, name='mca-sst-chl.png')
+mca.plot(save_fig=True, cmap='viridis', dir=PLOTS_DIR, name='mca-sst-chl.png')
 
 if LOAD_CROSSVALIDATION:
     # Load the precomputed crossvalidation
@@ -85,7 +85,7 @@ else:
     cross.save('save_cross_', dir=PLOT_DATA_DIR)
 
 # Plot crossvalidation and zhat but not showing it yet
-cross.plot(F.SAVE_FIG, dir=PLOTS_DIR, name='crossvalidation-chl-sst.png')
+cross.plot(save_fig=True, dir=PLOTS_DIR, name='crossvalidation-chl-sst.png')
 cross.plot_zhat(2005, dir=PLOTS_DIR, name='zhat-2005.png')
 cross.plot_zhat(2006, dir=PLOTS_DIR, name='zhat-2006.png')
 cross.plot_zhat(2007, dir=PLOTS_DIR, name='zhat-2007.png')

@@ -11,8 +11,7 @@ import cartopy.crs as ccrs
 import numpy.typing as npt
 from matplotlib.ticker import MaxNLocator
 
-from . import F
-from ._functions import time_from_here, time_to_here, _warning, _error, _debuginfo
+from ._functions import time_from_here, time_to_here, _warning, _error, _debuginfo, debugprint
 from .stypes import Color
 
 T = TypeVar('T', bound='_Procedure')
@@ -90,7 +89,7 @@ class _Procedure(ABC):
                 _error(f'Could not find file `{path}` to load {clsname} variable {name}')
                 raise
 
-        _debuginfo(f' took {time_to_here():.03f} seconds')
+        debugprint(f' took {time_to_here():.03f} seconds')
         return self
 
 def _plot_map(
@@ -173,14 +172,13 @@ def _plot_ts(
 def _apply_flags_to_fig(
     fig: plt.Figure,
     path: str,
-    flags: int,
     *,
-    block: bool = True  # Only for testing purposes
+    save_fig: bool = False,
+    show_plot: bool = False,
+    halt_program: bool = False,
+    _block: bool = True  # Only for testing purposes
 ) -> None:
-    if type(flags) == int:
-        flags = F(flags)
-    assert type(flags) == F, f"{type(flags)=} {flags=}, {F=}, {type(flags) == F = }, {F.__module__=}, {id(F)=}, {type(flags).__module__=}, {id(type(flags))=}"
-    if F.SAVE_FIG in flags:
+    if save_fig:
         _debuginfo(f'Saving plot with path {path}')
         for i in range(2):
             try:
@@ -188,10 +186,10 @@ def _apply_flags_to_fig(
                 break
             except FileNotFoundError:
                 os.makedirs(os.path.dirname(path))
-    if F.SHOW_PLOT in flags:
+    if show_plot:
         fig.show()
-    if F.SHOW_PLOT in flags and F.NOT_HALT not in flags:
-        plt.show(block=block)
+    if show_plot and halt_program:
+        plt.show(block=_block)
 
 def _get_index_from_sy(arr: Union[xr.DataArray, npt.NDArray[np.float32]], sy: int) -> int:
     index = 0

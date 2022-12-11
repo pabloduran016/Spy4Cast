@@ -8,7 +8,7 @@ from scipy import signal
 import xarray as xr
 import cartopy.crs as ccrs
 
-from .. import Slise, F, Month
+from .. import Slise, Month
 from .._functions import time_from_here, time_to_here, slise2str, _debuginfo, debugprint
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
@@ -214,7 +214,9 @@ class Preprocess(_Procedure):
 
     def plot(
         self,
-        flags: F = F(0),
+        save_fig: bool = False,
+        show_plot: bool = False,
+        halt_program: bool = False,
         selected_year: Optional[int] = None,
         cmap: str = 'bwr',
         dir: Optional[str] = None,
@@ -245,6 +247,9 @@ class Preprocess(_Procedure):
             path = os.path.join(dir, name)
 
         _apply_flags_to_fig(
-            fig, path, F(flags)
+            fig, path,
+            save_fig=save_fig,
+            show_plot=show_plot,
+            halt_program=halt_program,
         )
         return fig, [ax]
