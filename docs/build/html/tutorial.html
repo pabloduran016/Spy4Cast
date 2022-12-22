@@ -291,7 +291,7 @@
 <div class="section" id="clim">
 <h3>Clim<a class="headerlink" href="#clim" title="Permalink to this headline">#</a></h3>
 <p>Clim performs the climatology for the given region</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">F</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
 
 <span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
@@ -310,7 +310,7 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
 <div class="section" id="anom">
 <h3>Anom<a class="headerlink" href="#anom" title="Permalink to this headline">#</a></h3>
 <p>Anom performs the anomaly for the given region</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">F</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Anom</span>
 
 <span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
@@ -329,7 +329,7 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
 <div class="section" id="save">
 <h2>Save<a class="headerlink" href="#save" title="Permalink to this headline">#</a></h2>
 <p>Every methodology can be saved for future usage</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">F</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
 
 <span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
@@ -363,7 +363,7 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
 <h2>Spy4Cast<a class="headerlink" href="#spy4cast" title="Permalink to this headline">#</a></h2>
 <p>The main methodology of spy4cast is Spy4Cast :-).</p>
 <p>It requires a predictor dataset and a predictand dataset. Here is an example which you can download <a class="reference download internal" download="" href="_downloads/dab7c90832f60c3cfeba70393ebd818d/docs-spy4cast-example.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">F</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span>
 
 <span class="n">predictor</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">'predictor.nc'</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'predictor-var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
@@ -396,7 +396,7 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
 <span class="c1"># `MCA.load('mca_', dir='saved', dsy=predictor_preprocessed`, dsz=predictand_preprocessed)`</span>
 <span class="c1"># NOTE: predictor and predictand datasets can also be saved and load if necessary</span>
 <span class="n">mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'mca_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
-<span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">SAVE_FIG</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'mca.png'</span><span class="p">)</span>  <span class="c1"># We don't add F.SHOW_PLOT because we will show all the plots together afterwards</span>
+<span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'mca.png'</span><span class="p">)</span>  <span class="c1"># We don't add F.SHOW_PLOT because we will show all the plots together afterwards</span>
 </pre></div>
 </div>
 </div>
@@ -405,7 +405,7 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
 <p>Apply Crossvalidation</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cross</span> <span class="o">=</span> <span class="n">Crossvalidation</span><span class="p">(</span><span class="n">dsy</span><span class="o">=</span><span class="n">predictor_preprocessed</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">predictand_preprocessed</span><span class="p">,</span> <span class="n">nm</span><span class="o">=</span><span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
 <span class="n">cross</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'cross_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
-<span class="n">cross</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">SAVE_FIG</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'cross.png'</span><span class="p">)</span>
+<span class="n">cross</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'cross.png'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -424,7 +424,7 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
 <h3>Customization<a class="headerlink" href="#customization" title="Permalink to this headline">#</a></h3>
 <div class="admonition-todo admonition" id="id1">
 <p class="admonition-title">Todo</p>
-<p>Not implemented</p>
+<p>Not documented yet</p>
 </div>
 </div>
 </div>

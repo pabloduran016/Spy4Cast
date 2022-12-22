@@ -56,7 +56,7 @@ class Preprocess(_Procedure):
                 dask='allowed',
                 input_core_dims=[['year']],
                 output_core_dims=[['year']]
-            )
+            ).transpose()
         elif order is not None or period is not None:
             if order is None:
                 raise TypeError('Missing keyword argument `order`')
@@ -65,11 +65,13 @@ class Preprocess(_Procedure):
             else:
                 assert False, 'Unreachable'
 
+        anomaly = anomaly.transpose(
+            'year', ds._lat_key,  ds._lon_key
+        )
+
         nt, nlat, nlon = anomaly.shape
 
-        self._data = anomaly.transpose(
-            'year', ds._lat_key,  ds._lon_key
-        ).fillna(0).values.reshape(
+        self._data = anomaly.fillna(0).values.reshape(
             (nt, nlat * nlon)
         ).transpose()
 
