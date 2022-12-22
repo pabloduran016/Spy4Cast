@@ -27,7 +27,6 @@ To get the latest version:
 
 
 ..
-
     To get the latest stable version:
 
     .. code-block:: console
