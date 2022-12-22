@@ -56,7 +56,7 @@ class Preprocess(_Procedure):
                 dask='allowed',
                 input_core_dims=[['year']],
                 output_core_dims=[['year']]
-            ).transpose()
+            )
         elif order is not None or period is not None:
             if order is None:
                 raise TypeError('Missing keyword argument `order`')
