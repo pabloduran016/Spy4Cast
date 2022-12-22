@@ -66,7 +66,7 @@ Clim performs the climatology for the given region
 
 .. code:: python
 
-    from spy4cast import Dataset, Slise, Month, F
+    from spy4cast import Dataset, Slise, Month
     from spy4cast.meteo import Clim
 
     DIR = "data/"
@@ -89,7 +89,7 @@ Anom performs the anomaly for the given region
 
 .. code:: python
 
-    from spy4cast import Dataset, Slise, Month, F
+    from spy4cast import Dataset, Slise, Month
     from spy4cast.meteo import Anom
 
     DIR = "data/"
@@ -110,7 +110,7 @@ Every methodology can be saved for future usage
 
 .. code:: python
 
-    from spy4cast import Dataset, Slise, Month, F
+    from spy4cast import Dataset, Slise, Month
     from spy4cast.meteo import Clim
 
     DIR = "data/"
@@ -152,7 +152,7 @@ It requires a predictor dataset and a predictand dataset. Here is an example whi
 
 .. code:: python
 
-    from spy4cast import Dataset, Slise, Month, F
+    from spy4cast import Dataset, Slise, Month
     from spy4cast.spy4cast import Preprocess, MCA, Crossvalidation
 
     predictor = Dataset('predictor.nc').open('predictor-var').slice(
@@ -192,7 +192,7 @@ Apply MCA
     # `MCA.load('mca_', dir='saved', dsy=predictor_preprocessed`, dsz=predictand_preprocessed)`
     # NOTE: predictor and predictand datasets can also be saved and load if necessary
     mca.save('mca_', dir='saved')
-    mca.plot(F.SAVE_FIG, name='mca.png')  # We don't add F.SHOW_PLOT because we will show all the plots together afterwards
+    mca.plot(save_fig=True, name='mca.png')  # We don't add F.SHOW_PLOT because we will show all the plots together afterwards
 
 
 Crossvalidation
@@ -204,7 +204,7 @@ Apply Crossvalidation
 
     cross = Crossvalidation(dsy=predictor_preprocessed, dsz=predictand_preprocessed, nm=nm, alpha=alpha)
     cross.save('cross_', dir='saved')
-    cross.plot(F.SAVE_FIG, name='cross.png')
+    cross.plot(save_fig=True, name='cross.png')
 
 
 Visualization
@@ -222,4 +222,4 @@ Visualization
 Customization
 +++++++++++++
 
-.. todo:: Not implemented
+.. todo:: Not documented yet

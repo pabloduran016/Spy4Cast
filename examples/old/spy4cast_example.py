@@ -39,7 +39,7 @@ def main() -> None:
             plot_data_dir=PLOTS_DATA_DIR)
     s.open_datasets()
     s.slice_datasets(yslise=sst_slise, zslise=slp_slise)
-    s.preprocess(F.FILTER, order=order, period=period)
+    s.preprocess(order=order, period=period)
     # s.mca(nm=3, alpha=.1)
     # s.plot_mca(show_plot=True, save_fig=True)
     # s.crossvalidation(nm=3, alpha=.1, multiprocessing=True)
@@ -50,7 +50,7 @@ def main() -> None:
     # s.plot_crossvalidation(show_plot=True, save_fig=True)
     selected_year = 1986
     # s.plot_zhat(show_plot=True, save_fig=True, sy=selected_year)
-    s.run(show_plot=True, save_fig=True | 0*F.SAVE_DATA, sy=selected_year)
+    s.run(show_plot=True, save_fig=True, sy=selected_year)
 
 
 if __name__ == '__main__':

@@ -64,7 +64,7 @@ else:
     mca = MCA(predictor_preprocessed, predictand_preprocessed, nm, alpha)
     mca.save(MCA_PREFIX, DATA_DIR)
 
-# mca.plot(F.SAVE_FIG, cmap='viridis', name=MCA_PLOT_NAME, dir=PLOTS_DIR)
+# mca.plot(save_fig=True, cmap='viridis', name=MCA_PLOT_NAME, dir=PLOTS_DIR)
 
 if LOAD_CROSS:
     cross = Crossvalidation.load(CROSS_PREFIX, DATA_DIR, dsy=predictor_preprocessed, dsz=predictand_preprocessed)
@@ -72,7 +72,7 @@ else:
     cross = Crossvalidation(predictor_preprocessed, predictand_preprocessed, nm, alpha)
     cross.save(CROSS_PREFIX, DATA_DIR)
 
-# cross.plot(F.SAVE_FIG, dir=PLOTS_DIR, name=CROSS_PLOT_NAME, version='default', mca=mca)
+# cross.plot(save_fig=True, dir=PLOTS_DIR, name=CROSS_PLOT_NAME, version='default', mca=mca)
 cross.plot(save_fig=True, dir=PLOTS_DIR, name=CROSS_PLOT_NAME, version='elena', mca=mca)
 # plot_crossvalidation_elena(cross, dir=PLOTS_DIR, name='plot-elena.png')
 

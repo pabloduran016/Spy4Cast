@@ -12,6 +12,16 @@ To get the latest version:
 
    The environment must be compatible with all the dependencies and Cartopy probably needs it to be 3.9 or lower
 
+
+.. note::
+
+    You have to have installed git (:ref:`Install Git<https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`)
+
+.. note::
+
+    You have to have installed anaconda (:ref:`Install Anaconda<https://docs.anaconda.com/anaconda/install/index.html>`)
+
+
 .. code-block:: console
 
     $ conda create -n <your-env-name> python=3.9
@@ -19,7 +29,6 @@ To get the latest version:
     (<your-env-name>) $ conda install pip
     (<your-env-name>) $ conda install cartopy
     (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
-    (<your-env-name>) $ conda install cartopy
 
 .. note::
 
