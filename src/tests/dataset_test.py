@@ -238,6 +238,11 @@ class DatasetTest(BaseTestCase):
             ds._check_slise(
                 Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, 2020, 2021)
             )
+        ds = ds.slice(Slise(-90, 90, -180, 180, Month.MAR, Month.MAY, 1870, 2020))
+        with self.assertRaises(TimeBoundsSelectionError):
+            ds._check_slise(
+                Slise(19, 21, 30, 45, Month.JAN, Month.MAY, 1870, 2020)
+            )
 
     def test_save_nc(self) -> None:
         name = 'test_save_nc.nc'

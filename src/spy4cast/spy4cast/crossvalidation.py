@@ -162,7 +162,8 @@ class Crossvalidation(_Procedure):
         nm: int,
         alpha: float,
         multiprocessed: bool = False,
-        sig: str = 'test-t'
+        sig: str = 'test-t',
+        montecarlo_iterations: Optional[int] = None,
     ):
         self._dsy = dsy
         self._dsz = dsz
@@ -216,7 +217,7 @@ class Crossvalidation(_Procedure):
                     # print(f'applying async on process {i=}')
                     p = pool.apply_async(self._crossvalidate_year, kwds={
                         'year': i, 'z': self.zdata, 'y': self.ydata, 'nt': nt, 'yrs': yrs,
-                        'nm': nm, 'alpha': alpha, 'sig': sig
+                        'nm': nm, 'alpha': alpha, 'sig': sig, 'montecarlo_iterations': montecarlo_iterations,
                     })
                     processes.append(p)
 
@@ -232,7 +233,7 @@ class Crossvalidation(_Procedure):
             for i in yrs:
                 out = self._crossvalidate_year(
                     year=i, z=self.zdata, y=self.ydata, nt=nt, yrs=yrs,
-                    nm=nm, alpha=alpha, sig=sig,
+                    nm=nm, alpha=alpha, sig=sig, montecarlo_iterations=montecarlo_iterations
                 )
                 self.scf[:, i], self.r_uv[:, i], self.r_uv_sig[:, i], self.p_uv[:, i], \
                     self.us[:, [x for x in range(nt) if x != i], i], \
@@ -282,12 +283,13 @@ class Crossvalidation(_Procedure):
         nm: int,
         alpha: float,
         sig: str,
+        montecarlo_iterations: Optional[int] = None,
     ) -> Tuple[npt.NDArray[np.float32], ...]:
         """Function of internal use that processes a single year for crossvalidation"""
         debugprint('\tyear:', year, 'of', nt)
         z2 = z[:, yrs != year]
         y2 = y[:, yrs != year]
-        mca_out = MCA.from_nparrays(z2, y2, nm, alpha)
+        mca_out = MCA.from_nparrays(y2, z2, nm, alpha)
         ny, _ = y2.shape
         nz, _ = z2.shape
 
@@ -306,7 +308,7 @@ class Crossvalidation(_Procedure):
         r_uv_sig = np.zeros(nm, dtype=np.float32)
         p_uv = np.zeros(nm, dtype=np.float32)
         for m in range(nm):
-            r_uv[m], p_uv[m], r_uv_sig[m], _, _ = index_regression(mca_out.Us[m:m+1, :], mca_out.Vs[m:m+1, :].T, alpha, sig)
+            r_uv[m], p_uv[m], r_uv_sig[m], _, _ = index_regression(mca_out.Us[m:m+1, :], mca_out.Vs[m:m+1, :].T, alpha, sig, montecarlo_iterations)
 
         scf = mca_out.scf
         return (
@@ -445,7 +447,7 @@ class Crossvalidation(_Procedure):
         halt_program: bool = False,
         dir: Optional[str] = None,
         name: Optional[str] = None,
-        cmap: str = 'bwr',
+        cmap: str = None,
         map_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
@@ -489,6 +491,8 @@ class Crossvalidation(_Procedure):
         if version == "default":
             if mca is not None:
                 raise TypeError("Unexpected argument `mca` for version `default`")
+            if cmap is None:
+                cmap = 'bwr'
             fig, axs = _plot_crossvalidation_default(self, cmap, map_ticks)
         elif version == "elena":
             if mca is None:
@@ -726,7 +730,7 @@ def _plot_crossvalidation_elena(
             # ax0.set_ylabel('nº std', fontsize=20, weight='bold')
 
         r_uv, p_value, _ruv_sig, _reg, _reg_sig = index_regression(
-            mca.Us[n_mode:n_mode+1, :], mca.Vs[n_mode:n_mode+1, :].T, cross.alpha, 'test-t', 1000)
+            mca.Us[n_mode:n_mode+1, :], mca.Vs[n_mode:n_mode+1, :].T, cross.alpha, 'test-t', 1000, )
 
         # plt.xticks()
         # plt.yticks()

@@ -64,8 +64,8 @@ class Preprocess(_Procedure):
     ):
         _debuginfo(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
-        typ = 'map' if len(ds.data.dims) == 3 else 'ts'
-        anomaly = Anom(ds, cast(Literal['ts', 'map'], typ)).data
+        assert len(ds.data.dims) == 3
+        anomaly = Anom(ds, 'map').data
         self._ds: Dataset = ds
 
         if order is not None and period is not None:

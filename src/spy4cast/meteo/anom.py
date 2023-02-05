@@ -251,11 +251,13 @@ class Anom(_Procedure):
         if np.dtype(value.dtype) != np.dtype('float32'):
             raise ValueError(f'Dtype of `data` has to be `np.float32` got {np.dtype(value.dtype)}')
 
-        if len(value.shape) == 1:
-            self._type = PlotType.TS
+        if self.type == PlotType.TS:
+            if len(value.shape) != 1:
+                raise ValueError(f'Expected data to be one-dimensional for time series. Got shape {value.shape}')
             self._data = xr.DataArray(value, coords={'year': np.arange(len(value))}, dims=['year'])
-        elif len(value.shape) == 3:
-            self._type = PlotType.MAP
+        elif self.type == PlotType.MAP:
+            if len(value.shape) != 3:
+                raise ValueError(f'Expected data to be three-dimensional for map. Got shape {value.shape}')
             self._data = xr.DataArray(value, coords={
                 'year': np.arange(value.shape[0]),
                 'lat': np.arange(value.shape[1]),
@@ -264,7 +266,7 @@ class Anom(_Procedure):
             self._lon_key = 'lon'
             self._lat_key = 'lat'
         else:
-            raise ValueError(f'Array to set must be 3-dimensional or 1-dimensional')
+            assert False, 'Unreachable'
 
         self._time_key = 'year'
 

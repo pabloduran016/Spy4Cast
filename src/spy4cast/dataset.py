@@ -156,7 +156,7 @@ class Dataset:
         try:
             return cast(TimeStamp, pd.to_datetime(t0))
         except TypeError:
-            _warning('Couldnt convert initial timestamp to pandas TimeStamp')
+            _warning('Could not convert initial timestamp to pandas TimeStamp')
             return cast(TimeStamp, pd.Timestamp(str(t0)))
 
     @property
@@ -166,7 +166,7 @@ class Dataset:
         try:
             return cast(TimeStamp, pd.to_datetime(tf))
         except TypeError:
-            _warning('Couldnt convert final timestamp to pandas TimeStamp')
+            _warning('Could not convert final timestamp to pandas TimeStamp')
             return cast(TimeStamp, pd.Timestamp(str(tf)))
 
     @property
@@ -546,6 +546,14 @@ class Dataset:
                 f"{mon2str(Month(self.timestampf.month))} "
                 f"{self.timestampf.year}, got "
                 f"{mon2str(Month(slise.monthf))} {slise.yearf}"
+            )
+        if slise.year0 == self.timestamp0.year and \
+                slise.month0 < self.timestamp0.month:
+            raise TimeBoundsSelectionError(
+                f"Initial Month out of bounds. Dataset starts in "
+                f"{mon2str(Month(self.timestamp0.month))} "
+                f"{self.timestamp0.year}, got "
+                f"{mon2str(Month(slise.month0))} {slise.year0}"
             )
         if slise.year0 > slise.yearf:
             raise TimeBoundsSelectionError(

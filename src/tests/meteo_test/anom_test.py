@@ -38,7 +38,6 @@ class AnomTest(BaseTestCase):
 
     def test_get_lat(self) -> None:
         with self.assertRaises(TypeError):
-            self.ts_anom = Anom(self.ds, 'ts', st=True)
             _ = self.ts_anom.lat
         _ = self.map_anom.lat
 
@@ -135,26 +134,24 @@ class AnomTest(BaseTestCase):
             self.map_anom.data = self.map_anom.data.values.astype(np.int32)
 
         map_anom = Anom.__new__(Anom)
-        self.assertFalse(hasattr(map_anom, '_type'))
         self.assertFalse(hasattr(map_anom, '_data'))
         self.assertFalse(hasattr(map_anom, '_lat'))
         self.assertFalse(hasattr(map_anom, '_lon'))
+        map_anom.type = PlotType.MAP
         map_anom.data = np.empty((10, 20, 30), dtype=np.float32)
         self.assertTrue(hasattr(map_anom, '_data'))
         self.assertEqual(map_anom.data.shape, (10, 20, 30))
-        self.assertEqual(map_anom.time.shape, (10,))
         self.assertEqual(map_anom.data['lat'].shape, (20,))
         self.assertEqual(map_anom.data['lon'].shape, (30,))
-        self.assertEqual(map_anom.type, PlotType.MAP)
 
         ts_anom = Anom.__new__(Anom)
         self.assertFalse(hasattr(ts_anom, '_type'))
         self.assertFalse(hasattr(ts_anom, '_data'))
+        ts_anom.type = PlotType.TS
         ts_anom.data = np.empty((10,), dtype=np.float32)
         self.assertTrue(hasattr(ts_anom, '_data'))
         self.assertEqual(ts_anom.data.shape, (10,))
         self.assertEqual(ts_anom.time.shape, (10,))
-        self.assertEqual(ts_anom.type, PlotType.TS)
 
         self.assertEqual(map_anom._time_key, 'year')
         self.assertEqual(ts_anom._time_key, 'year')
@@ -162,6 +159,7 @@ class AnomTest(BaseTestCase):
         with self.assertRaises(ValueError):
             arr = np.empty((10, 10), dtype=np.float32)
             anom = Anom.__new__(Anom)
+            anom._type = PlotType.MAP
             anom.data = arr
 
     def test_from_xrarray(self) -> None:
@@ -194,13 +192,17 @@ class AnomTest(BaseTestCase):
     def test_load(self) -> None:
         dir = 'anom-data'
         self.map_anom.save('anom_map_', dir)
-        self.map_anom.save('anom_ts_', dir)
+        self.ts_anom.save('anom_ts_', dir)
         _ = Anom.load('anom_map_', dir, type='map')
         _ = Anom.load('anom_ts_', dir, type='ts')
         with self.assertRaises(TypeError):
             _ = Anom.load('anom_map_', dir, type='map', hello='hello')
         with self.assertRaises(TypeError):
             _ = Anom.load('anom_map_', dir)
+        with self.assertRaises(ValueError):
+            _ = Anom.load('anom_map_', dir, type='ts')
+        with self.assertRaises(ValueError):
+            _ = Anom.load('anom_ts_', dir, type='map')
         for x in os.listdir(dir):
             os.remove(os.path.join(dir, x))
         os.removedirs(dir)

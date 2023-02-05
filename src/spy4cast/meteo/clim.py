@@ -55,15 +55,15 @@ class Clim(_Procedure, object):
         self.type = _get_type(type)
         self._ds = ds
         self._slise = ds.slise
-        self._data = ds.data
 
         if self._type == PlotType.TS:
-            self._data = self._data.mean(dim=self._ds._lon_key).mean(dim=self._ds._lat_key)
-            self._data = _clim(self._data, dim='month')
+            self._data = _clim(ds.data.mean(ds._lon_key).mean(ds._lat_key), dim='year')
             self._time_key = 'year'
             self._time = self._data[self._time_key]
         elif self._type == PlotType.MAP:
-            self._data = _clim(self._data)
+            self._data = _clim(ds.data)
+            self._lon_key = self._ds._lon_key
+            self._lat_key = self._ds._lat_key
             self._lat = self._ds.lat
             self._lon = self._ds.lon
         else:
@@ -154,12 +154,12 @@ class Clim(_Procedure, object):
             xarray.DataArray
         """
         if self.type == PlotType.MAP:
-            raise TypeError('Time can not be get from a Map')
+            raise TypeError('Con not get time from a map')
         elif self.type == PlotType.TS:
             pass
         else:
             assert False, 'Unreachable'
-        return self._data[self._time_key]
+        return self._data[self._time_key].astype(np.uint)
 
     @time.setter
     def time(self, value: npt.NDArray[Union[np.uint, np.datetime64]]) -> None:
@@ -258,12 +258,14 @@ class Clim(_Procedure, object):
         if np.dtype(value.dtype) != np.dtype('float32'):
             raise ValueError(f'Dtype of `data` has to be `np.float32` got {np.dtype(value.dtype)}')
 
-        if len(value.shape) == 1:
-            self._type = PlotType.TS
+        if self.type == PlotType.TS:
+            if len(value.shape) != 1:
+                raise ValueError(f'Expected data to be one-dimensional for time series. Got shape {value.shape}')
             self._data = xr.DataArray(value, coords={'time': np.arange(len(value))}, dims=['time'])
             self._time_key = 'time'
-        elif len(value.shape) == 2:
-            self._type = PlotType.MAP
+        elif self.type == PlotType.MAP:
+            if len(value.shape) != 2:
+                raise ValueError(f'Expected data to be two-dimensional for map. Got shape {value.shape}')
             self._data = xr.DataArray(value, coords={
                 'lat': np.arange(value.shape[0]),
                 'lon': np.arange(value.shape[1])
@@ -271,7 +273,7 @@ class Clim(_Procedure, object):
             self._lon_key = 'lon'
             self._lat_key = 'lat'
         else:
-            raise ValueError(f'Array to set must be 2-dimensional or 1-dimensional')
+            assert False, 'Unreachable'
 
     def plot(
         self,
@@ -420,21 +422,16 @@ def _clim(array: xr.DataArray, dim: str = 'time') -> xr.DataArray:
     """
     if not isinstance(array, xr.DataArray):
         raise TypeError(f"Expected type xarray.DataArray, got {type(array)}")
-    if dim == 'year' or dim == 'month':
-        months = list(array.groupby('time.month').groups.keys())  # List of month values
-        nm = len(months)
-        # Create index to reshape time variable
-        ind = pd.MultiIndex.from_product(
-            (months, array.time[nm - 1::nm].data),
-            names=('month', 'year')
-        )
-        # Reshape time variable
-        assert len(array.shape) == 2 or len(array.shape) == 1,\
-            f'Clim implemented only for 1 and 2 dimensional arrays, for now'
-        arr = array.assign_coords(
-            time=('time', ind)
-        ).unstack('time').transpose('year', 'month')
-        rv: xr.DataArray = arr.mean(dim=dim)
+    if dim == 'year':
+        season_size = len(set(array['time.month'].values))
+        if len(array['time']) % season_size:
+            raise ValueError(f'Can not group time array of length {len(array["time"])} with season size of {season_size}')
+        years = array['time.year'][season_size-1::season_size].data
+        nyears = len(years)
+        rv: xr.DataArray = array.groupby_bins('time', nyears, labels=years).mean()
+        rv = rv.rename({'time_bins': 'year'})
+    elif dim == 'month':
+        rv = array.groupby('time.month').mean()
     elif dim == 'time':  # Apply across year and month
         assert 'time' in array.dims
         rv = array.mean(dim=dim)

@@ -41,6 +41,8 @@ class MCA(_Procedure):
             Predictor to send to index regression. Default is the same as y
         dsz_index_regression : optional, Preprocess
             Predictand to send to index regression. Default is the same as z
+        montecarlo_iterations : optional, int
+            Number of iterations for monte-carlo sig
 
     Attributes
     ----------
@@ -118,6 +120,7 @@ class MCA(_Procedure):
         sig: str = 'test-t',
         dsy_index_regression: Optional[Preprocess] = None,
         dsz_index_regression: Optional[Preprocess] = None,
+        montecarlo_iterations: Optional[int] = None,
     ):
         self._dsz = dsz
         self._dsy = dsy
@@ -140,7 +143,7 @@ class MCA(_Procedure):
         z_index_regression = dsz_index_regression.data if dsz_index_regression is not None else None
         y_index_regression = dsy_index_regression.data if dsy_index_regression is not None else None
 
-        self._mca(dsz.data, dsy.data, nm, alpha, sig, z_index_regression, y_index_regression)
+        self._mca(dsz.data, dsy.data, nm, alpha, sig, z_index_regression, y_index_regression, montecarlo_iterations)
         debugprint(f'       Took: {time_to_here():.03f} seconds')
 
         # first you calculate the covariance matrix
@@ -149,23 +152,24 @@ class MCA(_Procedure):
     @classmethod
     def from_nparrays(
         cls,
-        z: npt.NDArray[np.float32],
         y: npt.NDArray[np.float32],
+        z: npt.NDArray[np.float32],
         nm: int,
         alpha: float,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
         z_index_regression: Optional[npt.NDArray[np.float32]] = None,
         y_index_regression: Optional[npt.NDArray[np.float32]] = None,
+        montecarlo_iterations: Optional[int] = None,
     ) -> 'MCA':
         """
         Alternative constructor for mca that takes np arrays
 
         Parameters
         ----------
-            z : array-like
-                Predictand (space x time)
             y : array-like
                 Predictor (space x time)
+            z : array-like
+                Predictand (space x time)
             nm : int
                 Number of modes
             alpha : alpha
@@ -176,6 +180,8 @@ class MCA(_Procedure):
                 Predictand (space x time) to send to index regression. Default is the same as z
             y_index_regression : optional, array-like
                 Predictor (space x time) to send to index regression. Default is the same as y
+            montecarlo_iterations : optional, int
+                Number of iterations for monte-carlo sig
 
         Returns
         -------
@@ -187,7 +193,7 @@ class MCA(_Procedure):
             MCA
         """
         m = cls.__new__(MCA)
-        m._mca(z, y, nm, alpha, sig, z_index_regression, y_index_regression)
+        m._mca(z, y, nm, alpha, sig, z_index_regression, y_index_regression, montecarlo_iterations)
         return m
 
     def _mca(
@@ -199,6 +205,7 @@ class MCA(_Procedure):
         sig: str,
         z_index_regression: Optional[npt.NDArray[np.float32]] = None,
         y_index_regression: Optional[npt.NDArray[np.float32]] = None,
+        montecarlo_iterations: Optional[int] = None
     ) -> None:
         if y_index_regression is None:
             y_index_regression = y
@@ -258,7 +265,7 @@ class MCA(_Procedure):
                 self.RUY_sig[:, i],
                 self.SUY[:, i],
                 self.SUY_sig[:, i]
-            ) = index_regression(y_index_regression, self.Us[i, :], alpha, sig)
+            ) = index_regression(y_index_regression, self.Us[i, :], alpha, sig, montecarlo_iterations)
 
             (
                 self.RUZ[:, i],
@@ -266,7 +273,7 @@ class MCA(_Procedure):
                 self.RUZ_sig[:, i],
                 self.SUZ[:, i],
                 self.SUZ_sig[:, i]
-            ) = index_regression(z_index_regression, self.Us[i, :], alpha, sig)
+            ) = index_regression(z_index_regression, self.Us[i, :], alpha, sig, montecarlo_iterations)
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
@@ -650,7 +657,7 @@ def index_regression(
         cor_sig[pvalue >= (1 - alpha)] = np.nan
         reg_sig[pvalue >= (1 - alpha)] = np.nan
     else:
-        assert False, 'Unreachable'
+        raise ValueError(f'Unrecognized `sig` parameter: {sig}')
 
     return cor, pvalue, cor_sig, reg, reg_sig
 
