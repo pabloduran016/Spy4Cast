@@ -15,11 +15,11 @@ To get the latest version:
 
 .. note::
 
-    You have to have installed git (:ref:`Install Git<https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`)
+    You have to have installed git (`Install Git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_)
 
 .. note::
 
-    You have to have installed anaconda (:ref:`Install Anaconda<https://docs.anaconda.com/anaconda/install/index.html>`)
+    You have to have installed anaconda (`Install Anaconda <https://docs.anaconda.com/anaconda/install/index.html>`_)
 
 
 .. code-block:: console
@@ -41,6 +41,14 @@ To get the latest version:
     .. code-block:: console
 
        $ pip install spy4cast
+
+
+Upgrade Version
+---------------
+
+.. code-block:: console
+
+    (<your-env-name>) $ pip install --upgrade git+https://github.com/pabloduran016/Spy4Cast
 
 Example
 -------

@@ -1,5 +1,5 @@
 numpy
-matplotlib
+matplotlib==3.5
 xarray==2022.3.0
 dask
 pandas
