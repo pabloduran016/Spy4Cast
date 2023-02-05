@@ -123,6 +123,7 @@ class Crossvalidation(_Procedure):
 
     @property
     def var_names(self) -> Tuple[str, ...]:
+        """Returns the variables contained in the object (scf, us, vs, r_uv, ...)"""
         return (
             'scf',
             'r_uv',
@@ -282,9 +283,7 @@ class Crossvalidation(_Procedure):
         alpha: float,
         sig: str,
     ) -> Tuple[npt.NDArray[np.float32], ...]:
-        """Function of internal use that processes a single year for
-        crossvalidation"""
-
+        """Function of internal use that processes a single year for crossvalidation"""
         debugprint('\tyear:', year, 'of', nt)
         z2 = z[:, yrs != year]
         y2 = y[:, yrs != year]
@@ -320,54 +319,127 @@ class Crossvalidation(_Procedure):
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
+        """Matrix with the data of the predictor variable
+        
+        Returns
+        -------
+            npt.NDArray[np.float32]
+        """
         return self._dsy.data
 
     @property
     def yvar(self) -> str:
+        """Predictor variable name
+        
+        Returns
+        -------
+            str
+        """
         return self._dsy.var
 
     @property
     def yslise(self) -> Slise:
+        """Predictor variable slise
+        
+        Returns
+        -------
+            spy4cast.stypes.Slise
+        """
         return self._dsy.slise
 
     @property
     def ytime(self) -> xr.DataArray:
+        """Vector with time values of the predictor variable
+        
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsy.time
 
     @property
     def ylat(self) -> xr.DataArray:
+        """Vector with latitude values of the predictor variable
+        
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsy.lat
 
     @property
     def ylon(self) -> xr.DataArray:
+        """Vector with longitude values of the predictor variable
+        
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsy.lon
 
     @property
     def zdata(self) -> npt.NDArray[np.float32]:
+        """Matrix with the data of the predicting variable
+
+        Returns
+        -------
+            npt.NDArray[np.float32]
+        """
         return self._dsz.data
 
     @property
     def zvar(self) -> str:
+        """Predicting variable name
+
+        Returns
+        -------
+            str
+        """
         return self._dsz.var
 
     @property
     def zslise(self) -> Slise:
+        """Predicting variable slise
+
+        Returns
+        -------
+            spy4cast.stypes.Slise
+        """
         return self._dsz.slise
 
     @property
     def ztime(self) -> xr.DataArray:
+        """Vector with time values of the predicting variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsz.time
 
     @property
     def zlat(self) -> xr.DataArray:
+        """Vector with latitude values of the predicting variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsz.lat
 
     @property
     def zlon(self) -> xr.DataArray:
+        """Vector with longitude values of the predicting variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsz.lon
 
     def plot(
         self,
+        *,
         save_fig: bool = False,
         show_plot: bool = False,
         halt_program: bool = False,
@@ -380,14 +452,52 @@ class Crossvalidation(_Procedure):
         version: Literal["default", "elena"] = "default",
         mca: Optional[MCA] = None
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
+        """Plot the Crossvalidation results
+
+        Parameters
+        ----------
+        save_fig
+            Saves the fig in with `dir` / `name` parameters
+        show_plot
+            Shows the plot
+        halt_program
+            Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
+            and stops execution. Else uses fig.show and does not halt program
+        dir
+            Directory to save fig if `save_fig` is `True`
+        name
+            Name of the fig saved if `save_fig` is `True`
+        cmap
+            Colormap for the predicting maps
+        map_ticks
+            Ticks for the z map in version default
+        version
+            Select version from: `default` and `elena`
+        mca
+            MCA results for version `elena`
+
+        Returns
+        -------
+        plt.Figure
+            Figure object from matplotlib
+
+        Sequence[plt.Axes]
+            Tuple of axes in figure
+        """
         fig: plt.Figure
         axs: Sequence[plt.Axes]
         if version == "default":
+            if mca is not None:
+                raise TypeError("Unexpected argument `mca` for version `default`")
             fig, axs = _plot_crossvalidation_default(self, cmap, map_ticks)
         elif version == "elena":
             if mca is None:
-                raise TypeError("Expected argument mca for version `helena`")
-            fig, axs = _plot_crossvalidation_elena(self, cmap, map_ticks, mca)
+                raise TypeError("Expected argument `mca` for version `elena`")
+            if map_ticks is not None:
+                raise TypeError("Unexpected argument `map_ticks` for version `elena`")
+            if cmap is not None:
+                raise TypeError("Unexpected argument `cmap` for version `elena`")
+            fig, axs = _plot_crossvalidation_elena(self, mca)
         else:
             raise ValueError(f"Version can only be one of: `elena`, `default`")
 
@@ -423,6 +533,38 @@ class Crossvalidation(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
     ) -> Tuple[plt.Figure, Tuple[plt.Axes, plt.Axes, plt.Axes]]:
+        """Plots the map of Zhat
+
+        Parameters
+        ----------
+        save_fig
+            Saves the fig in with `dir` / `name` parameters
+        show_plot
+            Shows the plot
+        halt_program
+            Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
+            and stops execution. Else uses fig.show and does not halt program
+        year
+            Year to plot
+        dir
+            Directory to save fig if `save_fig` is `True`
+        name
+            Name of the fig saved if `save_fig` is `True`
+        cmap
+            Colormap for the predicting map
+        yticks
+            Ticks for the y map
+        zticks
+            Ticks for the z map
+
+        Returns
+        -------
+        plt.Figure
+            Figure object from matplotlib
+
+        Sequence[plt.Axes]
+            Tuple of axes in figure
+        """
         nts, nylat, nylon = len(self.ytime), len(self.ylat), len(self.ylon)
         nts, nzlat, nzlon = len(self.ztime), len(self.zlat), len(self.zlon)
 
@@ -524,10 +666,6 @@ def _calculate_psi(
 
 def _plot_crossvalidation_elena(
     cross: Crossvalidation,
-    cmap: str,
-    map_ticks: Optional[
-        Union[npt.NDArray[np.float32], Sequence[float]]
-    ],
     mca: MCA,
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     fig = plt.figure(figsize=(24, 8.5))

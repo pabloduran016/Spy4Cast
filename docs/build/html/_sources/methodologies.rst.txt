@@ -3,12 +3,18 @@ Methodologies
 
 Clim
 ----
-.. todo:: Not documented, yet
+
+Performs the climatology of a certain variable in a certain region. Example: :ref:`clim-tutorial`
+
 
 Anom
 ----
-.. todo:: Not documented, yet
+
+Performs the anomaly of a certain variable in a certain region. Example: :ref:`anom-tutorial`
 
 Spy4Cast
 --------
-.. todo:: Not documented, yet
+
+Find coupled patterns in a predictor (atlatic sea surface temperature for example) and a predicting
+variable (pacific sea surface temprature) by using Maximum Covariance Analysis and year based crossvalidation.
+Example: :ref:`spy4cast-tutorial`

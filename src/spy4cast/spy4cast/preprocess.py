@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple, Any, cast, Sequence
+from typing import Optional, Tuple, Any, cast, Sequence, Literal
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -22,6 +22,25 @@ __all__ = [
 
 
 class Preprocess(_Procedure):
+    """Maximum covariance analysis between y (predictor) and Z (predictand)
+
+        Parameters
+        ----------
+            dsy : Preprocess
+                predictor
+            dsz : Preprocess
+                Predictand
+            nm : int
+                Number of modes
+            alpha : float
+                Significance level
+            sig : {'monte-carlo', 'test-t'}
+                Signification technique: monte-carlo or test-t
+            dsy_index_regression : optional, Preprocess
+                Predictor to send to index regression. Default is the same as y
+            dsz_index_regression : optional, Preprocess
+                Predictand to send to index regression. Default is the same as z
+        """
     _data: npt.NDArray[np.float32]
     _time: xr.DataArray
     _lat: xr.DataArray
@@ -32,6 +51,7 @@ class Preprocess(_Procedure):
 
     @property
     def var_names(self) -> Tuple[str, ...]:
+        """Returns the variables contained in the object (data, time, lat, lon, ...)"""
         return (
             'time', 'lat',  'lon', 'data', 'meta'
         )
@@ -45,7 +65,7 @@ class Preprocess(_Procedure):
         _debuginfo(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
         typ = 'map' if len(ds.data.dims) == 3 else 'ts'
-        anomaly = Anom(ds, typ).data
+        anomaly = Anom(ds, cast(Literal['ts', 'map'], typ)).data
         self._ds: Dataset = ds
 
         if order is not None and period is not None:

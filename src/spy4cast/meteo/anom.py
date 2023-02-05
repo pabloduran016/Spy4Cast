@@ -1,5 +1,5 @@
 import os
-from typing import Tuple, Optional, Type, Any, cast, Sequence
+from typing import Tuple, Optional, Type, Any, cast, Sequence, Literal
 
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
@@ -11,7 +11,7 @@ import xarray as xr
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
-from . import _PlotType, _get_type
+from . import PlotType, _get_type
 from ..stypes import Color, Month
 
 
@@ -28,8 +28,8 @@ class Anom(_Procedure):
         ds : spy4cast.dataset.Dataset
             spy4cast.dataset.Dataset on to which perform the anomaly
 
-        type : {'map', 'ts'}
-            Perform the anomaly and outputting a map (will result in a series of maps)
+        type : 'map' or 'ts'
+            Perform the anomaly and outputing a map (will result in a series of maps)
              or ouputting a timeseries by doing the mean across space.
 
         st : bool, default=False
@@ -52,17 +52,17 @@ class Anom(_Procedure):
     _slise: Slise
     _st: bool
 
-    _type: _PlotType
+    _type: PlotType
 
-    def __init__(self, ds: Dataset, type: str, st: bool = False):
+    def __init__(self, ds: Dataset, type: Literal["map", "ts"], st: bool = False):
         self.type = _get_type(type)
         self._ds = ds
         self._slise = ds.slise
         self._st = st
 
-        if self._type == _PlotType.TS:
+        if self._type == PlotType.TS:
             self._data = self._ds.data.mean(dim=self._ds._lon_key).mean(dim=self._ds._lat_key)
-        elif self._type == _PlotType.MAP:
+        elif self._type == PlotType.MAP:
             self._data = self._ds.data
             self._lat = self._ds.lat
             self._lon = self._ds.lon
@@ -78,24 +78,36 @@ class Anom(_Procedure):
         self._slise.yearf = int(self.time[-1])
 
     @property
-    def type(self) -> _PlotType:
+    def type(self) -> PlotType:
+        """Type of anomaly passed in initialization
+
+        Returns
+        -------
+            PlotType
+        """
         return self._type
 
     @type.setter
-    def type(self, val: _PlotType) -> None:
+    def type(self, val: PlotType) -> None:
         self._type = val
 
     @property
     def lat(self) -> xr.DataArray:
-        if self._type == _PlotType.TS:
+        """Array of latitude values of the dataset passes in initialization if type is `map`
+
+        Returns
+        -------
+            xarray.DataArray
+        """
+        if self._type == PlotType.TS:
             raise TypeError('Can not acces latitude for type `ts`')
         return self._lat
 
     @lat.setter
     def lat(self, value: npt.NDArray[np.float32]) -> None:
-        if self.type == _PlotType.TS:
+        if self.type == PlotType.TS:
             raise TypeError('Latitude can not be set on a TS')
-        elif self.type == _PlotType.MAP:
+        elif self.type == PlotType.MAP:
             pass
         else:
             assert False, 'Unreachable'
@@ -112,15 +124,21 @@ class Anom(_Procedure):
 
     @property
     def lon(self) -> xr.DataArray:
-        if self._type == _PlotType.TS:
+        """Array of longitude values of the dataset passes in initialization if type is `map`
+
+        Returns
+        -------
+            xarray.DataArray
+        """
+        if self._type == PlotType.TS:
             raise TypeError('Can not acces longitude for type `ts`')
         return self._lon
 
     @lon.setter
     def lon(self, value: npt.NDArray[np.float32]) -> None:
-        if self.type == _PlotType.TS:
+        if self.type == PlotType.TS:
             raise TypeError('Latitude can not be set on a TS')
-        elif self.type == _PlotType.MAP:
+        elif self.type == PlotType.MAP:
             pass
         else:
             assert False, 'Unreachable'
@@ -137,6 +155,12 @@ class Anom(_Procedure):
 
     @property
     def time(self) -> xr.DataArray:
+        """Array of years of the time variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._data[self._time_key].astype(np.uint)
 
     @time.setter
@@ -153,9 +177,23 @@ class Anom(_Procedure):
 
     @property
     def slise(self) -> Slise:
+        """Slise applied to the matrix.
+
+        Returns
+        -------
+            spy4cast.stypes.Slise
+
+        Note
+        ----
+            If type is `ts` and initilization from ds was not run then a default time and region slise is returned
+
+        Note
+        ----
+            If type is `map` and initilization from ds was not run then a default time slise is returned
+        """
         if hasattr(self, '_slise'):
             return self._slise
-        elif self.type == _PlotType.TS:
+        elif self.type == PlotType.TS:
             # TODO: Replace month0 and monthf with meaninful values
             self._slise = Slise(
                 lat0=-90,
@@ -168,7 +206,7 @@ class Anom(_Procedure):
                 yearf=self.time.values[-1],
             )
             return self._slise
-        elif self.type == _PlotType.MAP:
+        elif self.type == PlotType.MAP:
             # TODO: Replace month0 and monthf with meaninful values
             self._slise = Slise(
                 lat0=self.lat.values[0],
@@ -186,12 +224,24 @@ class Anom(_Procedure):
 
     @property
     def var(self) -> str:
+        """Variable name
+
+        Returns
+        -------
+            str
+        """
         if hasattr(self, '_ds'):
             return self._ds.var
         return ''
 
     @property
     def data(self) -> xr.DataArray:
+        """Data Matrix
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._data
 
     @data.setter
@@ -202,10 +252,10 @@ class Anom(_Procedure):
             raise ValueError(f'Dtype of `data` has to be `np.float32` got {np.dtype(value.dtype)}')
 
         if len(value.shape) == 1:
-            self._type = _PlotType.TS
+            self._type = PlotType.TS
             self._data = xr.DataArray(value, coords={'year': np.arange(len(value))}, dims=['year'])
         elif len(value.shape) == 3:
-            self._type = _PlotType.MAP
+            self._type = PlotType.MAP
             self._data = xr.DataArray(value, coords={
                 'year': np.arange(value.shape[0]),
                 'lat': np.arange(value.shape[1]),
@@ -251,9 +301,9 @@ class Anom(_Procedure):
             raise TypeError('Dimensions for array must be either 3 (MAP) or 1 (TS)')
         obj = Anom.__new__(Anom)
         obj._ds = Dataset.from_xrarray(array)
-        obj.type = _PlotType.MAP if len(array.shape) == 3 else _PlotType.TS
+        obj.type = PlotType.MAP if len(array.shape) == 3 else PlotType.TS
         obj.data = _anom(array, st).values
-        if obj.type == _PlotType.MAP:
+        if obj.type == PlotType.MAP:
             obj.lat = obj._ds.lat.values
             obj.lon = obj._ds.lon.values
         return obj
@@ -270,7 +320,37 @@ class Anom(_Procedure):
         dir: str = '.',
         name: str = 'anomaly.png'
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
-        if self._type == _PlotType.TS:
+        """Plot the anomaly map or time series
+
+        Parameters
+        ----------
+        save_fig
+            Saves the fig in with `dir` / `name` parameters
+        show_plot
+            Shows the plot
+        halt_program
+            Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
+            and stops execution. Else uses fig.show and does not halt program
+        year
+            Requiered for plotting map anomalies
+        cmap
+            Colormap of the `map` types
+        color
+            Color of the line for `ts` types
+        dir
+            Directory to save fig if `save_fig` is `True`
+        name
+            Name of the fig saved if `save_fig` is `True`
+
+        Returns
+        -------
+        plt.Figure
+            Figure object from matplotlib
+
+        Sequence[plt.Axes]
+            Tuple of axes in figure
+        """
+        if self._type == PlotType.TS:
             fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if year is not None:
                 raise TypeError('`year` parameter is not valid to plot a time series anomaly')
@@ -290,7 +370,7 @@ class Anom(_Procedure):
                 f'Time series of {self.var} ({slise2str(self.slise)})',
                 fontweight='bold'
             )
-        elif self._type == _PlotType.MAP:
+        elif self._type == PlotType.MAP:
             nlat, nlon = len(self.lat), len(self.lon)
             fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if color is not None:
@@ -323,7 +403,22 @@ class Anom(_Procedure):
         return fig, [ax]
 
     @classmethod
-    def load(cls: Type['Anom'], prefix: str, dir: str = '.', *, type: Optional[str] = None, **attrs: Any) -> 'Anom':
+    def load(cls: Type['Anom'], prefix: str, dir: str = '.', *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Anom':
+        """Load an anom object from matrices and type
+
+        Parameters
+        ----------
+        prefix : str
+            Prefix of the files containing the information for the object
+        dir : str
+            Directory of the files
+        type : 'map' or 'ts'
+            Type of anomaly
+
+        Returns
+        -------
+            Clim
+        """
         if len(attrs) != 0:
             raise TypeError('Only accepetd kwarg `type` accepted for load method')
         if type is None:
@@ -332,9 +427,10 @@ class Anom(_Procedure):
 
     @property
     def var_names(self) -> Tuple[str, ...]:
-        if self._type == _PlotType.TS:
+        """Returns the variables contained in the object (data, time, lat, lon, ...)"""
+        if self._type == PlotType.TS:
             return 'data', 'time'
-        elif self._type == _PlotType.MAP:
+        elif self._type == PlotType.MAP:
             return 'data', 'time', 'lat', 'lon'
         else:
             assert False, f'Unreachable: {self._type}'

@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple, Any, Sequence, Union, cast
+from typing import Optional, Tuple, Any, Sequence, Union, cast, Literal
 
 import numpy as np
 import numpy.typing as npt
@@ -23,8 +23,7 @@ __all__ = [
 
 
 class MCA(_Procedure):
-    """Maximum covariance analysis between y (predictor)
-    and Z (predictand)
+    """Maximum covariance analysis between y (predictor) and Z (predictand)
 
     Parameters
     ----------
@@ -39,9 +38,40 @@ class MCA(_Procedure):
         sig : {'monte-carlo', 'test-t'}
             Signification technique: monte-carlo or test-t
         dsy_index_regression : optional, Preprocess
-            Predictor to send to index regression. Degault is the same as y
+            Predictor to send to index regression. Default is the same as y
         dsz_index_regression : optional, Preprocess
-            Predictand to send to index regression. Degault is the same as z
+            Predictand to send to index regression. Default is the same as z
+
+    Attributes
+    ----------
+        RUY : npt.NDArray[np.float32]
+            ...
+        RUY_sig : npt.NDArray[np.float32]
+            ...
+        SUY : npt.NDArray[np.float32]
+            ...
+        SUY_sig : npt.NDArray[np.float32]
+            ...
+        RUZ : npt.NDArray[np.float32]
+            ...
+        RUZ_sig : npt.NDArray[np.float32]
+            ...
+        SUZ : npt.NDArray[np.float32]
+            ...
+        SUZ_sig : npt.NDArray[np.float32]
+            ...
+        pvalruz : npt.NDArray[np.float32]
+            ...
+        pvalruy : npt.NDArray[np.float32]
+            ...
+        Us : npt.NDArray[np.float32]
+            ...
+        Vs : npt.NDArray[np.float32]
+            ...
+        scf : npt.NDArray[np.float32]
+            ...
+        alpha : float
+            ...
     """
     # TODO: Document MCA fields
     RUY: npt.NDArray[np.float32]
@@ -61,6 +91,7 @@ class MCA(_Procedure):
 
     @property
     def var_names(self) -> Tuple[str, ...]:
+        """Returns the variables contained in the object (RUY, SUY, scf, ...)"""
         return (
             'RUY',
             'RUY_sig',
@@ -122,7 +153,7 @@ class MCA(_Procedure):
         y: npt.NDArray[np.float32],
         nm: int,
         alpha: float,
-        sig: str = 'test-t',
+        sig: Literal["test-t", "monte-carlo"] = 'test-t',
         z_index_regression: Optional[npt.NDArray[np.float32]] = None,
         y_index_regression: Optional[npt.NDArray[np.float32]] = None,
     ) -> 'MCA':
@@ -139,12 +170,12 @@ class MCA(_Procedure):
                 Number of modes
             alpha : alpha
                Significance level
-            sig : {'monte-carlo', 'test-t'}
+            sig : 'monte-carlo or 'test-t'
                 Signification technique: monte-carlo or test-t
             z_index_regression : optional, array-like
-                Predictand (space x time) to send to index regression. Degault is the same as z
+                Predictand (space x time) to send to index regression. Default is the same as z
             y_index_regression : optional, array-like
-                Predictor (space x time) to send to index regression. Degault is the same as y
+                Predictor (space x time) to send to index regression. Default is the same as y
 
         Returns
         -------
@@ -239,54 +270,127 @@ class MCA(_Procedure):
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
+        """Matrix with the data of the predictor variable
+
+        Returns
+        -------
+            npt.NDArray[np.float32]
+        """
         return self._dsy.data
 
     @property
     def yvar(self) -> str:
+        """Predictor variable name
+
+        Returns
+        -------
+            str
+        """
         return self._dsy.var
 
     @property
     def yslise(self) -> Slise:
+        """Predictor variable slise
+
+        Returns
+        -------
+            spy4cast.stypes.Slise
+        """
         return self._dsy.slise
 
     @property
     def ytime(self) -> xr.DataArray:
+        """Vector with time values of the predictor variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsy.time
 
     @property
     def ylat(self) -> xr.DataArray:
+        """Vector with latitude values of the predictor variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsy.lat
 
     @property
     def ylon(self) -> xr.DataArray:
+        """Vector with longitude values of the predictor variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsy.lon
 
     @property
     def zdata(self) -> npt.NDArray[np.float32]:
+        """Matrix with the data of the predicting variable
+
+        Returns
+        -------
+            npt.NDArray[np.float32]
+        """
         return self._dsz.data
 
     @property
     def zvar(self) -> str:
+        """Predicting variable name
+
+        Returns
+        -------
+            str
+        """
         return self._dsz.var
 
     @property
     def zslise(self) -> Slise:
+        """Predicting variable slise
+
+        Returns
+        -------
+            spy4cast.stypes.Slise
+        """
         return self._dsz.slise
 
     @property
     def ztime(self) -> xr.DataArray:
+        """Vector with time values of the predicting variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsz.time
 
     @property
     def zlat(self) -> xr.DataArray:
+        """Vector with latitude values of the predicting variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsz.lat
 
     @property
     def zlon(self) -> xr.DataArray:
+        """Vector with longitude values of the predicting variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._dsz.lon
 
     def plot(
         self,
+        *,
         save_fig: bool = False,
         show_plot: bool = False,
         halt_program: bool = False,
@@ -301,24 +405,38 @@ class MCA(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
-        """Plot MCA results
+        """Plot the MCA results
 
         Parameters
         ----------
-            flags : spy4cast.stypes.F
-                ...
-            cmap : str
-                ...
-            signs : optional, array-like[bool]
-                Indicates for each mode wether to change the sign
-            dir : str
-                ....
-            name : str
-                ...
-            suy_ticks : str
-                ...
-            suz_ticks : str
-                ...
+        save_fig
+            Saves the fig in with `dir` / `name` parameters
+        show_plot
+            Shows the plot
+        halt_program
+            Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
+            and stops execution. Else uses fig.show and does not halt program
+        cmap
+            Colormap for the predicting maps
+        signs
+            Sequence of `True` or `False` values of same length as `nm`. Where `True` the
+            mode output will be multipled by -1.
+        dir
+            Directory to save fig if `save_fig` is `True`
+        name
+            Name of the fig saved if `save_fig` is `True`
+        suy_ticks
+            Ticks for the maps of the SUY output
+        suz_ticks
+            Ticks for the maps of the SUZ output
+
+        Returns
+        -------
+        plt.Figure
+            Figure object from matplotlib
+
+        Sequence[plt.Axes]
+            Tuple of axes in figure
         """
         nm = 3
         if signs is not None:
@@ -423,9 +541,26 @@ class MCA(_Procedure):
 
     @classmethod
     def load(cls, prefix: str, dir: str = '.', *,
-             dsz: Optional[Preprocess] = None,
              dsy: Optional[Preprocess] = None,
+             dsz: Optional[Preprocess] = None,
              **attrs: Any) -> 'MCA':
+        """Load an anom object from matrices and type
+
+        Parameters
+        ----------
+        prefix : str
+            Prefix of the files containing the information for the object
+        dir : str
+            Directory of the files
+        dsy : Preprocess
+            Preprocessed dataset of the predictor variable
+        dsz : Preprocess
+            Preprocessed dataset of the predicting variable
+
+        Returns
+        -------
+            MCA
+        """
         if len(attrs) != 0:
             raise TypeError('Load only takes two keyword arguments: dsy and dsz')
         if dsz is None or dsy is None:
@@ -463,7 +598,7 @@ def index_regression(
             Unidimensional array: temporal series
         alpha : float
             Significance level
-        sig : str, {'monte-carlo', 'test-t'}
+        sig : 'monte-carlo' or 'test-t'
             Type of sygnificance
         montecarlo_iterations : optional, int
             Number of iterations for monte-carlo sig

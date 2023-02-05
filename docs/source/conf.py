@@ -50,7 +50,7 @@ autodoc_member_order = 'bysource'
 
 html_favicon = "_static/favicon.png"
 
-# Napoleon settings
+# Napoleon settings: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
 napoleon_include_init_with_doc = False

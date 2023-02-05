@@ -29,7 +29,7 @@ _new_id = _new_id_gen()
 
 
 class Spy4CastError(Exception):
-    """Base Class for all custom excpetins of the project"""
+    """Base Class for all custom excpetions of the project"""
 
     _id = 0
 

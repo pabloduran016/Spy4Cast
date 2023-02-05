@@ -59,6 +59,8 @@ Plot
 
 You can plot the dataset using two methodologies
 
+.. _clim-tutorial:
+
 Clim
 ++++
 
@@ -81,6 +83,7 @@ Clim performs the climatology for the given region
 You can slice a dataset with only a Month and a year (:code:`Slise(-90, 90, -180, 180, Month.JAN, Month.JAN, 1900, 1900)`)
 and plot the clmatollogy of this dataset if you want to plot a certain month and year.
 
+.. _anom-tutorial:
 
 Anom
 ++++
@@ -142,6 +145,7 @@ You can use the saved data with a simple line of code
 
     Load and Save work for Clim, Anom, Preprocess, MCA and Crossvalidation (every methodology the API supports)
 
+.. _spy4cast-tutorial:
 
 Spy4Cast
 --------

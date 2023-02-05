@@ -1,9 +1,9 @@
 import os
-from typing import Type, Tuple, Optional, Union, Any, Sequence
+from typing import Type, Tuple, Optional, Union, Any, Sequence, Literal
 
 from matplotlib import pyplot as plt
 
-from . import _PlotType, _get_type
+from . import PlotType, _get_type
 from .. import Slise, Dataset, Month
 from .._functions import slise2str
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_ts, _plot_map, _calculate_figsize, MAX_WIDTH, MAX_HEIGHT
@@ -27,10 +27,10 @@ class Clim(_Procedure, object):
     Parameters
     ----------
         ds : spy4cast.dataset.Dataset
-            spy4cast.dataset.Dataset onto which perform the anomaly
+            spy4cast.dataset.Dataset onto which perform the climatology
 
-        type : {'map', 'ts'}
-            Perform the climatology and outputting a map by doing the mean across time
+        type : 'map' or 'ts'
+            Perform the climatology and outputing a map by doing the mean across time
              or ouputting a timeseries by doing the mean across space.
 
     See Also
@@ -49,20 +49,20 @@ class Clim(_Procedure, object):
     _lon_key: str
     _slise: Slise
 
-    _type: _PlotType
+    _type: PlotType
 
-    def __init__(self, ds: Dataset, type: str):
+    def __init__(self, ds: Dataset, type: Literal["map", "ts"]):
         self.type = _get_type(type)
         self._ds = ds
         self._slise = ds.slise
         self._data = ds.data
 
-        if self._type == _PlotType.TS:
+        if self._type == PlotType.TS:
             self._data = self._data.mean(dim=self._ds._lon_key).mean(dim=self._ds._lat_key)
             self._data = _clim(self._data, dim='month')
             self._time_key = 'year'
             self._time = self._data[self._time_key]
-        elif self._type == _PlotType.MAP:
+        elif self._type == PlotType.MAP:
             self._data = _clim(self._data)
             self._lat = self._ds.lat
             self._lon = self._ds.lon
@@ -70,24 +70,36 @@ class Clim(_Procedure, object):
             assert False, 'Unreachable'
 
     @property
-    def type(self) -> _PlotType:
+    def type(self) -> PlotType:
+        """Type of climatology passed in initialization
+
+        Returns
+        -------
+            PlotType
+        """
         return self._type
 
     @type.setter
-    def type(self, val: _PlotType) -> None:
+    def type(self, val: PlotType) -> None:
         self._type = val
 
     @property
     def lat(self) -> xr.DataArray:
-        if self._type == _PlotType.TS:
+        """Array of latitude values of the dataset passes in initialization if type is `map`
+
+        Returns
+        -------
+            xarray.DataArray
+        """
+        if self._type == PlotType.TS:
             raise TypeError('Can not acces latitude for type `ts`')
         return self._lat
 
     @lat.setter
     def lat(self, value: npt.NDArray[np.float32]) -> None:
-        if self.type == _PlotType.TS:
+        if self.type == PlotType.TS:
             raise TypeError('Latitude can not be set on a TS')
-        elif self.type == _PlotType.MAP:
+        elif self.type == PlotType.MAP:
             pass
         else:
             assert False, 'Unreachable'
@@ -104,15 +116,21 @@ class Clim(_Procedure, object):
 
     @property
     def lon(self) -> xr.DataArray:
-        if self._type == _PlotType.TS:
+        """Array of longitude values of the dataset passes in initialization if type is `map`
+
+        Returns
+        -------
+            xarray.DataArray
+        """
+        if self._type == PlotType.TS:
             raise TypeError('Can not acces longitude for type `ts`')
         return self._lon
 
     @lon.setter
     def lon(self, value: npt.NDArray[np.float32]) -> None:
-        if self.type == _PlotType.TS:
+        if self.type == PlotType.TS:
             raise TypeError('Longitude can not be set on a TS')
-        elif self.type == _PlotType.MAP:
+        elif self.type == PlotType.MAP:
             pass
         else:
             assert False, 'Unreachable'
@@ -129,9 +147,15 @@ class Clim(_Procedure, object):
 
     @property
     def time(self) -> xr.DataArray:
-        if self.type == _PlotType.MAP:
+        """Array of years of the time variable
+
+        Returns
+        -------
+            xarray.DataArray
+        """
+        if self.type == PlotType.MAP:
             raise TypeError('Time can not be get from a Map')
-        elif self.type == _PlotType.TS:
+        elif self.type == PlotType.TS:
             pass
         else:
             assert False, 'Unreachable'
@@ -139,9 +163,9 @@ class Clim(_Procedure, object):
 
     @time.setter
     def time(self, value: npt.NDArray[Union[np.uint, np.datetime64]]) -> None:
-        if self.type == _PlotType.MAP:
+        if self.type == PlotType.MAP:
             raise TypeError('Time can not be set on a Map')
-        elif self.type == _PlotType.TS:
+        elif self.type == PlotType.TS:
             pass
         else:
             assert False, 'Unreachable'
@@ -160,11 +184,25 @@ class Clim(_Procedure, object):
 
     @property
     def slise(self) -> Slise:
+        """Slise applied to the matrix.
+
+        Returns
+        -------
+            spy4cast.stypes.Slise
+
+        Note
+        ----
+            If type is `ts` and initilization from ds was not run then a default time and region slise is returned
+
+        Note
+        ----
+            If type is `map` and initilization from ds was not run then a default time slise is returned
+        """
         if hasattr(self, '_slise'):
             return self._slise
         elif hasattr(self, '_ds'):
             return self._ds.slise
-        elif self._type == _PlotType.TS:
+        elif self._type == PlotType.TS:
             self._slise = Slise(
                 lat0=-90,
                 latf=90,
@@ -176,7 +214,7 @@ class Clim(_Procedure, object):
                 yearf=self.time.values[-1],
             )
             return self._slise
-        elif self._type == _PlotType.MAP:
+        elif self._type == PlotType.MAP:
             self._slise = Slise(
                 lat0=self.lat.values[0],
                 latf=self.lat.values[-1],
@@ -193,12 +231,24 @@ class Clim(_Procedure, object):
 
     @property
     def var(self) -> str:
+        """Variable name
+
+        Returns
+        -------
+            str
+        """
         if hasattr(self, '_ds'):
             return self._ds.var
         return ''
 
     @property
     def data(self) -> xr.DataArray:
+        """Data Matrix
+
+        Returns
+        -------
+            xarray.DataArray
+        """
         return self._data
 
     @data.setter
@@ -209,11 +259,11 @@ class Clim(_Procedure, object):
             raise ValueError(f'Dtype of `data` has to be `np.float32` got {np.dtype(value.dtype)}')
 
         if len(value.shape) == 1:
-            self._type = _PlotType.TS
+            self._type = PlotType.TS
             self._data = xr.DataArray(value, coords={'time': np.arange(len(value))}, dims=['time'])
             self._time_key = 'time'
         elif len(value.shape) == 2:
-            self._type = _PlotType.MAP
+            self._type = PlotType.MAP
             self._data = xr.DataArray(value, coords={
                 'lat': np.arange(value.shape[0]),
                 'lon': np.arange(value.shape[1])
@@ -234,10 +284,38 @@ class Clim(_Procedure, object):
         dir: str = '.',
         name: str = 'clim.png'
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
-        if self._type == _PlotType.TS:
+        """Plot the climatology map or time series
+
+        Parameters
+        ----------
+        save_fig
+            Saves the fig in with `dir` / `name` parameters
+        show_plot
+            Shows the plot
+        halt_program
+            Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
+            and stops execution. Else uses fig.show and does not halt program
+        cmap
+            Colormap of the `map` types
+        color
+            Color of the line for `ts` types
+        dir
+            Directory to save fig if `save_fig` is `True`
+        name
+            Name of the fig saved if `save_fig` is `True`
+
+        Returns
+        -------
+        plt.Figure
+            Figure object from matplotlib
+
+        Sequence[plt.Axes]
+            Tuple of axes in figure
+        """
+        if self._type == PlotType.TS:
             fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if cmap is not None:
-                raise TypeError('cmap parameter is not valid to plot a time series anomaly')
+                raise TypeError('cmap parameter is not valid to plot a time series climatology')
             ax = fig.add_subplot()
             _plot_ts(
                 time=self.time.values,
@@ -252,11 +330,11 @@ class Clim(_Procedure, object):
                 f'Time series of {self.var} ({slise2str(self.slise)})',
                 fontweight='bold'
             )
-        elif self._type == _PlotType.MAP:
+        elif self._type == PlotType.MAP:
             nlat, nlon = len(self.lat), len(self.lon)
             fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if color is not None:
-                raise TypeError('Color parameter is not valid to plot a map anomaly')
+                raise TypeError('Color parameter is not valid to plot a map climatology')
             ax = fig.add_subplot(projection=ccrs.PlateCarree())
             _plot_map(
                 arr=self.data.values,
@@ -283,7 +361,22 @@ class Clim(_Procedure, object):
         return fig, [ax]
 
     @classmethod
-    def load(cls: Type['Clim'], prefix: str, dir: str = '.', *, type: Optional[str] = None, **attrs: Any) -> 'Clim':
+    def load(cls: Type['Clim'], prefix: str, dir: str = '.', *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Clim':
+        """Load an clim object from matrices and type
+
+        Parameters
+        ----------
+        prefix : str
+            Prefix of the files containing the information for the object
+        dir : str
+            Directory of the files
+        type : 'map' or 'ts'
+            Type of climatology
+
+        Returns
+        -------
+            Clim
+        """
         if len(attrs) != 0:
             raise TypeError('Only accepetd kwarg `type` accepted for load method')
         if type is None:
@@ -292,9 +385,10 @@ class Clim(_Procedure, object):
 
     @property
     def var_names(self) -> Tuple[str, ...]:
-        if self._type == _PlotType.TS:
+        """Returns the variables contained in the object (data, time, lat, lon, ...)"""
+        if self._type == PlotType.TS:
             return 'data', 'time'
-        elif self._type == _PlotType.MAP:
+        elif self._type == PlotType.MAP:
             return 'data', 'lat', 'lon'
         else:
             assert False, 'Unreachable'

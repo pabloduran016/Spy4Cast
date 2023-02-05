@@ -7,7 +7,7 @@ import xarray as xr
 from spy4cast.meteo.anom import _anom, npanom
 from .. import BaseTestCase
 from spy4cast import Slise, Dataset, Month
-from spy4cast.meteo import Anom, _PlotType
+from spy4cast.meteo import Anom, PlotType
 
 DATASETS_DIR = '/Users/Shared/datasets'
 DATA_DIR = 'src/tests/data'
@@ -28,13 +28,13 @@ class AnomTest(BaseTestCase):
 
     def test___init__(self) -> None:
         with self.assertRaises(TypeError):
-            _ = Anom(self.ds, 'idk')
+            _ = Anom(self.ds, 'idk')  # type: ignore
         self.assertEqual(len(self.map_anom.data.shape), 3)
         self.assertEqual(len(self.ts_anom.data.shape), 1)
 
     def test_get_type(self) -> None:
-        self.assertEqual(self.ts_anom.type, _PlotType.TS)
-        self.assertEqual(self.map_anom.type, _PlotType.MAP)
+        self.assertEqual(self.ts_anom.type, PlotType.TS)
+        self.assertEqual(self.map_anom.type, PlotType.MAP)
 
     def test_get_lat(self) -> None:
         with self.assertRaises(TypeError):
@@ -145,7 +145,7 @@ class AnomTest(BaseTestCase):
         self.assertEqual(map_anom.time.shape, (10,))
         self.assertEqual(map_anom.data['lat'].shape, (20,))
         self.assertEqual(map_anom.data['lon'].shape, (30,))
-        self.assertEqual(map_anom.type, _PlotType.MAP)
+        self.assertEqual(map_anom.type, PlotType.MAP)
 
         ts_anom = Anom.__new__(Anom)
         self.assertFalse(hasattr(ts_anom, '_type'))
@@ -154,7 +154,7 @@ class AnomTest(BaseTestCase):
         self.assertTrue(hasattr(ts_anom, '_data'))
         self.assertEqual(ts_anom.data.shape, (10,))
         self.assertEqual(ts_anom.time.shape, (10,))
-        self.assertEqual(ts_anom.type, _PlotType.TS)
+        self.assertEqual(ts_anom.type, PlotType.TS)
 
         self.assertEqual(map_anom._time_key, 'year')
         self.assertEqual(ts_anom._time_key, 'year')
@@ -171,9 +171,9 @@ class AnomTest(BaseTestCase):
         xr_sst = xr_sst[xr_sst['time.month'] == 1]
 
         map_anom = Anom.from_xrarray(xr_sst)
-        self.assertEqual(map_anom.type, _PlotType.MAP)
+        self.assertEqual(map_anom.type, PlotType.MAP)
         ts_anom = Anom.from_xrarray(xr_sst.mean('latitude').mean('longitude'))
-        self.assertEqual(ts_anom.type, _PlotType.TS)
+        self.assertEqual(ts_anom.type, PlotType.TS)
 
     def test_plot(self) -> None:
         self.map_anom.plot(year=1980)

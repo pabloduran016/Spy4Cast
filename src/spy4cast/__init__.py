@@ -5,7 +5,8 @@ __all__ = [
     'Slise',
     'Month',
     'Dataset',
-    'set_silence'
+    'set_silence',
+    'Settings',
 ]
 
 

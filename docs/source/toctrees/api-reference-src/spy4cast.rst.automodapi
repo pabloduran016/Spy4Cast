@@ -7,6 +7,13 @@ Spy4Cast
 
 .. automodule:: spy4cast.spy4cast
 
+Functions
+^^^^^^^^^
+
+.. automodsumm:: spy4cast.spy4cast
+    :functions-only:
+    :toctree: ../../api
+
 Classes
 ^^^^^^^
 
