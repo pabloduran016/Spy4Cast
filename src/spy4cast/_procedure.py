@@ -66,7 +66,6 @@ class _Procedure(ABC):
 
     @classmethod
     def load(cls: Type[T], prefix: str, dir: str = '.', **attrs: Any) -> T:
-
         clsname = cls.__name__
         # print(clsname, cls)
         prefixed = os.path.join(dir, prefix)
