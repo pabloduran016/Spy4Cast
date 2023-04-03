@@ -209,7 +209,7 @@ class AnomTest(BaseTestCase):
 
     def test__anom(self) -> None:
         with self.assertRaises(TypeError):
-            _anom(np.empty((10, 10)))  # type: ignore
+            _anom(np.empty((10, 10)))
         with self.assertRaises(AssertionError):
             _anom(xr.DataArray(np.empty((10, 10, 10)), dims=['year', 'lat', 'lon']))
         with self.assertRaises(KeyError):

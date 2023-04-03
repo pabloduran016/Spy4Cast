@@ -68,7 +68,7 @@ class MCATest(BaseTestCase):
             _ = MCA(y_preprocessed, z_preprocessed, 3, .1)
 
     def test_from_nparrays(self) -> None:
-        _ = MCA.from_nparrays(self.z_preprocessed.data, self.z_preprocessed.data, 3, .1)
+        _ = MCA.from_land_arrays(self.z_preprocessed.data, self.z_preprocessed.data, 3, .1)
 
     def test__mca(self) -> None:
         _ = MCA(self.y_preprocessed, self.z_preprocessed, 3, .1,
@@ -76,7 +76,7 @@ class MCATest(BaseTestCase):
 
     def test_ydata(self) -> None:
         self.assertTrue(
-            np.isclose(self.y_preprocessed.data, self.mca.ydata).all()
+            np.isclose(self.y_preprocessed.data.values, self.mca.ydata).all()
         )
 
     def test_yvar(self) -> None:
@@ -102,7 +102,7 @@ class MCATest(BaseTestCase):
 
     def test_zdata(self) -> None:
         self.assertTrue(
-            np.isclose(self.y_preprocessed.data, self.mca.ydata).all()
+            np.isclose(self.y_preprocessed.data.values, self.mca.ydata).all()
         )
 
     def test_zvar(self) -> None:

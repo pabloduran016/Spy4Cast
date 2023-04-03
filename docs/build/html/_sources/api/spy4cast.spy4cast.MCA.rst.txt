@@ -28,7 +28,7 @@ MCA
 
    .. autosummary::
 
-      ~MCA.from_nparrays
+      ~MCA.from_land_arrays
       ~MCA.load
       ~MCA.plot
 
@@ -50,6 +50,6 @@ MCA
 
    .. rubric:: Methods Documentation
 
-   .. automethod:: from_nparrays
+   .. automethod:: from_land_arrays
    .. automethod:: load
    .. automethod:: plot

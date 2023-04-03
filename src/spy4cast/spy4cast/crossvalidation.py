@@ -25,6 +25,8 @@ __all__ = [
     'Crossvalidation',
 ]
 
+from ..land_array import LandArray
+
 
 class Crossvalidation(_Procedure):
     """Perform crossvalidation methodology
@@ -168,8 +170,8 @@ class Crossvalidation(_Procedure):
         self._dsy = dsy
         self._dsz = dsz
 
-        nz, ntz = self.zdata.shape
-        ny, nty = self.ydata.shape
+        nz, ntz = self.z_land_array.shape
+        ny, nty = self.y_land_array.shape
 
         _debuginfo(f"""Applying Crossvalidation 
     Shapes: Z{dsz.shape} 
@@ -192,14 +194,27 @@ class Crossvalidation(_Procedure):
         self.r_uv = np.zeros([nm, nt], dtype=np.float32)
         self.r_uv_sig = np.zeros([nm, nt], dtype=np.float32)
         self.p_uv = np.zeros([nm, nt], dtype=np.float32)
+
         self.zhat_separated_modes = np.zeros([nm, nz, nt], dtype=np.float32)
         self.zhat_accumulated_modes = np.zeros([nm, nz, nt], dtype=np.float32)
+        self.zhat_separated_modes[:, self.z_land_array.land_indices, :] = np.nan
+        self.zhat_accumulated_modes[:, self.z_land_array.land_indices, :] = np.nan
+
         self.psi_separated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
         self.psi_accumulated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
+        self.psi_separated_modes[:, :, self.y_land_array.land_indices, :][:, :, :, self.z_land_array.land_indices] = np.nan
+        self.psi_accumulated_modes[:, :, self.y_land_array.land_indices, :][:, :, :, self.z_land_array.land_indices] = np.nan
+
         self.suy = np.zeros([ny, nt, nm], dtype=np.float32)
         self.suy_sig = np.zeros([ny, nt, nm], dtype=np.float32)
         self.suz = np.zeros([nz, nt, nm], dtype=np.float32)
         self.suz_sig = np.zeros([nz, nt, nm], dtype=np.float32)
+
+        self.suy[self.y_land_array.land_indices, :, :] = np.nan
+        self.suy_sig[self.y_land_array.land_indices, :, :] = np.nan
+        self.suz[self.z_land_array.land_indices, :, :] = np.nan
+        self.suz_sig[self.z_land_array.land_indices, :, :] = np.nan
+
         # crosvalidated year on axis 2
         self.us = np.zeros([nm, nt, nt], dtype=np.float32)
         self.vs = np.zeros([nm, nt, nt], dtype=np.float32)
@@ -216,7 +231,7 @@ class Crossvalidation(_Procedure):
                 for i in yrs:
                     # print(f'applying async on process {i=}')
                     p = pool.apply_async(self._crossvalidate_year, kwds={
-                        'year': i, 'z': self.zdata, 'y': self.ydata, 'nt': nt, 'yrs': yrs,
+                        'year': i, 'z': self.z_land_array, 'y': self.y_land_array, 'nt': nt, 'yrs': yrs,
                         'nm': nm, 'alpha': alpha, 'sig': sig, 'montecarlo_iterations': montecarlo_iterations,
                     })
                     processes.append(p)
@@ -232,7 +247,7 @@ class Crossvalidation(_Procedure):
         else:
             for i in yrs:
                 out = self._crossvalidate_year(
-                    year=i, z=self.zdata, y=self.ydata, nt=nt, yrs=yrs,
+                    year=i, z=self.z_land_array, y=self.y_land_array, nt=nt, yrs=yrs,
                     nm=nm, alpha=alpha, sig=sig, montecarlo_iterations=montecarlo_iterations
                 )
                 self.scf[:, i], self.r_uv[:, i], self.r_uv_sig[:, i], self.p_uv[:, i], \
@@ -248,11 +263,14 @@ class Crossvalidation(_Procedure):
         self.p_z_zhat_t_separated_modes = np.zeros([nm, nt], dtype=np.float32)
         for j in range(nt):
             for mode in range(nm):
-                rtt_sep = stats.pearsonr(self.zhat_separated_modes[mode, :, j], self.zdata[:, j])  # serie de skill
+                try:
+                    rtt_sep = stats.pearsonr(self.zhat_separated_modes[mode, self.z_land_array.not_land_indices, j], self.z_land_array.not_land_values[:, j])  # serie de skill
+                except:
+                    raise
                 self.r_z_zhat_t_separated_modes[mode, j] = rtt_sep[0]
                 self.p_z_zhat_t_separated_modes[mode, j] = rtt_sep[1]
 
-                rtt_acc = stats.pearsonr(self.zhat_accumulated_modes[mode, :, j], self.zdata[:, j])  # serie de skill
+                rtt_acc = stats.pearsonr(self.zhat_accumulated_modes[mode, self.z_land_array.not_land_indices, j], self.z_land_array.not_land_values[:, j])  # serie de skill
                 self.r_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[0]
                 self.p_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[1]
 
@@ -260,7 +278,13 @@ class Crossvalidation(_Procedure):
         self.p_z_zhat_s_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
         self.r_z_zhat_s_separated_modes = np.zeros([nm, nz], dtype=np.float32)
         self.p_z_zhat_s_separated_modes = np.zeros([nm, nz], dtype=np.float32)
-        for i in range(nz):
+        
+        self.r_z_zhat_s_accumulated_modes[:, self.z_land_array.land_indices] = np.nan
+        self.p_z_zhat_s_accumulated_modes[:, self.z_land_array.land_indices] = np.nan
+        self.r_z_zhat_s_separated_modes[:, self.z_land_array.land_indices] = np.nan
+        self.p_z_zhat_s_separated_modes[:, self.z_land_array.land_indices] = np.nan
+
+        for i in self.z_land_array.not_land_indices:
             for mode in range(nm):
                 rtt_sep = stats.pearsonr(self.zhat_separated_modes[mode, i, :], self.zdata[i, :])  # serie de skill
                 self.r_z_zhat_s_separated_modes[mode, i] = rtt_sep[0]
@@ -276,8 +300,8 @@ class Crossvalidation(_Procedure):
     def _crossvalidate_year(
         self,
         year: int,
-        z: npt.NDArray[np.float32],
-        y: npt.NDArray[np.float32],
+        z: LandArray,
+        y: LandArray,
         nt: int,
         yrs: npt.NDArray[np.int32],
         nm: int,
@@ -287,9 +311,9 @@ class Crossvalidation(_Procedure):
     ) -> Tuple[npt.NDArray[np.float32], ...]:
         """Function of internal use that processes a single year for crossvalidation"""
         debugprint('\tyear:', year, 'of', nt)
-        z2 = z[:, yrs != year]
-        y2 = y[:, yrs != year]
-        mca_out = MCA.from_nparrays(y2, z2, nm, alpha)
+        z2 = LandArray(z.values[:, yrs != year])
+        y2 = LandArray(y.values[:, yrs != year])
+        mca_out = MCA.from_land_arrays(y2, z2, nm, alpha)
         ny, _ = y2.shape
         nz, _ = z2.shape
 
@@ -297,18 +321,24 @@ class Crossvalidation(_Procedure):
         psi_accumulated_modes = np.zeros([nm, ny, nz], dtype=np.float32)
         zhat_separated_modes = np.zeros([nm, nz], dtype=np.float32)
         zhat_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
-        for mode in range(nm):
-            psi_separated_modes[mode, :, :] = _calculate_psi(mca_out.SUY[:, mode:mode+1], mca_out.Us[mode:mode+1, :], z2, nt, 1, ny)
-            psi_accumulated_modes[mode, :, :] = _calculate_psi(mca_out.SUY[:, :mode+1], mca_out.Us[:mode+1, :], z2, nt, mode+1, ny)
 
-            zhat_separated_modes[mode, :] = np.dot(np.transpose(y[:, year]), psi_separated_modes[mode, :, :])
-            zhat_accumulated_modes[mode, :] = np.dot(np.transpose(y[:, year]), psi_accumulated_modes[mode, :, :])
+        psi_separated_modes[:, y2.land_indices, :][:, :, z2.land_indices] = np.nan
+        psi_accumulated_modes[:, y2.land_indices, :][:, :, z2.land_indices] = np.nan
+        zhat_separated_modes[:, z2.land_indices] = np.nan
+        zhat_accumulated_modes[:, z2.land_indices] = np.nan
+
+        for mode in range(nm):
+            psi_separated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices] = _calculate_psi(mca_out.SUY[y2.not_land_indices, mode:mode+1], mca_out.Us[mode:mode+1, :], z2.not_land_values, nt, 1, ny)
+            psi_accumulated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices] = _calculate_psi(mca_out.SUY[y2.not_land_indices, :mode+1], mca_out.Us[:mode+1, :], z2.not_land_values, nt, mode+1, ny)
+
+            zhat_separated_modes[mode, z2.not_land_indices] = np.dot(np.transpose(y.not_land_values[:, year]), psi_separated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices])
+            zhat_accumulated_modes[mode, z2.not_land_indices] = np.dot(np.transpose(y.not_land_values[:, year]), psi_accumulated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices])
 
         r_uv = np.zeros(nm, dtype=np.float32)
         r_uv_sig = np.zeros(nm, dtype=np.float32)
         p_uv = np.zeros(nm, dtype=np.float32)
         for m in range(nm):
-            r_uv[m], p_uv[m], r_uv_sig[m], _, _ = index_regression(mca_out.Us[m:m+1, :], mca_out.Vs[m:m+1, :].T, alpha, sig, montecarlo_iterations)
+            r_uv[m], p_uv[m], r_uv_sig[m], _, _ = index_regression(LandArray(mca_out.Us[m:m+1, :]), mca_out.Vs[m:m+1, :].T, alpha, sig, montecarlo_iterations)
 
         scf = mca_out.scf
         return (
@@ -320,6 +350,16 @@ class Crossvalidation(_Procedure):
         )
 
     @property
+    def y_land_array(self) -> LandArray:
+        """Land Array for Y dataset"""
+        return self._dsy.data
+
+    @property
+    def z_land_array(self) -> LandArray:
+        """Land Array for Z dataset"""
+        return self._dsz.data
+
+    @property
     def ydata(self) -> npt.NDArray[np.float32]:
         """Matrix with the data of the predictor variable
         
@@ -327,7 +367,7 @@ class Crossvalidation(_Procedure):
         -------
             npt.NDArray[np.float32]
         """
-        return self._dsy.data
+        return self._dsy.data.values
 
     @property
     def yvar(self) -> str:
@@ -387,7 +427,7 @@ class Crossvalidation(_Procedure):
         -------
             npt.NDArray[np.float32]
         """
-        return self._dsz.data
+        return self._dsz.data.values
 
     @property
     def zvar(self) -> str:
@@ -447,7 +487,7 @@ class Crossvalidation(_Procedure):
         halt_program: bool = False,
         dir: Optional[str] = None,
         name: Optional[str] = None,
-        cmap: str = None,
+        cmap: Optional[str] = None,
         map_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
@@ -730,7 +770,7 @@ def _plot_crossvalidation_elena(
             # ax0.set_ylabel('nº std', fontsize=20, weight='bold')
 
         r_uv, p_value, _ruv_sig, _reg, _reg_sig = index_regression(
-            mca.Us[n_mode:n_mode+1, :], mca.Vs[n_mode:n_mode+1, :].T, cross.alpha, 'test-t', 1000, )
+            LandArray(mca.Us[n_mode:n_mode+1, :]), mca.Vs[n_mode:n_mode+1, :].T, cross.alpha, 'test-t', 1000, )
 
         # plt.xticks()
         # plt.yticks()
@@ -901,7 +941,7 @@ def _plot_crossvalidation_default(
         d, cross.zlat, cross.zlon, fig, axs[0],
         'Correlation in space between z and zhat',
         cmap=cmap,
-        ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None else map_ticks)
+        ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None or np.isnan(_mean) or np.isnan(_std) else map_ticks)
     )
     hatches = d.copy()
     hatches[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (

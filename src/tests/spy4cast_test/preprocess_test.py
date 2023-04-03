@@ -39,7 +39,7 @@ class PreprocessTest(BaseTestCase):
         with self.assertRaises(TypeError):
             _ = Preprocess(self.ds, period=13)
         with self.assertRaises(AssertionError):
-            _ = Preprocess(Clim(self.ds, 'ts'))
+            _ = Preprocess(Clim(self.ds, 'ts'))  # type: ignore
 
     def test_var_names(self) -> None:
         var_names = (
@@ -134,23 +134,23 @@ class PreprocessTest(BaseTestCase):
 
     def test_get_data(self) -> None:
         self.assertTrue(
-            (self.preprocessed.data == self.preprocessed._data).all())
+            (self.preprocessed.data.values == self.preprocessed._data.values).all())
 
     def test_set_data(self) -> None:
         ppcessed = Preprocess(self.ds)
 
         with self.assertRaises(TypeError):
-            ppcessed.data = xr.DataArray(ppcessed.data)
+            ppcessed.data.values = xr.DataArray(ppcessed.data.values)
         with self.assertRaises(TypeError):
-            ppcessed.data = ppcessed.data.astype(str)
+            ppcessed.data.values = ppcessed.data.values.astype(str)
         with self.assertRaises(TypeError):
-            ppcessed.data = ppcessed.data[np.newaxis, :, :]
+            ppcessed.data.values = ppcessed.data.values[np.newaxis, :, :]
         with self.assertRaises(TypeError):
-            ppcessed.data = ppcessed.data[:, 1:]
+            ppcessed.data.values = ppcessed.data.values[:, 1:]
         with self.assertRaises(TypeError):
-            ppcessed.data = ppcessed.data[1:, :]
+            ppcessed.data.values = ppcessed.data.values[1:, :]
 
-        ppcessed.data = ppcessed.data
+        ppcessed.data.values = ppcessed.data.values
 
     def test_get_var(self) -> None:
         ppcessed = Preprocess.__new__(Preprocess)
@@ -171,7 +171,7 @@ class PreprocessTest(BaseTestCase):
 
         del ppcessed._ds
         with self.assertRaises(TypeError):
-            ppcessed.var = 1
+            ppcessed.var = 1  # type: ignore
         ppcessed.var = 'bar'
 
     def test_slise(self) -> None:

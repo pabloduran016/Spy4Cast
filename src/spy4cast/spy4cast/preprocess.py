@@ -13,6 +13,7 @@ from .._functions import time_from_here, time_to_here, slise2str, _debuginfo, de
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT
+from ..land_array import LandArray
 from ..meteo import Anom
 
 
@@ -41,7 +42,7 @@ class Preprocess(_Procedure):
             dsz_index_regression : optional, Preprocess
                 Predictand to send to index regression. Default is the same as z
         """
-    _data: npt.NDArray[np.float32]
+    _data: LandArray
     _time: xr.DataArray
     _lat: xr.DataArray
     _lon: xr.DataArray
@@ -91,9 +92,9 @@ class Preprocess(_Procedure):
 
         nt, nlat, nlon = anomaly.shape
 
-        self._data = anomaly.fillna(0).values.reshape(
+        self._data = LandArray(anomaly.values.reshape(
             (nt, nlat * nlon)
-        ).transpose()
+        ).transpose())
 
         self._time = anomaly['year']
         self._lat = anomaly[ds._lat_key]
@@ -169,7 +170,7 @@ class Preprocess(_Procedure):
         return self._data.shape
 
     @property
-    def data(self) -> npt.NDArray[np.float32]:
+    def data(self) -> LandArray:
         return self._data
 
     @data.setter
@@ -199,7 +200,7 @@ class Preprocess(_Procedure):
             raise TypeError('Expected second dimension of `np.ndarray` for variable `data` to have '
                             'the same dimensions as lon * lat, '
                             f'got shape `{arr.shape}` and lon dimesion is {nlon} and lat {nlat} ({nlat * nlon = }')
-        self._data = arr
+        self._data = LandArray(arr)
 
     @property
     def var(self) -> str:
@@ -246,7 +247,7 @@ class Preprocess(_Procedure):
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         nt, nlat, nlon = len(self.time), len(self.lat), len(self.lon)
 
-        plotable = self.data.transpose().reshape((nt, nlat, nlon))
+        plotable = self.data.values.transpose().reshape((nt, nlat, nlon))
 
         index = 0 if selected_year is None \
             else _get_index_from_sy(self.time, selected_year)

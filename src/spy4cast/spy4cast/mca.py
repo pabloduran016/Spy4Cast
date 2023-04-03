@@ -21,6 +21,8 @@ __all__ = [
     'index_regression',
 ]
 
+from ..land_array import LandArray
+
 
 class MCA(_Procedure):
     """Maximum covariance analysis between y (predictor) and Z (predictand)
@@ -150,10 +152,10 @@ class MCA(_Procedure):
         # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
 
     @classmethod
-    def from_nparrays(
+    def from_land_arrays(
         cls,
-        y: npt.NDArray[np.float32],
-        z: npt.NDArray[np.float32],
+        y: LandArray,
+        z: LandArray,
         nm: int,
         alpha: float,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
@@ -162,13 +164,13 @@ class MCA(_Procedure):
         montecarlo_iterations: Optional[int] = None,
     ) -> 'MCA':
         """
-        Alternative constructor for mca that takes np arrays
+        Alternative constructor for mca that takes Land Array
 
         Parameters
         ----------
-            y : array-like
+            y : LandArray
                 Predictor (space x time)
-            z : array-like
+            z : LandArray
                 Predictand (space x time)
             nm : int
                 Number of modes
@@ -193,18 +195,21 @@ class MCA(_Procedure):
             MCA
         """
         m = cls.__new__(MCA)
-        m._mca(z, y, nm, alpha, sig, z_index_regression, y_index_regression, montecarlo_iterations)
+        m._mca(z, y, nm, alpha, sig,
+               LandArray(z_index_regression) if z_index_regression is not None else z_index_regression,
+               LandArray(y_index_regression) if y_index_regression is not None else y_index_regression,
+               montecarlo_iterations)
         return m
 
     def _mca(
         self,
-        z: npt.NDArray[np.float32],
-        y: npt.NDArray[np.float32],
+        z: LandArray,
+        y: LandArray,
         nm: int,
         alpha: float,
         sig: str,
-        z_index_regression: Optional[npt.NDArray[np.float32]] = None,
-        y_index_regression: Optional[npt.NDArray[np.float32]] = None,
+        z_index_regression: Optional[LandArray] = None,
+        y_index_regression: Optional[LandArray] = None,
         montecarlo_iterations: Optional[int] = None
     ) -> None:
         if y_index_regression is None:
@@ -215,7 +220,7 @@ class MCA(_Procedure):
         nz, nt = z.shape
         ny, nt = y.shape
 
-        c = np.dot(signal.detrend(y), np.transpose(z))
+        c = np.dot(signal.detrend(y.not_land_values), np.transpose(z.not_land_values))
         if type(c) == np.ma.MaskedArray:
             c = c.data
 
@@ -237,10 +242,10 @@ class MCA(_Procedure):
         # y había que transponerla si originariamente era (espacio, tiempo),
         # pero ATN_e es (tiempo, espacio) así
         # que no se transpone
-        u = np.dot(np.transpose(y), r)
+        u = np.dot(np.transpose(y.not_land_values), r)
         # u = np.dot(np.transpose(y), r[:, :nm])
         # calculamos las anomalías estandarizadas
-        v = np.dot(np.transpose(z), q.transpose())
+        v = np.dot(np.transpose(z.not_land_values), q.transpose())
         # v = np.dot(np.transpose(z), q[:, :nm])
 
         self.RUY = np.zeros([ny, nm], dtype=np.float32)
@@ -283,7 +288,7 @@ class MCA(_Procedure):
         -------
             npt.NDArray[np.float32]
         """
-        return self._dsy.data
+        return self._dsy.data.values
 
     @property
     def yvar(self) -> str:
@@ -343,7 +348,7 @@ class MCA(_Procedure):
         -------
             npt.NDArray[np.float32]
         """
-        return self._dsz.data
+        return self._dsz.data.values
 
     @property
     def zvar(self) -> str:
@@ -583,7 +588,7 @@ class MCA(_Procedure):
 
 
 def index_regression(
-    data: npt.NDArray[np.float32],
+    data: LandArray,
     index: npt.NDArray[np.float32],
     alpha: float,
     sig: str,
@@ -624,12 +629,17 @@ def index_regression(
             Significative regression map
     """
     ns, nt = data.shape
-    reg = data.dot(index) / (nt - 1)
+    reg = data.values.dot(index) / (nt - 1)
+    cor = np.zeros(ns)
+    cor[data.land_indices] = np.nan
+    pvalue = np.zeros(ns)
+    pvalue[data.land_indices] = np.nan
+
 
     if sig == 'test-t':
-        result = np.apply_along_axis(stats.pearsonr, 1, data, index)
-        cor = result[:, 0]
-        pvalue = result[:, 1]
+        result = np.apply_along_axis(stats.pearsonr, 1, data.not_land_values, index)
+        cor[data.not_land_indices] = result[:, 0]
+        pvalue[data.not_land_indices] = result[:, 1]
 
         cor_sig = cor.copy()
         reg_sig = reg.copy()
@@ -641,12 +651,11 @@ def index_regression(
 
         corp = np.empty([ns, montecarlo_iterations])
         for p in range(montecarlo_iterations):
-            corp[:, p] = pearsonr_2d(data, np.random.permutation(index))
+            corp[:, p] = pearsonr_2d(data.not_land_values, np.random.permutation(index))
 
-        result = np.apply_along_axis(stats.pearsonr, 1, data, index)
-        cor = result[:, 0]
+        result = np.apply_along_axis(stats.pearsonr, 1, data.not_land_values, index)
+        cor[data.not_land_indices] = result[:, 0]
 
-        pvalue = np.zeros([ns, ], dtype=np.float32)
         for nn in range(ns):
             hcor = np.count_nonzero((cor[nn] > 0) & (corp[nn, :] < cor[nn]) | (cor[nn] < 0) & (corp[nn, :] > cor[nn]))
             # nivel de confianza
