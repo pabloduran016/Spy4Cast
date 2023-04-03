@@ -584,7 +584,7 @@ def _plot_validation_default(
     for mode in range(validation.training_mca.Us.shape[0]):
         axs[3 + mode].grid(True)
         axs[3 + mode].plot(
-            validation.ytime, validation.training_mca.Us[mode], label=f'mode {mode}', color='orange', linewidth=3
+            validation.training_mca.ytime, validation.training_mca.Us[mode], label=f'mode {mode}', color='orange', linewidth=3
         )
         axs[3 + mode].set_title(
             f'Us for mode {mode + 1}'
