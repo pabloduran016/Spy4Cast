@@ -281,6 +281,16 @@ class MCA(_Procedure):
             ) = index_regression(z_index_regression, self.Us[i, :], alpha, sig, montecarlo_iterations)
 
     @property
+    def y_land_array(self) -> LandArray:
+        """Land Array for Y dataset"""
+        return self._dsy.land_data
+
+    @property
+    def z_land_array(self) -> LandArray:
+        """Land Array for Z dataset"""
+        return self._dsz.land_data
+
+    @property
     def ydata(self) -> npt.NDArray[np.float32]:
         """Matrix with the data of the predictor variable
 
@@ -556,7 +566,7 @@ class MCA(_Procedure):
              dsy: Optional[Preprocess] = None,
              dsz: Optional[Preprocess] = None,
              **attrs: Any) -> 'MCA':
-        """Load an anom object from matrices and type
+        """Load an MCA object from matrices and type
 
         Parameters
         ----------
@@ -630,9 +640,9 @@ def index_regression(
     """
     ns, nt = data.shape
     reg = data.values.dot(index) / (nt - 1)
-    cor = np.zeros(ns)
+    cor = np.zeros(ns, dtype=np.float32)
     cor[data.land_indices] = np.nan
-    pvalue = np.zeros(ns)
+    pvalue = np.zeros(ns, dtype=np.float32)
     pvalue[data.land_indices] = np.nan
 
 

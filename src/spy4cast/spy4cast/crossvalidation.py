@@ -10,22 +10,21 @@ import cartopy.crs as ccrs
 from matplotlib.ticker import MaxNLocator
 from scipy import stats
 
-
 from . import MCA
 from .mca import index_regression
 from .. import Slise
 from .._functions import debugprint, slise2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, _plot_ts
+from ..land_array import LandArray
 from .preprocess import Preprocess
 import xarray as xr
 
 
 __all__ = [
     'Crossvalidation',
+    'calculate_psi',
 ]
-
-from ..land_array import LandArray
 
 
 class Crossvalidation(_Procedure):
@@ -257,39 +256,13 @@ class Crossvalidation(_Procedure):
                     self.zhat_separated_modes[:, :, i], self.zhat_accumulated_modes[:, :, i], \
                     self.suy[:, i, :], self.suy_sig[:, i, :], self.suz[:, i, :], self.suz_sig[:, i, :] = out
 
-        self.r_z_zhat_t_accumulated_modes = np.zeros([nm, nt], dtype=np.float32)
-        self.p_z_zhat_t_accumulated_modes = np.zeros([nm, nt], dtype=np.float32)
-        self.r_z_zhat_t_separated_modes = np.zeros([nm, nt], dtype=np.float32)
-        self.p_z_zhat_t_separated_modes = np.zeros([nm, nt], dtype=np.float32)
-        for j in range(nt):
-            for mode in range(nm):
-                rtt_sep = stats.pearsonr(self.zhat_separated_modes[mode, self.z_land_array.not_land_indices, j], self.z_land_array.not_land_values[:, j])  # serie de skill
-                self.r_z_zhat_t_separated_modes[mode, j] = rtt_sep[0]
-                self.p_z_zhat_t_separated_modes[mode, j] = rtt_sep[1]
+        self.r_z_zhat_t_accumulated_modes, self.p_z_zhat_t_accumulated_modes, \
+            self.r_z_zhat_t_separated_modes, self.p_z_zhat_t_separated_modes \
+            = calculate_time_correlation(self.z_land_array, self.zhat_accumulated_modes, self.zhat_accumulated_modes)
 
-                rtt_acc = stats.pearsonr(self.zhat_accumulated_modes[mode, self.z_land_array.not_land_indices, j], self.z_land_array.not_land_values[:, j])  # serie de skill
-                self.r_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[0]
-                self.p_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[1]
-
-        self.r_z_zhat_s_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
-        self.p_z_zhat_s_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
-        self.r_z_zhat_s_separated_modes = np.zeros([nm, nz], dtype=np.float32)
-        self.p_z_zhat_s_separated_modes = np.zeros([nm, nz], dtype=np.float32)
-        
-        self.r_z_zhat_s_accumulated_modes[:, self.z_land_array.land_indices] = np.nan
-        self.p_z_zhat_s_accumulated_modes[:, self.z_land_array.land_indices] = np.nan
-        self.r_z_zhat_s_separated_modes[:, self.z_land_array.land_indices] = np.nan
-        self.p_z_zhat_s_separated_modes[:, self.z_land_array.land_indices] = np.nan
-
-        for i in self.z_land_array.not_land_indices:
-            for mode in range(nm):
-                rtt_sep = stats.pearsonr(self.zhat_separated_modes[mode, i, :], self.zdata[i, :])  # serie de skill
-                self.r_z_zhat_s_separated_modes[mode, i] = rtt_sep[0]
-                self.p_z_zhat_s_separated_modes[mode, i] = rtt_sep[1]
-
-                rtt_acc = stats.pearsonr(self.zhat_accumulated_modes[mode, i, :], self.zdata[i, :])  # serie de skill
-                self.r_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[0]
-                self.p_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[1]
+        self.r_z_zhat_s_accumulated_modes, self.p_z_zhat_s_accumulated_modes, \
+            self.r_z_zhat_s_separated_modes, self.p_z_zhat_s_separated_modes \
+            = calculate_space_correlation(self.z_land_array, self.zhat_accumulated_modes, self.zhat_separated_modes)
 
         self.alpha = alpha
         debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
@@ -328,8 +301,8 @@ class Crossvalidation(_Procedure):
         zhat_accumulated_modes[:, z2.land_indices] = np.nan
 
         for mode in range(nm):
-            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = _calculate_psi(mca_out.SUY[y2.not_land_indices, mode:mode+1], mca_out.Us[mode:mode+1, :], z2.not_land_values, nt, 1, ny).reshape(len(y2.not_land_indices)*len(z2.not_land_indices))
-            psi_accumulated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = _calculate_psi(mca_out.SUY[y2.not_land_indices, :mode+1], mca_out.Us[:mode+1, :], z2.not_land_values, nt, 1, ny).reshape(len(y2.not_land_indices)*len(z2.not_land_indices))
+            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[y2.not_land_indices, mode:mode + 1], mca_out.Us[mode:mode + 1, :], z2.not_land_values, nt, 1, ny).reshape(len(y2.not_land_indices) * len(z2.not_land_indices))
+            psi_accumulated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[y2.not_land_indices, :mode + 1], mca_out.Us[:mode + 1, :], z2.not_land_values, nt, 1, ny).reshape(len(y2.not_land_indices) * len(z2.not_land_indices))
 
             zhat_separated_modes[mode, z2.not_land_indices] = np.dot(np.transpose(y.not_land_values[:, year]), psi_separated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices])
             zhat_accumulated_modes[mode, z2.not_land_indices] = np.dot(np.transpose(y.not_land_values[:, year]), psi_accumulated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices])
@@ -694,7 +667,7 @@ class Crossvalidation(_Procedure):
         return self
 
 
-def _calculate_psi(
+def calculate_psi(
     suy: npt.NDArray[np.float32],
     us: npt.NDArray[np.float32],
     z: npt.NDArray[np.float32],
@@ -1002,3 +975,61 @@ def _plot_crossvalidation_default(
     fig.subplots_adjust(hspace=.4)
 
     return fig, axs
+
+
+def calculate_time_correlation(
+    z_land_array: LandArray,
+    zhat_accumulated_modes: npt.NDArray[np.float_],
+    zhat_separated_modes: Optional[npt.NDArray[np.float_]] = None,
+) -> Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_]]:
+    nm, nz, nt = zhat_accumulated_modes.shape
+
+    r_z_zhat_t_accumulated_modes = np.zeros([nm, nt], dtype=np.float32)
+    p_z_zhat_t_accumulated_modes = np.zeros([nm, nt], dtype=np.float32)
+    r_z_zhat_t_separated_modes = np.zeros([nm, nt], dtype=np.float32)
+    p_z_zhat_t_separated_modes = np.zeros([nm, nt], dtype=np.float32)
+
+    for j in range(nt):
+        for mode in range(nm):
+            if zhat_separated_modes is not None:
+                rtt_sep = stats.pearsonr(zhat_separated_modes[mode, z_land_array.not_land_indices, j], z_land_array.not_land_values[:, j])  # serie de skill
+                r_z_zhat_t_separated_modes[mode, j] = rtt_sep[0]
+                p_z_zhat_t_separated_modes[mode, j] = rtt_sep[1]
+
+            rtt_acc = stats.pearsonr(zhat_accumulated_modes[mode, z_land_array.not_land_indices, j],
+                                     z_land_array.not_land_values[:, j])  # serie de skill
+            r_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[0]
+            p_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[1]
+
+    return r_z_zhat_t_separated_modes, p_z_zhat_t_separated_modes, r_z_zhat_t_accumulated_modes, p_z_zhat_t_accumulated_modes
+
+
+def calculate_space_correlation(
+    z_land_array: LandArray,
+    zhat_accumulated_modes: npt.NDArray[np.float_],
+    zhat_separated_modes: Optional[npt.NDArray[np.float_]] = None,
+) -> Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_]]:
+    nm, nz, nt = zhat_accumulated_modes.shape
+
+    r_z_zhat_s_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
+    p_z_zhat_s_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
+    r_z_zhat_s_separated_modes = np.zeros([nm, nz], dtype=np.float32)
+    p_z_zhat_s_separated_modes = np.zeros([nm, nz], dtype=np.float32)
+
+    r_z_zhat_s_accumulated_modes[:, z_land_array.land_indices] = np.nan
+    p_z_zhat_s_accumulated_modes[:, z_land_array.land_indices] = np.nan
+    r_z_zhat_s_separated_modes[:, z_land_array.land_indices] = np.nan
+    p_z_zhat_s_separated_modes[:, z_land_array.land_indices] = np.nan
+
+    for i in z_land_array.not_land_indices:
+        for mode in range(nm):
+            if zhat_separated_modes is not None:
+                rtt_sep = stats.pearsonr(zhat_separated_modes[mode, i, :], z_land_array.values[i, :])  # serie de skill
+                r_z_zhat_s_separated_modes[mode, i] = rtt_sep[0]
+                p_z_zhat_s_separated_modes[mode, i] = rtt_sep[1]
+
+            rtt_acc = stats.pearsonr(zhat_accumulated_modes[mode, i, :], z_land_array.values[i, :])  # serie de skill
+            r_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[0]
+            p_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[1]
+
+    return r_z_zhat_s_separated_modes, p_z_zhat_s_separated_modes, r_z_zhat_s_accumulated_modes, p_z_zhat_s_accumulated_modes

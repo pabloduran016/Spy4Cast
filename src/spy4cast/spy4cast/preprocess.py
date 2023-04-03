@@ -42,7 +42,7 @@ class Preprocess(_Procedure):
             dsz_index_regression : optional, Preprocess
                 Predictand to send to index regression. Default is the same as z
         """
-    _land_data: LandArray
+    _data: xr.DataArray
     _time: xr.DataArray
     _lat: xr.DataArray
     _lon: xr.DataArray
@@ -170,12 +170,12 @@ class Preprocess(_Procedure):
         return self._land_data.shape
 
     @property
-    def data(self) -> npt.NDArray[np.float_]:
-        return self._land_data.values
-
-    @property
     def land_data(self) -> LandArray:
         return self._land_data
+
+    @property
+    def data(self) -> npt.NDArray[np.float_]:
+        return self._land_data.values
 
     @data.setter
     def data(self, arr: npt.NDArray[np.float32]) -> None:
