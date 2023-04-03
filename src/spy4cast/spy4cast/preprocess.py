@@ -42,7 +42,7 @@ class Preprocess(_Procedure):
             dsz_index_regression : optional, Preprocess
                 Predictand to send to index regression. Default is the same as z
         """
-    _data: LandArray
+    _land_data: LandArray
     _time: xr.DataArray
     _lat: xr.DataArray
     _lon: xr.DataArray
@@ -92,7 +92,7 @@ class Preprocess(_Procedure):
 
         nt, nlat, nlon = anomaly.shape
 
-        self._data = LandArray(anomaly.values.reshape(
+        self._land_data = LandArray(anomaly.values.reshape(
             (nt, nlat * nlon)
         ).transpose())
 
@@ -167,11 +167,15 @@ class Preprocess(_Procedure):
 
     @property
     def shape(self) -> Tuple[int, ...]:
-        return self._data.shape
+        return self._land_data.shape
 
     @property
-    def data(self) -> LandArray:
-        return self._data
+    def data(self) -> npt.NDArray[np.float_]:
+        return self._land_data.values
+
+    @property
+    def land_data(self) -> LandArray:
+        return self._land_data
 
     @data.setter
     def data(self, arr: npt.NDArray[np.float32]) -> None:
@@ -200,7 +204,7 @@ class Preprocess(_Procedure):
             raise TypeError('Expected second dimension of `np.ndarray` for variable `data` to have '
                             'the same dimensions as lon * lat, '
                             f'got shape `{arr.shape}` and lon dimesion is {nlon} and lat {nlat} ({nlat * nlon = }')
-        self._data = LandArray(arr)
+        self._land_data = LandArray(arr)
 
     @property
     def var(self) -> str:
@@ -247,7 +251,7 @@ class Preprocess(_Procedure):
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         nt, nlat, nlon = len(self.time), len(self.lat), len(self.lon)
 
-        plotable = self.data.values.transpose().reshape((nt, nlat, nlon))
+        plotable = self.land_data.values.transpose().reshape((nt, nlat, nlon))
 
         index = 0 if selected_year is None \
             else _get_index_from_sy(self.time, selected_year)

@@ -11,6 +11,7 @@ Preprocess
    .. autosummary::
 
       ~Preprocess.data
+      ~Preprocess.land_data
       ~Preprocess.lat
       ~Preprocess.lon
       ~Preprocess.meta
@@ -29,6 +30,7 @@ Preprocess
    .. rubric:: Attributes Documentation
 
    .. autoattribute:: data
+   .. autoattribute:: land_data
    .. autoattribute:: lat
    .. autoattribute:: lon
    .. autoattribute:: meta

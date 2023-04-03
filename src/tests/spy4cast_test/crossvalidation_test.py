@@ -82,7 +82,7 @@ class CrossvalidationTest(BaseTestCase):
 
     def test_ydata(self) -> None:
         self.assertTrue(
-            np.isclose(self.y_preprocessed.data.values, self.cross.ydata).all()
+            np.isclose(self.y_preprocessed.land_data.values, self.cross.ydata).all()
         )
 
     def test_yvar(self) -> None:
@@ -108,7 +108,7 @@ class CrossvalidationTest(BaseTestCase):
 
     def test_zdata(self) -> None:
         self.assertTrue(
-            np.isclose(self.y_preprocessed.data.values, self.cross.ydata).all()
+            np.isclose(self.y_preprocessed.land_data.values, self.cross.ydata).all()
         )
 
     def test_zvar(self) -> None:

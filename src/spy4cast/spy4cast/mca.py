@@ -142,10 +142,10 @@ class MCA(_Procedure):
                 f'{len(dsy.time)}'
             )
 
-        z_index_regression = dsz_index_regression.data if dsz_index_regression is not None else None
-        y_index_regression = dsy_index_regression.data if dsy_index_regression is not None else None
+        z_index_regression = dsz_index_regression.land_data if dsz_index_regression is not None else None
+        y_index_regression = dsy_index_regression.land_data if dsy_index_regression is not None else None
 
-        self._mca(dsz.data, dsy.data, nm, alpha, sig, z_index_regression, y_index_regression, montecarlo_iterations)
+        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, z_index_regression, y_index_regression, montecarlo_iterations)
         debugprint(f'       Took: {time_to_here():.03f} seconds')
 
         # first you calculate the covariance matrix
@@ -288,7 +288,7 @@ class MCA(_Procedure):
         -------
             npt.NDArray[np.float32]
         """
-        return self._dsy.data.values
+        return self._dsy.land_data.values
 
     @property
     def yvar(self) -> str:
@@ -348,7 +348,7 @@ class MCA(_Procedure):
         -------
             npt.NDArray[np.float32]
         """
-        return self._dsz.data.values
+        return self._dsz.land_data.values
 
     @property
     def zvar(self) -> str:

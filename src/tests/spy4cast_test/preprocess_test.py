@@ -66,7 +66,7 @@ class PreprocessTest(BaseTestCase):
             (self.preprocessed.time == self.preprocessed._time).all())
         self.assertEqual(
             len(self.preprocessed.time),
-            self.preprocessed._data.shape[1])
+            self.preprocessed._land_data.shape[1])
 
     def test_set_time(self) -> None:
         ppcessed = Preprocess(self.ds)
@@ -87,7 +87,7 @@ class PreprocessTest(BaseTestCase):
             (self.preprocessed.lat == self.preprocessed._lat).all())
         self.assertTrue(
             len(self.preprocessed.lat),
-            self.preprocessed._data.shape[0] // len(self.preprocessed._lon))
+            self.preprocessed._land_data.shape[0] // len(self.preprocessed._lon))
 
     def test_set_lat(self) -> None:
         ppcessed = Preprocess(self.ds)
@@ -109,7 +109,7 @@ class PreprocessTest(BaseTestCase):
             (self.preprocessed.lon == self.preprocessed._lon).all())
         self.assertEqual(
             len(self.preprocessed.lon),
-            self.preprocessed._data.shape[0] // len(self.preprocessed._lat))
+            self.preprocessed._land_data.shape[0] // len(self.preprocessed._lat))
 
     def test_set_lon(self) -> None:
         ppcessed = Preprocess(self.ds)
@@ -129,28 +129,28 @@ class PreprocessTest(BaseTestCase):
     def test_get_shape(self) -> None:
         self.assertEqual(
             self.preprocessed.shape,
-            self.preprocessed._data.shape
+            self.preprocessed._land_data.shape
         )
 
     def test_get_data(self) -> None:
         self.assertTrue(
-            (self.preprocessed.data.values == self.preprocessed._data.values).all())
+            (self.preprocessed.land_data.values == self.preprocessed._land_data.values).all())
 
     def test_set_data(self) -> None:
         ppcessed = Preprocess(self.ds)
 
         with self.assertRaises(TypeError):
-            ppcessed.data.values = xr.DataArray(ppcessed.data.values)
+            ppcessed.land_data.values = xr.DataArray(ppcessed.land_data.values)
         with self.assertRaises(TypeError):
-            ppcessed.data.values = ppcessed.data.values.astype(str)
+            ppcessed.land_data.values = ppcessed.land_data.values.astype(str)
         with self.assertRaises(TypeError):
-            ppcessed.data.values = ppcessed.data.values[np.newaxis, :, :]
+            ppcessed.land_data.values = ppcessed.land_data.values[np.newaxis, :, :]
         with self.assertRaises(TypeError):
-            ppcessed.data.values = ppcessed.data.values[:, 1:]
+            ppcessed.land_data.values = ppcessed.land_data.values[:, 1:]
         with self.assertRaises(TypeError):
-            ppcessed.data.values = ppcessed.data.values[1:, :]
+            ppcessed.land_data.values = ppcessed.land_data.values[1:, :]
 
-        ppcessed.data.values = ppcessed.data.values
+        ppcessed.land_data.values = ppcessed.land_data.values
 
     def test_get_var(self) -> None:
         ppcessed = Preprocess.__new__(Preprocess)

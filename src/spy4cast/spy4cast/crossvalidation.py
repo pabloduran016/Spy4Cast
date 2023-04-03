@@ -263,10 +263,7 @@ class Crossvalidation(_Procedure):
         self.p_z_zhat_t_separated_modes = np.zeros([nm, nt], dtype=np.float32)
         for j in range(nt):
             for mode in range(nm):
-                try:
-                    rtt_sep = stats.pearsonr(self.zhat_separated_modes[mode, self.z_land_array.not_land_indices, j], self.z_land_array.not_land_values[:, j])  # serie de skill
-                except:
-                    raise
+                rtt_sep = stats.pearsonr(self.zhat_separated_modes[mode, self.z_land_array.not_land_indices, j], self.z_land_array.not_land_values[:, j])  # serie de skill
                 self.r_z_zhat_t_separated_modes[mode, j] = rtt_sep[0]
                 self.p_z_zhat_t_separated_modes[mode, j] = rtt_sep[1]
 
@@ -322,14 +319,17 @@ class Crossvalidation(_Procedure):
         zhat_separated_modes = np.zeros([nm, nz], dtype=np.float32)
         zhat_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
 
-        psi_separated_modes[:, y2.land_indices, :][:, :, z2.land_indices] = np.nan
-        psi_accumulated_modes[:, y2.land_indices, :][:, :, z2.land_indices] = np.nan
+        psi_separated_modes[:, y2.land_indices, :] = np.nan
+        psi_separated_modes[:, :, z2.land_indices] = np.nan
+        psi_accumulated_modes[:, y2.land_indices, :] = np.nan
+        psi_accumulated_modes[:, :, z2.land_indices] = np.nan
+
         zhat_separated_modes[:, z2.land_indices] = np.nan
         zhat_accumulated_modes[:, z2.land_indices] = np.nan
 
         for mode in range(nm):
-            psi_separated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices] = _calculate_psi(mca_out.SUY[y2.not_land_indices, mode:mode+1], mca_out.Us[mode:mode+1, :], z2.not_land_values, nt, 1, ny)
-            psi_accumulated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices] = _calculate_psi(mca_out.SUY[y2.not_land_indices, :mode+1], mca_out.Us[:mode+1, :], z2.not_land_values, nt, mode+1, ny)
+            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = _calculate_psi(mca_out.SUY[y2.not_land_indices, mode:mode+1], mca_out.Us[mode:mode+1, :], z2.not_land_values, nt, 1, ny).reshape(len(y2.not_land_indices)*len(z2.not_land_indices))
+            psi_accumulated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = _calculate_psi(mca_out.SUY[y2.not_land_indices, :mode+1], mca_out.Us[:mode+1, :], z2.not_land_values, nt, 1, ny).reshape(len(y2.not_land_indices)*len(z2.not_land_indices))
 
             zhat_separated_modes[mode, z2.not_land_indices] = np.dot(np.transpose(y.not_land_values[:, year]), psi_separated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices])
             zhat_accumulated_modes[mode, z2.not_land_indices] = np.dot(np.transpose(y.not_land_values[:, year]), psi_accumulated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices])
@@ -352,12 +352,12 @@ class Crossvalidation(_Procedure):
     @property
     def y_land_array(self) -> LandArray:
         """Land Array for Y dataset"""
-        return self._dsy.data
+        return self._dsy.land_data
 
     @property
     def z_land_array(self) -> LandArray:
         """Land Array for Z dataset"""
-        return self._dsz.data
+        return self._dsz.land_data
 
     @property
     def ydata(self) -> npt.NDArray[np.float32]:
@@ -367,7 +367,7 @@ class Crossvalidation(_Procedure):
         -------
             npt.NDArray[np.float32]
         """
-        return self._dsy.data.values
+        return self._dsy.land_data.values
 
     @property
     def yvar(self) -> str:
@@ -427,7 +427,7 @@ class Crossvalidation(_Procedure):
         -------
             npt.NDArray[np.float32]
         """
-        return self._dsz.data.values
+        return self._dsz.land_data.values
 
     @property
     def zvar(self) -> str:
@@ -775,7 +775,7 @@ def _plot_crossvalidation_elena(
         # plt.xticks()
         # plt.yticks()
         ax0.set_ylim(-5.5, 5.5)
-        ax0.set_title(f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0][0]):.2f} p={1 - p_value[0]:.3f}', fontweight='bold', fontsize=8)
+        ax0.set_title(f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0]):.2f} p={1 - p_value[0]:.3f}', fontweight='bold', fontsize=8)
         # ax0.set_title(
         #     f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0][0]):.2f} p={1 - p_value[0]:.3f}', fontsize=20,
         #     weight='bold', y=1.02)
@@ -785,7 +785,7 @@ def _plot_crossvalidation_elena(
         axs.append(ax1)
         ax1.plot(cross.ztime, abs(cross.r_uv[n_mode, :]), color='cornflowerblue', label='ruv')
         ax1.scatter(cross.ztime, abs(cross.r_uv_sig[n_mode, :]), color='cornflowerblue')
-        ax1.plot(cross.ztime, [abs(r_uv[0][0])] * len(cross.ztime), color='cornflowerblue')
+        ax1.plot(cross.ztime, [abs(r_uv[0])] * len(cross.ztime), color='cornflowerblue')
         ax1.scatter([], [], color='purple', marker='o', label='scf')
         # ax1.scatter([], [], linewidth=2, color='purple', marker='o', label='scf')
         ax1.grid()
@@ -812,10 +812,10 @@ def _plot_crossvalidation_elena(
 
         # ax01.set_ylabel('scf',fontsize=20,weight='bold')
         ax1.set_title(
-            f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0][0]):.2f} , scf={mca.scf[n_mode] * 100:.2f}%',
+            f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0]):.2f} , scf={mca.scf[n_mode] * 100:.2f}%',
             weight='bold', fontsize=8)
         # ax1.set_title(
-        #     f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0][0]):.2f} , scf={mca.scf[n_mode] * 100:.2f}%',
+        #     f'Mode {n_mode + 1}, |ruv|={abs(r_uv[0]):.2f} , scf={mca.scf[n_mode] * 100:.2f}%',
         #     fontsize=20, weight='bold', y=1.02)
 
         # Skill
@@ -941,7 +941,7 @@ def _plot_crossvalidation_default(
         d, cross.zlat, cross.zlon, fig, axs[0],
         'Correlation in space between z and zhat',
         cmap=cmap,
-        ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None or np.isnan(_mean) or np.isnan(_std) else map_ticks)
+        ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None and not np.isnan(_mean) and not np.isnan(_std) else map_ticks)
     )
     hatches = d.copy()
     hatches[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (
