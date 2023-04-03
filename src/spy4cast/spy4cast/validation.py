@@ -90,10 +90,10 @@ class Validation(_Procedure):
         time_from_here()
 
         # --- NEED TO BE FASTER!!!
-        common_z_land_indices = np.array(list(set(validating_dsz.land_data.land_indices) | set(training_mca.z_land_array.land_indices)))
-        common_y_land_indices = np.array(list(set(validating_dsy.land_data.land_indices) | set(training_mca.y_land_array.land_indices)))
-        common_z_not_land_indices = np.array([i for i in range(training_mca.zdata.shape[0]) if i not in set(common_z_land_indices)])
-        common_y_not_land_indices = np.array([i for i in range(training_mca.ydata.shape[0]) if i not in set(common_y_land_indices)])
+        common_z_land_indices = np.array(list(set(validating_dsz.land_data.land_indices) | set(training_mca.z_land_array.land_indices)), dtype=np.int32)
+        common_y_land_indices = np.array(list(set(validating_dsy.land_data.land_indices) | set(training_mca.y_land_array.land_indices)), dtype=np.int32)
+        common_z_not_land_indices = np.array([i for i in range(training_mca.zdata.shape[0]) if i not in set(common_z_land_indices)], dtype=np.int32)
+        common_y_not_land_indices = np.array([i for i in range(training_mca.ydata.shape[0]) if i not in set(common_y_land_indices)], dtype=np.int32)
         # ---
 
         self.psi = np.zeros([1, training_mca.ydata.shape[0], training_mca.zdata.shape[0]], dtype=np.float32)
@@ -101,7 +101,6 @@ class Validation(_Procedure):
 
         self.psi[:, common_y_land_indices, :] = np.nan
         self.psi[:, :, common_z_land_indices] = np.nan
-
         self.zhat[:, common_z_land_indices] = np.nan
 
         self.psi[0, ~np.isnan(self.psi[0])] = calculate_psi(
