@@ -196,23 +196,23 @@ class Crossvalidation(_Procedure):
 
         self.zhat_separated_modes = np.zeros([nm, nz, nt], dtype=np.float32)
         self.zhat_accumulated_modes = np.zeros([nm, nz, nt], dtype=np.float32)
-        self.zhat_separated_modes[:, self.z_land_array.land_indices, :] = np.nan
-        self.zhat_accumulated_modes[:, self.z_land_array.land_indices, :] = np.nan
+        self.zhat_separated_modes[:, self.z_land_array.land_mask, :] = np.nan
+        self.zhat_accumulated_modes[:, self.z_land_array.land_mask, :] = np.nan
 
         self.psi_separated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
         self.psi_accumulated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
-        self.psi_separated_modes[:, :, self.y_land_array.land_indices, :][:, :, :, self.z_land_array.land_indices] = np.nan
-        self.psi_accumulated_modes[:, :, self.y_land_array.land_indices, :][:, :, :, self.z_land_array.land_indices] = np.nan
+        self.psi_separated_modes[:, :, self.y_land_array.land_mask, :][:, :, :, self.z_land_array.land_mask] = np.nan
+        self.psi_accumulated_modes[:, :, self.y_land_array.land_mask, :][:, :, :, self.z_land_array.land_mask] = np.nan
 
         self.suy = np.zeros([ny, nt, nm], dtype=np.float32)
         self.suy_sig = np.zeros([ny, nt, nm], dtype=np.float32)
         self.suz = np.zeros([nz, nt, nm], dtype=np.float32)
         self.suz_sig = np.zeros([nz, nt, nm], dtype=np.float32)
 
-        self.suy[self.y_land_array.land_indices, :, :] = np.nan
-        self.suy_sig[self.y_land_array.land_indices, :, :] = np.nan
-        self.suz[self.z_land_array.land_indices, :, :] = np.nan
-        self.suz_sig[self.z_land_array.land_indices, :, :] = np.nan
+        self.suy[self.y_land_array.land_mask, :, :] = np.nan
+        self.suy_sig[self.y_land_array.land_mask, :, :] = np.nan
+        self.suz[self.z_land_array.land_mask, :, :] = np.nan
+        self.suz_sig[self.z_land_array.land_mask, :, :] = np.nan
 
         # crosvalidated year on axis 2
         self.us = np.zeros([nm, nt, nt], dtype=np.float32)
@@ -292,20 +292,20 @@ class Crossvalidation(_Procedure):
         zhat_separated_modes = np.zeros([nm, nz], dtype=np.float32)
         zhat_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
 
-        psi_separated_modes[:, y2.land_indices, :] = np.nan
-        psi_separated_modes[:, :, z2.land_indices] = np.nan
-        psi_accumulated_modes[:, y2.land_indices, :] = np.nan
-        psi_accumulated_modes[:, :, z2.land_indices] = np.nan
+        psi_separated_modes[:, y2.land_mask, :] = np.nan
+        psi_separated_modes[:, :, z2.land_mask] = np.nan
+        psi_accumulated_modes[:, y2.land_mask, :] = np.nan
+        psi_accumulated_modes[:, :, z2.land_mask] = np.nan
 
-        zhat_separated_modes[:, z2.land_indices] = np.nan
-        zhat_accumulated_modes[:, z2.land_indices] = np.nan
+        zhat_separated_modes[:, z2.land_mask] = np.nan
+        zhat_accumulated_modes[:, z2.land_mask] = np.nan
 
         for mode in range(nm):
-            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[y2.not_land_indices, mode:mode + 1], mca_out.Us[mode:mode + 1, :], z2.not_land_values, nt, 1, ny).reshape(len(y2.not_land_indices) * len(z2.not_land_indices))
-            psi_accumulated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[y2.not_land_indices, :mode + 1], mca_out.Us[:mode + 1, :], z2.not_land_values, nt, 1, ny).reshape(len(y2.not_land_indices) * len(z2.not_land_indices))
+            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, mode:mode + 1], mca_out.Us[mode:mode + 1, :], z2.not_land_values, nt, 1, ny).reshape(len(~y2.land_mask) * len(~z2.land_mask))
+            psi_accumulated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, :mode + 1], mca_out.Us[:mode + 1, :], z2.not_land_values, nt, 1, ny).reshape(len(~y2.land_mask) * len(~z2.land_mask))
 
-            zhat_separated_modes[mode, z2.not_land_indices] = np.dot(np.transpose(y.not_land_values[:, year]), psi_separated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices])
-            zhat_accumulated_modes[mode, z2.not_land_indices] = np.dot(np.transpose(y.not_land_values[:, year]), psi_accumulated_modes[mode, y2.not_land_indices, :][:, z2.not_land_indices])
+            zhat_separated_modes[mode, ~z2.land_mask] = np.dot(np.transpose(y.not_land_values[:, year]), psi_separated_modes[mode, ~y2.land_mask, :][:, ~z2.land_mask])
+            zhat_accumulated_modes[mode, ~z2.land_mask] = np.dot(np.transpose(y.not_land_values[:, year]), psi_accumulated_modes[mode, ~y2.land_mask, :][:, ~z2.land_mask])
 
         r_uv = np.zeros(nm, dtype=np.float32)
         r_uv_sig = np.zeros(nm, dtype=np.float32)
@@ -992,16 +992,16 @@ def calculate_time_correlation(
     for j in range(nt):
         for mode in range(nm):
             if zhat_separated_modes is not None:
-                rtt_sep = stats.pearsonr(zhat_separated_modes[mode, z_land_array.not_land_indices, j], z_land_array.not_land_values[:, j])  # serie de skill
+                rtt_sep = stats.pearsonr(zhat_separated_modes[mode, ~z_land_array.land_mask, j], z_land_array.not_land_values[:, j])  # serie de skill
                 r_z_zhat_t_separated_modes[mode, j] = rtt_sep[0]
                 p_z_zhat_t_separated_modes[mode, j] = rtt_sep[1]
 
-            rtt_acc = stats.pearsonr(zhat_accumulated_modes[mode, z_land_array.not_land_indices, j],
+            rtt_acc = stats.pearsonr(zhat_accumulated_modes[mode, ~z_land_array.land_mask, j],
                                      z_land_array.not_land_values[:, j])  # serie de skill
             r_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[0]
             p_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[1]
 
-    return r_z_zhat_t_separated_modes, p_z_zhat_t_separated_modes, r_z_zhat_t_accumulated_modes, p_z_zhat_t_accumulated_modes
+    return r_z_zhat_t_accumulated_modes, p_z_zhat_t_accumulated_modes, r_z_zhat_t_separated_modes, p_z_zhat_t_separated_modes
 
 
 def calculate_space_correlation(
@@ -1016,12 +1016,12 @@ def calculate_space_correlation(
     r_z_zhat_s_separated_modes = np.zeros([nm, nz], dtype=np.float32)
     p_z_zhat_s_separated_modes = np.zeros([nm, nz], dtype=np.float32)
 
-    r_z_zhat_s_accumulated_modes[:, z_land_array.land_indices] = np.nan
-    p_z_zhat_s_accumulated_modes[:, z_land_array.land_indices] = np.nan
-    r_z_zhat_s_separated_modes[:, z_land_array.land_indices] = np.nan
-    p_z_zhat_s_separated_modes[:, z_land_array.land_indices] = np.nan
+    r_z_zhat_s_accumulated_modes[:, z_land_array.land_mask] = np.nan
+    p_z_zhat_s_accumulated_modes[:, z_land_array.land_mask] = np.nan
+    r_z_zhat_s_separated_modes[:, z_land_array.land_mask] = np.nan
+    p_z_zhat_s_separated_modes[:, z_land_array.land_mask] = np.nan
 
-    for i in z_land_array.not_land_indices:
+    for i in np.nonzero(~z_land_array.land_mask)[0]:
         for mode in range(nm):
             if zhat_separated_modes is not None:
                 rtt_sep = stats.pearsonr(zhat_separated_modes[mode, i, :], z_land_array.values[i, :])  # serie de skill
@@ -1032,4 +1032,4 @@ def calculate_space_correlation(
             r_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[0]
             p_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[1]
 
-    return r_z_zhat_s_separated_modes, p_z_zhat_s_separated_modes, r_z_zhat_s_accumulated_modes, p_z_zhat_s_accumulated_modes
+    return r_z_zhat_s_accumulated_modes, p_z_zhat_s_accumulated_modes, r_z_zhat_s_separated_modes, p_z_zhat_s_separated_modes

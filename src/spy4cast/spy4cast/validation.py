@@ -89,40 +89,38 @@ class Validation(_Procedure):
 
         time_from_here()
 
-        # --- NEED TO BE FASTER!!!
-        common_z_land_indices = np.array(list(set(validating_dsz.land_data.land_indices) | set(training_mca.z_land_array.land_indices)), dtype=np.int32)
-        common_y_land_indices = np.array(list(set(validating_dsy.land_data.land_indices) | set(training_mca.y_land_array.land_indices)), dtype=np.int32)
-        common_z_not_land_indices = np.array([i for i in range(training_mca.zdata.shape[0]) if i not in set(common_z_land_indices)], dtype=np.int32)
-        common_y_not_land_indices = np.array([i for i in range(training_mca.ydata.shape[0]) if i not in set(common_y_land_indices)], dtype=np.int32)
-        # ---
+        common_z_land_mask = validating_dsz.land_data.land_mask | training_mca.z_land_array.land_mask
+        common_y_land_mask = validating_dsy.land_data.land_mask | training_mca.y_land_array.land_mask
 
         self.psi = np.zeros([1, training_mca.ydata.shape[0], training_mca.zdata.shape[0]], dtype=np.float32)
         self.zhat = np.zeros([1, validating_dsz.land_data.shape[0], validating_dsz.time.shape[0]], dtype=np.float32)
 
-        self.psi[:, common_y_land_indices, :] = np.nan
-        self.psi[:, :, common_z_land_indices] = np.nan
-        self.zhat[:, common_z_land_indices] = np.nan
+        self.psi[:, common_y_land_mask, :] = np.nan
+        self.psi[:, :, common_z_land_mask] = np.nan
+        self.zhat[:, common_z_land_mask] = np.nan
 
         self.psi[0, ~np.isnan(self.psi[0])] = calculate_psi(
-            self.training_mca.SUY[common_y_not_land_indices, :],
+            self.training_mca.SUY[~common_y_land_mask, :],
             self.training_mca.Us[:, :],
-            self.training_mca.zdata[common_z_not_land_indices, :],
+            self.training_mca.zdata[~common_z_land_mask, :],
             self.training_mca.ytime.shape[0],
             self.training_mca.Us.shape[0],
             self.training_mca.ydata.shape[0]
-        ).reshape(len(common_y_not_land_indices) * len(common_z_not_land_indices))
+        ).reshape((~common_y_land_mask).sum() * (~common_z_land_mask).sum())
 
-        self.zhat[0, common_z_not_land_indices, :] = np.dot(
+        self.zhat[0, ~common_z_land_mask, :] = np.dot(
             validating_dsy.land_data.not_land_values[:, :].T,
-            self.psi[0, common_y_not_land_indices, :][:, common_z_not_land_indices]).T
+            self.psi[0, ~common_y_land_mask, :][:, ~common_z_land_mask]).T
 
+        new_z_land_array = LandArray(self.zdata)
+        new_z_land_array.update_land(common_z_land_mask)
         self.r_z_zhat_t_accumulated_modes, self.p_z_zhat_t_accumulated_modes, \
             _r_z_zhat_t_separated_modes, _p_z_zhat_t_separated_modes \
-            = calculate_time_correlation(self.z_land_array, self.zhat)
+            = calculate_time_correlation(new_z_land_array, self.zhat)
 
         self.r_z_zhat_s_accumulated_modes, self.p_z_zhat_s_accumulated_modes, \
             _r_z_zhat_s_separated_modes, _p_z_zhat_s_separated_modes \
-            = calculate_space_correlation(self.z_land_array, self.zhat)
+            = calculate_space_correlation(new_z_land_array, self.zhat)
 
         debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
 
@@ -528,7 +526,7 @@ def _plot_validation_default(
     fig: plt.Figure = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
     nrows = 3
     ncols = 2
-    axs: Tuple[plt.Axes] = tuple(
+    axs: Tuple[plt.Axes, ...] = tuple(
         fig.add_subplot(nrows, ncols, i, projection=(ccrs.PlateCarree() if i == 1 else None))
         for i in range(1, ncols * nrows + 1)
     )

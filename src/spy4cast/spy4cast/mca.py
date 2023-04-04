@@ -641,15 +641,15 @@ def index_regression(
     ns, nt = data.shape
     reg = data.values.dot(index) / (nt - 1)
     cor = np.zeros(ns, dtype=np.float32)
-    cor[data.land_indices] = np.nan
+    cor[data.land_mask] = np.nan
     pvalue = np.zeros(ns, dtype=np.float32)
-    pvalue[data.land_indices] = np.nan
+    pvalue[data.land_mask] = np.nan
 
 
     if sig == 'test-t':
         result = np.apply_along_axis(stats.pearsonr, 1, data.not_land_values, index)
-        cor[data.not_land_indices] = result[:, 0]
-        pvalue[data.not_land_indices] = result[:, 1]
+        cor[~data.land_mask] = result[:, 0]
+        pvalue[~data.land_mask] = result[:, 1]
 
         cor_sig = cor.copy()
         reg_sig = reg.copy()
@@ -664,7 +664,7 @@ def index_regression(
             corp[:, p] = pearsonr_2d(data.not_land_values, np.random.permutation(index))
 
         result = np.apply_along_axis(stats.pearsonr, 1, data.not_land_values, index)
-        cor[data.not_land_indices] = result[:, 0]
+        cor[~data.land_mask] = result[:, 0]
 
         for nn in range(ns):
             hcor = np.count_nonzero((cor[nn] > 0) & (corp[nn, :] < cor[nn]) | (cor[nn] < 0) & (corp[nn, :] > cor[nn]))

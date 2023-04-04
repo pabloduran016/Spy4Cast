@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -23,11 +23,12 @@ class LandArray:
 
     """
 
+    values: npt.NDArray[np.float_]
+    _land_mask: npt.NDArray[np.bool_]
+
     def __init__(self, values: npt.NDArray[np.float_]) -> None:
         self.values = values
-        self._land_indices = np.nonzero(np.isnan(values).any(1))[0]
-        self._not_land_indices = np.nonzero(~np.isnan(values).any(1))[0]
-        self._not_land_values = values[self._not_land_indices, :]
+        self._land_mask = np.isnan(values).any(1)
 
     @property
     def shape(self) -> Tuple[int, ...]:
@@ -37,14 +38,12 @@ class LandArray:
     @property
     def not_land_values(self) -> npt.NDArray[np.float_]:
         """Data ordered but jumps over land data-points (`nan`)."""
-        return self._not_land_values
+        return cast(npt.NDArray[np.float_], self.values[~self._land_mask])
 
     @property
-    def land_indices(self) -> npt.NDArray[np.int_]:
-        """Indices of the land data points"""
-        return self._land_indices
+    def land_mask(self) -> npt.NDArray[np.bool_]:
+        """Mask of the land data points"""
+        return self._land_mask
 
-    @property
-    def not_land_indices(self) -> npt.NDArray[np.int_]:
-        """Indices of the NOT land data points"""
-        return self._not_land_indices
+    def update_land(self, land_mask: npt.NDArray[np.bool_]) -> None:
+        self._land_mask = land_mask
