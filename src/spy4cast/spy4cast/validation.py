@@ -523,71 +523,23 @@ def _plot_validation_default(
     #       scf           r_uv_1
     #     r_uv_1          r_uv_2
 
+    nlat, nlon = len(validation.zlat), (len(validation.zlon))
+
     fig: plt.Figure = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
-    nrows = 3
-    ncols = 2
-    axs: Tuple[plt.Axes, ...] = tuple(
-        fig.add_subplot(nrows, ncols, i, projection=(ccrs.PlateCarree() if i == 1 else None))
-        for i in range(1, ncols * nrows + 1)
-    )
 
-    nzlat = len(validation.zlat)
-    nzlon = len(validation.zlon)
-    # nztime = len(ts)
-
-    # ------ r_z_zhat_s and p_z_zhat_s ------ #
-    # Correlation map
-    d = validation.r_z_zhat_s_accumulated_modes[-1, :].transpose().reshape((nzlat, nzlon))
-    _mean = np.nanmean(d)
-    _std = np.nanstd(d)
-    mx = _mean + _std
-    mn = _mean - _std
+    ax00 = fig.add_subplot(1, 2, 1, projection=ccrs.PlateCarree(0))
     _plot_map(
-        d, validation.zlat, validation.zlon, fig, axs[0],
-        'Correlation in space between z and zhat',
-        cmap=cmap,
-        ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None and not np.isnan(_mean) and not np.isnan(_std) else map_ticks)
+        arr=validation.r_z_zhat_s_accumulated_modes[-1, :].reshape((nlat, nlon)),
+        lat=validation.zlat,
+        lon=validation.zlon,
+        fig=fig,
+        ax=ax00,
+        title='Correlation in space: z vs zhat',
     )
-    hatches = d.copy()
-    hatches[((validation.p_z_zhat_s_accumulated_modes[-1, :] > validation.alpha) | (
-            validation.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
 
-    axs[0].contourf(
-        validation.zlon, validation.zlat, hatches,
-        colors='none', hatches='..', extend='both',
-        transform=ccrs.PlateCarree()
-    )
-    # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
-
-    # ------ r_z_zhat_t and p_z_zhat_t ------ #
-    axs[1].bar(validation.ztime.values, validation.r_z_zhat_t_accumulated_modes[-1, :])
-    axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
-
-    axs[1].scatter(
-        validation.ztime[validation.p_z_zhat_t_accumulated_modes[-1, :] <= validation.alpha],
-        validation.p_z_zhat_t_accumulated_modes[-1, :][validation.p_z_zhat_t_accumulated_modes[-1, :] <= validation.alpha]
-    )
-    axs[1].set_title('Correlation in space between z and zhat')
-    axs[1].grid(True)
-    # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
-
-    # ------ scf ------ #
-    axs[2].bar(np.arange(len(validation.training_mca.scf)), validation.training_mca.scf)
-    axs[2].set_title("Square covariance fraction")
-    axs[2].set_xlabel("Mode")
-    axs[2].grid(True)
-    # ^^^^^^ scf ^^^^^^ #
-
-    # ^^^^^^ Us ^^^^^^ #
-    for mode in range(validation.training_mca.Us.shape[0]):
-        axs[3 + mode].grid(True)
-        axs[3 + mode].plot(
-            validation.training_mca.ytime, validation.training_mca.Us[mode], label=f'mode {mode}', color='orange', linewidth=3
-        )
-        axs[3 + mode].set_title(
-            f'Us for mode {mode + 1}'
-        )
-        axs[3 + mode].legend()
+    ax01 = fig.add_subplot(1, 2, 2)
+    ax01.bar(validation.ztime, validation.r_z_zhat_t_accumulated_modes[-1, :])
+    ax01.set_title('Correlation in time: z vs zhat')
 
     fig.suptitle(
         f'Z({validation.zvar}): {slise2str(validation.zslise)}, '
@@ -598,4 +550,4 @@ def _plot_validation_default(
 
     fig.subplots_adjust(hspace=.4)
 
-    return fig, axs
+    return fig, (ax00, ax01)
