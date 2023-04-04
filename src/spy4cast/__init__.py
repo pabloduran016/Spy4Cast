@@ -12,7 +12,7 @@ __all__ = [
 
 class Settings:
     """Stores the settings that can be modified by the user"""
-    silence: bool = True
+    silence: bool = False
     """Bool that if set to `True` indicates the program to
     don't output information about the process"""
 

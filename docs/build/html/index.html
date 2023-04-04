@@ -133,7 +133,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -173,6 +173,7 @@
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.MCA.html">MCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Preprocess.html">Preprocess</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Crossvalidation.html">Crossvalidation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Validation.html">Validation</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -225,7 +226,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -242,6 +243,58 @@
 <p class="admonition-title">Note</p>
 <p>This project is under active developement</p>
 </div>
+</section>
+<section id="run-the-methodology">
+<h1>Run the methodology<a class="headerlink" href="#run-the-methodology" title="Permalink to this heading">#</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
+<span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ds_y</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s2">"sea_surface_temperature.nc"</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">"datasets"</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'sst'</span><span class="p">)</span>
+<span class="n">ds_y</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">150</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">NOV</span><span class="p">,</span> <span class="mi">1971</span><span class="p">,</span> <span class="mi">2003</span><span class="p">))</span>
+
+<span class="n">ds_z</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s2">"atmospheric_preasure.nc"</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">"datasets"</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'pr'</span><span class="p">)</span>
+<span class="n">ds_z</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Slise</span><span class="p">(</span><span class="mf">11.5</span><span class="p">,</span> <span class="mf">16.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAY</span><span class="p">,</span> <span class="mi">1972</span><span class="p">,</span> <span class="mi">2004</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">ds_y</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">ds_z</span><span class="p">)</span>
+<span class="n">y</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'y_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved_data'</span><span class="p">)</span>
+<span class="n">z</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'z_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved_data'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'mca_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved_data'</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="analyse-results">
+<h1>Analyse results<a class="headerlink" href="#analyse-results" title="Permalink to this heading">#</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'y_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved_data'</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'z_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved_data'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'mca_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved_data'</span><span class="p">,</span> <span class="n">dsy</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
+<span class="n">nlat</span><span class="p">,</span> <span class="n">nlon</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">lat</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">lon</span><span class="p">)</span>
+<span class="n">ruy</span> <span class="o">=</span> <span class="n">mca</span><span class="o">.</span><span class="n">RUY</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">nlat</span><span class="p">,</span> <span class="n">nlon</span><span class="p">))</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="n">ruy</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'Reds'</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">'horizontal'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Correlation between z and zhat'</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/example_index_figure.png"><img alt="Example plot" src="_images/example_index_figure.png" style="width: 60%;"/></a>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
@@ -312,8 +365,26 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Welcome to Spy4Cast’s documentation! </a></li>
+<li><a class="reference internal" href="#run-the-methodology">Run the methodology</a></li>
+<li><a class="reference internal" href="#analyse-results">Analyse results</a></li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

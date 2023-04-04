@@ -126,7 +126,7 @@ class Validation(_Procedure):
 
     @property
     def alpha(self) -> float:
-        """Land Array for Y dataset"""
+        """Alpha used in training MCA"""
         return self.training_mca.alpha
 
     @property
