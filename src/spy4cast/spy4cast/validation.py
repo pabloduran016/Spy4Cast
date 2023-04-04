@@ -112,9 +112,9 @@ class Validation(_Procedure):
             self.training_mca.ydata.shape[0]
         ).reshape(len(common_y_not_land_indices) * len(common_z_not_land_indices))
 
-        self.zhat[0, common_z_land_indices, :] = np.dot(
+        self.zhat[0, common_z_not_land_indices, :] = np.dot(
             validating_dsy.land_data.not_land_values[:, :].T,
-            self.psi[0, training_mca.y_land_array.not_land_indices, :][:, common_z_land_indices]).T
+            self.psi[0, common_y_not_land_indices, :][:, common_z_not_land_indices]).T
 
         self.r_z_zhat_t_accumulated_modes, self.p_z_zhat_t_accumulated_modes, \
             _r_z_zhat_t_separated_modes, _p_z_zhat_t_separated_modes \
