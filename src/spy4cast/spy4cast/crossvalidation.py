@@ -301,8 +301,8 @@ class Crossvalidation(_Procedure):
         zhat_accumulated_modes[:, z2.land_mask] = np.nan
 
         for mode in range(nm):
-            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, mode:mode + 1], mca_out.Us[mode:mode + 1, :], z2.not_land_values, nt, 1, ny).reshape(len(~y2.land_mask) * len(~z2.land_mask))
-            psi_accumulated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, :mode + 1], mca_out.Us[:mode + 1, :], z2.not_land_values, nt, 1, ny).reshape(len(~y2.land_mask) * len(~z2.land_mask))
+            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, mode:mode + 1], mca_out.Us[mode:mode + 1, :], z2.not_land_values, nt, 1, ny).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
+            psi_accumulated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, :mode + 1], mca_out.Us[:mode + 1, :], z2.not_land_values, nt, 1, ny).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
 
             zhat_separated_modes[mode, ~z2.land_mask] = np.dot(np.transpose(y.not_land_values[:, year]), psi_separated_modes[mode, ~y2.land_mask, :][:, ~z2.land_mask])
             zhat_accumulated_modes[mode, ~z2.land_mask] = np.dot(np.transpose(y.not_land_values[:, year]), psi_accumulated_modes[mode, ~y2.land_mask, :][:, ~z2.land_mask])
