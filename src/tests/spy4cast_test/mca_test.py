@@ -6,7 +6,7 @@ import numpy as np
 import xarray as xr
 
 from spy4cast.spy4cast.mca import MCA, Preprocess
-from spy4cast import Dataset, Month, Slise
+from spy4cast import Dataset, Month, Region
 from spy4cast.meteo import Clim
 from .. import BaseTestCase
 
@@ -24,10 +24,10 @@ class MCATest(BaseTestCase):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.y_ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
-            Slise(-45, 45, -25, 25, Month.JAN, Month.MAR, 1998, 2002)
+            Region(-45, 45, -25, 25, Month.JAN, Month.MAR, 1998, 2002)
         )
         self.z_ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASETS_DIR).open(CHL).slice(
-            Slise(36, 37, -5.3, -2, Month.JAN, Month.MAR, 1998, 2002), skip=4
+            Region(36, 37, -5.3, -2, Month.JAN, Month.MAR, 1998, 2002), skip=4
         )
         self.y_preprocessed = Preprocess(self.y_ds)
         self.z_preprocessed = Preprocess(self.z_ds)
@@ -57,10 +57,10 @@ class MCATest(BaseTestCase):
         _ = MCA(self.y_preprocessed, self.z_preprocessed, 3, .1, sig="monte-carlo", montecarlo_iterations=3)
 
         y_ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
-            Slise(-45, 45, -25, 25, Month.JAN, Month.MAR, 1999, 2002)
+            Region(-45, 45, -25, 25, Month.JAN, Month.MAR, 1999, 2002)
         )
         z_ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASETS_DIR).open(CHL).slice(
-            Slise(36, 37, -5.3, -2, Month.JAN, Month.MAR, 1998, 2002), skip=4
+            Region(36, 37, -5.3, -2, Month.JAN, Month.MAR, 1998, 2002), skip=4
         )
         y_preprocessed = Preprocess(y_ds)
         z_preprocessed = Preprocess(z_ds)

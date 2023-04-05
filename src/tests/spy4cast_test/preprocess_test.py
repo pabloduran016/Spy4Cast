@@ -6,7 +6,7 @@ import xarray as xr
 
 from spy4cast._procedure import _plot_map
 from spy4cast.spy4cast.preprocess import Preprocess
-from spy4cast import Dataset, Month, Slise
+from spy4cast import Dataset, Month, Region
 from spy4cast.meteo import Clim
 from .. import BaseTestCase
 
@@ -23,7 +23,7 @@ class PreprocessTest(BaseTestCase):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
-            Slise(-45, 45, -25, 25, Month.JAN, Month.MAR, 1870, 1990)
+            Region(-45, 45, -25, 25, Month.JAN, Month.MAR, 1870, 1990)
         )
         self.preprocessed = Preprocess(self.ds)
 
@@ -50,7 +50,7 @@ class PreprocessTest(BaseTestCase):
 
     def test_get_meta(self) -> None:
         self.assertTrue(
-            (np.array([*self.ds.slise.as_numpy(), self.preprocessed.var]) ==
+            (np.array([*self.ds.region.as_numpy(), self.preprocessed.var]) ==
              self.preprocessed.meta).all()
         )
 
@@ -58,7 +58,7 @@ class PreprocessTest(BaseTestCase):
         ppcessed = Preprocess.__new__(Preprocess)
         ppcessed.meta = self.preprocessed.meta
 
-        self.assertEqual(ppcessed.slise, self.preprocessed.slise)
+        self.assertEqual(ppcessed.region, self.preprocessed.region)
         self.assertEqual(ppcessed.var, self.preprocessed.var)
 
     def test_get_time(self) -> None:
@@ -133,24 +133,26 @@ class PreprocessTest(BaseTestCase):
         )
 
     def test_get_data(self) -> None:
-        self.assertTrue(
-            (self.preprocessed.land_data.values == self.preprocessed._land_data.values).all())
+        self.assertTrue((
+            (self.preprocessed.data == self.preprocessed._land_data.values) |
+            np.isnan(self.preprocessed._land_data.values)
+        ).all())
 
     def test_set_data(self) -> None:
         ppcessed = Preprocess(self.ds)
 
         with self.assertRaises(TypeError):
-            ppcessed.land_data.values = xr.DataArray(ppcessed.land_data.values)
+            ppcessed.data = xr.DataArray(ppcessed.data)
         with self.assertRaises(TypeError):
-            ppcessed.land_data.values = ppcessed.land_data.values.astype(str)
+            ppcessed.data = ppcessed.data.astype(str)
         with self.assertRaises(TypeError):
-            ppcessed.land_data.values = ppcessed.land_data.values[np.newaxis, :, :]
+            ppcessed.data = ppcessed.data[np.newaxis, :, :]
         with self.assertRaises(TypeError):
-            ppcessed.land_data.values = ppcessed.land_data.values[:, 1:]
+            ppcessed.data = ppcessed.data[:, 1:]
         with self.assertRaises(TypeError):
-            ppcessed.land_data.values = ppcessed.land_data.values[1:, :]
+            ppcessed.data = ppcessed.data[1:, :]
 
-        ppcessed.land_data.values = ppcessed.land_data.values
+        ppcessed.data = ppcessed.data
 
     def test_get_var(self) -> None:
         ppcessed = Preprocess.__new__(Preprocess)
@@ -174,12 +176,12 @@ class PreprocessTest(BaseTestCase):
             ppcessed.var = 1  # type: ignore
         ppcessed.var = 'bar'
 
-    def test_slise(self) -> None:
+    def test_region(self) -> None:
         ppcessed = Preprocess.__new__(Preprocess)
         ppcessed._lat = self.preprocessed.lat
         ppcessed._lon = self.preprocessed.lon
         ppcessed._time = self.preprocessed.time
-        self.assertEqual(ppcessed.slise, Slise(
+        self.assertEqual(ppcessed.region, Region(
             lat0=ppcessed.lat.values[0],
             latf=ppcessed.lat.values[-1],
             lon0=ppcessed.lon.values[0],
@@ -191,16 +193,16 @@ class PreprocessTest(BaseTestCase):
         ))
 
         ppcessed = Preprocess.__new__(Preprocess)
-        slise0 = Slise(0, 0, 0, 0, Month.JAN, Month.JAN, 0, 0)
+        region0 = Region(0, 0, 0, 0, Month.JAN, Month.JAN, 0, 0)
         ppcessed._ds = Dataset.__new__(Dataset)
-        ppcessed._ds._slise = slise0
-        self.assertEqual(ppcessed.slise, slise0)
+        ppcessed._ds._region = region0
+        self.assertEqual(ppcessed.region, region0)
 
         ppcessed = Preprocess.__new__(Preprocess)
-        slise1 = Slise(1, 1, 1, 1, Month.FEB, Month.FEB, 1, 1)
-        ppcessed._slise = slise1
-        self.assertEqual(ppcessed.slise, slise1)
+        region1 = Region(1, 1, 1, 1, Month.FEB, Month.FEB, 1, 1)
+        ppcessed._region = region1
+        self.assertEqual(ppcessed.region, region1)
 
     def test_plot(self) -> None:
         self.preprocessed.plot(name='name')
-        self.preprocessed.plot(selected_year=self.ds.slise.year0)
+        self.preprocessed.plot(selected_year=self.ds.region.year0)

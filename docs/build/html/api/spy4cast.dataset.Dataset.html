@@ -159,17 +159,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../methodologies.html">Methodologies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting.html">Plotting</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../toctrees/api-reference.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current has-children"><a class="reference internal" href="../toctrees/api-reference-src/dataset.html">Dataset</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Dataset</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/meteo.html">Meteo</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.PlotType.html">PlotType</a></li>
-<li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.Anom.html">Anom</a></li>
-<li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.Clim.html">Clim</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.index_regression.html">index_regression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.MCA.html">MCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html">Preprocess</a></li>
@@ -177,8 +167,18 @@
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.Validation.html">Validation</a></li>
 </ul>
 </li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../toctrees/api-reference-src/dataset.html">Dataset</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/meteo.html">Meteo</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.PlotType.html">PlotType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.Anom.html">Anom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.Clim.html">Clim</a></li>
+</ul>
+</li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Slise.html">Slise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Region.html">Region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Month.html">Month</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Color.html">Color</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.T_FORMAT.html">T_FORMAT</a></li>
@@ -257,7 +257,7 @@ itself so that you can concatenate methods easily.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Dataset</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="s1">'example.nc'</span><span class="p">,</span> <span class="s1">'data/'</span>
 <span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
 <span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">save_nc</span><span class="p">(</span><span class="s1">'data-sliced.nc'</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -273,11 +273,11 @@ itself so that you can concatenate methods easily.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.lon" title="spy4cast.dataset.Dataset.lon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lon</span></code></a></p></td>
 <td><p>Returns the latitude variable of the data evaluated.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.shape" title="spy4cast.dataset.Dataset.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
-<td><p>Returns the shape variable of the data evaluated.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.region" title="spy4cast.dataset.Dataset.region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region</span></code></a></p></td>
+<td><p>Returns the actual region of the data</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.slise" title="spy4cast.dataset.Dataset.slise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slise</span></code></a></p></td>
-<td><p>Returns the actual slise of the data</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.shape" title="spy4cast.dataset.Dataset.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
+<td><p>Returns the shape variable of the data evaluated.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.time" title="spy4cast.dataset.Dataset.time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time</span></code></a></p></td>
 <td><p>Returns the time variable of the data evaluated.</p></td>
@@ -305,8 +305,8 @@ itself so that you can concatenate methods easily.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.save_nc" title="spy4cast.dataset.Dataset.save_nc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_nc</span></code></a>(name[, dir])</p></td>
 <td><p>Saves the data as a netcdf4 file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.slice" title="spy4cast.dataset.Dataset.slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slice</span></code></a>(slise[, skip])</p></td>
-<td><p>Method that slices the dataset accorging to a Slise.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.slice" title="spy4cast.dataset.Dataset.slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slice</span></code></a>(region[, skip])</p></td>
+<td><p>Method that slices the dataset accorging to a Region.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -329,14 +329,14 @@ They key used is recognised automatically</p>
 They key used is recognised automatically</p>
 </dd></dl>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.dataset.Dataset.region">
+<span class="sig-name descname"><span class="pre">region</span></span><a class="headerlink" href="#spy4cast.dataset.Dataset.region" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the actual region of the data</p>
+</dd></dl>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.dataset.Dataset.shape">
 <span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#spy4cast.dataset.Dataset.shape" title="Permalink to this definition">#</a></dt>
 <dd><p>Returns the shape variable of the data evaluated.</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.dataset.Dataset.slise">
-<span class="sig-name descname"><span class="pre">slise</span></span><a class="headerlink" href="#spy4cast.dataset.Dataset.slise" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the actual slise of the data</p>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.dataset.Dataset.time">
@@ -399,19 +399,19 @@ They key used is recognised automatically</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.dataset.Dataset.slice">
-<span class="sig-name descname"><span class="pre">slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" title="spy4cast.stypes.Slise"><span class="pre">Slise</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">_T</span></span></span><a class="headerlink" href="#spy4cast.dataset.Dataset.slice" title="Permalink to this definition">#</a></dt>
-<dd><p>Method that slices the dataset accorging to a Slise.</p>
+<span class="sig-name descname"><span class="pre">slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.stypes.Region.html#spy4cast.stypes.Region" title="spy4cast.stypes.Region"><span class="pre">Region</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">_T</span></span></span><a class="headerlink" href="#spy4cast.dataset.Dataset.slice" title="Permalink to this definition">#</a></dt>
+<dd><p>Method that slices the dataset accorging to a Region.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>slise</strong> (<a class="reference internal" href="spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" title="spy4cast.stypes.Slise"><em>spy4cast.stypes.Slise</em></a>) – spy4cast.stypes.Slise to use</p></li>
+<li><p><strong>region</strong> (<a class="reference internal" href="spy4cast.stypes.Region.html#spy4cast.stypes.Region" title="spy4cast.stypes.Region"><em>spy4cast.stypes.Region</em></a>) – spy4cast.stypes.Region to use</p></li>
 <li><p><strong>skip</strong> (<em>int</em>) – Amount of points to skip in the matrix</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>It first calls <cite>check_slise</cite> method</p>
+<p>It first calls <cite>check_region</cite> method</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -424,7 +424,7 @@ that specific year.</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stypes.Slise</span></code></p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stypes.Region</span></code></p>
 </div>
 </dd></dl>
 </dd></dl>
@@ -492,8 +492,8 @@ that specific year.</p>
 <li><a class="reference internal" href="#spy4cast.dataset.Dataset.data"><code class="docutils literal notranslate"><span class="pre">Dataset.data</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.dataset.Dataset.lat"><code class="docutils literal notranslate"><span class="pre">Dataset.lat</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.dataset.Dataset.lon"><code class="docutils literal notranslate"><span class="pre">Dataset.lon</span></code></a></li>
+<li><a class="reference internal" href="#spy4cast.dataset.Dataset.region"><code class="docutils literal notranslate"><span class="pre">Dataset.region</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.dataset.Dataset.shape"><code class="docutils literal notranslate"><span class="pre">Dataset.shape</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.dataset.Dataset.slise"><code class="docutils literal notranslate"><span class="pre">Dataset.slise</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.dataset.Dataset.time"><code class="docutils literal notranslate"><span class="pre">Dataset.time</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.dataset.Dataset.timestamp0"><code class="docutils literal notranslate"><span class="pre">Dataset.timestamp0</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.dataset.Dataset.timestampf"><code class="docutils literal notranslate"><span class="pre">Dataset.timestampf</span></code></a></li>

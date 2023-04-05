@@ -159,17 +159,7 @@
 <li class="toctree-l1"><a class="reference internal" href="methodologies.html">Methodologies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="toctrees/api-reference.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.dataset.Dataset.html">Dataset</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/meteo.html">Meteo</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.PlotType.html">PlotType</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.Anom.html">Anom</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.Clim.html">Clim</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.index_regression.html">index_regression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.MCA.html">MCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Preprocess.html">Preprocess</a></li>
@@ -177,8 +167,18 @@
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Validation.html">Validation</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.dataset.Dataset.html">Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/meteo.html">Meteo</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.PlotType.html">PlotType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.Anom.html">Anom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.Clim.html">Clim</a></li>
+</ul>
+</li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Slise.html">Slise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Region.html">Region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Month.html">Month</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Color.html">Color</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.T_FORMAT.html">T_FORMAT</a></li>
@@ -281,7 +281,7 @@ before upgrading (<code class="code docutils literal notranslate"><span class="p
 <p>Here is an example of how you can use Spy4Cast API to <strong>RUN</strong> the full Spy4Cast methodology.</p>
 <p><strong>Click</strong> <a class="reference download internal" download="" href="_downloads/e59ed5abafa130878c47d01948050d5b/run-spy4cast-example.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a> <strong>to download</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
-<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">spy4cast</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span>
+<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">spy4cast</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Region</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 
 <span class="n">DATASET_DIR</span> <span class="o">=</span> <span class="s1">'/Users/Shared/datasets/'</span>
@@ -289,10 +289,10 @@ before upgrading (<code class="code docutils literal notranslate"><span class="p
 <span class="n">predictor_dataset</span> <span class="o">=</span> <span class="s1">'oisst_v2_mean_monthly.nc'</span>
 
 <span class="n">y</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">predictor_dataset</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DATASET_DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="s1">'sst'</span><span class="p">)</span>
-<span class="n">y</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Slise</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUL</span><span class="p">,</span> <span class="mi">1997</span><span class="p">,</span> <span class="mi">2019</span><span class="p">),</span> <span class="n">skip</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">y</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Region</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUL</span><span class="p">,</span> <span class="mi">1997</span><span class="p">,</span> <span class="mi">2019</span><span class="p">),</span> <span class="n">skip</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="n">z</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">predictor_dataset</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DATASET_DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="s2">"CHL"</span><span class="p">)</span>
-<span class="n">z</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Slise</span><span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">APR</span><span class="p">,</span> <span class="mi">1998</span><span class="p">,</span> <span class="mi">2020</span><span class="p">),</span> <span class="n">skip</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">z</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Region</span><span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">APR</span><span class="p">,</span> <span class="mi">1998</span><span class="p">,</span> <span class="mi">2020</span><span class="p">),</span> <span class="n">skip</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="n">y_ppcessed</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Preprocess</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">z_ppcessed</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Preprocess</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
@@ -341,7 +341,7 @@ before upgrading (<code class="code docutils literal notranslate"><span class="p
 <h3>Climatology<a class="headerlink" href="#climatology" title="Permalink to this heading">#</a></h3>
 <p>Here is an example of how you can use Spy4Cast API to plot the climatology of a given .nc dataset</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
-<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Dataset</span>
 
 <span class="c1"># Define constants ---------------------------------------------------------------------------------- #</span>
 <span class="n">DATASET_DIR</span> <span class="o">=</span> <span class="s1">'/Users/Shared/datasets/'</span>
@@ -351,9 +351,9 @@ before upgrading (<code class="code docutils literal notranslate"><span class="p
 <span class="n">chl_1km_monthly_Sep1997_Dec2020</span> <span class="o">=</span> <span class="s1">'chl_1km_monthly_Sep1997_Dec2020.nc'</span>
 <span class="n">CHL</span> <span class="o">=</span> <span class="s1">'CHL'</span>
 
-<span class="n">chl_slise</span> <span class="o">=</span> <span class="n">Slise</span><span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">APR</span><span class="p">,</span> <span class="mi">1998</span><span class="p">,</span> <span class="mi">2020</span><span class="p">)</span>
+<span class="n">chl_region</span> <span class="o">=</span> <span class="n">Region</span><span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">APR</span><span class="p">,</span> <span class="mi">1998</span><span class="p">,</span> <span class="mi">2020</span><span class="p">)</span>
 
-<span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">chl_1km_monthly_Sep1997_Dec2020</span><span class="p">,</span> <span class="n">DATASET_DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">CHL</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">chl_slise</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">chl_1km_monthly_Sep1997_Dec2020</span><span class="p">,</span> <span class="n">DATASET_DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">CHL</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">chl_region</span><span class="p">)</span>
 
 <span class="n">map_clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>
 <span class="n">map_clim</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'map_climatology'</span><span class="p">,</span> <span class="n">PLOT_DATA_DIR</span><span class="p">)</span>
@@ -376,7 +376,7 @@ before upgrading (<code class="code docutils literal notranslate"><span class="p
 <h3>Anomaly<a class="headerlink" href="#anomaly" title="Permalink to this heading">#</a></h3>
 <p>Here is an example of how you can use Spy4Cast API to plot the anomaly of a given .nc dataset</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Anom</span>
-<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Dataset</span>
 
 <span class="c1"># Define constants ---------------------------------------------------------------------------------- #</span>
 <span class="n">DATASET_DIR</span> <span class="o">=</span> <span class="s1">'/Users/Shared/datasets/'</span>
@@ -386,9 +386,9 @@ before upgrading (<code class="code docutils literal notranslate"><span class="p
 <span class="n">chl_1km_monthly_Sep1997_Dec2020</span> <span class="o">=</span> <span class="s1">'chl_1km_monthly_Sep1997_Dec2020.nc'</span>
 <span class="n">CHL</span> <span class="o">=</span> <span class="s1">'CHL'</span>
 
-<span class="n">chl_slise</span> <span class="o">=</span> <span class="n">Slise</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">APR</span><span class="p">,</span> <span class="mi">1998</span><span class="p">,</span> <span class="mi">2020</span><span class="p">)</span>
+<span class="n">chl_region</span> <span class="o">=</span> <span class="n">Region</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">APR</span><span class="p">,</span> <span class="mi">1998</span><span class="p">,</span> <span class="mi">2020</span><span class="p">)</span>
 
-<span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">chl_1km_monthly_Sep1997_Dec2020</span><span class="p">,</span> <span class="n">DATASET_DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">CHL</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">chl_slise</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">chl_1km_monthly_Sep1997_Dec2020</span><span class="p">,</span> <span class="n">DATASET_DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">CHL</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">chl_region</span><span class="p">)</span>
 
 <span class="n">map_anom</span> <span class="o">=</span> <span class="n">Anom</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>
 

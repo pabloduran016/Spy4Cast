@@ -1,7 +1,7 @@
 from time import sleep
 
-from spy4cast import Slise, Month, set_silence
-from spy4cast._functions import time_from_here, time_to_here, slise2str, mon2str, str2mon, debugprint, _warning, _error, \
+from spy4cast import Region, Month, set_silence
+from spy4cast._functions import time_from_here, time_to_here, region2str, mon2str, str2mon, debugprint, _warning, _error, \
     _debuginfo
 from . import BaseTestCase
 
@@ -14,12 +14,12 @@ class FunctionsTest(BaseTestCase):
         with self.assertRaises(ValueError):
             time_to_here()
 
-    def test_slise2str(self) -> None:
-        s = Slise(-10, 10, -100, 80, Month.JAN, Month.FEB, 1870, 2020)
-        self.assertEqual(slise2str(s), 'JF (10.00ºS, 10.00ºN - 100.00ºW, 80.00ºE)')
+    def test_region2str(self) -> None:
+        s = Region(-10, 10, -100, 80, Month.JAN, Month.FEB, 1870, 2020)
+        self.assertEqual(region2str(s), 'JF (10.00ºS, 10.00ºN - 100.00ºW, 80.00ºE)')
 
-        s2 = Slise(-10, 10, -100, 80, Month.MAR, Month.FEB, 1870, 2020)
-        self.assertEqual(slise2str(s2), 'MAMJJASONDJF (10.00ºS, 10.00ºN - 100.00ºW, 80.00ºE)')
+        s2 = Region(-10, 10, -100, 80, Month.MAR, Month.FEB, 1870, 2020)
+        self.assertEqual(region2str(s2), 'MAMJJASONDJF (10.00ºS, 10.00ºN - 100.00ºW, 80.00ºE)')
 
     def test_mon2str(self) -> None:
         with self.assertRaises(ValueError):

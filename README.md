@@ -27,7 +27,7 @@ To get the latest stable version:
 
 ```python
 from spy4cast.meteo import Anom
-from spy4cast import Month, Slise, set_silence, Dataset, F
+from spy4cast import Month, Region, set_silence, Dataset, F
 
 # Define constants ---------------------------------------------------------------------------------- #
 DATASET_DIR = '/Users/Shared/datasets/'
@@ -37,9 +37,9 @@ PLOT_DATA_DIR = 'data-anom'
 chl_1km_monthly_Sep1997_Dec2020 = 'chl_1km_monthly_Sep1997_Dec2020.nc'
 CHL = 'CHL'
 
-chl_slise = Slise(30, 90, -5.3, -2, Month.MAR, Month.APR, 1998, 2020)
+chl_region = Region(30, 90, -5.3, -2, Month.MAR, Month.APR, 1998, 2020)
 
-ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASET_DIR).open(CHL).slice(chl_slise)
+ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASET_DIR).open(CHL).slice(chl_region)
 
 map_anom = Anom(ds, 'map')
 
@@ -59,8 +59,8 @@ ts_anom.plot(show_plot=True, save_fig=True, name='anom-ts-example.png')
 
 ## Important Notes:
 
-· If you see anywhere in the docs or in the files `slise` and think it is a typo, it is not. Python has a 
-built-in function called `slice` and in this library we have decided to use `slise` to avoid unexpected 
+· If you see anywhere in the docs or in the files `region` and think it is a typo, it is not. Python has a 
+built-in function called `slice` and in this library we have decided to use `region` to avoid unexpected 
 behaviours. I hope it is not too ugly...
 
 ## Documentation

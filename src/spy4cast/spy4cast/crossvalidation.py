@@ -12,8 +12,8 @@ from scipy import stats
 
 from . import MCA
 from .mca import index_regression
-from .. import Slise
-from .._functions import debugprint, slise2str, time_from_here, time_to_here, _debuginfo
+from .. import Region
+from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, _plot_ts
 from ..land_array import LandArray
@@ -175,8 +175,8 @@ class Crossvalidation(_Procedure):
         _debuginfo(f"""Applying Crossvalidation 
     Shapes: Z{dsz.shape} 
             Y{dsy.shape} 
-    Slises: Z {slise2str(self._dsz.slise)} 
-            Y {slise2str(self._dsy.slise)}""", )
+    Regions: Z {region2str(self._dsz.region)} 
+            Y {region2str(self._dsy.region)}""", )
         time_from_here()
 
         if len(dsz.time) != len(dsy.time):
@@ -490,8 +490,8 @@ class Crossvalidation(_Procedure):
         )
 
         fig.suptitle(
-            f'Z({self._dsz.var}): {slise2str(self._dsz.slise)}, '
-            f'Y({self._dsy.var}): {slise2str(self._dsy.slise)}. '
+            f'Z({self._dsz.var}): {region2str(self._dsz.region)}, '
+            f'Y({self._dsy.var}): {region2str(self._dsy.region)}. '
             f'Alpha: {self.alpha}',
             fontweight='bold'
         )
@@ -836,8 +836,8 @@ def _plot_crossvalidation_default(
         axs[3 + mode].legend()
 
     fig.suptitle(
-        f'Z({cross._dsz.var}): {slise2str(cross._dsz.slise)}, '
-        f'Y({cross._dsy.var}): {slise2str(cross._dsy.slise)}. '
+        f'Z({cross._dsz.var}): {region2str(cross._dsz.region)}, '
+        f'Y({cross._dsy.var}): {region2str(cross._dsy.region)}. '
         f'Alpha: {cross.alpha}',
         fontweight='bold'
     )

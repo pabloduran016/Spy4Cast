@@ -1,5 +1,5 @@
 import spy4cast as spy
-from spy4cast.stypes import F, Month, Slise, RDArgs
+from spy4cast.stypes import F, Month, Region, RDArgs
 
 
 DATASET_DIR = '/Users/Shared/datasets/'
@@ -21,14 +21,14 @@ def main() -> None:
     nm=3
     alpha=.1
 
-    oisst_slise = Slise(
+    oisst_region = Region(
         lat0=-20, latf=25,
         lon0=-210, lonf=-60,
         month0=Month.OCT, monthf=Month.DEC,
         year0=1997, yearf=2019,
     )  # PREDICTOR: Y
 
-    chl_slise = Slise(
+    chl_region = Region(
         lat0=36, latf=37,
         lon0=-5.3, lonf=-2,
         month0=Month.MAR, monthf=Month.APR,
@@ -45,7 +45,7 @@ def main() -> None:
     load = True
     if not load:
         s.open_datasets()
-        s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=0, zskip=0)
+        s.slice_datasets(yregion=oisst_region, zregion=chl_region, yskip=0, zskip=0)
         s.preprocess()  # Primero sin filtro y luego con filtro de 8 años
         s.mca(nm=nm, alpha=alpha)
         s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)

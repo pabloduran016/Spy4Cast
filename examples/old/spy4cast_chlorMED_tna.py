@@ -1,5 +1,5 @@
 import spy4cast as spy
-from spy4cast.stypes import F, Month, Slise, RDArgs
+from spy4cast.stypes import F, Month, Region, RDArgs
 
 DATASET_DIR = '/Users/Shared/datasets/'
 PLOTS_DIR = 'plots'
@@ -20,14 +20,14 @@ def main() -> None:
     nm=3
     alpha=.1
 
-    oisst_slise = Slise(
+    oisst_region = Region(
         lat0=5, latf=45,
         lon0=-90, lonf=-5,
         month0=Month.JUN, monthf=Month.JUL,
         year0=1997, yearf=2019,
     )  # PREDICTOR: Y
 
-    chl_slise = Slise(
+    chl_region = Region(
         lat0=36, latf=37,
         lon0=-5.3, lonf=-2,
         month0=Month.MAR, monthf=Month.APR,
@@ -45,16 +45,16 @@ def main() -> None:
     load = False
     if not load:
         s.open_datasets()
-        s.slice_datasets(yslise=oisst_slise, zslise=chl_slise, yskip=0, zskip=3)
+        s.slice_datasets(yregion=oisst_region, zregion=chl_region, yskip=0, zskip=3)
         s.load_preprocessed(PLOTS_DATA_DIR, 'save_preprocessed_', '.npy')  # s.preprocess()  # Primero sin filtro y luego con filtro de 8 años
         s.mca(nm=nm, alpha=alpha)
         s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
-        s.run(show_plot=True, save_fig=True, sy=selected_year, cmap='viridis', yslise=oisst_slise, zslise=chl_slise)
+        s.run(show_plot=True, save_fig=True, sy=selected_year, cmap='viridis', yregion=oisst_region, zregion=chl_region)
     else:
         s.load_preprocessed(PLOTS_DATA_DIR, 'save_preprocessed_', '.npy')
         s.load_mca(PLOTS_DATA_DIR, 'save_mca_', '.npy')
         s.load_crossvalidation(PLOTS_DATA_DIR, 'save_cross_', '.npy')
-        s.run(show_plot=True, save_fig=True, sy=selected_year, cmap='viridis', yslise=oisst_slise, zslise=chl_slise)
+        s.run(show_plot=True, save_fig=True, sy=selected_year, cmap='viridis', yregion=oisst_region, zregion=chl_region)
 
 if __name__ == '__main__':
     main()

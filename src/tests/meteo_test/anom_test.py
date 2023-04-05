@@ -6,7 +6,7 @@ import xarray as xr
 
 from spy4cast.meteo.anom import _anom, npanom
 from .. import BaseTestCase
-from spy4cast import Slise, Dataset, Month
+from spy4cast import Region, Dataset, Month
 from spy4cast.meteo import Anom, PlotType
 
 DATASETS_DIR = '/Users/Shared/datasets'
@@ -21,7 +21,7 @@ class AnomTest(BaseTestCase):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
-            Slise(-45, 45, -25, 25, Month.JAN, Month.MAR, 1870, 1990)
+            Region(-45, 45, -25, 25, Month.JAN, Month.MAR, 1870, 1990)
         )
         self.ts_anom = Anom(self.ds, 'ts', st=True)
         self.map_anom = Anom(self.ds, 'map', st=True)
@@ -103,7 +103,7 @@ class AnomTest(BaseTestCase):
             self.assertTrue((arr == anom.data[anom._time_key]).all())
             anom.time = arr - 20  # Reset the value
 
-    def test_get_slise(self) -> None:
+    def test_get_region(self) -> None:
         xr_sst = xr.open_dataset(
             os.path.join(DATASETS_DIR, HadISST_sst)
         )[SST]
@@ -112,12 +112,12 @@ class AnomTest(BaseTestCase):
         map_anom = Anom.from_xrarray(xr_sst)
         ts_anom = Anom.from_xrarray(xr_sst.mean('latitude').mean('longitude'))
 
-        self.assertFalse(hasattr(map_anom, '_slise'))
-        self.assertFalse(hasattr(ts_anom, '_slise'))
-        _ = ts_anom.slise
-        _ = map_anom.slise
-        self.assertTrue(hasattr(map_anom, '_slise'))
-        self.assertTrue(hasattr(ts_anom, '_slise'))
+        self.assertFalse(hasattr(map_anom, '_region'))
+        self.assertFalse(hasattr(ts_anom, '_region'))
+        _ = ts_anom.region
+        _ = map_anom.region
+        self.assertTrue(hasattr(map_anom, '_region'))
+        self.assertTrue(hasattr(ts_anom, '_region'))
 
     def test_get_var(self) -> None:
         obj = Anom.__new__(Anom)

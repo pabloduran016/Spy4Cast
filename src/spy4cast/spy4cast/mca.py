@@ -10,8 +10,8 @@ import scipy.sparse.linalg
 import xarray as xr
 from scipy.stats import stats
 
-from .. import Slise
-from .._functions import time_from_here, time_to_here, slise2str, _debuginfo, debugprint
+from .. import Region
+from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
 from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts
 from .preprocess import Preprocess
 
@@ -130,8 +130,8 @@ class MCA(_Procedure):
         _debuginfo(f"""Applying MCA 
     Shapes: Z{dsz.shape} 
             Y{dsy.shape} 
-    Slises: Z {slise2str(self._dsz.slise)} 
-            Y {slise2str(self._dsy.slise)}""", )
+    Regions: Z {region2str(self._dsz.region)} 
+            Y {region2str(self._dsy.region)}""", )
         time_from_here()
 
         if len(dsz.time) != len(dsy.time):
@@ -407,8 +407,8 @@ class MCA(_Procedure):
                 )
 
         fig.suptitle(
-            f'Z({self._dsz.var}): {slise2str(self._dsz.slise)}, '
-            f'Y({self._dsy.var}): {slise2str(self._dsy.slise)}. '
+            f'Z({self._dsz.var}): {region2str(self._dsz.region)}, '
+            f'Y({self._dsy.var}): {region2str(self._dsy.region)}. '
             f'Alpha: {self.alpha}',
             fontweight='bold'
         )
@@ -531,7 +531,7 @@ def index_regression(
 
         corp = np.empty([ns, montecarlo_iterations])
         for p in range(montecarlo_iterations):
-            corp[:, p] = pearsonr_2d(data.not_land_values, np.random.permutation(index))
+            corp[~data.land_mask, p] = pearsonr_2d(data.not_land_values, np.random.permutation(index))
 
         result = np.apply_along_axis(stats.pearsonr, 1, data.not_land_values, index)
         cor[~data.land_mask] = result[:, 0]

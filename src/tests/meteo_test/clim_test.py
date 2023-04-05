@@ -6,7 +6,7 @@ import xarray as xr
 
 from spy4cast.meteo.clim import _clim
 from .. import BaseTestCase
-from spy4cast import Slise, Dataset, Month
+from spy4cast import Region, Dataset, Month
 from spy4cast.meteo import Clim, PlotType
 
 DATASETS_DIR = '/Users/Shared/datasets'
@@ -21,7 +21,7 @@ class ClimTest(BaseTestCase):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
-            Slise(-45, 45, -25, 25, Month.JAN, Month.MAR, 1870, 1990)
+            Region(-45, 45, -25, 25, Month.JAN, Month.MAR, 1870, 1990)
         )
         self.ts_clim = Clim(self.ds, 'ts')
         self.map_clim = Clim(self.ds, 'map')
@@ -103,8 +103,8 @@ class ClimTest(BaseTestCase):
         self.assertTrue((arr == self.ts_clim.data[self.ts_clim._time_key]).all())
         self.ts_clim.time = arr - 20  # Reset the value
 
-    def test_get_slise(self) -> None:
-        _ = self.ts_clim.slise
+    def test_get_region(self) -> None:
+        _ = self.ts_clim.region
 
         xr_sst = xr.open_dataset(
             os.path.join(DATASETS_DIR, HadISST_sst)
@@ -121,16 +121,16 @@ class ClimTest(BaseTestCase):
         ts_clim._type = PlotType.TS
         ts_clim.data = xr_sst[:, 0, 0].values
 
-        self.assertFalse(hasattr(map_clim, '_slise'))
-        self.assertFalse(hasattr(ts_clim, '_slise'))
-        _ = ts_clim.slise
-        _ = map_clim.slise
-        self.assertTrue(hasattr(map_clim, '_slise'))
-        self.assertTrue(hasattr(ts_clim, '_slise'))
+        self.assertFalse(hasattr(map_clim, '_region'))
+        self.assertFalse(hasattr(ts_clim, '_region'))
+        _ = ts_clim.region
+        _ = map_clim.region
+        self.assertTrue(hasattr(map_clim, '_region'))
+        self.assertTrue(hasattr(ts_clim, '_region'))
 
         ts_clim = Clim.__new__(Clim)
         ts_clim._ds = self.ts_clim._ds
-        _ = ts_clim.slise
+        _ = ts_clim.region
 
     def test_get_var(self) -> None:
         obj = Clim.__new__(Clim)

@@ -13,8 +13,8 @@ from scipy import stats
 from . import MCA
 from .crossvalidation import calculate_psi, calculate_time_correlation, calculate_space_correlation
 from .mca import index_regression
-from .. import Slise
-from .._functions import debugprint, slise2str, time_from_here, time_to_here, _debuginfo
+from .. import Region
+from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, _plot_ts
 from ..land_array import LandArray
@@ -40,17 +40,17 @@ class Validation(_Procedure):
             Predictand field for validation
     Attributes
     ----------
-        psi : npt.NDArray[np.float_]
+        psi : npt.NDArray[np.float32]
             Psi calculated with the training MCA data. Dimension: 1 x training_y_space x training_z_space
-        zhat : npt.NDArray[np.float_]
+        zhat : npt.NDArray[np.float32]
             Zhat predicted for the predictand. Dimension: 1 x validating_z_space x validating_z_time
-        r_z_zhat_t_accumulated_modes : npt.NDArray[np.float_]
+        r_z_zhat_t_accumulated_modes : npt.NDArray[np.float32]
             Correlation in time for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_space
-        p_z_zhat_t_accumulated_modes : npt.NDArray[np.float_]
+        p_z_zhat_t_accumulated_modes : npt.NDArray[np.float32]
             Pvalue of the correlation in time for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_space
-        r_z_zhat_s_accumulated_modes : npt.NDArray[np.float_]
+        r_z_zhat_s_accumulated_modes : npt.NDArray[np.float32]
             Correlation in space for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_time
-        p_z_zhat_s_accumulated_modes : npt.NDArray[np.float_]
+        p_z_zhat_s_accumulated_modes : npt.NDArray[np.float32]
             Pvalue of the correlation in space for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_time
 
     See Also
@@ -86,15 +86,15 @@ class Validation(_Procedure):
         ---------- 
         Shapes: Z{training_mca._dsz.data.shape} 
                 Y{training_mca._dsy.data.shape} 
-        Slises: Z {slise2str(training_mca._dsz.slise)} 
-                Y {slise2str(training_mca._dsy.slise)}
+        Regions: Z {region2str(training_mca._dsz.region)} 
+                Y {region2str(training_mca._dsy.region)}
         
         Validation
         ---------- 
         Shapes: Z{validating_dsz.shape} 
                 Y{validating_dsy.shape} 
-        Slises: Z {slise2str(self.validating_dsz.slise)} 
-                Y {slise2str(self.validating_dsy.slise)}""", )
+        Regions: Z {region2str(self.validating_dsz.region)} 
+                Y {region2str(self.validating_dsy.region)}""", )
 
         if len(validating_dsz.time) != len(validating_dsy.time):
             raise ValueError(
@@ -350,8 +350,8 @@ class Validation(_Procedure):
         )
 
         fig.suptitle(
-            f'Z({self.validating_dsz.var}): {slise2str(self.validating_dsz.slise)}, '
-            f'Y({self.validating_dsy.var}): {slise2str(self.validating_dsy.slise)}. '
+            f'Z({self.validating_dsz.var}): {region2str(self.validating_dsz.region)}, '
+            f'Y({self.validating_dsy.var}): {region2str(self.validating_dsy.region)}. '
             f'Alpha: {self.training_mca.alpha}',
             fontweight='bold'
         )
@@ -424,8 +424,8 @@ def _plot_validation_default(
     ax01.set_title('Correlation in time: z vs zhat')
 
     fig.suptitle(
-        f'Z({validation.validating_dsz.var}): {slise2str(validation.validating_dsz.slise)}, '
-        f'Y({validation.validating_dsy.var}): {slise2str(validation.validating_dsy.slise)}. '
+        f'Z({validation.validating_dsz.var}): {region2str(validation.validating_dsz.region)}, '
+        f'Y({validation.validating_dsy.var}): {region2str(validation.validating_dsy.region)}. '
         f'Alpha: {validation.training_mca.alpha}',
         fontweight='bold'
     )

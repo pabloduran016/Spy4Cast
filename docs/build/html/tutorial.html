@@ -159,17 +159,7 @@
 <li class="toctree-l1"><a class="reference internal" href="methodologies.html">Methodologies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="toctrees/api-reference.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.dataset.Dataset.html">Dataset</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/meteo.html">Meteo</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.PlotType.html">PlotType</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.Anom.html">Anom</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.Clim.html">Clim</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.index_regression.html">index_regression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.MCA.html">MCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Preprocess.html">Preprocess</a></li>
@@ -177,8 +167,18 @@
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Validation.html">Validation</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.dataset.Dataset.html">Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/meteo.html">Meteo</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.PlotType.html">PlotType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.Anom.html">Anom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.Clim.html">Clim</a></li>
+</ul>
+</li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Slise.html">Slise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Region.html">Region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Month.html">Month</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Color.html">Color</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.T_FORMAT.html">T_FORMAT</a></li>
@@ -250,8 +250,8 @@
 </section>
 <section id="slice">
 <h2>Slice<a class="headerlink" href="#slice" title="Permalink to this heading">#</a></h2>
-<p>Most of the times you would like to slice a region of the dataset. You will need to use <cite>Slise</cite> and <cite>Month</cite> for that:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span>  <span class="c1"># --- new --- #</span>
+<p>Most of the times you would like to slice a region of the dataset. You will need to use <cite>Region</cite> and <cite>Month</cite> for that:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Region</span>  <span class="c1"># --- new --- #</span>
 
 <span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
 <span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
@@ -265,7 +265,7 @@
 <span class="c1"># goes from 0 to 360 when you open the dataset this will be</span>
 <span class="c1"># changed so you ALWAYS have to latitude from -90 to 90</span>
 <span class="c1"># and longitude form -180 to 180</span>
-<span class="n">slise</span> <span class="o">=</span> <span class="n">Slise</span><span class="p">(</span>
+<span class="n">region</span> <span class="o">=</span> <span class="n">Region</span><span class="p">(</span>
     <span class="n">lat0</span><span class="o">=-</span><span class="mi">45</span><span class="p">,</span>
     <span class="n">latf</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">lon0</span><span class="o">=-</span><span class="mi">6</span><span class="p">,</span>
@@ -277,36 +277,36 @@
     <span class="n">year0</span><span class="o">=</span><span class="mi">1875</span><span class="p">,</span>
     <span class="n">yearf</span><span class="o">=</span><span class="mi">1990</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">slise</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
 
-<span class="c1"># You can also do this in one line like: ds = Dataset(NAME, dir=DIR).open(VAR).slice(slise)</span>
+<span class="c1"># You can also do this in one line like: ds = Dataset(NAME, dir=DIR).open(VAR).slice(region)</span>
 </pre></div>
 </div>
 </section>
 <section id="save">
 <h2>Save<a class="headerlink" href="#save" title="Permalink to this heading">#</a></h2>
 <p>Every methodology can be saved for future usage (<cite>.save(“prefix_”, dir=’saved_data_directory’)</cite>)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span>
 
 <span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
 <span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
 <span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
-    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
+    <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
 <span class="p">)</span>
 <span class="n">preprocesed</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 <span class="n">preprocesed</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_preprocess_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
 
 <span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
 <span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
 <span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
-    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
+    <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
 <span class="p">)</span>
 <span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, 'ts')</span>
 <span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
@@ -339,15 +339,15 @@
 <span id="spy4cast-tutorial"></span><h2>Spy4Cast<a class="headerlink" href="#spy4cast" title="Permalink to this heading">#</a></h2>
 <p>The main methodology of spy4cast is Spy4Cast :-).</p>
 <p>It requires a predictor dataset and a predictand dataset. Here is an example which you can download <a class="reference download internal" download="" href="_downloads/dab7c90832f60c3cfeba70393ebd818d/docs-spy4cast-example.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span><span class="p">,</span> <span class="n">Validation</span>
 
 <span class="n">predictor</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">'predictor.nc'</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'predictor-var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
-    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1990</span><span class="p">)</span>
+    <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1990</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="n">predictand</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">'predictand.nc'</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'predictand-var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
-    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1871</span><span class="p">,</span> <span class="mi">1991</span><span class="p">)</span>
+    <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1871</span><span class="p">,</span> <span class="mi">1991</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -408,33 +408,33 @@ plotting functions.</p>
 <section id="clim">
 <span id="clim-tutorial"></span><h3>Clim<a class="headerlink" href="#clim" title="Permalink to this heading">#</a></h3>
 <p>Clim performs the climatology for the given region</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
 
 <span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
 <span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
 <span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
-    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
+    <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
 <span class="p">)</span>
 <span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, 'ts')</span>
 <span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You can slice a dataset with only a Month and a year (<code class="code docutils literal notranslate"><span class="pre">Slise(-90,</span> <span class="pre">90,</span> <span class="pre">-180,</span> <span class="pre">180,</span> <span class="pre">Month.JAN,</span> <span class="pre">Month.JAN,</span> <span class="pre">1900,</span> <span class="pre">1900)</span></code>)
+<p>You can slice a dataset with only a Month and a year (<code class="code docutils literal notranslate"><span class="pre">Region(-90,</span> <span class="pre">90,</span> <span class="pre">-180,</span> <span class="pre">180,</span> <span class="pre">Month.JAN,</span> <span class="pre">Month.JAN,</span> <span class="pre">1900,</span> <span class="pre">1900)</span></code>)
 and plot the clmatollogy of this dataset if you want to plot a certain month and year.</p>
 </section>
 <section id="anom">
 <span id="anom-tutorial"></span><h3>Anom<a class="headerlink" href="#anom" title="Permalink to this heading">#</a></h3>
 <p>Anom performs the anomaly for the given region</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Anom</span>
 
 <span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
 <span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
 <span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
-    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
+    <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
 <span class="p">)</span>
 <span class="n">anom</span> <span class="o">=</span> <span class="n">Anom</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, 'ts')</span>
 <span class="c1"># A year is needed because Anom produces lots of maps (if you use 'ts', the year parameter becomes invalid)</span>

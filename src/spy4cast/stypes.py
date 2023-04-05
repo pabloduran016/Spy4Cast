@@ -10,7 +10,7 @@ import numpy.typing as npt
 
 
 __all__ = [
-    'Slise',
+    'Region',
     'Color',
     'T_FORMAT',
     'TimeStamp',
@@ -39,11 +39,11 @@ def _document_enum(cls: T) -> T:
 class Month(IntEnum):
     """Enumeration for Months.
 
-    Useful to use together with `Slise`
+    Useful to use together with `Region`
 
     Example
     -------
-        >>> Slise(-20, 20, -100, -60, Month.DEC, Month.FEB, 1870, 1910)
+        >>> Region(-20, 20, -100, -60, Month.DEC, Month.FEB, 1870, 1910)
     """
     JAN = auto()
     FEB = auto()
@@ -60,16 +60,16 @@ class Month(IntEnum):
 
 
 @dataclass
-class Slise:
-    """Dataclass to create a `Slise`
+class Region:
+    """Dataclass to create a `Region`
 
-    A slise is the way of slicing datasets that is convenient to the user and the API
+    A region is the way of slicing datasets that is convenient to the user and the API
 
     Note
     ----
         The developers of this API are aware that the correct spelling for `slice` is with a `c`.
         However, `slice` is a built-in function in python and in the start of the development of this poject was better to use
-        `slise`. This is the reason why this class is spelled with `s` (it wouldn't conflict with `slice` right now because
+        `region`. This is the reason why this class is spelled with `s` (it wouldn't conflict with `slice` right now because
         it is capitalised, but it looks good enough, right?)
     """
 
@@ -94,19 +94,19 @@ class Slise:
 
     @classmethod
     def default(cls, month0: int = Month.JAN, monthf: int = Month.DEC, year0: int = 0, yearf: int = 2000,
-                sy: Optional[int] = None) -> 'Slise':
-        """Alternartive constructor that creates a `Slise` that has the largest spatial region and season possible
+                sy: Optional[int] = None) -> 'Region':
+        """Alternartive constructor that creates a `Region` that has the largest spatial region and season possible
 
-        It is useful if you want to create fast a `Slise` where you conly want to modify the initial and final year for example
+        It is useful if you want to create fast a `Region` where you conly want to modify the initial and final year for example
 
         Returns
         -------
-            Slise(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)"""
-        return Slise(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)
+            Region(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)"""
+        return Region(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)
 
     @classmethod
-    def from_numpy(cls, arr: npt.NDArray[Union[np.float32, np.uint]]) -> 'Slise':
-        """Alternative constructor for slise:
+    def from_numpy(cls, arr: npt.NDArray[Union[np.float32, np.uint]]) -> 'Region':
+        """Alternative constructor for region:
             lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy
         """
         attrs: List[float] = [x for x in arr]
@@ -115,7 +115,7 @@ class Slise:
 
         lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy = attrs
 
-        return Slise(
+        return Region(
             lat0=float(lat0),
             latf=float(latf),
             lon0=float(lon0),
@@ -128,7 +128,7 @@ class Slise:
         )
 
     def as_numpy(self) -> npt.NDArray[Union[np.float32, np.uint]]:
-        """Converts slise to np array with fields:
+        """Converts region to np array with fields:
             lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy
         """
         return np.array([
@@ -157,8 +157,8 @@ def _document_dataclass(cls: CLS) -> CLS:
     return cls
 
 
-_document_dataclass(Slise)
-# class SliseDict(TypedDict):
+_document_dataclass(Region)
+# class RegionDict(TypedDict):
 #     latitude_min: Union[float, int]
 #     latitude_max: Union[float, int]
 #     longitude_min: Union[float, int]

@@ -9,8 +9,10 @@ Welcome to Spy4Cast's documentation! |ICON|
 
 **Spy4Cast** is a framework for working with .nc files and applying methodologies to them as well as plotting.
 
-.. note::
-   If you see anywhere in the docs or in the files `slise` and think it is a typo, it is not. Python has a built-in function called `slice` and in this library we have decided to use `slise` to avoid unexpected behaviours. I hope it is not too ugly...
+..
+
+    .. note::
+       If you see anywhere in the docs or in the files `region` and think it is a typo, it is not. Python has a built-in function called `slice` and in this library we have decided to use `region` to avoid unexpected behaviours. I hope it is not too ugly...
 
 .. note::
    This project is under active developement
@@ -20,16 +22,16 @@ Run the methodology
 
 .. code:: python
 
-    from spy4cast import Dataset, Slise, Month
+    from spy4cast import Dataset, Region, Month
     from spy4cast.spy4cast import Preprocess, MCA, Crossvalidation
 
 .. code:: python
 
     ds_y = Dataset("sea_surface_temperature.nc", dir="datasets").open('sst')
-    ds_y.slice(Slise(-20, 20, -150, -90, Month.AUG, Month.NOV, 1971, 2003))
+    ds_y.slice(Region(-20, 20, -150, -90, Month.AUG, Month.NOV, 1971, 2003))
 
     ds_z = Dataset("atmospheric_preasure.nc", dir="datasets").open('pr')
-    ds_z.slice(Slise(11.5, 16.5, -25, -15, Month.FEB, Month.MAY, 1972, 2004))
+    ds_z.slice(Region(11.5, 16.5, -25, -15, Month.FEB, Month.MAY, 1972, 2004))
 
 .. code:: python
 

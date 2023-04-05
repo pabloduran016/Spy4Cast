@@ -15,8 +15,8 @@ Preprocess
       ~Preprocess.lat
       ~Preprocess.lon
       ~Preprocess.meta
+      ~Preprocess.region
       ~Preprocess.shape
-      ~Preprocess.slise
       ~Preprocess.time
       ~Preprocess.var
       ~Preprocess.var_names
@@ -34,8 +34,8 @@ Preprocess
    .. autoattribute:: lat
    .. autoattribute:: lon
    .. autoattribute:: meta
+   .. autoattribute:: region
    .. autoattribute:: shape
-   .. autoattribute:: slise
    .. autoattribute:: time
    .. autoattribute:: var
    .. autoattribute:: var_names

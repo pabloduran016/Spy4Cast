@@ -1,4 +1,4 @@
-from spy4cast import Dataset, Slise, Month
+from spy4cast import Dataset, Region, Month
 from spy4cast.spy4cast import Preprocess, MCA, Validation
 
 
@@ -12,7 +12,7 @@ PREDICTAND_NAME = "chl_1km_monthly_Sep1997_Dec2020.nc"
 PREDICTAND_VAR = "CHL"
 
 training_predictor = Dataset(PREDICTOR_NAME, DATASETS_DIR).open(PREDICTOR_VAR)  # JAN-1870 : MAY-2020
-training_oisst_slise = Slise(
+training_oisst_slise = Region(
     lat0=5, latf=45,
     lon0=-90, lonf=-5,
     month0=Month.JUN, monthf=Month.JUL,
@@ -21,7 +21,7 @@ training_oisst_slise = Slise(
 training_predictor.slice(training_oisst_slise, skip=3)
 
 training_predictand = Dataset(PREDICTAND_NAME, DATASETS_DIR).open(PREDICTAND_VAR)  # JAN-1959 : DEC-2004
-training_chl_slise = Slise(
+training_chl_slise = Region(
     lat0=36, latf=37,
     lon0=-5.3, lonf=-2,
     month0=Month.MAR, monthf=Month.APR,
@@ -30,7 +30,7 @@ training_chl_slise = Slise(
 training_predictand.slice(training_chl_slise, skip=3)
 
 validating_predictor = Dataset(PREDICTOR_NAME, DATASETS_DIR).open(PREDICTOR_VAR)  # JAN-1870 : MAY-2020
-validating_oisst_slise = Slise(
+validating_oisst_slise = Region(
     lat0=5, latf=45,
     lon0=-90, lonf=-5,
     month0=Month.JUN, monthf=Month.JUL,
@@ -39,7 +39,7 @@ validating_oisst_slise = Slise(
 validating_predictor.slice(validating_oisst_slise, skip=3)
 
 validating_predictand = Dataset(PREDICTAND_NAME, DATASETS_DIR).open(PREDICTAND_VAR)  # JAN-1959 : DEC-2004
-validating_chl_slise = Slise(
+validating_chl_slise = Region(
     lat0=36, latf=37,
     lon0=-5.3, lonf=-2,
     month0=Month.MAR, monthf=Month.APR,

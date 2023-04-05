@@ -13,7 +13,7 @@ Anom
       ~Anom.data
       ~Anom.lat
       ~Anom.lon
-      ~Anom.slise
+      ~Anom.region
       ~Anom.time
       ~Anom.type
       ~Anom.var
@@ -32,7 +32,7 @@ Anom
    .. autoattribute:: data
    .. autoattribute:: lat
    .. autoattribute:: lon
-   .. autoattribute:: slise
+   .. autoattribute:: region
    .. autoattribute:: time
    .. autoattribute:: type
    .. autoattribute:: var

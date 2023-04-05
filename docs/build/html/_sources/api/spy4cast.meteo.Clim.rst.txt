@@ -13,7 +13,7 @@ Clim
       ~Clim.data
       ~Clim.lat
       ~Clim.lon
-      ~Clim.slise
+      ~Clim.region
       ~Clim.time
       ~Clim.type
       ~Clim.var
@@ -31,7 +31,7 @@ Clim
    .. autoattribute:: data
    .. autoattribute:: lat
    .. autoattribute:: lon
-   .. autoattribute:: slise
+   .. autoattribute:: region
    .. autoattribute:: time
    .. autoattribute:: type
    .. autoattribute:: var

@@ -8,8 +8,8 @@ from scipy import signal
 import xarray as xr
 import cartopy.crs as ccrs
 
-from .. import Slise, Month
-from .._functions import time_from_here, time_to_here, slise2str, _debuginfo, debugprint
+from .. import Region, Month
+from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT
@@ -42,12 +42,11 @@ class Preprocess(_Procedure):
         dsz_index_regression : optional, Preprocess
             Predictand to send to index regression. Default is the same as z
     """
-    _data: xr.DataArray
     _time: xr.DataArray
     _lat: xr.DataArray
     _lon: xr.DataArray
 
-    _slise: Slise
+    _region: Region
     _var: str
 
     @property
@@ -106,13 +105,13 @@ class Preprocess(_Procedure):
     def meta(self) -> npt.NDArray[Any]:
         """Returns a np.ndarray containg information about the preprocessing
 
-        First 9 values is slise as numpy, then variable as str
+        First 9 values is region as numpy, then variable as str
         """
-        return np.concatenate((self.slise.as_numpy(), np.array([self.var])))
+        return np.concatenate((self.region.as_numpy(), np.array([self.var])))
 
     @meta.setter
     def meta(self, arr: npt.NDArray[Any]) -> None:
-        self._slise = Slise.from_numpy(arr[:9].astype(np.float32))
+        self._region = Region.from_numpy(arr[:9].astype(np.float32))
         self.var = str(arr[9])
 
     @property
@@ -226,16 +225,16 @@ class Preprocess(_Procedure):
         self._var = value
 
     @property
-    def slise(self) -> Slise:
+    def region(self) -> Region:
         """Region used to slice the dataset"""
-        if hasattr(self, '_slise'):
-            return self._slise
+        if hasattr(self, '_region'):
+            return self._region
         elif hasattr(self, '_ds'):
-            self._slise = self._ds.slise
-            return self._ds.slise
+            self._region = self._ds.region
+            return self._ds.region
         else:
             # TODO: Replace month0 and monthf with meaninful values
-            self._slise = Slise(
+            self._region = Region(
                 lat0=self.lat.values[0],
                 latf=self.lat.values[-1],
                 lon0=self.lon.values[0],
@@ -245,7 +244,7 @@ class Preprocess(_Procedure):
                 year0=self.time.values[0],
                 yearf=self.time.values[-1],
             )
-            return self._slise
+            return self._region
 
     def plot(
         self,
@@ -298,7 +297,7 @@ class Preprocess(_Procedure):
             f'Year {self.time[index].values}',
             cmap=cmap,
         )
-        fig.suptitle(f'{self.var}: {slise2str(self.slise)}', fontweight='bold')
+        fig.suptitle(f'{self.var}: {region2str(self.region)}', fontweight='bold')
 
         if dir is None:
             dir = '.'

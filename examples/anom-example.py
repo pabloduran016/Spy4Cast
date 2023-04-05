@@ -1,5 +1,5 @@
 from spy4cast.meteo import Anom
-from spy4cast import Month, Slise, Dataset
+from spy4cast import Month, Region, Dataset
 
 # Define constants ---------------------------------------------------------------------------------- #
 DATASET_DIR = '/Users/Shared/datasets/'
@@ -9,9 +9,9 @@ PLOT_DATA_DIR = 'data-anom'
 chl_1km_monthly_Sep1997_Dec2020 = 'chl_1km_monthly_Sep1997_Dec2020.nc'
 CHL = 'CHL'
 
-chl_slise = Slise(30, 90, -5.3, -2, Month.MAR, Month.APR, 1998, 2020)
+chl_region = Region(30, 90, -5.3, -2, Month.MAR, Month.APR, 1998, 2020)
 
-ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASET_DIR).open(CHL).slice(chl_slise)
+ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASET_DIR).open(CHL).slice(chl_region)
 
 map_anom = Anom(ds, 'map')
 

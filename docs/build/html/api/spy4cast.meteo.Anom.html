@@ -159,17 +159,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../methodologies.html">Methodologies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting.html">Plotting</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../toctrees/api-reference.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="spy4cast.dataset.Dataset.html">Dataset</a></li>
-</ul>
-</li>
-<li class="toctree-l2 current has-children"><a class="reference internal" href="../toctrees/api-reference-src/meteo.html">Meteo</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.PlotType.html">PlotType</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Anom</a></li>
-<li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.Clim.html">Clim</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.index_regression.html">index_regression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.MCA.html">MCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html">Preprocess</a></li>
@@ -177,8 +167,18 @@
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.Validation.html">Validation</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="spy4cast.dataset.Dataset.html">Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../toctrees/api-reference-src/meteo.html">Meteo</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.PlotType.html">PlotType</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Anom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.Clim.html">Clim</a></li>
+</ul>
+</li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Slise.html">Slise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Region.html">Region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Month.html">Month</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Color.html">Color</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.T_FORMAT.html">T_FORMAT</a></li>
@@ -265,8 +265,8 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.meteo.Anom.lon" title="spy4cast.meteo.Anom.lon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lon</span></code></a></p></td>
 <td><p>Array of longitude values of the dataset passes in initialization if type is <cite>map</cite></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.meteo.Anom.slise" title="spy4cast.meteo.Anom.slise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slise</span></code></a></p></td>
-<td><p>Slise applied to the matrix.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.meteo.Anom.region" title="spy4cast.meteo.Anom.region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region</span></code></a></p></td>
+<td><p>Region applied to the matrix.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.meteo.Anom.time" title="spy4cast.meteo.Anom.time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time</span></code></a></p></td>
 <td><p>Array of years of the time variable</p></td>
@@ -328,21 +328,21 @@
 </dl>
 </dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.meteo.Anom.slise">
-<span class="sig-name descname"><span class="pre">slise</span></span><a class="headerlink" href="#spy4cast.meteo.Anom.slise" title="Permalink to this definition">#</a></dt>
-<dd><p>Slise applied to the matrix.</p>
+<dt class="sig sig-object py" id="spy4cast.meteo.Anom.region">
+<span class="sig-name descname"><span class="pre">region</span></span><a class="headerlink" href="#spy4cast.meteo.Anom.region" title="Permalink to this definition">#</a></dt>
+<dd><p>Region applied to the matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" title="spy4cast.stypes.Slise">spy4cast.stypes.Slise</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="spy4cast.stypes.Region.html#spy4cast.stypes.Region" title="spy4cast.stypes.Region">spy4cast.stypes.Region</a></p>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If type is <cite>ts</cite> and initilization from ds was not run then a default time and region slise is returned</p>
+<p>If type is <cite>ts</cite> and initilization from ds was not run then a default time and region region is returned</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If type is <cite>map</cite> and initilization from ds was not run then a default time slise is returned</p>
+<p>If type is <cite>map</cite> and initilization from ds was not run then a default time region is returned</p>
 </div>
 </dd></dl>
 <dl class="py attribute">
@@ -520,7 +520,7 @@ and stops execution. Else uses fig.show and does not halt program</p></li>
 <li><a class="reference internal" href="#spy4cast.meteo.Anom.data"><code class="docutils literal notranslate"><span class="pre">Anom.data</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.meteo.Anom.lat"><code class="docutils literal notranslate"><span class="pre">Anom.lat</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.meteo.Anom.lon"><code class="docutils literal notranslate"><span class="pre">Anom.lon</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.meteo.Anom.slise"><code class="docutils literal notranslate"><span class="pre">Anom.slise</span></code></a></li>
+<li><a class="reference internal" href="#spy4cast.meteo.Anom.region"><code class="docutils literal notranslate"><span class="pre">Anom.region</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.meteo.Anom.time"><code class="docutils literal notranslate"><span class="pre">Anom.time</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.meteo.Anom.type"><code class="docutils literal notranslate"><span class="pre">Anom.type</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.meteo.Anom.var"><code class="docutils literal notranslate"><span class="pre">Anom.var</span></code></a></li>

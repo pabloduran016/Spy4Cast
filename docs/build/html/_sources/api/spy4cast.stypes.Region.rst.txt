@@ -1,32 +1,32 @@
-Slise
-=====
+Region
+======
 
 .. currentmodule:: spy4cast.stypes
 
-.. autoclass:: Slise
+.. autoclass:: Region
    :show-inheritance:
 
    .. rubric:: Attributes Summary
 
    .. autosummary::
 
-      ~Slise.lat0
-      ~Slise.latf
-      ~Slise.lon0
-      ~Slise.lonf
-      ~Slise.month0
-      ~Slise.monthf
-      ~Slise.sy
-      ~Slise.year0
-      ~Slise.yearf
+      ~Region.lat0
+      ~Region.latf
+      ~Region.lon0
+      ~Region.lonf
+      ~Region.month0
+      ~Region.monthf
+      ~Region.sy
+      ~Region.year0
+      ~Region.yearf
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~Slise.as_numpy
-      ~Slise.default
-      ~Slise.from_numpy
+      ~Region.as_numpy
+      ~Region.default
+      ~Region.from_numpy
 
    .. rubric:: Attributes Documentation
 

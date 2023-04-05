@@ -1,5 +1,5 @@
 from spy4cast.meteo import Clim
-from spy4cast import Month, Slise, Dataset
+from spy4cast import Month, Region, Dataset
 
 # Define constants ---------------------------------------------------------------------------------- #
 DATASET_DIR = '/Users/Shared/datasets/'
@@ -9,9 +9,9 @@ PLOT_DATA_DIR = 'data-clim'
 chl_1km_monthly_Sep1997_Dec2020 = 'chl_1km_monthly_Sep1997_Dec2020.nc'
 CHL = 'CHL'
 
-chl_slise = Slise(36, 37, -5.3, -2, Month.MAR, Month.APR, 1998, 2020)
+chl_region = Region(36, 37, -5.3, -2, Month.MAR, Month.APR, 1998, 2020)
 
-ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASET_DIR).open(CHL).slice(chl_slise)
+ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASET_DIR).open(CHL).slice(chl_region)
 
 map_clim = Clim(ds, 'map')
 map_clim.save('map_climatology', PLOT_DATA_DIR)

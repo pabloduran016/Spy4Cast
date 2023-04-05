@@ -1,12 +1,12 @@
-from spy4cast import Dataset, Slise, Month
+from spy4cast import Dataset, Region, Month
 from spy4cast.spy4cast import Preprocess, MCA, Crossvalidation, Validation
 
 predictor = Dataset('predictor.nc').open('predictor-var').slice(
-    Slise(-20, 30, -5, 40, Month.DEC, Month.MAR, 1870, 1990)
+    Region(-20, 30, -5, 40, Month.DEC, Month.MAR, 1870, 1990)
 )
 
 predictand = Dataset('predictand.nc').open('predictand-var').slice(
-    Slise(-50, -10, -40, 40, Month.JUN, Month.AUG, 1871, 1991)
+    Region(-50, -10, -40, 40, Month.JUN, Month.AUG, 1871, 1991)
 )
 
 nm = 3
@@ -29,16 +29,16 @@ cross.plot(save_fig=True, name='cross.png')
 
 
 training_predictor = Dataset('predictor.nc').open('predictor-var')  # JAN-1870 : MAY-2020
-training_predictor.slice(Slise(5, 45, -90, -5, Month.JUN, Month.JUL, 1997, 2007), skip=3)
+training_predictor.slice(Region(5, 45, -90, -5, Month.JUN, Month.JUL, 1997, 2007), skip=3)
 
 training_predictand = Dataset('predictand.nc').open('predictand-var')  # JAN-1959 : DEC-2004
-training_predictand.slice(Slise(36, 37, -5.3, -2, Month.MAR, Month.APR, 1998, 2008), skip=3)
+training_predictand.slice(Region(36, 37, -5.3, -2, Month.MAR, Month.APR, 1998, 2008), skip=3)
 
 validating_predictor = Dataset('predictor.nc').open('predictor-var')  # JAN-1870 : MAY-2020
-validating_predictor.slice(Slise(5, 45, -90, -5, Month.JUN, Month.JUL, 2008, 2018), skip=3)
+validating_predictor.slice(Region(5, 45, -90, -5, Month.JUN, Month.JUL, 2008, 2018), skip=3)
 
 validating_predictand = Dataset('predictand.nc').open('predictand-var')  # JAN-1959 : DEC-2004
-validating_predictand.slice(Slise(36, 37, -5.3, -2, Month.MAR, Month.APR, 2009, 2019), skip=3)
+validating_predictand.slice(Region(36, 37, -5.3, -2, Month.MAR, Month.APR, 2009, 2019), skip=3)
 
 training_preprocessed_y = Preprocess(training_predictor)
 training_preprocessed_z = Preprocess(training_predictand)

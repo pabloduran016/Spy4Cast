@@ -176,7 +176,7 @@
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Slise.html">Slise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Region.html">Region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Month.html">Month</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Color.html">Color</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.T_FORMAT.html">T_FORMAT</a></li>
@@ -252,7 +252,7 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/spy4cast.stypes.Month.html#spy4cast.stypes.Month.APR">APR (spy4cast.stypes.Month attribute)</a>
 </li>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.as_numpy">as_numpy() (spy4cast.stypes.Slise method)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.as_numpy">as_numpy() (spy4cast.stypes.Region method)</a>
 </li>
         <li><a href="api/spy4cast.stypes.Month.html#spy4cast.stypes.Month.AUG">AUG (spy4cast.stypes.Month attribute)</a>
 </li>
@@ -304,7 +304,7 @@
 </li>
         <li><a href="api/spy4cast.stypes.Month.html#spy4cast.stypes.Month.DEC">DEC (spy4cast.stypes.Month attribute)</a>
 </li>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.default">default() (spy4cast.stypes.Slise class method)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.default">default() (spy4cast.stypes.Region class method)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -320,7 +320,7 @@
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.from_numpy">from_numpy() (spy4cast.stypes.Slise class method)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.from_numpy">from_numpy() (spy4cast.stypes.Region class method)</a>
 </li>
         <li><a href="api/spy4cast.dataset.Dataset.html#spy4cast.dataset.Dataset.from_xrarray">from_xrarray() (spy4cast.dataset.Dataset class method)</a>
 
@@ -374,9 +374,9 @@
           <li><a href="api/spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess.lat">(spy4cast.spy4cast.Preprocess attribute)</a>
 </li>
         </ul></li>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.lat0">lat0 (spy4cast.stypes.Slise attribute)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.lat0">lat0 (spy4cast.stypes.Region attribute)</a>
 </li>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.latf">latf (spy4cast.stypes.Slise attribute)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.latf">latf (spy4cast.stypes.Region attribute)</a>
 </li>
         <li><a href="api/spy4cast.meteo.Anom.html#spy4cast.meteo.Anom.load">load() (spy4cast.meteo.Anom class method)</a>
 
@@ -402,9 +402,9 @@
           <li><a href="api/spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess.lon">(spy4cast.spy4cast.Preprocess attribute)</a>
 </li>
         </ul></li>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.lon0">lon0 (spy4cast.stypes.Slise attribute)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.lon0">lon0 (spy4cast.stypes.Region attribute)</a>
 </li>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.lonf">lonf (spy4cast.stypes.Slise attribute)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.lonf">lonf (spy4cast.stypes.Region attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -441,9 +441,9 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.month0">month0 (spy4cast.stypes.Slise attribute)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.month0">month0 (spy4cast.stypes.Region attribute)</a>
 </li>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.monthf">monthf (spy4cast.stypes.Slise attribute)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.monthf">monthf (spy4cast.stypes.Region attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -561,10 +561,22 @@
           <li><a href="api/spy4cast.spy4cast.Validation.html#spy4cast.spy4cast.Validation.r_z_zhat_t_accumulated_modes">(spy4cast.spy4cast.Validation attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/spy4cast.spy4cast.Crossvalidation.html#spy4cast.spy4cast.Crossvalidation.r_z_zhat_t_separated_modes">r_z_zhat_t_separated_modes (spy4cast.spy4cast.Crossvalidation attribute)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region">Region (class in spy4cast.stypes)</a>
+</li>
+        <li><a href="api/spy4cast.dataset.Dataset.html#spy4cast.dataset.Dataset.region">region (spy4cast.dataset.Dataset attribute)</a>
+
+        <ul>
+          <li><a href="api/spy4cast.meteo.Anom.html#spy4cast.meteo.Anom.region">(spy4cast.meteo.Anom attribute)</a>
+</li>
+          <li><a href="api/spy4cast.meteo.Clim.html#spy4cast.meteo.Clim.region">(spy4cast.meteo.Clim attribute)</a>
+</li>
+          <li><a href="api/spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess.region">(spy4cast.spy4cast.Preprocess attribute)</a>
+</li>
+        </ul></li>
         <li><a href="api/spy4cast.spy4cast.MCA.html#spy4cast.spy4cast.MCA.RUY">RUY (spy4cast.spy4cast.MCA attribute)</a>
 </li>
         <li><a href="api/spy4cast.spy4cast.MCA.html#spy4cast.spy4cast.MCA.RUY_sig">RUY_sig (spy4cast.spy4cast.MCA attribute)</a>
@@ -601,18 +613,6 @@
         </ul></li>
         <li><a href="api/spy4cast.dataset.Dataset.html#spy4cast.dataset.Dataset.slice">slice() (spy4cast.dataset.Dataset method)</a>
 </li>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise">Slise (class in spy4cast.stypes)</a>
-</li>
-        <li><a href="api/spy4cast.dataset.Dataset.html#spy4cast.dataset.Dataset.slise">slise (spy4cast.dataset.Dataset attribute)</a>
-
-        <ul>
-          <li><a href="api/spy4cast.meteo.Anom.html#spy4cast.meteo.Anom.slise">(spy4cast.meteo.Anom attribute)</a>
-</li>
-          <li><a href="api/spy4cast.meteo.Clim.html#spy4cast.meteo.Clim.slise">(spy4cast.meteo.Clim attribute)</a>
-</li>
-          <li><a href="api/spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess.slise">(spy4cast.spy4cast.Preprocess attribute)</a>
-</li>
-        </ul></li>
         <li>
     spy4cast.dataset
 
@@ -627,8 +627,6 @@
           <li><a href="toctrees/api-reference-src/errors.html#module-spy4cast.errors">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     spy4cast.meteo
 
@@ -636,6 +634,8 @@
           <li><a href="toctrees/api-reference-src/meteo.html#module-spy4cast.meteo">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     spy4cast.spy4cast
 
@@ -668,7 +668,7 @@
 </li>
         <li><a href="api/spy4cast.spy4cast.MCA.html#spy4cast.spy4cast.MCA.SUZ_sig">SUZ_sig (spy4cast.spy4cast.MCA attribute)</a>
 </li>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.sy">sy (spy4cast.stypes.Slise attribute)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.sy">sy (spy4cast.stypes.Region attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -772,11 +772,11 @@
   <h2>Y</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.year0">year0 (spy4cast.stypes.Slise attribute)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.year0">year0 (spy4cast.stypes.Region attribute)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/spy4cast.stypes.Slise.html#spy4cast.stypes.Slise.yearf">yearf (spy4cast.stypes.Slise attribute)</a>
+        <li><a href="api/spy4cast.stypes.Region.html#spy4cast.stypes.Region.yearf">yearf (spy4cast.stypes.Region attribute)</a>
 </li>
     </ul></td>
   </tr></table>

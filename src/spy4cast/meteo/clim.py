@@ -4,8 +4,8 @@ from typing import Type, Tuple, Optional, Union, Any, Sequence, Literal
 from matplotlib import pyplot as plt
 
 from . import PlotType, _get_type
-from .. import Slise, Dataset, Month
-from .._functions import slise2str
+from .. import Region, Dataset, Month
+from .._functions import region2str
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_ts, _plot_map, _calculate_figsize, MAX_WIDTH, MAX_HEIGHT
 import numpy as np
 import cartopy.crs as ccrs
@@ -47,14 +47,14 @@ class Clim(_Procedure, object):
     _time_key: str
     _lat_key: str
     _lon_key: str
-    _slise: Slise
+    _region: Region
 
     _type: PlotType
 
     def __init__(self, ds: Dataset, type: Literal["map", "ts"]):
         self.type = _get_type(type)
         self._ds = ds
-        self._slise = ds.slise
+        self._region = ds.region
 
         if self._type == PlotType.TS:
             self._data = _clim(ds.data.mean(ds._lon_key).mean(ds._lat_key), dim='year')
@@ -183,27 +183,27 @@ class Clim(_Procedure, object):
         self._data = self.data.assign_coords({self._time_key: value})
 
     @property
-    def slise(self) -> Slise:
-        """Slise applied to the matrix.
+    def region(self) -> Region:
+        """Region applied to the matrix.
 
         Returns
         -------
-            spy4cast.stypes.Slise
+            spy4cast.stypes.Region
 
         Note
         ----
-            If type is `ts` and initilization from ds was not run then a default time and region slise is returned
+            If type is `ts` and initilization from ds was not run then a default time and region region is returned
 
         Note
         ----
-            If type is `map` and initilization from ds was not run then a default time slise is returned
+            If type is `map` and initilization from ds was not run then a default time region is returned
         """
-        if hasattr(self, '_slise'):
-            return self._slise
+        if hasattr(self, '_region'):
+            return self._region
         elif hasattr(self, '_ds'):
-            return self._ds.slise
+            return self._ds.region
         elif self._type == PlotType.TS:
-            self._slise = Slise(
+            self._region = Region(
                 lat0=-90,
                 latf=90,
                 lon0=-180,
@@ -213,9 +213,9 @@ class Clim(_Procedure, object):
                 year0=self.time.values[0],
                 yearf=self.time.values[-1],
             )
-            return self._slise
+            return self._region
         elif self._type == PlotType.MAP:
-            self._slise = Slise(
+            self._region = Region(
                 lat0=self.lat.values[0],
                 latf=self.lat.values[-1],
                 lon0=self.lon.values[0],
@@ -225,7 +225,7 @@ class Clim(_Procedure, object):
                 year0=0,
                 yearf=1000,
             )
-            return self._slise
+            return self._region
         else:
             assert False, 'Unreachable'
 
@@ -329,7 +329,7 @@ class Clim(_Procedure, object):
                 xtickslabels=[x for x in self.time.values[::1]],
             )
             fig.suptitle(
-                f'Time series of {self.var} ({slise2str(self.slise)})',
+                f'Time series of {self.var} ({region2str(self.region)})',
                 fontweight='bold'
             )
         elif self._type == PlotType.MAP:
@@ -347,7 +347,7 @@ class Clim(_Procedure, object):
                 cmap=(cmap if cmap is not None else 'jet'),
             )
             fig.suptitle(
-                f'Map of {self.var} ({slise2str(self.slise)})',
+                f'Map of {self.var} ({region2str(self.region)})',
                 fontweight='bold'
             )
         else:

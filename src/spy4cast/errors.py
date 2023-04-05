@@ -59,7 +59,7 @@ class VariableSelectionError(Spy4CastError, ValueError):
 
 
 class TimeBoundsSelectionError(Spy4CastError, ValueError):
-    """Exception raised when checking a slise that has non-valid time
+    """Exception raised when checking a region that has non-valid time
     constraints"""
     _id = next(_new_id)
 

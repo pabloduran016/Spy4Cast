@@ -1,4 +1,4 @@
-from spy4cast import Dataset, Slise, Month
+from spy4cast import Dataset, Region, Month
 from spy4cast.spy4cast import Preprocess, MCA, Crossvalidation
 
 
@@ -12,22 +12,22 @@ PREDICTAND_NAME = "chl_1km_monthly_Sep1997_Dec2020.nc"
 PREDICTAND_VAR = "CHL"
 
 predictor = Dataset(PREDICTOR_NAME, DATASETS_DIR).open(PREDICTOR_VAR)  # JAN-1870 : MAY-2020
-oisst_slise = Slise(
+oisst_region = Region(
     lat0=5, latf=45,
     lon0=-90, lonf=-5,
     month0=Month.JUN, monthf=Month.JUL,
     year0=1997, yearf=2019,
 )  # PREDICTOR: Y
-predictor.slice(oisst_slise, skip=3)
+predictor.slice(oisst_region, skip=3)
 
 predictand = Dataset(PREDICTAND_NAME, DATASETS_DIR).open(PREDICTAND_VAR)  # JAN-1959 : DEC-2004
-chl_slise = Slise(
+chl_region = Region(
     lat0=36, latf=37,
     lon0=-5.3, lonf=-2,
     month0=Month.MAR, monthf=Month.APR,
     year0=1998, yearf=2020,
 )  # PRECITAND: Z
-predictand.slice(chl_slise, skip=3)
+predictand.slice(chl_region, skip=3)
 
 DATA_DIR = 'data-03122022'
 PLOTS_DIR = 'plots-03122022'

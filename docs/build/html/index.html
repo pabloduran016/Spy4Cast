@@ -178,7 +178,7 @@
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Slise.html">Slise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Region.html">Region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Month.html">Month</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Color.html">Color</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.T_FORMAT.html">T_FORMAT</a></li>
@@ -236,25 +236,27 @@
           <section id="welcome-to-spy4cast-s-documentation-icon">
 <h1>Welcome to Spy4Cast’s documentation! <a class="reference internal" href="_images/favicon.png"><img alt="Icon" src="_images/favicon.png" style="height: 1em;"/></a><a class="headerlink" href="#welcome-to-spy4cast-s-documentation-icon" title="Permalink to this heading">#</a></h1>
 <p><strong>Spy4Cast</strong> is a framework for working with .nc files and applying methodologies to them as well as plotting.</p>
-<div class="admonition note">
+<blockquote>
+<div><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you see anywhere in the docs or in the files <cite>slise</cite> and think it is a typo, it is not. Python has a built-in function called <cite>slice</cite> and in this library we have decided to use <cite>slise</cite> to avoid unexpected behaviours. I hope it is not too ugly…</p>
+<p>If you see anywhere in the docs or in the files <cite>region</cite> and think it is a typo, it is not. Python has a built-in function called <cite>slice</cite> and in this library we have decided to use <cite>region</cite> to avoid unexpected behaviours. I hope it is not too ugly…</p>
 </div>
+</div></blockquote>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This project is under active developement</p>
 </div>
 <section id="run-the-methodology">
 <h2>Run the methodology<a class="headerlink" href="#run-the-methodology" title="Permalink to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ds_y</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s2">"sea_surface_temperature.nc"</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">"datasets"</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'sst'</span><span class="p">)</span>
-<span class="n">ds_y</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">150</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">NOV</span><span class="p">,</span> <span class="mi">1971</span><span class="p">,</span> <span class="mi">2003</span><span class="p">))</span>
+<span class="n">ds_y</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">150</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">NOV</span><span class="p">,</span> <span class="mi">1971</span><span class="p">,</span> <span class="mi">2003</span><span class="p">))</span>
 
 <span class="n">ds_z</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s2">"atmospheric_preasure.nc"</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">"datasets"</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'pr'</span><span class="p">)</span>
-<span class="n">ds_z</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Slise</span><span class="p">(</span><span class="mf">11.5</span><span class="p">,</span> <span class="mf">16.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAY</span><span class="p">,</span> <span class="mi">1972</span><span class="p">,</span> <span class="mi">2004</span><span class="p">))</span>
+<span class="n">ds_z</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Region</span><span class="p">(</span><span class="mf">11.5</span><span class="p">,</span> <span class="mf">16.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAY</span><span class="p">,</span> <span class="mi">1972</span><span class="p">,</span> <span class="mi">2004</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">ds_y</span><span class="p">)</span>

@@ -52,7 +52,7 @@ class Dataset:
         >>> Dataset(
         ...     'example.nc', 'data/'
         ... ).open('var').slice(
-        ...     Slise(-20, 20, -10, 0, Month.JAN, Month.FEB, 1870, 2000)
+        ...     Region(-20, 20, -10, 0, Month.JAN, Month.FEB, 1870, 2000)
         ... ).save_nc('data-sliced.nc')
     """
 
@@ -61,7 +61,7 @@ class Dataset:
     _lat_key: str
     _lon_key: str
     _time_key: str
-    _slise: Slise
+    _region: Region
     _var: str
 
     def __init__(
@@ -170,12 +170,12 @@ class Dataset:
             return cast(TimeStamp, pd.Timestamp(str(tf)))
 
     @property
-    def slise(self) -> Slise:
+    def region(self) -> Region:
         """
-        Returns the actual slise of the data
+        Returns the actual region of the data
         """
-        if not hasattr(self, '_slise'):
-            self._slise = Slise(
+        if not hasattr(self, '_region'):
+            self._region = Region(
                 lat0=self.lat.values[0],
                 latf=self.lat.values[-1],
                 lon0=self.lon.values[0],
@@ -185,7 +185,7 @@ class Dataset:
                 year0=self.timestamp0.year,
                 yearf=self.timestampf.year,
             )
-        return self._slise
+        return self._region
 
     def open(self: _T, var: Optional[str] = None) -> _T:
         """Opens dataset without loading it into memory
@@ -248,7 +248,7 @@ class Dataset:
                     if year < 1678:
                         _warning(
                             f"Can not load dataset with initial year being {year}. "
-                            "Loading it with year=2000 so keep it in mind for slises"
+                            "Loading it with year=2000 so keep it in mind for regions"
                         )
                         year = 2000
                     ts0 = datetime(year=year, month=month, day=day)
@@ -384,19 +384,19 @@ class Dataset:
                 f'({", ".join(str(e) for e in self._ds.variables.keys())})'
             )
 
-    def slice(self: _T, slise: Slise, skip: int = 0) -> _T:
-        """Method that slices the dataset accorging to a Slise.
+    def slice(self: _T, region: Region, skip: int = 0) -> _T:
+        """Method that slices the dataset accorging to a Region.
 
         Args
         ----
-            slise : spy4cast.stypes.Slise
-                spy4cast.stypes.Slise to use
+            region : spy4cast.stypes.Region
+                spy4cast.stypes.Region to use
             skip : int
                 Amount of points to skip in the matrix
 
         Note
         ----
-            It first calls `check_slise` method
+            It first calls `check_region` method
 
         Note
         ----
@@ -409,42 +409,42 @@ class Dataset:
 
         See Also
         --------
-        stypes.Slise
+        stypes.Region
         """
 
-        self._check_slise(slise)
-        self._slise = slise
+        self._check_region(region)
+        self._region = region
 
-        # Time slise
+        # Time region
         fro = self.timestamp0
         to = fro + pd.DateOffset(months=len(self.time))
         time = pd.date_range(start=fro, end=to, freq='M')
         if len(time) == len(self.time) + 1:
             time = time[:-1]
 
-        if slise.month0 <= slise.monthf:
+        if region.month0 <= region.monthf:
             timemask = (
-                    (time.month >= slise.month0) &
-                    (time.month <= slise.monthf) &
-                    (time.year >= slise.year0) &
-                    (time.year <= slise.yearf)
+                    (time.month >= region.month0) &
+                    (time.month <= region.monthf) &
+                    (time.year >= region.year0) &
+                    (time.year <= region.yearf)
             )
         else:
             timemask = (
                     (
-                            (time.month >= slise.month0) &
-                            (time.year >= (slise.year0 - 1)) &
-                            (time.year <= (slise.yearf - 1))
+                            (time.month >= region.month0) &
+                            (time.year >= (region.year0 - 1)) &
+                            (time.year <= (region.yearf - 1))
                     ) | (
-                            (time.month <= slise.monthf) &
-                            (time.year >= slise.year0) &
-                            (time.year <= slise.yearf)
+                            (time.month <= region.monthf) &
+                            (time.year >= region.year0) &
+                            (time.year <= region.yearf)
                     )
             )
 
-        # Space slise
-        latmask = (self.lat >= slise.lat0) & (self.lat <= slise.latf)
-        lonmask = (self.lon >= slise.lon0) & (self.lon <= slise.lonf)
+        # Space region
+        latmask = (self.lat >= region.lat0) & (self.lat <= region.latf)
+        lonmask = (self.lon >= region.lon0) & (self.lon <= region.lonf)
 
         self.data = self.data[{
             self._time_key: timemask,
@@ -471,16 +471,16 @@ class Dataset:
 
         return self
 
-    def _check_slise(
-            self: _T, slise: Slise
+    def _check_region(
+            self: _T, region: Region
     ) -> _T:
-        """Checks if the slise selected (only time-related part),
+        """Checks if the region selected (only time-related part),
         if provided, is valid for the given dataset.
 
         Args
         ----
-            slise : Slise
-                Slise use for slicing (see `stypes.Slise`)
+            region : Region
+                Region use for slicing (see `stypes.Region`)
 
         Raises
         ------
@@ -489,89 +489,89 @@ class Dataset:
             VariableSelectionError
                 if the variable selected is not valid
             TimeBoundsSelectionError
-                if the time slise is not valid
+                if the time region is not valid
             SelectedYearError
                 if the selected_year (if provided) is not valid
 
         See Also
         --------
-        stypes.Slise
+        stypes.Region
         """
         if not hasattr(self, '_data'):
             raise ValueError(
                 'The dataset has not been loaded yet. Call load_dataset()'
             )
 
-        assert type(slise.year0) == int, \
-            f'Invalid type for initial_year: {type(slise.year0)}'
-        assert type(slise.yearf) == int, \
-            f"Invalid type for final_year: {type(slise.yearf)}"
-        assert type(slise.monthf) == int or type(slise.monthf) == Month, \
-            "Invalid type for final_month: %s" % type(slise.monthf)
-        assert type(slise.month0) == int or type(slise.month0) == Month, \
-            f"Invalid type for initial_month: {type(slise.month0)}"
-        if not 1 <= slise.month0 <= 12:
+        assert type(region.year0) == int, \
+            f'Invalid type for initial_year: {type(region.year0)}'
+        assert type(region.yearf) == int, \
+            f"Invalid type for final_year: {type(region.yearf)}"
+        assert type(region.monthf) == int or type(region.monthf) == Month, \
+            "Invalid type for final_month: %s" % type(region.monthf)
+        assert type(region.month0) == int or type(region.month0) == Month, \
+            f"Invalid type for initial_month: {type(region.month0)}"
+        if not 1 <= region.month0 <= 12:
             raise TimeBoundsSelectionError(
                 'Initial month not valid, must be int from 0 to 11'
             )
-        if not 1 <= slise.monthf <= 12:
+        if not 1 <= region.monthf <= 12:
             raise TimeBoundsSelectionError(
                 'Final month not valid, must be int from 0 to 11'
             )
-        if slise.year0 > self.timestampf.year:
+        if region.year0 > self.timestampf.year:
             raise TimeBoundsSelectionError(
                 f"Initial year not valid. Dataset finishes in "
-                f"{self.timestampf.year}, got {slise.year0} as "
+                f"{self.timestampf.year}, got {region.year0} as "
                 f"initial year"
             )
-        if slise.year0 < self.timestamp0.year:
+        if region.year0 < self.timestamp0.year:
             raise TimeBoundsSelectionError(
                 f"Initial year not valid. Dataset starts in "
-                f"{self.timestamp0.year}, got {slise.year0}"
+                f"{self.timestamp0.year}, got {region.year0}"
             )
-        if slise.yearf > self.timestampf.year:
+        if region.yearf > self.timestampf.year:
             raise TimeBoundsSelectionError(
                 f"Final Year out of bounds. Dataset finishes in "
-                f"{self.timestampf.year}, got {slise.yearf}"
+                f"{self.timestampf.year}, got {region.yearf}"
             )
-        if slise.yearf < self.timestamp0.year:
+        if region.yearf < self.timestamp0.year:
             raise TimeBoundsSelectionError(
                 f"Final year not valid. Dataset starts in "
-                f"{self.timestamp0.year}, got {slise.year0}"
+                f"{self.timestamp0.year}, got {region.year0}"
             )
-        if slise.yearf >= self.timestampf.year and \
-                slise.monthf > self.timestampf.month:
+        if region.yearf >= self.timestampf.year and \
+                region.monthf > self.timestampf.month:
             raise TimeBoundsSelectionError(
                 f"Final Month out of bounds. Dataset finishes in "
                 f"{mon2str(Month(self.timestampf.month))} "
                 f"{self.timestampf.year}, got "
-                f"{mon2str(Month(slise.monthf))} {slise.yearf}"
+                f"{mon2str(Month(region.monthf))} {region.yearf}"
             )
-        if slise.year0 == self.timestamp0.year and \
-                slise.month0 < self.timestamp0.month:
+        if region.year0 == self.timestamp0.year and \
+                region.month0 < self.timestamp0.month:
             raise TimeBoundsSelectionError(
                 f"Initial Month out of bounds. Dataset starts in "
                 f"{mon2str(Month(self.timestamp0.month))} "
                 f"{self.timestamp0.year}, got "
-                f"{mon2str(Month(slise.month0))} {slise.year0}"
+                f"{mon2str(Month(region.month0))} {region.year0}"
             )
-        if slise.year0 > slise.yearf:
+        if region.year0 > region.yearf:
             raise TimeBoundsSelectionError(
                 f"Initial year bigger than final year\n"
-                f'NOTE: initial_year={slise.year0}, '
-                f'final_year={slise.yearf}'
+                f'NOTE: initial_year={region.year0}, '
+                f'final_year={region.yearf}'
             )
-        if slise.month0 > slise.monthf and \
-                slise.year0 - 1 < self.timestamp0.year:
+        if region.month0 > region.monthf and \
+                region.year0 - 1 < self.timestamp0.year:
             raise TimeBoundsSelectionError(
                 f'Initial year not valid, remember that when selecting '
                 f'month slice that combines years, the initial year '
                 f'backtracks one unit\n'
                 f'NOTE: dataset initial timestamp : {self.timestamp0}'
             )
-        if slise.sy is not None and slise.sy != 0:
-            if not slise.year0 <= slise.sy <= slise.yearf:
-                raise SelectedYearError(slise.sy)
+        if region.sy is not None and region.sy != 0:
+            if not region.year0 <= region.sy <= region.yearf:
+                raise SelectedYearError(region.sy)
         return self
 
     def save_nc(self: _T, name: str, dir: str = '.') -> _T:

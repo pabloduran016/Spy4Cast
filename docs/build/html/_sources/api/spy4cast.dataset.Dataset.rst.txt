@@ -13,8 +13,8 @@ Dataset
       ~Dataset.data
       ~Dataset.lat
       ~Dataset.lon
+      ~Dataset.region
       ~Dataset.shape
-      ~Dataset.slise
       ~Dataset.time
       ~Dataset.timestamp0
       ~Dataset.timestampf
@@ -34,8 +34,8 @@ Dataset
    .. autoattribute:: data
    .. autoattribute:: lat
    .. autoattribute:: lon
+   .. autoattribute:: region
    .. autoattribute:: shape
-   .. autoattribute:: slise
    .. autoattribute:: time
    .. autoattribute:: timestamp0
    .. autoattribute:: timestampf

@@ -1,5 +1,5 @@
 import spy4cast as spy
-from spy4cast.stypes import F, Month, Slise, RDArgs
+from spy4cast.stypes import F, Month, Region, RDArgs
 
 
 DATASET_DIR = '/datasets/'
@@ -18,14 +18,14 @@ def main() -> None:
     order = 8
     period = 5.5
 
-    sst_slise = Slise(
+    sst_region = Region(
         lat0=20, latf=50,
         lon0=0, lonf=60,
         month0=Month.JAN, monthf=Month.APR,
         year0=1980, yearf=2010,
     )  # PREDICTOR: Y
 
-    slp_slise = Slise(
+    slp_region = Region(
         lat0=20, latf=45,
         lon0=-50, lonf=40,
         month0=Month.JAN, monthf=Month.APR,
@@ -38,7 +38,7 @@ def main() -> None:
             plot_dir=PLOTS_DIR, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME, zhat_plot_name=ZHAT_PLOT_NAME,
             plot_data_dir=PLOTS_DATA_DIR)
     s.open_datasets()
-    s.slice_datasets(yslise=sst_slise, zslise=slp_slise)
+    s.slice_datasets(yregion=sst_region, zregion=slp_region)
     s.preprocess(order=order, period=period)
     # s.mca(nm=3, alpha=.1)
     # s.plot_mca(show_plot=True, save_fig=True)

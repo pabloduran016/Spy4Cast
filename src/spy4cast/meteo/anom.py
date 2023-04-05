@@ -4,8 +4,8 @@ from typing import Tuple, Optional, Type, Any, cast, Sequence, Literal
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
-from .. import Dataset, Slise
-from .._functions import slise2str
+from .. import Dataset, Region
+from .._functions import region2str
 from .._procedure import _Procedure, _plot_map, _plot_ts, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH
 import xarray as xr
 import pandas as pd
@@ -49,7 +49,7 @@ class Anom(_Procedure):
     _time_key: str
     _lat_key: str
     _lon_key: str
-    _slise: Slise
+    _region: Region
     _st: bool
 
     _type: PlotType
@@ -57,7 +57,7 @@ class Anom(_Procedure):
     def __init__(self, ds: Dataset, type: Literal["map", "ts"], st: bool = False):
         self.type = _get_type(type)
         self._ds = ds
-        self._slise = ds.slise
+        self._region = ds.region
         self._st = st
 
         if self._type == PlotType.TS:
@@ -74,8 +74,8 @@ class Anom(_Procedure):
 
         self._data = _anom(self.data, st)
         self._time_key = 'year'
-        self._slise.year0 = int(self.time[0])
-        self._slise.yearf = int(self.time[-1])
+        self._region.year0 = int(self.time[0])
+        self._region.yearf = int(self.time[-1])
 
     @property
     def type(self) -> PlotType:
@@ -176,26 +176,26 @@ class Anom(_Procedure):
         self._data = self.data.assign_coords({self._time_key: value.astype(np.uint)})
 
     @property
-    def slise(self) -> Slise:
-        """Slise applied to the matrix.
+    def region(self) -> Region:
+        """Region applied to the matrix.
 
         Returns
         -------
-            spy4cast.stypes.Slise
+            spy4cast.stypes.Region
 
         Note
         ----
-            If type is `ts` and initilization from ds was not run then a default time and region slise is returned
+            If type is `ts` and initilization from ds was not run then a default time and region region is returned
 
         Note
         ----
-            If type is `map` and initilization from ds was not run then a default time slise is returned
+            If type is `map` and initilization from ds was not run then a default time region is returned
         """
-        if hasattr(self, '_slise'):
-            return self._slise
+        if hasattr(self, '_region'):
+            return self._region
         elif self.type == PlotType.TS:
             # TODO: Replace month0 and monthf with meaninful values
-            self._slise = Slise(
+            self._region = Region(
                 lat0=-90,
                 latf=90,
                 lon0=-180,
@@ -205,10 +205,10 @@ class Anom(_Procedure):
                 year0=self.time.values[0],
                 yearf=self.time.values[-1],
             )
-            return self._slise
+            return self._region
         elif self.type == PlotType.MAP:
             # TODO: Replace month0 and monthf with meaninful values
-            self._slise = Slise(
+            self._region = Region(
                 lat0=self.lat.values[0],
                 latf=self.lat.values[-1],
                 lon0=self.lon.values[0],
@@ -218,7 +218,7 @@ class Anom(_Procedure):
                 year0=self.time.values[0],
                 yearf=self.time.values[-1],
             )
-            return self._slise
+            return self._region
         else:
             assert False, 'Unreachable'
 
@@ -369,7 +369,7 @@ class Anom(_Procedure):
                 xtickslabels=[x for x in self.time.values[::1]],
             )
             fig.suptitle(
-                f'Time series of {self.var} ({slise2str(self.slise)})',
+                f'Time series of {self.var} ({region2str(self.region)})',
                 fontweight='bold'
             )
         elif self._type == PlotType.MAP:
@@ -389,7 +389,7 @@ class Anom(_Procedure):
                 cmap=(cmap if cmap is not None else 'jet'),
             )
             fig.suptitle(
-                f'Map of {self.var} ({slise2str(self.slise)})',
+                f'Map of {self.var} ({region2str(self.region)})',
                 fontweight='bold'
             )
         else:

@@ -3,7 +3,7 @@ Collection of functions used across the api and for the users convenience
 """
 import sys
 from typing import Optional, Dict, Any, Union
-from .stypes import Month, Slise
+from .stypes import Month, Region
 from time import perf_counter
 
 
@@ -11,7 +11,7 @@ __all__ = [
     'time_from_here',
     'time_to_here',
 
-    'slise2str',
+    'region2str',
     'mon2str',
     'str2mon',
     'debugprint',
@@ -90,37 +90,37 @@ def time_to_here() -> float:
     return rv
 
 
-def slise2str(slise: Slise) -> str:
-    """Transforms a Slise into a string with 2 decimals for the spatial dimension
+def region2str(region: Region) -> str:
+    """Transforms a Region into a string with 2 decimals for the spatial dimension
 
     Parameters
     ----------
-        slise : Slise
-            Slise that you wish to transform into a string
+        region : Region
+            Region that you wish to transform into a string
 
     Returns
     -------
         str
-            Slise fromatted using N (north), W (west), S (south) and E (east)
+            Region fromatted using N (north), W (west), S (south) and E (east)
             for the spacial slice and the first letter of each month of the
             season for the time slice.
 
     Example
     -------
-        >>> s = Slise(-10, 10, -100, -80, Month.JAN, Month.FEB, 1870, 2020)
-        >>> slise2str(s)
+        >>> s = Region(-10, 10, -100, -80, Month.JAN, Month.FEB, 1870, 2020)
+        >>> region2str(s)
         'JF (10.00ºS, 10.00ºN - 100.00ºW, 80.00ºW)'
 
     See Also
     --------
-    stypes.Slise
+    stypes.Region
     """
     sufixes: Dict[str, str] = {
         'lat_min': '', 'lat_max': '', 'lon_min': '', 'lon_max': ''
     }
     values: Dict[str, float] = {
-        'lat_min': slise.lat0, 'lat_max': slise.latf,
-        'lon_min': slise.lon0, 'lon_max': slise.lonf
+        'lat_min': region.lat0, 'lat_max': region.latf,
+        'lon_min': region.lon0, 'lon_max': region.lonf
     }
     for key in {'lat_min', 'lat_max'}:
         if values[key] >= 0:
@@ -134,21 +134,21 @@ def slise2str(slise: Slise) -> str:
         else:
             sufixes[key] = 'ºW'
         values[key] = abs(values[key])
-    region = f'{values["lat_min"]:.02f}{sufixes["lat_min"]}, ' \
+    region_str = f'{values["lat_min"]:.02f}{sufixes["lat_min"]}, ' \
              f'{values["lat_max"]:.02f}{sufixes["lat_max"]} - ' \
              f'{values["lon_min"]:.02f}{sufixes["lon_min"]}, ' \
              f'{values["lon_max"]:.02f}{sufixes["lon_max"]}'
 
-    if slise.monthf >= slise.month0:
+    if region.monthf >= region.month0:
         season = ''.join(
-            Month(x).name[0] for x in range(slise.month0, slise.monthf + 1)
+            Month(x).name[0] for x in range(region.month0, region.monthf + 1)
         )
     else:
         season = ''.join(
-            Month(x).name[0] for x in range(slise.month0, Month.DEC + 1)
-        ) + ''.join(Month(x).name[0] for x in range(1, slise.monthf + 1))
+            Month(x).name[0] for x in range(region.month0, Month.DEC + 1)
+        ) + ''.join(Month(x).name[0] for x in range(1, region.monthf + 1))
 
-    return f'{season} ({region})'
+    return f'{season} ({region_str})'
 
 
 def mon2str(month: Union[Month, int]) -> str:

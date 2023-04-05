@@ -4,7 +4,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from spy4cast import Slise, Month
+from spy4cast import Region, Month
 from spy4cast.errors import TimeBoundsSelectionError, SelectedYearError, DatasetError, DatasetNotFoundError
 from . import BaseTestCase
 from spy4cast.dataset import Dataset
@@ -36,7 +36,7 @@ class DatasetTest(BaseTestCase):
         self.assertTrue(type(spy_ds.shape) == tuple)
         self.assertTrue(type(spy_ds.timestamp0) == pd.Timestamp or datetime.datetime)
         self.assertTrue(type(spy_ds.timestampf) == pd.Timestamp or datetime.datetime)
-        self.assertTrue(type(spy_ds.slise) == Slise)
+        self.assertTrue(type(spy_ds.region) == Region)
 
     def test_get_data(self) -> None:
         ds = Dataset(HadISST_sst, DATASETS_DIR)
@@ -93,11 +93,11 @@ class DatasetTest(BaseTestCase):
         ds2 = Dataset(chlos_bscr_1958_2016, DATASETS_DIR).open(CHLOS)
         self.assertTrue(type(ds2.timestampf) == pd.Timestamp)
 
-    def test_get_slise(self) -> None:
+    def test_get_region(self) -> None:
         ds = Dataset(HadISST_sst, DATASETS_DIR)
-        self.assertRaises(ValueError, lambda: ds.slise)
+        self.assertRaises(ValueError, lambda: ds.region)
         ds.open(SST)
-        self.assertTrue(type(ds.slise) == Slise)
+        self.assertTrue(type(ds.region) == Region)
 
     def test_open(self) -> None:
         ds = Dataset(HadISST_sst, DATASETS_DIR)
@@ -139,12 +139,12 @@ class DatasetTest(BaseTestCase):
         self.assertHasAttr(ds, '_var')
 
     def test_slice(self) -> None:
-        for slise, year0, yearf, month0, monthf in (
-            (Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, 1990), 1870, 1990, Month.JAN, Month.MAR),
-            (Slise(19, 21, 30, 45, Month.NOV, Month.MAR, 1871, 1990), 1870, 1990, Month.NOV, Month.MAR),
+        for region, year0, yearf, month0, monthf in (
+            (Region(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, 1990), 1870, 1990, Month.JAN, Month.MAR),
+            (Region(19, 21, 30, 45, Month.NOV, Month.MAR, 1871, 1990), 1870, 1990, Month.NOV, Month.MAR),
         ):
-            print(slise)
-            ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(slise)
+            print(region)
+            ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(region)
             self.assertTrue(abs(ds.lat.min().values - 19) <= 0.5)
             self.assertTrue(abs(ds.lat.max().values - 21) <= 0.5)
             self.assertTrue(abs(ds.lon.min().values - 30) <= 0.5)
@@ -153,100 +153,100 @@ class DatasetTest(BaseTestCase):
             self.assertEqual(ds.timestamp0.year, year0)
             self.assertEqual(ds.timestampf.month, monthf)
             self.assertEqual(ds.timestampf.year, yearf)
-            self.assertHasAttr(ds, '_slise')
+            self.assertHasAttr(ds, '_region')
 
-    def test__check_slise(self) -> None:
+    def test__check_region(self) -> None:
         ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST)
-        # type(slise.year0) == int
+        # type(region.year0) == int
         with self.assertRaises(AssertionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, '1870', 1990)  # type: ignore
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, Month.MAR, '1870', 1990)  # type: ignore
             )
-        # not slise.year0 > self.timestampf.year
+        # not region.year0 > self.timestampf.year
         with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 2030, 2040)
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, Month.MAR, 2030, 2040)
             )
-        # not slise.year0 < self.timestamp0.year
+        # not region.year0 < self.timestamp0.year
         with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1000, 2020)
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, Month.MAR, 1000, 2020)
             )
-        # type(slise.yearf) == int
+        # type(region.yearf) == int
         with self.assertRaises(AssertionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, '2040')  # type: ignore
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, '2040')  # type: ignore
             )
-        # not slise.yearf > self.timestampf.year
+        # not region.yearf > self.timestampf.year
         with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, 2040)
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, 2040)
             )
-        # not slise.yearf < self.timestamp0.year
+        # not region.yearf < self.timestamp0.year
         with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1900, 1850)
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, Month.MAR, 1900, 1850)
             )
-        # type(slise.monthf) == int or type(slise.monthf) == Month
+        # type(region.monthf) == int or type(region.monthf) == Month
         with self.assertRaises(AssertionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, 'Month.MAR', 1870, 2020)  # type: ignore
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, 'Month.MAR', 1870, 2020)  # type: ignore
             )
-        # not slise.yearf >= self.timestampf.year and \
-        #         slise.monthf > self.timestampf.month
+        # not region.yearf >= self.timestampf.year and \
+        #         region.monthf > self.timestampf.month
         with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.JUN, 1870, 2020)
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, Month.JUN, 1870, 2020)
             )
-        # not slise.year0 > slise.yearf
+        # not region.year0 > region.yearf
         with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1970, 1920)
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, Month.MAR, 1970, 1920)
             )
-        # type(slise.month0) == int or type(slise.month0) == Month
+        # type(region.month0) == int or type(region.month0) == Month
         with self.assertRaises(AssertionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, 'Month.JAN', Month.MAR, 1870, 2020)  # type: ignore
+            ds._check_region(
+                Region(19, 21, 30, 45, 'Month.JAN', Month.MAR, 1870, 2020)  # type: ignore
             )
-        # 1 <= slise.month0 <= 12
+        # 1 <= region.month0 <= 12
         with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, 0, Month.MAR, 1870, 2020)
-            )
-        with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, 13, Month.MAR, 1870, 2020)
-            )
-        # not not 1 <= slise.monthf <= 12
-        with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.MAR, 0, 1870, 2020)
+            ds._check_region(
+                Region(19, 21, 30, 45, 0, Month.MAR, 1870, 2020)
             )
         with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.MAR, 13, 1870, 2020)
+            ds._check_region(
+                Region(19, 21, 30, 45, 13, Month.MAR, 1870, 2020)
             )
-        # not slise.month0 > slise.monthf and \
-        #         slise.year0 - 1 < self.timestamp0.year
+        # not not 1 <= region.monthf <= 12
         with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.DEC, Month.JAN, 1870, 2020)
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.MAR, 0, 1870, 2020)
             )
-        # not slise.sy is not None and slise.sy != 0
-        #     slise.year0 <= slise.sy <= slise.yearf
+        with self.assertRaises(TimeBoundsSelectionError):
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.MAR, 13, 1870, 2020)
+            )
+        # not region.month0 > region.monthf and \
+        #         region.year0 - 1 < self.timestamp0.year
+        with self.assertRaises(TimeBoundsSelectionError):
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.DEC, Month.JAN, 1870, 2020)
+            )
+        # not region.sy is not None and region.sy != 0
+        #     region.year0 <= region.sy <= region.yearf
         with self.assertRaises(SelectedYearError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, 2020, 2021)
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, Month.MAR, 1870, 2020, 2021)
             )
-        ds = ds.slice(Slise(-90, 90, -180, 180, Month.MAR, Month.MAY, 1870, 2020))
+        ds = ds.slice(Region(-90, 90, -180, 180, Month.MAR, Month.MAY, 1870, 2020))
         with self.assertRaises(TimeBoundsSelectionError):
-            ds._check_slise(
-                Slise(19, 21, 30, 45, Month.JAN, Month.MAY, 1870, 2020)
+            ds._check_region(
+                Region(19, 21, 30, 45, Month.JAN, Month.MAY, 1870, 2020)
             )
 
     def test_save_nc(self) -> None:
         name = 'test_save_nc.nc'
-        sl = Slise(-20, 20, -10, 20, Month.JAN, Month.MAR, 1870, 1990)
+        sl = Region(-20, 20, -10, 20, Month.JAN, Month.MAR, 1870, 1990)
         ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(sl)
         ds.save_nc(name)
         ds2 = Dataset(name).open(SST).slice(sl)
