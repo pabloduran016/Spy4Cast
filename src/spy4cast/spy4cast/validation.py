@@ -67,10 +67,10 @@ class Validation(_Procedure):
         _debuginfo(f"""Applying Validation
         Training
         ---------- 
-        Shapes: Z{training_mca.zdata.shape} 
-                Y{training_mca.ydata.shape} 
-        Slises: Z {slise2str(training_mca.zslise)} 
-                Y {slise2str(training_mca.yslise)}
+        Shapes: Z{training_mca._dsz.data.shape} 
+                Y{training_mca._dsy.data.shape} 
+        Slises: Z {slise2str(training_mca._dsz.slise)} 
+                Y {slise2str(training_mca._dsy.slise)}
         
         Validation
         ---------- 
@@ -89,10 +89,10 @@ class Validation(_Procedure):
 
         time_from_here()
 
-        common_z_land_mask = validating_dsz.land_data.land_mask | training_mca.z_land_array.land_mask
-        common_y_land_mask = validating_dsy.land_data.land_mask | training_mca.y_land_array.land_mask
+        common_z_land_mask = validating_dsz.land_data.land_mask | training_mca._dsz.land_data.land_mask
+        common_y_land_mask = validating_dsy.land_data.land_mask | training_mca._dsy.land_data.land_mask
 
-        self.psi = np.zeros([1, training_mca.ydata.shape[0], training_mca.zdata.shape[0]], dtype=np.float32)
+        self.psi = np.zeros([1, training_mca._dsy.data.shape[0], training_mca._dsz.data.shape[0]], dtype=np.float32)
         self.zhat = np.zeros([1, validating_dsz.land_data.shape[0], validating_dsz.time.shape[0]], dtype=np.float32)
 
         self.psi[:, common_y_land_mask, :] = np.nan
@@ -102,17 +102,17 @@ class Validation(_Procedure):
         self.psi[0, ~np.isnan(self.psi[0])] = calculate_psi(
             self.training_mca.SUY[~common_y_land_mask, :],
             self.training_mca.Us[:, :],
-            self.training_mca.zdata[~common_z_land_mask, :],
-            self.training_mca.ytime.shape[0],
+            self.training_mca._dsz.data[~common_z_land_mask, :],
+            self.training_mca._dsy.time.shape[0],
             self.training_mca.Us.shape[0],
-            self.training_mca.ydata.shape[0]
+            self.training_mca._dsy.data.shape[0]
         ).reshape((~common_y_land_mask).sum() * (~common_z_land_mask).sum())
 
         self.zhat[0, ~common_z_land_mask, :] = np.dot(
             validating_dsy.land_data.not_land_values[:, :].T,
             self.psi[0, ~common_y_land_mask, :][:, ~common_z_land_mask]).T
 
-        new_z_land_array = LandArray(self.zdata)
+        new_z_land_array = LandArray(self.validating_dsz.data)
         new_z_land_array.update_land(common_z_land_mask)
         self.r_z_zhat_t_accumulated_modes, self.p_z_zhat_t_accumulated_modes, \
             _r_z_zhat_t_separated_modes, _p_z_zhat_t_separated_modes \
@@ -123,141 +123,6 @@ class Validation(_Procedure):
             = calculate_space_correlation(new_z_land_array, self.zhat)
 
         debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
-
-    @property
-    def alpha(self) -> float:
-        """Alpha used in training MCA"""
-        return self.training_mca.alpha
-
-    @property
-    def y_land_array(self) -> LandArray:
-        """Land Array for Y dataset"""
-        return self.validating_dsy.land_data
-
-    @property
-    def z_land_array(self) -> LandArray:
-        """Land Array for Z dataset"""
-        return self.validating_dsz.land_data
-
-    @property
-    def ydata(self) -> npt.NDArray[np.float32]:
-        """Matrix with the data of the predictor variable
-
-        Returns
-        -------
-            npt.NDArray[np.float32]
-        """
-        return self.validating_dsy.land_data.values
-
-    @property
-    def yvar(self) -> str:
-        """Predictor variable name
-
-        Returns
-        -------
-            str
-        """
-        return self.validating_dsy.var
-
-    @property
-    def yslise(self) -> Slise:
-        """Predictor variable slise
-
-        Returns
-        -------
-            spy4cast.stypes.Slise
-        """
-        return self.validating_dsy.slise
-
-    @property
-    def ytime(self) -> xr.DataArray:
-        """Vector with time values of the predictor variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self.validating_dsy.time
-
-    @property
-    def ylat(self) -> xr.DataArray:
-        """Vector with latitude values of the predictor variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self.validating_dsy.lat
-
-    @property
-    def ylon(self) -> xr.DataArray:
-        """Vector with longitude values of the predictor variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self.validating_dsy.lon
-
-    @property
-    def zdata(self) -> npt.NDArray[np.float32]:
-        """Matrix with the data of the predicting variable
-
-        Returns
-        -------
-            npt.NDArray[np.float32]
-        """
-        return self.validating_dsz.land_data.values
-
-    @property
-    def zvar(self) -> str:
-        """Predicting variable name
-
-        Returns
-        -------
-            str
-        """
-        return self.validating_dsz.var
-
-    @property
-    def zslise(self) -> Slise:
-        """Predicting variable slise
-
-        Returns
-        -------
-            spy4cast.stypes.Slise
-        """
-        return self.validating_dsz.slise
-
-    @property
-    def ztime(self) -> xr.DataArray:
-        """Vector with time values of the predicting variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self.validating_dsz.time
-
-    @property
-    def zlat(self) -> xr.DataArray:
-        """Vector with latitude values of the predicting variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self.validating_dsz.lat
-
-    @property
-    def zlon(self) -> xr.DataArray:
-        """Vector with longitude values of the predicting variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self.validating_dsz.lon
 
     @classmethod
     def load(cls, prefix: str, dir: str = '.', *,
@@ -368,7 +233,7 @@ class Validation(_Procedure):
         if dir is None:
             dir = '.'
         if name is None:
-            path = os.path.join(dir, f'crossvalidation-plot_z-{self.zvar}_y-{self.yvar}.png')
+            path = os.path.join(dir, f'crossvalidation-plot_z-{self.validating_dsz.var}_y-{self.validating_dsy.var}.png')
         else:
             path = os.path.join(dir, name)
 
@@ -430,8 +295,8 @@ class Validation(_Procedure):
         Sequence[plt.Axes]
             Tuple of axes in figure
         """
-        nts, nylat, nylon = len(self.ytime), len(self.ylat), len(self.ylon)
-        nts, nzlat, nzlon = len(self.ztime), len(self.zlat), len(self.zlon)
+        nts, nylat, nylon = len(self.validating_dsy.time), len(self.validating_dsy.lat), len(self.validating_dsy.lon)
+        nts, nzlat, nzlon = len(self.validating_dsz.time), len(self.validating_dsz.lat), len(self.validating_dsz.lon)
 
         height = nylat + nzlat + nzlat
         width = max(nzlon, nylon)
@@ -441,16 +306,16 @@ class Validation(_Procedure):
         ax1 = plt.subplot(312, projection=ccrs.PlateCarree())
         ax2 = plt.subplot(313, projection=ccrs.PlateCarree())
 
-        zindex = _get_index_from_sy(self.ztime, year)
+        zindex = _get_index_from_sy(self.validating_dsz.time, year)
         yindex = zindex
-        y_year = self.ytime.values[yindex]
+        y_year = self.validating_dsy.time.values[yindex]
 
-        d0 = self.ydata.transpose().reshape((nts, nylat, nylon))
+        d0 = self.validating_dsy.data.transpose().reshape((nts, nylat, nylon))
 
-        _plot_map(d0[yindex], self.ylat, self.ylon, fig, ax0, f'Y on year {y_year}', ticks=yticks)
+        _plot_map(d0[yindex], self.validating_dsy.lat, self.validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks)
 
         d1 = self.zhat.transpose().reshape((nts, nzlat, nzlon))
-        d2 = self.zdata.transpose().reshape((nts, nzlat, nzlon))
+        d2 = self.validating_dsz.data.transpose().reshape((nts, nzlat, nzlon))
 
         n = 30
         _std = np.nanstd(d2[zindex])
@@ -459,18 +324,18 @@ class Validation(_Procedure):
         levels = np.linspace(-bound, bound, n)
 
         _plot_map(
-            d1[zindex], self.zlat, self.zlon, fig, ax1, f'Zhat on year {year}',
+            d1[zindex], self.validating_dsz.lat, self.validating_dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=zticks
         )
         _plot_map(
-            d2[zindex], self.zlat, self.zlon, fig, ax2, f'Z on year {year}',
+            d2[zindex], self.validating_dsz.lat, self.validating_dsz.lon, fig, ax2, f'Z on year {year}',
             cmap=cmap, levels=levels, ticks=zticks
         )
 
         fig.suptitle(
-            f'Z({self.zvar}): {slise2str(self.zslise)}, '
-            f'Y({self.yvar}): {slise2str(self.yslise)}. '
-            f'Alpha: {self.alpha}',
+            f'Z({self.validating_dsz.var}): {slise2str(self.validating_dsz.slise)}, '
+            f'Y({self.validating_dsy.var}): {slise2str(self.validating_dsy.slise)}. '
+            f'Alpha: {self.training_mca.alpha}',
             fontweight='bold'
         )
 
@@ -479,7 +344,7 @@ class Validation(_Procedure):
         if dir is None:
             dir = '.'
         if name is None:
-            path = os.path.join(dir, f'crossvalidation-plot_z-{self.zvar}_y-{self.yvar}.png')
+            path = os.path.join(dir, f'crossvalidation-plot_z-{self.validating_dsz.var}_y-{self.validating_dsy.var}.png')
         else:
             path = os.path.join(dir, name)
 
@@ -523,28 +388,28 @@ def _plot_validation_default(
     #       scf           r_uv_1
     #     r_uv_1          r_uv_2
 
-    nlat, nlon = len(validation.zlat), (len(validation.zlon))
+    nlat, nlon = len(validation.validating_dsz.lat), (len(validation.validating_dsz.lon))
 
     fig: plt.Figure = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
 
     ax00 = fig.add_subplot(1, 2, 1, projection=ccrs.PlateCarree(0))
     _plot_map(
         arr=validation.r_z_zhat_s_accumulated_modes[-1, :].reshape((nlat, nlon)),
-        lat=validation.zlat,
-        lon=validation.zlon,
+        lat=validation.validating_dsz.lat,
+        lon=validation.validating_dsz.lon,
         fig=fig,
         ax=ax00,
         title='Correlation in space: z vs zhat',
     )
 
     ax01 = fig.add_subplot(1, 2, 2)
-    ax01.bar(validation.ztime, validation.r_z_zhat_t_accumulated_modes[-1, :])
+    ax01.bar(validation.validating_dsz.time, validation.r_z_zhat_t_accumulated_modes[-1, :])
     ax01.set_title('Correlation in time: z vs zhat')
 
     fig.suptitle(
-        f'Z({validation.zvar}): {slise2str(validation.zslise)}, '
-        f'Y({validation.yvar}): {slise2str(validation.yslise)}. '
-        f'Alpha: {validation.alpha}',
+        f'Z({validation.validating_dsz.var}): {slise2str(validation.validating_dsz.slise)}, '
+        f'Y({validation.validating_dsy.var}): {slise2str(validation.validating_dsy.slise)}. '
+        f'Alpha: {validation.training_mca.alpha}',
         fontweight='bold'
     )
 

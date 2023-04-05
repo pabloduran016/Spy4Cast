@@ -74,58 +74,6 @@ class MCATest(BaseTestCase):
         _ = MCA(self.y_preprocessed, self.z_preprocessed, 3, .1,
                 dsy_index_regression=self.y_preprocessed, dsz_index_regression=self.z_preprocessed)
 
-    def test_ydata(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.land_data.values, self.mca.ydata).all()
-        )
-
-    def test_yvar(self) -> None:
-        self.assertEqual(self.y_preprocessed.var, self.mca.yvar)
-
-    def test_yslise(self) -> None:
-        self.assertEqual(self.y_preprocessed.slise, self.mca.yslise)
-
-    def test_ytime(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.time, self.mca.ytime).all()
-        )
-
-    def test_ylat(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.lat, self.mca.ylat).all()
-        )
-
-    def test_ylon(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.lon, self.mca.ylon).all()
-        )
-
-    def test_zdata(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.land_data.values, self.mca.ydata).all()
-        )
-
-    def test_zvar(self) -> None:
-        self.assertEqual(self.y_preprocessed.var, self.mca.yvar)
-
-    def test_zslise(self) -> None:
-        self.assertEqual(self.y_preprocessed.slise, self.mca.yslise)
-
-    def test_ztime(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.time, self.mca.ytime).all()
-        )
-
-    def test_zlat(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.lat, self.mca.ylat).all()
-        )
-
-    def test_zlon(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.lon, self.mca.ylon).all()
-        )
-
     def test_plot(self) -> None:
         with self.assertRaises(TypeError):
             self.mca.plot(signs=[True])

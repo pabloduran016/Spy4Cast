@@ -80,58 +80,6 @@ class CrossvalidationTest(BaseTestCase):
         with self.assertRaises(ValueError):
             _ = Crossvalidation(y_preprocessed, z_preprocessed, 3, .1)
 
-    def test_ydata(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.land_data.values, self.cross.ydata).all()
-        )
-
-    def test_yvar(self) -> None:
-        self.assertEqual(self.y_preprocessed.var, self.cross.yvar)
-
-    def test_yslise(self) -> None:
-        self.assertEqual(self.y_preprocessed.slise, self.cross.yslise)
-
-    def test_ytime(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.time, self.cross.ytime).all()
-        )
-
-    def test_ylat(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.lat, self.cross.ylat).all()
-        )
-
-    def test_ylon(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.lon, self.cross.ylon).all()
-        )
-
-    def test_zdata(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.land_data.values, self.cross.ydata).all()
-        )
-
-    def test_zvar(self) -> None:
-        self.assertEqual(self.y_preprocessed.var, self.cross.yvar)
-
-    def test_zslise(self) -> None:
-        self.assertEqual(self.y_preprocessed.slise, self.cross.yslise)
-
-    def test_ztime(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.time, self.cross.ytime).all()
-        )
-
-    def test_zlat(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.lat, self.cross.ylat).all()
-        )
-
-    def test_zlon(self) -> None:
-        self.assertTrue(
-            np.isclose(self.y_preprocessed.lon, self.cross.ylon).all()
-        )
-
     def test_plot(self) -> None:
         mca = MCA(self.y_preprocessed, self.z_preprocessed, 3, .1)
         self.cross.plot(version='default', name='name')

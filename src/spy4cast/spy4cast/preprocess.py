@@ -124,7 +124,7 @@ class Preprocess(_Procedure):
         if type(arr) != np.ndarray:
             raise TypeError(f'Expected type `np.ndarray` for variable `time`, '
                             f'got `{type(arr)}`')
-        if arr.dtype not in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]:
+        if arr.dtype not in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]:  # type: ignore
             raise TypeError(f'Expected dtype `int` for `np.ndarray` for variable `time`, '
                             f'got `{np.dtype(arr.dtype)}`')
         self._time = xr.DataArray(arr, dims=['year'])
@@ -141,7 +141,7 @@ class Preprocess(_Procedure):
         if (
             np.dtype(arr.dtype) != np.dtype('float32') and
             np.dtype(arr.dtype) != np.dtype('float64') and
-            arr.dtype not in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]
+            arr.dtype not in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]  # type: ignore
         ):
             raise TypeError(f'Expected dtype `float` or `int` for  `np.ndarray` for variable `lat`, '
                             f'got `{np.dtype(arr.dtype)}`')
@@ -159,7 +159,7 @@ class Preprocess(_Procedure):
         if (
             np.dtype(arr.dtype) != np.dtype('float32') and
             np.dtype(arr.dtype) != np.dtype('float64') and
-            arr.dtype not in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]
+            arr.dtype not in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]  # type: ignore
         ):
             raise TypeError(f'Expected dtype `float` or `int` for `np.ndarray` for variable `lon`, '
                             f'got `{np.dtype(arr.dtype)}`')
@@ -185,7 +185,7 @@ class Preprocess(_Procedure):
         if (
             np.dtype(arr.dtype) != np.dtype('float32') and
             np.dtype(arr.dtype) != np.dtype('float64') and
-            arr.dtype not in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]
+            arr.dtype not in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]  # type: ignore
         ):
             raise TypeError(f'Expected dtype `float` or `int` for `np.ndarray` for variable `data`, '
                             f'got {np.dtype(arr.dtype)}')

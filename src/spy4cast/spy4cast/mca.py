@@ -130,8 +130,8 @@ class MCA(_Procedure):
         _debuginfo(f"""Applying MCA 
     Shapes: Z{dsz.shape} 
             Y{dsy.shape} 
-    Slises: Z {slise2str(self.zslise)} 
-            Y {slise2str(self.yslise)}""", )
+    Slises: Z {slise2str(self._dsz.slise)} 
+            Y {slise2str(self._dsy.slise)}""", )
         time_from_here()
 
         if len(dsz.time) != len(dsy.time):
@@ -280,136 +280,6 @@ class MCA(_Procedure):
                 self.SUZ_sig[:, i]
             ) = index_regression(z_index_regression, self.Us[i, :], alpha, sig, montecarlo_iterations)
 
-    @property
-    def y_land_array(self) -> LandArray:
-        """Land Array for Y dataset"""
-        return self._dsy.land_data
-
-    @property
-    def z_land_array(self) -> LandArray:
-        """Land Array for Z dataset"""
-        return self._dsz.land_data
-
-    @property
-    def ydata(self) -> npt.NDArray[np.float32]:
-        """Matrix with the data of the predictor variable
-
-        Returns
-        -------
-            npt.NDArray[np.float32]
-        """
-        return self._dsy.land_data.values
-
-    @property
-    def yvar(self) -> str:
-        """Predictor variable name
-
-        Returns
-        -------
-            str
-        """
-        return self._dsy.var
-
-    @property
-    def yslise(self) -> Slise:
-        """Predictor variable slise
-
-        Returns
-        -------
-            spy4cast.stypes.Slise
-        """
-        return self._dsy.slise
-
-    @property
-    def ytime(self) -> xr.DataArray:
-        """Vector with time values of the predictor variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self._dsy.time
-
-    @property
-    def ylat(self) -> xr.DataArray:
-        """Vector with latitude values of the predictor variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self._dsy.lat
-
-    @property
-    def ylon(self) -> xr.DataArray:
-        """Vector with longitude values of the predictor variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self._dsy.lon
-
-    @property
-    def zdata(self) -> npt.NDArray[np.float32]:
-        """Matrix with the data of the predicting variable
-
-        Returns
-        -------
-            npt.NDArray[np.float32]
-        """
-        return self._dsz.land_data.values
-
-    @property
-    def zvar(self) -> str:
-        """Predicting variable name
-
-        Returns
-        -------
-            str
-        """
-        return self._dsz.var
-
-    @property
-    def zslise(self) -> Slise:
-        """Predicting variable slise
-
-        Returns
-        -------
-            spy4cast.stypes.Slise
-        """
-        return self._dsz.slise
-
-    @property
-    def ztime(self) -> xr.DataArray:
-        """Vector with time values of the predicting variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self._dsz.time
-
-    @property
-    def zlat(self) -> xr.DataArray:
-        """Vector with latitude values of the predicting variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self._dsz.lat
-
-    @property
-    def zlon(self) -> xr.DataArray:
-        """Vector with longitude values of the predicting variable
-
-        Returns
-        -------
-            xarray.DataArray
-        """
-        return self._dsz.lon
-
     def plot(
         self,
         *,
@@ -482,7 +352,7 @@ class MCA(_Procedure):
         for i, ax in enumerate(axs[:3]):
             # # ax.margins(0)
             _plot_ts(
-                time=self.ytime.values,
+                time=self._dsy.time.values,
                 arr=self.Us[i, :],
                 ax=ax,
                 title=f'Us Vs mode {i + 1}',
@@ -490,7 +360,7 @@ class MCA(_Procedure):
                 label='Us'
             )
             _plot_ts(
-                time=self.ztime.values,
+                time=self._dsz.time.values,
                 arr=self.Vs[i, :],
                 ax=ax,
                 title=None,
@@ -506,8 +376,8 @@ class MCA(_Procedure):
 
         n = 20
         for i, (var_name, su, ru, lats, lons, cm, ticks) in enumerate((
-                ('SUY', self.SUY, self.RUY_sig, self.ylat, self.ylon, 'bwr', suy_ticks),
-                ('SUZ', self.SUZ, self.RUZ_sig, self.zlat, self.zlon, cmap, suz_ticks)
+                ('SUY', self.SUY, self.RUY_sig, self._dsy.lat, self._dsy.lon, 'bwr', suy_ticks),
+                ('SUZ', self.SUZ, self.RUZ_sig, self._dsz.lat, self._dsz.lon, cmap, suz_ticks)
         )):
             _std = np.nanstd(su)
             _m = np.nanmean(su)
@@ -537,8 +407,8 @@ class MCA(_Procedure):
                 )
 
         fig.suptitle(
-            f'Z({self.zvar}): {slise2str(self.zslise)}, '
-            f'Y({self.yvar}): {slise2str(self.yslise)}. '
+            f'Z({self._dsz.var}): {slise2str(self._dsz.slise)}, '
+            f'Y({self._dsy.var}): {slise2str(self._dsy.slise)}. '
             f'Alpha: {self.alpha}',
             fontweight='bold'
         )
@@ -548,7 +418,7 @@ class MCA(_Procedure):
         if dir is None:
             dir = '.'
         if name is None:
-            path = os.path.join(dir, f'mca-plot_z-{self.zvar}_y-{self.yvar}.png')
+            path = os.path.join(dir, f'mca-plot_z-{self._dsz.var}_y-{self._dsy.var}.png')
         else:
             path = os.path.join(dir, name)
 

@@ -157,6 +157,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../methodologies.html">Methodologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting.html">Plotting</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../toctrees/api-reference.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.dataset.Dataset.html">Dataset</a></li>
@@ -399,42 +400,6 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.var_names" title="spy4cast.spy4cast.MCA.var_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">var_names</span></code></a></p></td>
 <td><p>Returns the variables contained in the object (RUY, SUY, scf, ...)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.ydata" title="spy4cast.spy4cast.MCA.ydata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ydata</span></code></a></p></td>
-<td><p>Matrix with the data of the predictor variable</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.ylat" title="spy4cast.spy4cast.MCA.ylat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ylat</span></code></a></p></td>
-<td><p>Vector with latitude values of the predictor variable</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.ylon" title="spy4cast.spy4cast.MCA.ylon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ylon</span></code></a></p></td>
-<td><p>Vector with longitude values of the predictor variable</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.yslise" title="spy4cast.spy4cast.MCA.yslise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">yslise</span></code></a></p></td>
-<td><p>Predictor variable slise</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.ytime" title="spy4cast.spy4cast.MCA.ytime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ytime</span></code></a></p></td>
-<td><p>Vector with time values of the predictor variable</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.yvar" title="spy4cast.spy4cast.MCA.yvar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">yvar</span></code></a></p></td>
-<td><p>Predictor variable name</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.zdata" title="spy4cast.spy4cast.MCA.zdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zdata</span></code></a></p></td>
-<td><p>Matrix with the data of the predicting variable</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.zlat" title="spy4cast.spy4cast.MCA.zlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zlat</span></code></a></p></td>
-<td><p>Vector with latitude values of the predicting variable</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.zlon" title="spy4cast.spy4cast.MCA.zlon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zlon</span></code></a></p></td>
-<td><p>Vector with longitude values of the predicting variable</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.zslise" title="spy4cast.spy4cast.MCA.zslise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zslise</span></code></a></p></td>
-<td><p>Predicting variable slise</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.ztime" title="spy4cast.spy4cast.MCA.ztime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ztime</span></code></a></p></td>
-<td><p>Vector with time values of the predicting variable</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.zvar" title="spy4cast.spy4cast.MCA.zvar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zvar</span></code></a></p></td>
-<td><p>Predicting variable name</p></td>
-</tr>
 </tbody>
 </table></div>
 <p class="rubric">Methods Summary</p>
@@ -456,126 +421,6 @@
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.var_names">
 <span class="sig-name descname"><span class="pre">var_names</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.var_names" title="Permalink to this definition">#</a></dt>
 <dd><p>Returns the variables contained in the object (RUY, SUY, scf, …)</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.ydata">
-<span class="sig-name descname"><span class="pre">ydata</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.ydata" title="Permalink to this definition">#</a></dt>
-<dd><p>Matrix with the data of the predictor variable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.ylat">
-<span class="sig-name descname"><span class="pre">ylat</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.ylat" title="Permalink to this definition">#</a></dt>
-<dd><p>Vector with latitude values of the predictor variable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>xarray.DataArray</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.ylon">
-<span class="sig-name descname"><span class="pre">ylon</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.ylon" title="Permalink to this definition">#</a></dt>
-<dd><p>Vector with longitude values of the predictor variable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>xarray.DataArray</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.yslise">
-<span class="sig-name descname"><span class="pre">yslise</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.yslise" title="Permalink to this definition">#</a></dt>
-<dd><p>Predictor variable slise</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" title="spy4cast.stypes.Slise">spy4cast.stypes.Slise</a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.ytime">
-<span class="sig-name descname"><span class="pre">ytime</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.ytime" title="Permalink to this definition">#</a></dt>
-<dd><p>Vector with time values of the predictor variable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>xarray.DataArray</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.yvar">
-<span class="sig-name descname"><span class="pre">yvar</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.yvar" title="Permalink to this definition">#</a></dt>
-<dd><p>Predictor variable name</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.zdata">
-<span class="sig-name descname"><span class="pre">zdata</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.zdata" title="Permalink to this definition">#</a></dt>
-<dd><p>Matrix with the data of the predicting variable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.zlat">
-<span class="sig-name descname"><span class="pre">zlat</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.zlat" title="Permalink to this definition">#</a></dt>
-<dd><p>Vector with latitude values of the predicting variable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>xarray.DataArray</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.zlon">
-<span class="sig-name descname"><span class="pre">zlon</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.zlon" title="Permalink to this definition">#</a></dt>
-<dd><p>Vector with longitude values of the predicting variable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>xarray.DataArray</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.zslise">
-<span class="sig-name descname"><span class="pre">zslise</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.zslise" title="Permalink to this definition">#</a></dt>
-<dd><p>Predicting variable slise</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="spy4cast.stypes.Slise.html#spy4cast.stypes.Slise" title="spy4cast.stypes.Slise">spy4cast.stypes.Slise</a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.ztime">
-<span class="sig-name descname"><span class="pre">ztime</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.ztime" title="Permalink to this definition">#</a></dt>
-<dd><p>Vector with time values of the predicting variable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>xarray.DataArray</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.zvar">
-<span class="sig-name descname"><span class="pre">zvar</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.zvar" title="Permalink to this definition">#</a></dt>
-<dd><p>Predicting variable name</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
@@ -727,18 +572,6 @@ mode output will be multipled by -1.</p></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.scf"><code class="docutils literal notranslate"><span class="pre">MCA.scf</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.alpha"><code class="docutils literal notranslate"><span class="pre">MCA.alpha</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.var_names"><code class="docutils literal notranslate"><span class="pre">MCA.var_names</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.ydata"><code class="docutils literal notranslate"><span class="pre">MCA.ydata</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.ylat"><code class="docutils literal notranslate"><span class="pre">MCA.ylat</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.ylon"><code class="docutils literal notranslate"><span class="pre">MCA.ylon</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.yslise"><code class="docutils literal notranslate"><span class="pre">MCA.yslise</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.ytime"><code class="docutils literal notranslate"><span class="pre">MCA.ytime</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.yvar"><code class="docutils literal notranslate"><span class="pre">MCA.yvar</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.zdata"><code class="docutils literal notranslate"><span class="pre">MCA.zdata</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.zlat"><code class="docutils literal notranslate"><span class="pre">MCA.zlat</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.zlon"><code class="docutils literal notranslate"><span class="pre">MCA.zlon</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.zslise"><code class="docutils literal notranslate"><span class="pre">MCA.zslise</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.ztime"><code class="docutils literal notranslate"><span class="pre">MCA.ztime</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.zvar"><code class="docutils literal notranslate"><span class="pre">MCA.zvar</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.from_land_arrays"><code class="docutils literal notranslate"><span class="pre">MCA.from_land_arrays()</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.load"><code class="docutils literal notranslate"><span class="pre">MCA.load()</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.plot"><code class="docutils literal notranslate"><span class="pre">MCA.plot()</span></code></a></li>
