@@ -157,6 +157,7 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="methodologies.html">Methodologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="toctrees/api-reference.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.dataset.Dataset.html">Dataset</a></li>
@@ -243,9 +244,8 @@
 <p class="admonition-title">Note</p>
 <p>This project is under active developement</p>
 </div>
-</section>
 <section id="run-the-methodology">
-<h1>Run the methodology<a class="headerlink" href="#run-the-methodology" title="Permalink to this heading">#</a></h1>
+<h2>Run the methodology<a class="headerlink" href="#run-the-methodology" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span>
 </pre></div>
@@ -269,7 +269,7 @@
 </div>
 </section>
 <section id="analyse-results">
-<h1>Analyse results<a class="headerlink" href="#analyse-results" title="Permalink to this heading">#</a></h1>
+<h2>Analyse results<a class="headerlink" href="#analyse-results" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -295,39 +295,19 @@
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/example_index_figure.png"><img alt="Example plot" src="_images/example_index_figure.png" style="width: 60%;"/></a>
+</section>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#upgrade-version">Upgrade Version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#example">Example</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#open">Open</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#slice">Slice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#plot">Plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#save">Save</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#load">Load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#spy4cast">Spy4Cast</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="methodologies.html">Methodologies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="methodologies.html#clim">Clim</a></li>
-<li class="toctree-l2"><a class="reference internal" href="methodologies.html#anom">Anom</a></li>
-<li class="toctree-l2"><a class="reference internal" href="methodologies.html#spy4cast">Spy4Cast</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="toctrees/api-reference.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="toctrees/api-reference-src/dataset.html">Dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="toctrees/api-reference-src/meteo.html">Meteo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="toctrees/api-reference-src/spy4cast.html">Spy4cast</a></li>
-<li class="toctree-l2"><a class="reference internal" href="toctrees/api-reference-src/stypes.html">Stypes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="toctrees/api-reference-src/errors.html">Errors</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methodologies.html">Methodologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toctrees/api-reference.html">API Reference</a></li>
 </ul>
 </div>
+</section>
 </section>
 
         </article>
@@ -377,9 +357,12 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Welcome to Spy4Cast’s documentation! </a></li>
+<li><a class="reference internal" href="#">Welcome to Spy4Cast’s documentation! </a><ul>
 <li><a class="reference internal" href="#run-the-methodology">Run the methodology</a></li>
 <li><a class="reference internal" href="#analyse-results">Analyse results</a></li>
+<li><a class="reference internal" href="#table-of-contents">Table of contents</a></li>
+</ul>
+</li>
 </ul>
 
           </div>

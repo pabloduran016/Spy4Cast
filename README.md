@@ -29,9 +29,6 @@ To get the latest stable version:
 from spy4cast.meteo import Anom
 from spy4cast import Month, Slise, set_silence, Dataset, F
 
-# Enabel debug ouput
-set_silence(False)
-
 # Define constants ---------------------------------------------------------------------------------- #
 DATASET_DIR = '/Users/Shared/datasets/'
 PLOTS_DIR = 'plots'

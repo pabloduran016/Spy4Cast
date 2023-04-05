@@ -157,6 +157,7 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="methodologies.html">Methodologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="toctrees/api-reference.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.dataset.Dataset.html">Dataset</a></li>
@@ -173,6 +174,7 @@
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.MCA.html">MCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Preprocess.html">Preprocess</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Crossvalidation.html">Crossvalidation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Validation.html">Validation</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -232,7 +234,7 @@
         </div>
         <article role="main">
           <section id="tutorial">
-<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">#</a></h1>
+<span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">#</a></h1>
 <p>Spy4Cast offers a frontend to manage datasets in .nc format in python</p>
 <section id="open">
 <h2>Open<a class="headerlink" href="#open" title="Permalink to this heading">#</a></h2>
@@ -281,9 +283,128 @@
 </pre></div>
 </div>
 </section>
+<section id="save">
+<h2>Save<a class="headerlink" href="#save" title="Permalink to this heading">#</a></h2>
+<p>Every methodology can be saved for future usage (<cite>.save(“prefix_”, dir=’saved_data_directory’)</cite>)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
+<span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span>
+
+<span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
+<span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">preprocesed</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+<span class="n">preprocesed</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_preprocess_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
+<span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
+
+<span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
+<span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, 'ts')</span>
+<span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
+<span class="c1"># --- new --- #</span>
+<span class="n">clim</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_clim_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="load">
+<h2>Load<a class="headerlink" href="#load" title="Permalink to this heading">#</a></h2>
+<p>You can use the saved data with a simple line of code</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span>
+
+<span class="n">preprocessed</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_preprocess_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
+<span class="n">preprocessed</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">selected_year</span><span class="o">=</span><span class="mi">1990</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
+
+<span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_clim_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
+<span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Load and Save work for Clim, Anom, Preprocess, MCA, Crossvalidation and Validation (every methodology the API supports)</p>
+</div>
+</section>
+<section id="spy4cast">
+<span id="spy4cast-tutorial"></span><h2>Spy4Cast<a class="headerlink" href="#spy4cast" title="Permalink to this heading">#</a></h2>
+<p>The main methodology of spy4cast is Spy4Cast :-).</p>
+<p>It requires a predictor dataset and a predictand dataset. Here is an example which you can download <a class="reference download internal" download="" href="_downloads/dab7c90832f60c3cfeba70393ebd818d/docs-spy4cast-example.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
+<span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span><span class="p">,</span> <span class="n">Validation</span>
+
+<span class="n">predictor</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">'predictor.nc'</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'predictor-var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1990</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">predictand</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">'predictand.nc'</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'predictand-var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1871</span><span class="p">,</span> <span class="mi">1991</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<section id="preprocess">
+<h3>Preprocess<a class="headerlink" href="#preprocess" title="Permalink to this heading">#</a></h3>
+<p>We now preprocess everything. <cite>nm</cite> and <cite>alpha</cite> are required parameters</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nm</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="n">predictor_preprocessed</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">predictor</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>  <span class="c1"># If we supply `order` and `period` parameters, it applies a filter</span>
+<span class="n">predictand_preprocessed</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">predictand</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mca">
+<h3>MCA<a class="headerlink" href="#mca" title="Permalink to this heading">#</a></h3>
+<p>Apply MCA</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">dsy</span><span class="o">=</span><span class="n">predictor_preprocessed</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">predictand_preprocessed</span><span class="p">,</span> <span class="n">nm</span><span class="o">=</span><span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="crossvalidation">
+<h3>Crossvalidation<a class="headerlink" href="#crossvalidation" title="Permalink to this heading">#</a></h3>
+<p>Apply Crossvalidation</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cross</span> <span class="o">=</span> <span class="n">Crossvalidation</span><span class="p">(</span><span class="n">dsy</span><span class="o">=</span><span class="n">predictor_preprocessed</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">predictand_preprocessed</span><span class="p">,</span> <span class="n">nm</span><span class="o">=</span><span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="validation">
+<h3>Validation<a class="headerlink" href="#validation" title="Permalink to this heading">#</a></h3>
+<p>Apply Validation: needs a training period to compute the training MCA which then applies through out the validting period</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">training_preprocessed_y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">training_predictor</span><span class="p">)</span>
+<span class="n">training_preprocessed_z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">training_predictand</span><span class="p">)</span>
+<span class="n">training_mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">training_preprocessed_y</span><span class="p">,</span> <span class="n">training_preprocessed_z</span><span class="p">,</span> <span class="n">nm</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="n">validating_preprocessed_y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">validating_predictor</span><span class="p">)</span>
+<span class="n">validating_preprocessed_z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">validating_predictand</span><span class="p">)</span>
+
+<span class="n">validation</span> <span class="o">=</span> <span class="n">Validation</span><span class="p">(</span><span class="n">training_mca</span><span class="p">,</span> <span class="n">validating_preprocessed_y</span><span class="p">,</span> <span class="n">validating_preprocessed_z</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="visualization">
+<h3>Visualization<a class="headerlink" href="#visualization" title="Permalink to this heading">#</a></h3>
+<p>Check out the <a class="reference internal" href="plotting.html#plotting"><span class="std std-ref">plotting</span></a> section.</p>
+</section>
+</section>
 <section id="plot">
 <h2>Plot<a class="headerlink" href="#plot" title="Permalink to this heading">#</a></h2>
-<p>You can plot the dataset using two methodologies</p>
+<p>You can learn all about plotting in the <a class="reference internal" href="plotting.html#plotting"><span class="std std-ref">Plotting section</span></a>.</p>
+<p>To plot the results of a methodology you can use the built in plot function. Its purpose is to
+be fast and to serve you as a debugging tool. For final results we reccommend you to create your own
+plotting functions.</p>
+<section id="id2">
+<h3>Spy4Cast<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<p>Each spy4cast methodology has its own plotting functions: <a class="reference internal" href="#spy4cast-tutorial"><span class="std std-ref">Spy4Cast</span></a>.</p>
+</section>
 <section id="clim">
 <span id="clim-tutorial"></span><h3>Clim<a class="headerlink" href="#clim" title="Permalink to this heading">#</a></h3>
 <p>Clim performs the climatology for the given region</p>
@@ -319,108 +440,6 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
 <span class="c1"># A year is needed because Anom produces lots of maps (if you use 'ts', the year parameter becomes invalid)</span>
 <span class="n">anom</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="mi">1990</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
 </pre></div>
-</div>
-</section>
-</section>
-<section id="save">
-<h2>Save<a class="headerlink" href="#save" title="Permalink to this heading">#</a></h2>
-<p>Every methodology can be saved for future usage</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
-<span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
-
-<span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
-<span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
-    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
-<span class="p">)</span>
-<span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, 'ts')</span>
-<span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
-<span class="c1"># --- new --- #</span>
-<span class="n">clim</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_clim_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="load">
-<h2>Load<a class="headerlink" href="#load" title="Permalink to this heading">#</a></h2>
-<p>You can use the saved data with a simple line of code</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
-
-<span class="n">clim</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_clim_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
-<span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Load and Save work for Clim, Anom, Preprocess, MCA and Crossvalidation (every methodology the API supports)</p>
-</div>
-</section>
-<section id="spy4cast">
-<span id="spy4cast-tutorial"></span><h2>Spy4Cast<a class="headerlink" href="#spy4cast" title="Permalink to this heading">#</a></h2>
-<p>The main methodology of spy4cast is Spy4Cast :-).</p>
-<p>It requires a predictor dataset and a predictand dataset. Here is an example which you can download <a class="reference download internal" download="" href="_downloads/dab7c90832f60c3cfeba70393ebd818d/docs-spy4cast-example.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Month</span>
-<span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span>
-
-<span class="n">predictor</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">'predictor.nc'</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'predictor-var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
-    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1990</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="n">predictand</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">'predictand.nc'</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'predictand-var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
-    <span class="n">Slise</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1871</span><span class="p">,</span> <span class="mi">1991</span><span class="p">)</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<section id="preprocess">
-<h3>Preprocess<a class="headerlink" href="#preprocess" title="Permalink to this heading">#</a></h3>
-<p>We now preprocess everything. <cite>nm</cite> and <cite>alpha</cite> are required parameters</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nm</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span>
-
-<span class="n">predictor_preprocessed</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">predictor</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>  <span class="c1"># If we supply `order` and `period` parameters, it applies a filter</span>
-<span class="n">predictand_preprocessed</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">predictand</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="mca">
-<h3>MCA<a class="headerlink" href="#mca" title="Permalink to this heading">#</a></h3>
-<p>Apply MCA</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">dsy</span><span class="o">=</span><span class="n">predictor_preprocessed</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">predictand_preprocessed</span><span class="p">,</span> <span class="n">nm</span><span class="o">=</span><span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
-
-<span class="c1"># We save the MCA data to avoid runnning it again as it takes some time to do it</span>
-<span class="c1"># We can also send this data across to other which the can load with just:</span>
-<span class="c1"># `MCA.load('mca_', dir='saved', dsy=predictor_preprocessed`, dsz=predictand_preprocessed)`</span>
-<span class="c1"># NOTE: predictor and predictand datasets can also be saved and load if necessary</span>
-<span class="n">mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'mca_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
-<span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'mca.png'</span><span class="p">)</span>  <span class="c1"># We don't add F.SHOW_PLOT because we will show all the plots together afterwards</span>
-</pre></div>
-</div>
-</section>
-<section id="crossvalidation">
-<h3>Crossvalidation<a class="headerlink" href="#crossvalidation" title="Permalink to this heading">#</a></h3>
-<p>Apply Crossvalidation</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cross</span> <span class="o">=</span> <span class="n">Crossvalidation</span><span class="p">(</span><span class="n">dsy</span><span class="o">=</span><span class="n">predictor_preprocessed</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">predictand_preprocessed</span><span class="p">,</span> <span class="n">nm</span><span class="o">=</span><span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
-<span class="n">cross</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'cross_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
-<span class="n">cross</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'cross.png'</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="visualization">
-<h3>Visualization<a class="headerlink" href="#visualization" title="Permalink to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We can show all the plots together by using the matplotlib library</span>
-<span class="c1"># which was used to create them. Support for this mechanism is not</span>
-<span class="c1"># garanteed.</span>
-
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
-<section id="customization">
-<h3>Customization<a class="headerlink" href="#customization" title="Permalink to this heading">#</a></h3>
-<div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<p>Not documented yet</p>
 </div>
 </section>
 </section>
@@ -486,19 +505,20 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
 <li><a class="reference internal" href="#">Tutorial</a><ul>
 <li><a class="reference internal" href="#open">Open</a></li>
 <li><a class="reference internal" href="#slice">Slice</a></li>
-<li><a class="reference internal" href="#plot">Plot</a><ul>
-<li><a class="reference internal" href="#clim">Clim</a></li>
-<li><a class="reference internal" href="#anom">Anom</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#save">Save</a></li>
 <li><a class="reference internal" href="#load">Load</a></li>
 <li><a class="reference internal" href="#spy4cast">Spy4Cast</a><ul>
 <li><a class="reference internal" href="#preprocess">Preprocess</a></li>
 <li><a class="reference internal" href="#mca">MCA</a></li>
 <li><a class="reference internal" href="#crossvalidation">Crossvalidation</a></li>
+<li><a class="reference internal" href="#validation">Validation</a></li>
 <li><a class="reference internal" href="#visualization">Visualization</a></li>
-<li><a class="reference internal" href="#customization">Customization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#plot">Plot</a><ul>
+<li><a class="reference internal" href="#id2">Spy4Cast</a></li>
+<li><a class="reference internal" href="#clim">Clim</a></li>
+<li><a class="reference internal" href="#anom">Anom</a></li>
 </ul>
 </li>
 </ul>

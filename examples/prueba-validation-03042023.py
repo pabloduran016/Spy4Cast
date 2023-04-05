@@ -1,4 +1,4 @@
-from spy4cast import Dataset, Slise, Month, set_silence
+from spy4cast import Dataset, Slise, Month
 from spy4cast.spy4cast import Preprocess, MCA, Validation
 
 set_silence(False)

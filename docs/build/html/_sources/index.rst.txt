@@ -16,7 +16,7 @@ Welcome to Spy4Cast's documentation! |ICON|
    This project is under active developement
 
 Run the methodology
-===================
+-------------------
 
 .. code:: python
 
@@ -44,7 +44,7 @@ Run the methodology
     mca.save('mca_', dir='saved_data')
 
 Analyse results
-===============
+---------------
 
 .. code:: python
 
@@ -78,10 +78,14 @@ Analyse results
     :width: 60%
     :alt: Example plot
 
+Table of contents
+-----------------
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    
    usage
    tutorial
    methodologies
+   plotting
    API Reference <toctrees/api-reference>

@@ -1,8 +1,5 @@
 from spy4cast.meteo import Anom
-from spy4cast import Month, Slise, set_silence, Dataset
-
-# Enabel debug ouput
-set_silence(False)
+from spy4cast import Month, Slise, Dataset
 
 # Define constants ---------------------------------------------------------------------------------- #
 DATASET_DIR = '/Users/Shared/datasets/'

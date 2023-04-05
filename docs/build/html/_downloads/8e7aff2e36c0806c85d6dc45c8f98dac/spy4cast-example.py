@@ -1,7 +1,7 @@
 from spy4cast.dataset import Dataset
 from spy4cast import spy4cast, Month, Slise, set_silence
 
-# Enabel debug ouput
+# Enable debug ouput
 set_silence(False)
 
 # Define constants ------------------------------------------------------------------ #

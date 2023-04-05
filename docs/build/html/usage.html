@@ -157,6 +157,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="methodologies.html">Methodologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="toctrees/api-reference.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.dataset.Dataset.html">Dataset</a></li>
@@ -173,6 +174,7 @@
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.MCA.html">MCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Preprocess.html">Preprocess</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Crossvalidation.html">Crossvalidation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Validation.html">Validation</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -266,17 +268,80 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>git+https://github.com/pabloduran016/Spy4Cast
 </pre></div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Sometimes the command above is not enough and you need to uninstall spy4cast
+before upgrading (<code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">uninstall</span> <span class="pre">spy4cast</span></code>)</p>
+</div>
 </section>
 <section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">#</a></h2>
+<section id="spy4cast-preprocess-mca-and-crossvalidation">
+<h3>Spy4Cast: Preprocess, MCA and Crossvalidation<a class="headerlink" href="#spy4cast-preprocess-mca-and-crossvalidation" title="Permalink to this heading">#</a></h3>
+<p>Here is an example of how you can use Spy4Cast API to <strong>RUN</strong> the full Spy4Cast methodology.</p>
+<p><strong>Click</strong> <a class="reference download internal" download="" href="_downloads/e59ed5abafa130878c47d01948050d5b/run-spy4cast-example.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a> <strong>to download</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">spy4cast</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="n">DATASET_DIR</span> <span class="o">=</span> <span class="s1">'/Users/Shared/datasets/'</span>
+<span class="n">predictand_dataset</span> <span class="o">=</span> <span class="s1">'chl_1km_monthly_Sep1997_Dec2020.nc'</span>
+<span class="n">predictor_dataset</span> <span class="o">=</span> <span class="s1">'oisst_v2_mean_monthly.nc'</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">predictor_dataset</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DATASET_DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="s1">'sst'</span><span class="p">)</span>
+<span class="n">y</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Slise</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUL</span><span class="p">,</span> <span class="mi">1997</span><span class="p">,</span> <span class="mi">2019</span><span class="p">),</span> <span class="n">skip</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">predictor_dataset</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DATASET_DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="s2">"CHL"</span><span class="p">)</span>
+<span class="n">z</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Slise</span><span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">APR</span><span class="p">,</span> <span class="mi">1998</span><span class="p">,</span> <span class="mi">2020</span><span class="p">),</span> <span class="n">skip</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">y_ppcessed</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Preprocess</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">z_ppcessed</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Preprocess</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+<span class="n">SAVED_DATA_DIR</span> <span class="o">=</span> <span class="s1">'saved_tna'</span>
+<span class="n">y_ppcessed</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_preprocessed_y_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">SAVED_DATA_DIR</span><span class="p">)</span>
+<span class="n">z_ppcessed</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_preprocessed_z_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">SAVED_DATA_DIR</span><span class="p">)</span>
+
+<span class="n">nm</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">mca</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">MCA</span><span class="p">(</span><span class="n">y_ppcessed</span><span class="p">,</span> <span class="n">z_ppcessed</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+<span class="n">mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_mca_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">SAVED_DATA_DIR</span><span class="p">)</span>
+
+<span class="n">cross</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Crossvalidation</span><span class="p">(</span><span class="n">y_ppcessed</span><span class="p">,</span> <span class="n">z_ppcessed</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+<span class="n">cross</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_cross_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">SAVED_DATA_DIR</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here is an example of how you can use Spy4Cast API to <strong>PLOT</strong> the previously ran Spy4Cast methodology.</p>
+<p><strong>Click</strong> <a class="reference download internal" download="" href="_downloads/ed4c6c3ecb3c0480603cc84109c849d9/plot-spy4cast-example.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a> <strong>to download</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">spy4cast</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">PLOTS_DIR</span> <span class="o">=</span> <span class="s1">'plots'</span>
+<span class="n">SAVED_DATA_DIR</span> <span class="o">=</span> <span class="s1">'saved_tna'</span>
+
+<span class="n">y_ppcessed</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Preprocess</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_preprocessed_y_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">SAVED_DATA_DIR</span><span class="p">)</span>
+<span class="n">z_ppcessed</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Preprocess</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_preprocessed_z_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">SAVED_DATA_DIR</span><span class="p">)</span>
+<span class="n">mca</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">MCA</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_mca_'</span><span class="p">,</span> <span class="n">SAVED_DATA_DIR</span><span class="p">,</span> <span class="n">dsy</span><span class="o">=</span><span class="n">y_ppcessed</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">z_ppcessed</span><span class="p">)</span>
+<span class="n">cross</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Crossvalidation</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_cross_'</span><span class="p">,</span> <span class="n">SAVED_DATA_DIR</span><span class="p">,</span> <span class="n">dsy</span><span class="o">=</span><span class="n">y_ppcessed</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">z_ppcessed</span><span class="p">)</span>
+
+<span class="c1"># FAST PLOTS</span>
+<span class="n">y_ppcessed</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">selected_year</span><span class="o">=</span><span class="mi">2005</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'sst-2005.png'</span><span class="p">)</span>
+<span class="n">z_ppcessed</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">'viridis'</span><span class="p">,</span> <span class="n">selected_year</span><span class="o">=</span><span class="mi">2006</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'chl-2006.png'</span><span class="p">)</span>
+<span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'viridis'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'mca-sst-chl.png'</span><span class="p">)</span>
+<span class="n">cross</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'crossvalidation-chl-sst.png'</span><span class="p">)</span>
+<span class="n">cross</span><span class="o">.</span><span class="n">plot_zhat</span><span class="p">(</span><span class="mi">2005</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'zhat-2005.png'</span><span class="p">)</span>
+<span class="n">cross</span><span class="o">.</span><span class="n">plot_zhat</span><span class="p">(</span><span class="mi">2006</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'zhat-2006.png'</span><span class="p">)</span>
+<span class="n">cross</span><span class="o">.</span><span class="n">plot_zhat</span><span class="p">(</span><span class="mi">2007</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'zhat-2007.png'</span><span class="p">)</span>
+
+<span class="c1"># Show all the created plots</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
 <section id="climatology">
 <h3>Climatology<a class="headerlink" href="#climatology" title="Permalink to this heading">#</a></h3>
 <p>Here is an example of how you can use Spy4Cast API to plot the climatology of a given .nc dataset</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
-<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">set_silence</span><span class="p">,</span> <span class="n">Dataset</span>
-
-<span class="c1"># Enabel debug ouput</span>
-<span class="n">set_silence</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Dataset</span>
 
 <span class="c1"># Define constants ---------------------------------------------------------------------------------- #</span>
 <span class="n">DATASET_DIR</span> <span class="o">=</span> <span class="s1">'/Users/Shared/datasets/'</span>
@@ -311,10 +376,7 @@
 <h3>Anomaly<a class="headerlink" href="#anomaly" title="Permalink to this heading">#</a></h3>
 <p>Here is an example of how you can use Spy4Cast API to plot the anomaly of a given .nc dataset</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Anom</span>
-<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">set_silence</span><span class="p">,</span> <span class="n">Dataset</span>
-
-<span class="c1"># Enabel debug ouput</span>
-<span class="n">set_silence</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">Dataset</span>
 
 <span class="c1"># Define constants ---------------------------------------------------------------------------------- #</span>
 <span class="n">DATASET_DIR</span> <span class="o">=</span> <span class="s1">'/Users/Shared/datasets/'</span>
@@ -343,108 +405,6 @@
 <p><strong>Output:</strong></p>
 <a class="reference internal image-reference" href="_images/anom-map-example.png"><img alt="Output for anom map" class="align-center" src="_images/anom-map-example.png" style="height: 25em;"/></a>
 <a class="reference internal image-reference" href="_images/anom-ts-example.png"><img alt="Output for anom ts" class="align-center" src="_images/anom-ts-example.png" style="height: 25em;"/></a>
-</section>
-<section id="spy4cast-preprocess-mca-and-crossvalidation">
-<h3>Spy4Cast: Preprocess, MCA and Crossvalidation<a class="headerlink" href="#spy4cast-preprocess-mca-and-crossvalidation" title="Permalink to this heading">#</a></h3>
-<p>Here is an example of how you can use Spy4Cast API to do the full Spy4Cast methodology.</p>
-<p><strong>Click</strong> <a class="reference download internal" download="" href="_downloads/8e7aff2e36c0806c85d6dc45c8f98dac/spy4cast-example.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a> <strong>to download</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
-<span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">spy4cast</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Slise</span><span class="p">,</span> <span class="n">set_silence</span>
-
-<span class="c1"># Enabel debug ouput</span>
-<span class="n">set_silence</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="c1"># Define constants ------------------------------------------------------------------ #</span>
-<span class="n">DATASET_DIR</span> <span class="o">=</span> <span class="s1">'/Users/Shared/datasets/'</span>
-<span class="n">PLOTS_DIR</span> <span class="o">=</span> <span class="s1">'plots'</span>
-<span class="n">PLOT_DATA_DIR</span> <span class="o">=</span> <span class="s1">'saved_tna'</span>
-
-<span class="n">MCA_PLOT_NAME</span> <span class="o">=</span> <span class="s1">'mca_spy4cast_chlorMED_tna.png'</span>
-<span class="n">CROSS_PLOT_NAME</span> <span class="o">=</span> <span class="s1">'cross_spy4cast_chlorMED_tna.png'</span>
-<span class="n">ZHAT_PLOT_NAME</span> <span class="o">=</span> <span class="s1">'zhat_spy4cast_chlorMED_tna.png'</span>
-
-<span class="n">chl_1km_monthly_Sep1997_Dec2020</span> <span class="o">=</span> <span class="s1">'chl_1km_monthly_Sep1997_Dec2020.nc'</span>
-<span class="n">oisst_v2_mean_monthly</span> <span class="o">=</span> <span class="s1">'oisst_v2_mean_monthly.nc'</span>
-<span class="n">CHL</span> <span class="o">=</span> <span class="s1">'CHL'</span>
-
-<span class="n">oisst_v2_mean_monthly_Jan1996_Dec2020</span> <span class="o">=</span> <span class="s1">'oisst_v2_mean_monthly_Jan1996_Dec2020.nc'</span>
-<span class="n">SST</span> <span class="o">=</span> <span class="s1">'sst'</span>
-
-<span class="n">oisst_slise</span> <span class="o">=</span> <span class="n">Slise</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUL</span><span class="p">,</span> <span class="mi">1997</span><span class="p">,</span> <span class="mi">2019</span><span class="p">)</span>
-<span class="n">chl_slise</span> <span class="o">=</span> <span class="n">Slise</span><span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">APR</span><span class="p">,</span> <span class="mi">1998</span><span class="p">,</span> <span class="mi">2020</span><span class="p">)</span>
-
-<span class="c1"># Indicates if get the already conputed data ---------------------------------------- #</span>
-<span class="n">LOAD_PREPROCESSED</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">LOAD_MCA</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">LOAD_CROSSVALIDATION</span> <span class="o">=</span> <span class="kc">True</span>
-
-<span class="c1"># Settings -------------------------------------------------------------------------- #</span>
-<span class="n">nm</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">alpha</span> <span class="o">=</span> <span class="mf">.1</span>
-
-<span class="c1"># Opening and preprocessing --------------------------------------------------------- #</span>
-<span class="k">if</span> <span class="n">LOAD_PREPROCESSED</span><span class="p">:</span>
-    <span class="c1"># Load the precomputed data</span>
-    <span class="n">sst_ppcessed</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Preprocess</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_preprocessed_y_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOT_DATA_DIR</span><span class="p">)</span>
-    <span class="n">chl_ppcessed</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Preprocess</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_preprocessed_z_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOT_DATA_DIR</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="c1"># Create two datasets for predictor and predictand</span>
-    <span class="n">sst</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="n">oisst_v2_mean_monthly</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DATASET_DIR</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">SST</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">oisst_slise</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-    <span class="n">chl</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="n">chl_1km_monthly_Sep1997_Dec2020</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DATASET_DIR</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">CHL</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">chl_slise</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    
-    <span class="c1"># Apply the preprocessing methodology</span>
-    <span class="c1"># Note: Optional keyword arguments for order and period to apply filter</span>
-    <span class="n">sst_ppcessed</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Preprocess</span><span class="p">(</span><span class="n">sst</span><span class="p">)</span>
-    <span class="n">chl_ppcessed</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Preprocess</span><span class="p">(</span><span class="n">chl</span><span class="p">)</span>
-
-    <span class="c1"># Optional saving to load later</span>
-    <span class="n">sst_ppcessed</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_preprocessed_y_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOT_DATA_DIR</span><span class="p">)</span>
-    <span class="n">chl_ppcessed</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_preprocessed_z_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOT_DATA_DIR</span><span class="p">)</span>
-
-<span class="c1"># Plot the matrices. Use `F.SHOW_PLOT` if you want to show it right away.</span>
-<span class="c1"># This will only plot and later we will call `plt.show()` and show all the plots at once</span>
-<span class="n">sst_ppcessed</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">selected_year</span><span class="o">=</span><span class="mi">2005</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span>
-                  <span class="n">name</span><span class="o">=</span><span class="s1">'sst-2005.png'</span><span class="p">)</span>
-<span class="n">chl_ppcessed</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">'viridis'</span><span class="p">,</span> <span class="n">selected_year</span><span class="o">=</span><span class="mi">2006</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span>
-                  <span class="n">name</span><span class="o">=</span><span class="s1">'chl-2006.png'</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="n">LOAD_MCA</span><span class="p">:</span>
-    <span class="c1"># Load the precomputed methodology.</span>
-    <span class="c1"># Notice we need to pass in as arguments the predictar and predictor preprocessed</span>
-    <span class="n">mca</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">MCA</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_mca_'</span><span class="p">,</span> <span class="n">PLOT_DATA_DIR</span><span class="p">,</span> <span class="n">dsy</span><span class="o">=</span><span class="n">sst_ppcessed</span><span class="p">,</span>
-                            <span class="n">dsz</span><span class="o">=</span><span class="n">chl_ppcessed</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="c1"># Apply MCA procedure and save the ouput for future loading</span>
-    <span class="n">mca</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">MCA</span><span class="p">(</span><span class="n">chl_ppcessed</span><span class="p">,</span> <span class="n">sst_ppcessed</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
-    <span class="n">mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_mca_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOT_DATA_DIR</span><span class="p">)</span>
-
-<span class="c1"># Here we plot the MCA but we wait t o show it until the end of the file</span>
-<span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'viridis'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'mca-sst-chl.png'</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="n">LOAD_CROSSVALIDATION</span><span class="p">:</span>
-    <span class="c1"># Load the precomputed crossvalidation</span>
-    <span class="n">cross</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Crossvalidation</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_cross_'</span><span class="p">,</span> <span class="n">PLOT_DATA_DIR</span><span class="p">,</span> <span class="n">dsy</span><span class="o">=</span><span class="n">sst_ppcessed</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">chl_ppcessed</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="c1"># Apply the corssvalidation and save the output</span>
-    <span class="n">cross</span> <span class="o">=</span> <span class="n">spy4cast</span><span class="o">.</span><span class="n">Crossvalidation</span><span class="p">(</span><span class="n">sst_ppcessed</span><span class="p">,</span> <span class="n">chl_ppcessed</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
-    <span class="n">cross</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_cross_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOT_DATA_DIR</span><span class="p">)</span>
-
-<span class="c1"># Plot crossvalidation and zhat but not showing it yet</span>
-<span class="n">cross</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'crossvalidation-chl-sst.png'</span><span class="p">)</span>
-<span class="n">cross</span><span class="o">.</span><span class="n">plot_zhat</span><span class="p">(</span><span class="mi">2005</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'zhat-2005.png'</span><span class="p">)</span>
-<span class="n">cross</span><span class="o">.</span><span class="n">plot_zhat</span><span class="p">(</span><span class="mi">2006</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'zhat-2006.png'</span><span class="p">)</span>
-<span class="n">cross</span><span class="o">.</span><span class="n">plot_zhat</span><span class="p">(</span><span class="mi">2007</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">PLOTS_DIR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'zhat-2007.png'</span><span class="p">)</span>
-
-<span class="c1"># Show all the created plots</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
 </section>
 </section>
 </section>
@@ -510,9 +470,9 @@
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#upgrade-version">Upgrade Version</a></li>
 <li><a class="reference internal" href="#example">Example</a><ul>
+<li><a class="reference internal" href="#spy4cast-preprocess-mca-and-crossvalidation">Spy4Cast: Preprocess, MCA and Crossvalidation</a></li>
 <li><a class="reference internal" href="#climatology">Climatology</a></li>
 <li><a class="reference internal" href="#anomaly">Anomaly</a></li>
-<li><a class="reference internal" href="#spy4cast-preprocess-mca-and-crossvalidation">Spy4Cast: Preprocess, MCA and Crossvalidation</a></li>
 </ul>
 </li>
 </ul>

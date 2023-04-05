@@ -57,5 +57,4 @@ def main() -> None:
         s.run(show_plot=True, save_fig=True, sy=selected_year, cmap='viridis', yslise=oisst_slise, zslise=chl_slise)
 
 if __name__ == '__main__':
-    spy.set_silence(False)
     main()

@@ -63,5 +63,4 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    spy.set_silence(False)
     main()

@@ -50,8 +50,28 @@ Upgrade Version
 
     (<your-env-name>) $ pip install --upgrade git+https://github.com/pabloduran016/Spy4Cast
 
+.. warning::
+
+     Sometimes the command above is not enough and you need to uninstall spy4cast
+     before upgrading (:code:`pip uninstall spy4cast`)
+
 Example
 -------
+
+Spy4Cast: Preprocess, MCA and Crossvalidation
++++++++++++++++++++++++++++++++++++++++++++++
+
+Here is an example of how you can use Spy4Cast API to **RUN** the full Spy4Cast methodology.
+
+**Click** :download:`here <../../examples/run-spy4cast-example.py>` **to download**
+
+.. literalinclude:: ../../examples/run-spy4cast-example.py
+
+Here is an example of how you can use Spy4Cast API to **PLOT** the previously ran Spy4Cast methodology.
+
+**Click** :download:`here <../../examples/plot-spy4cast-example.py>` **to download**
+
+.. literalinclude:: ../../examples/plot-spy4cast-example.py
 
 Climatology
 +++++++++++
@@ -95,12 +115,4 @@ Here is an example of how you can use Spy4Cast API to plot the anomaly of a give
     :align: center
 
 
-Spy4Cast: Preprocess, MCA and Crossvalidation
-+++++++++++++++++++++++++++++++++++++++++++++
-
-Here is an example of how you can use Spy4Cast API to do the full Spy4Cast methodology.
-
-**Click** :download:`here <../../examples/spy4cast-example.py>` **to download**
-
-.. literalinclude:: ../../examples/spy4cast-example.py
 
