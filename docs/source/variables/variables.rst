@@ -5,7 +5,7 @@ Variables
 
 Each methodology holds a different number of variables. You can lear about it here!
 
-**Remember you can check the variables inside by accessing `.var_names` property**
+**Remember you can check the variables inside by accessing** `.var_names` **property.**
 
 Dimension Length Meaning
 ++++++++++++++++++++++++

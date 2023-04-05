@@ -1,7 +1,7 @@
-Anom Variables
-==============
+Dataset Variables
+=================
 
-Variables for the Anom methodology that can be accessed for plotting.
+Variables for Dataset that can be accessed for plotting.
 
 
 .. table::

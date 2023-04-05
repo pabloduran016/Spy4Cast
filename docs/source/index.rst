@@ -26,6 +26,7 @@ Run the methodology
 
 .. code:: python
 
+    # Selction of datasets
     ds_y = Dataset("sea_surface_temperature.nc", dir="datasets").open('sst')
     ds_y.slice(Region(-20, 20, -150, -90, Month.AUG, Month.NOV, 1971, 2003))
 
@@ -34,6 +35,7 @@ Run the methodology
 
 .. code:: python
 
+    # Data preprocessing: anomaly, filter and reshaping
     y = Preprocess(ds_y)
     z = Preprocess(ds_z)
     y.save('y_', dir='saved_data')
@@ -41,6 +43,7 @@ Run the methodology
 
 .. code:: python
 
+    # Application of Maximum Covariance Anaysis for 3 modes and 0.1 significance level
     mca = MCA(y, z, 3, 0.1)
     mca.save('mca_', dir='saved_data')
 

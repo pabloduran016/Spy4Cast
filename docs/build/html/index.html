@@ -160,7 +160,7 @@
 <li class="toctree-l1"><a class="reference internal" href="methodologies.html">Methodologies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="variables/variables.html">Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="variables/dataset.html">Anom Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables/dataset.html">Dataset Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variables/preprocess.html">Preprocess Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variables/mca.html">MCA Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variables/crossvalidation.html">Crossvalidation Variables</a></li>
@@ -247,12 +247,6 @@
           <section id="welcome-to-spy4cast-s-documentation-icon">
 <h1>Welcome to Spy4Cast’s documentation! <a class="reference internal" href="_images/favicon.png"><img alt="Icon" src="_images/favicon.png" style="height: 1em;"/></a><a class="headerlink" href="#welcome-to-spy4cast-s-documentation-icon" title="Permalink to this heading">#</a></h1>
 <p><strong>Spy4Cast</strong> is a framework for working with .nc files and applying methodologies to them as well as plotting.</p>
-<blockquote>
-<div><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you see anywhere in the docs or in the files <cite>region</cite> and think it is a typo, it is not. Python has a built-in function called <cite>slice</cite> and in this library we have decided to use <cite>region</cite> to avoid unexpected behaviours. I hope it is not too ugly…</p>
-</div>
-</div></blockquote>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This project is under active developement</p>
@@ -263,20 +257,23 @@
 <span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ds_y</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s2">"sea_surface_temperature.nc"</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">"datasets"</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'sst'</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Selction of datasets</span>
+<span class="n">ds_y</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s2">"sea_surface_temperature.nc"</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">"datasets"</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'sst'</span><span class="p">)</span>
 <span class="n">ds_y</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">150</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">NOV</span><span class="p">,</span> <span class="mi">1971</span><span class="p">,</span> <span class="mi">2003</span><span class="p">))</span>
 
 <span class="n">ds_z</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s2">"atmospheric_preasure.nc"</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">"datasets"</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'pr'</span><span class="p">)</span>
 <span class="n">ds_z</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">Region</span><span class="p">(</span><span class="mf">11.5</span><span class="p">,</span> <span class="mf">16.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAY</span><span class="p">,</span> <span class="mi">1972</span><span class="p">,</span> <span class="mi">2004</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">ds_y</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Data preprocessing: anomaly, filter and reshaping</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">ds_y</span><span class="p">)</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">ds_z</span><span class="p">)</span>
 <span class="n">y</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'y_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved_data'</span><span class="p">)</span>
 <span class="n">z</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'z_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved_data'</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Application of Maximum Covariance Anaysis for 3 modes and 0.1 significance level</span>
+<span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
 <span class="n">mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'mca_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved_data'</span><span class="p">)</span>
 </pre></div>
 </div>
