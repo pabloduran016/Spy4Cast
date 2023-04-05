@@ -49,33 +49,33 @@ class MCA(_Procedure):
     Attributes
     ----------
         RUY : npt.NDArray[np.float32]
-            ...
+            Regression of the predictor field. Dimension: y_space x nm
         RUY_sig : npt.NDArray[np.float32]
-            ...
+            Regression of the predictor field where pvalue is smaller than alpha. Dimension: y_space x nm
         SUY : npt.NDArray[np.float32]
-            ...
+            Correlation in space of the predictor with the singular vector. Dimension: y_space x nm
         SUY_sig : npt.NDArray[np.float32]
-            ...
+            Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x nm
         RUZ : npt.NDArray[np.float32]
-            ...
+            Regression of the predictand field. Dimension: z_space x nm
         RUZ_sig : npt.NDArray[np.float32]
-            ...
+            Regression of the predictand field where pvalue is smaller than alpha. Dimension: z_space x nm
         SUZ : npt.NDArray[np.float32]
-            ...
+            Correlation in space of the predictand with the singular vector. Dimension: z_space x nm
         SUZ_sig : npt.NDArray[np.float32]
-            ...
-        pvalruz : npt.NDArray[np.float32]
-            ...
+            Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x nm
         pvalruy : npt.NDArray[np.float32]
-            ...
+            Pvalue of the correlation of the predictor field. Dimension: y_space x nm
+        pvalruz : npt.NDArray[np.float32]
+            Pvalue of the correlation of the predictand field. Dimension: z_space x nm
         Us : npt.NDArray[np.float32]
-            ...
+            Singular vectors of the predictor field. Dimension: nm x time
         Vs : npt.NDArray[np.float32]
-            ...
+            Singular vectors of the predictand field. Dimension: nm x time
         scf : npt.NDArray[np.float32]
-            ...
+            Square covariance fraction of the singular values. Dimension: nm
         alpha : float
-            ...
+            Significance coeficient.
     """
     # TODO: Document MCA fields
     RUY: npt.NDArray[np.float32]

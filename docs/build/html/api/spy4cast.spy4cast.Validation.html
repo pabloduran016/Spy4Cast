@@ -240,6 +240,75 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.spy4cast.</span></span><span class="sig-name descname"><span class="pre">Validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_mca</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.spy4cast.MCA.html#spy4cast.spy4cast.MCA" title="spy4cast.spy4cast.mca.MCA"><span class="pre">MCA</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">validating_dsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">validating_dsz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.spy4cast.Validation" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Procedure</span></code></p>
 <p>Perform validation methodology</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>training_mca</strong> (<a class="reference internal" href="spy4cast.spy4cast.MCA.html#spy4cast.spy4cast.MCA" title="spy4cast.spy4cast.MCA"><em>MCA</em></a>) – MCA perform with the training datasets</p></li>
+<li><p><strong>validating_dsy</strong> (<a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.Preprocess"><em>Preprocess</em></a>) – Predictor field for validation</p></li>
+<li><p><strong>validating_dsz</strong> (<a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.Preprocess"><em>Preprocess</em></a>) – Predictand field for validation</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.spy4cast.Validation.psi">
+<span class="sig-name descname"><span class="pre">psi</span></span><a class="headerlink" href="#spy4cast.spy4cast.Validation.psi" title="Permalink to this definition">#</a></dt>
+<dd><p>Psi calculated with the training MCA data. Dimension: 1 x training_y_space x training_z_space</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>npt.NDArray[<a href="#id1"><span class="problematic" id="id2">np.float_</span></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.spy4cast.Validation.zhat">
+<span class="sig-name descname"><span class="pre">zhat</span></span><a class="headerlink" href="#spy4cast.spy4cast.Validation.zhat" title="Permalink to this definition">#</a></dt>
+<dd><p>Zhat predicted for the predictand. Dimension: 1 x validating_z_space x validating_z_time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>npt.NDArray[<a href="#id3"><span class="problematic" id="id4">np.float_</span></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.spy4cast.Validation.r_z_zhat_t_accumulated_modes">
+<span class="sig-name descname"><span class="pre">r_z_zhat_t_accumulated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Validation.r_z_zhat_t_accumulated_modes" title="Permalink to this definition">#</a></dt>
+<dd><p>Correlation in time for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_space</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>npt.NDArray[<a href="#id5"><span class="problematic" id="id6">np.float_</span></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.spy4cast.Validation.p_z_zhat_t_accumulated_modes">
+<span class="sig-name descname"><span class="pre">p_z_zhat_t_accumulated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Validation.p_z_zhat_t_accumulated_modes" title="Permalink to this definition">#</a></dt>
+<dd><p>Pvalue of the correlation in time for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_space</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>npt.NDArray[<a href="#id7"><span class="problematic" id="id8">np.float_</span></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.spy4cast.Validation.r_z_zhat_s_accumulated_modes">
+<span class="sig-name descname"><span class="pre">r_z_zhat_s_accumulated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Validation.r_z_zhat_s_accumulated_modes" title="Permalink to this definition">#</a></dt>
+<dd><p>Correlation in space for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>npt.NDArray[<a href="#id9"><span class="problematic" id="id10">np.float_</span></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.spy4cast.Validation.p_z_zhat_s_accumulated_modes">
+<span class="sig-name descname"><span class="pre">p_z_zhat_s_accumulated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Validation.p_z_zhat_s_accumulated_modes" title="Permalink to this definition">#</a></dt>
+<dd><p>Pvalue of the correlation in space for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>npt.NDArray[<a href="#id11"><span class="problematic" id="id12">np.float_</span></a>]</p>
+</dd>
+</dl>
+</dd></dl>
 <p class="rubric">Attributes Summary</p>
 <div class="table-wrapper"><table class="autosummary longtable docutils align-default">
 <tbody>
@@ -406,6 +475,12 @@ and stops execution. Else uses fig.show and does not halt program</p></li>
             <ul>
 <li><a class="reference internal" href="#">Validation</a><ul>
 <li><a class="reference internal" href="#spy4cast.spy4cast.Validation"><code class="docutils literal notranslate"><span class="pre">Validation</span></code></a><ul>
+<li><a class="reference internal" href="#spy4cast.spy4cast.Validation.psi"><code class="docutils literal notranslate"><span class="pre">Validation.psi</span></code></a></li>
+<li><a class="reference internal" href="#spy4cast.spy4cast.Validation.zhat"><code class="docutils literal notranslate"><span class="pre">Validation.zhat</span></code></a></li>
+<li><a class="reference internal" href="#spy4cast.spy4cast.Validation.r_z_zhat_t_accumulated_modes"><code class="docutils literal notranslate"><span class="pre">Validation.r_z_zhat_t_accumulated_modes</span></code></a></li>
+<li><a class="reference internal" href="#spy4cast.spy4cast.Validation.p_z_zhat_t_accumulated_modes"><code class="docutils literal notranslate"><span class="pre">Validation.p_z_zhat_t_accumulated_modes</span></code></a></li>
+<li><a class="reference internal" href="#spy4cast.spy4cast.Validation.r_z_zhat_s_accumulated_modes"><code class="docutils literal notranslate"><span class="pre">Validation.r_z_zhat_s_accumulated_modes</span></code></a></li>
+<li><a class="reference internal" href="#spy4cast.spy4cast.Validation.p_z_zhat_s_accumulated_modes"><code class="docutils literal notranslate"><span class="pre">Validation.p_z_zhat_s_accumulated_modes</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.Validation.var_names"><code class="docutils literal notranslate"><span class="pre">Validation.var_names</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.Validation.load"><code class="docutils literal notranslate"><span class="pre">Validation.load()</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.Validation.plot"><code class="docutils literal notranslate"><span class="pre">Validation.plot()</span></code></a></li>

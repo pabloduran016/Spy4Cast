@@ -257,7 +257,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.RUY">
 <span class="sig-name descname"><span class="pre">RUY</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.RUY" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Regression of the predictor field. Dimension: y_space x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -267,7 +267,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.RUY_sig">
 <span class="sig-name descname"><span class="pre">RUY_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.RUY_sig" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Regression of the predictor field where pvalue is smaller than alpha. Dimension: y_space x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -277,7 +277,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.SUY">
 <span class="sig-name descname"><span class="pre">SUY</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.SUY" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Correlation in space of the predictor with the singular vector. Dimension: y_space x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -287,7 +287,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.SUY_sig">
 <span class="sig-name descname"><span class="pre">SUY_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.SUY_sig" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -297,7 +297,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.RUZ">
 <span class="sig-name descname"><span class="pre">RUZ</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.RUZ" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Regression of the predictand field. Dimension: z_space x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -307,7 +307,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.RUZ_sig">
 <span class="sig-name descname"><span class="pre">RUZ_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.RUZ_sig" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Regression of the predictand field where pvalue is smaller than alpha. Dimension: z_space x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -317,7 +317,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.SUZ">
 <span class="sig-name descname"><span class="pre">SUZ</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.SUZ" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Correlation in space of the predictand with the singular vector. Dimension: z_space x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -327,17 +327,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.SUZ_sig">
 <span class="sig-name descname"><span class="pre">SUZ_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.SUZ_sig" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.pvalruz">
-<span class="sig-name descname"><span class="pre">pvalruz</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.pvalruz" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -347,7 +337,17 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.pvalruy">
 <span class="sig-name descname"><span class="pre">pvalruy</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.pvalruy" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Pvalue of the correlation of the predictor field. Dimension: y_space x nm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.pvalruz">
+<span class="sig-name descname"><span class="pre">pvalruz</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.pvalruz" title="Permalink to this definition">#</a></dt>
+<dd><p>Pvalue of the correlation of the predictand field. Dimension: z_space x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -357,7 +357,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.Us">
 <span class="sig-name descname"><span class="pre">Us</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.Us" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Singular vectors of the predictor field. Dimension: nm x time</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -367,7 +367,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.Vs">
 <span class="sig-name descname"><span class="pre">Vs</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.Vs" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Singular vectors of the predictand field. Dimension: nm x time</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -377,7 +377,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.scf">
 <span class="sig-name descname"><span class="pre">scf</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.scf" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Square covariance fraction of the singular values. Dimension: nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>npt.NDArray[np.float32]</p>
@@ -387,7 +387,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.alpha">
 <span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.alpha" title="Permalink to this definition">#</a></dt>
-<dd><p>…</p>
+<dd><p>Significance coeficient.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -565,8 +565,8 @@ mode output will be multipled by -1.</p></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.RUZ_sig"><code class="docutils literal notranslate"><span class="pre">MCA.RUZ_sig</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.SUZ"><code class="docutils literal notranslate"><span class="pre">MCA.SUZ</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.SUZ_sig"><code class="docutils literal notranslate"><span class="pre">MCA.SUZ_sig</span></code></a></li>
-<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.pvalruz"><code class="docutils literal notranslate"><span class="pre">MCA.pvalruz</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.pvalruy"><code class="docutils literal notranslate"><span class="pre">MCA.pvalruy</span></code></a></li>
+<li><a class="reference internal" href="#spy4cast.spy4cast.MCA.pvalruz"><code class="docutils literal notranslate"><span class="pre">MCA.pvalruz</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.Us"><code class="docutils literal notranslate"><span class="pre">MCA.Us</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.Vs"><code class="docutils literal notranslate"><span class="pre">MCA.Vs</span></code></a></li>
 <li><a class="reference internal" href="#spy4cast.spy4cast.MCA.scf"><code class="docutils literal notranslate"><span class="pre">MCA.scf</span></code></a></li>

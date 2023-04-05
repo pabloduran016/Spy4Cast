@@ -25,23 +25,23 @@ __all__ = [
 class Preprocess(_Procedure):
     """Maximum covariance analysis between y (predictor) and Z (predictand)
 
-        Parameters
-        ----------
-            dsy : Preprocess
-                predictor
-            dsz : Preprocess
-                Predictand
-            nm : int
-                Number of modes
-            alpha : float
-                Significance level
-            sig : {'monte-carlo', 'test-t'}
-                Signification technique: monte-carlo or test-t
-            dsy_index_regression : optional, Preprocess
-                Predictor to send to index regression. Default is the same as y
-            dsz_index_regression : optional, Preprocess
-                Predictand to send to index regression. Default is the same as z
-        """
+    Parameters
+    ----------
+        dsy : Preprocess
+            predictor
+        dsz : Preprocess
+            Predictand
+        nm : int
+            Number of modes
+        alpha : float
+            Significance level
+        sig : {'monte-carlo', 'test-t'}
+            Signification technique: monte-carlo or test-t
+        dsy_index_regression : optional, Preprocess
+            Predictor to send to index regression. Default is the same as y
+        dsz_index_regression : optional, Preprocess
+            Predictand to send to index regression. Default is the same as z
+    """
     _data: xr.DataArray
     _time: xr.DataArray
     _lat: xr.DataArray
@@ -117,6 +117,7 @@ class Preprocess(_Procedure):
 
     @property
     def time(self) -> xr.DataArray:
+        """Time coordinate of the data: years"""
         return self._time
 
     @time.setter
@@ -131,6 +132,7 @@ class Preprocess(_Procedure):
 
     @property
     def lat(self) -> xr.DataArray:
+        """Latitude coordinate of the variable: from -90 to 90"""
         return self._lat
 
     @lat.setter
@@ -149,6 +151,7 @@ class Preprocess(_Procedure):
 
     @property
     def lon(self) -> xr.DataArray:
+        """Longitude coordinate of the data: -180 to 180"""
         return self._lon
 
     @lon.setter
@@ -167,14 +170,17 @@ class Preprocess(_Procedure):
 
     @property
     def shape(self) -> Tuple[int, ...]:
+        """Shape of the data: space x time"""
         return self._land_data.shape
 
     @property
     def land_data(self) -> LandArray:
+        """Data but organised in a land array: to organise datta points in land that doesnt contain information"""
         return self._land_data
 
     @property
     def data(self) -> npt.NDArray[np.float_]:
+        """Raw data in the object"""
         return self._land_data.values
 
     @data.setter
@@ -208,6 +214,7 @@ class Preprocess(_Procedure):
 
     @property
     def var(self) -> str:
+        """Name of the variable loaded"""
         return self._var if hasattr(self, '_var') else self._ds.var if hasattr(self, '_ds') else ''
 
     @var.setter
@@ -220,6 +227,7 @@ class Preprocess(_Procedure):
 
     @property
     def slise(self) -> Slise:
+        """Region used to slice the dataset"""
         if hasattr(self, '_slise'):
             return self._slise
         elif hasattr(self, '_ds'):
@@ -249,6 +257,32 @@ class Preprocess(_Procedure):
         dir: Optional[str] = None,
         name: Optional[str] = None
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
+        """Plot the preprocessed data for spy4cast methodologes
+
+        Parameters
+        ----------
+        save_fig
+            Saves the fig in with `dir` / `name` parameters
+        show_plot
+            Shows the plot
+        halt_program
+            Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
+            and stops execution. Else uses fig.show and does not halt program
+        cmap
+            Colormap for the map
+        dir
+            Directory to save fig if `save_fig` is `True`
+        name
+            Name of the fig saved if `save_fig` is `True`
+
+        Returns
+        -------
+        plt.Figure
+            Figure object from matplotlib
+
+        Sequence[plt.Axes]
+            Tuple of axes in figure
+        """
         nt, nlat, nlon = len(self.time), len(self.lat), len(self.lon)
 
         plotable = self.land_data.values.transpose().reshape((nt, nlat, nlon))

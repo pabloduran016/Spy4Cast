@@ -80,17 +80,17 @@ class Crossvalidation(_Procedure):
         psi_accumulated_modes : npt.NDArray[np.float32]
             Skill accumulating modes (1, 1->2, ..., 1->nm)
         suy : npt.NDArray[np.float32]
-            SUY
+            Correlation in space of the predictor with the singular vector. Dimension: y_space x time x nm
         suz : npt.NDArray[np.float32]
-            SUZ
+            Correlation in space of the predictand with the singular vector. Dimension: z_space x time x nm
         suy_sig : npt.NDArray[np.float32]
-            SUY_sig
+            Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x time x nm
         suz_sig : npt.NDArray[np.float32]
-            SUZ_sig
+            Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x time x nm
         us : npt.NDArray[float32]
-            crosvalidated year on axis 2
+            Singular vectors of the predictor field. Dimension: nm x time x time
         vs : npt.NDArray[float32]
-            ...
+            Singular vectors of the predictand field. Dimension: nm x time x time
         alpha : float
             Correlation factor
 

@@ -46,7 +46,7 @@ numpydoc_show_class_members = False
 
 automodapi_writereprocessed = True
 
-autodoc_member_order = 'bysource'
+# autodoc_member_order = 'bysource'
 
 html_favicon = "_static/favicon.png"
 

@@ -32,9 +32,26 @@ class Validation(_Procedure):
 
     Parameters
     ----------
-
+        training_mca : MCA
+            MCA perform with the training datasets
+        validating_dsy : Preprocess
+            Predictor field for validation
+        validating_dsz : Preprocess
+            Predictand field for validation
     Attributes
     ----------
+        psi : npt.NDArray[np.float_]
+            Psi calculated with the training MCA data. Dimension: 1 x training_y_space x training_z_space
+        zhat : npt.NDArray[np.float_]
+            Zhat predicted for the predictand. Dimension: 1 x validating_z_space x validating_z_time
+        r_z_zhat_t_accumulated_modes : npt.NDArray[np.float_]
+            Correlation in time for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_space
+        p_z_zhat_t_accumulated_modes : npt.NDArray[np.float_]
+            Pvalue of the correlation in time for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_space
+        r_z_zhat_s_accumulated_modes : npt.NDArray[np.float_]
+            Correlation in space for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_time
+        p_z_zhat_s_accumulated_modes : npt.NDArray[np.float_]
+            Pvalue of the correlation in space for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_time
 
     See Also
     --------

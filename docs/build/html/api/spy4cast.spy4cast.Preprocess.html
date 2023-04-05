@@ -257,31 +257,31 @@
 <div class="table-wrapper"><table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.data" title="spy4cast.spy4cast.Preprocess.data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Raw data in the object</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.land_data" title="spy4cast.spy4cast.Preprocess.land_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">land_data</span></code></a></p></td>
-<td><p></p></td>
+<td><p>to organise datta points in land that doesnt contain information</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.lat" title="spy4cast.spy4cast.Preprocess.lat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lat</span></code></a></p></td>
-<td><p></p></td>
+<td><p>from -90 to 90</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.lon" title="spy4cast.spy4cast.Preprocess.lon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lon</span></code></a></p></td>
-<td><p></p></td>
+<td><p>-180 to 180</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.meta" title="spy4cast.spy4cast.Preprocess.meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta</span></code></a></p></td>
 <td><p>Returns a np.ndarray containg information about the preprocessing</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.shape" title="spy4cast.spy4cast.Preprocess.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
-<td><p></p></td>
+<td><p>space x time</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.slise" title="spy4cast.spy4cast.Preprocess.slise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slise</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Region used to slice the dataset</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.time" title="spy4cast.spy4cast.Preprocess.time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time</span></code></a></p></td>
-<td><p></p></td>
+<td><p>years</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.var" title="spy4cast.spy4cast.Preprocess.var"><code class="xref py py-obj docutils literal notranslate"><span class="pre">var</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Name of the variable loaded</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.var_names" title="spy4cast.spy4cast.Preprocess.var_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">var_names</span></code></a></p></td>
 <td><p>Returns the variables contained in the object (data, time, lat, lon, ...)</p></td>
@@ -292,7 +292,7 @@
 <div class="table-wrapper"><table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.Preprocess.plot" title="spy4cast.spy4cast.Preprocess.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([save_fig, show_plot, halt_program, ...])</p></td>
-<td><p></p></td>
+<td><p>Plot the preprocessed data for spy4cast methodologes</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -300,19 +300,38 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.data">
 <span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.data" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Raw data in the object</p>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.land_data">
 <span class="sig-name descname"><span class="pre">land_data</span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.land_data" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>to organise datta points in land that doesnt contain information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Data but organised in a land array</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.lat">
 <span class="sig-name descname"><span class="pre">lat</span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.lat" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>from -90 to 90</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Latitude coordinate of the variable</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.lon">
 <span class="sig-name descname"><span class="pre">lon</span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.lon" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>-180 to 180</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Longitude coordinate of the data</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.meta">
 <span class="sig-name descname"><span class="pre">meta</span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.meta" title="Permalink to this definition">#</a></dt>
@@ -322,19 +341,33 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.shape">
 <span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.shape" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>space x time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shape of the data</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.slise">
 <span class="sig-name descname"><span class="pre">slise</span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.slise" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Region used to slice the dataset</p>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.time">
 <span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.time" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>years</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Time coordinate of the data</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.var">
 <span class="sig-name descname"><span class="pre">var</span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.var" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Name of the variable loaded</p>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.var_names">
 <span class="sig-name descname"><span class="pre">var_names</span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.var_names" title="Permalink to this definition">#</a></dt>
@@ -344,7 +377,28 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Preprocess.plot">
 <span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_plot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halt_program</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bwr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Figure</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Axes</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spy4cast.spy4cast.Preprocess.plot" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Plot the preprocessed data for spy4cast methodologes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_fig</strong> – Saves the fig in with <cite>dir</cite> / <cite>name</cite> parameters</p></li>
+<li><p><strong>show_plot</strong> – Shows the plot</p></li>
+<li><p><strong>halt_program</strong> – Only used if <cite>show_plot</cite> is <cite>True</cite>. If <cite>True</cite> shows the plot if plt.show
+and stops execution. Else uses fig.show and does not halt program</p></li>
+<li><p><strong>cmap</strong> – Colormap for the map</p></li>
+<li><p><strong>dir</strong> – Directory to save fig if <cite>save_fig</cite> is <cite>True</cite></p></li>
+<li><p><strong>name</strong> – Name of the fig saved if <cite>save_fig</cite> is <cite>True</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>plt.Figure</em> – Figure object from matplotlib</p></li>
+<li><p><em>Sequence[plt.Axes]</em> – Tuple of axes in figure</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 </section>
 
