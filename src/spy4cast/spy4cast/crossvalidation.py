@@ -48,27 +48,27 @@ class Crossvalidation(_Procedure):
     Attributes
     ----------
         zhat_separated_modes : npt.NDArray[float32]
-            Hindcast of field to predict using crosvalidation for each mode separated
+            Hindcast of field to predict using crosvalidation for each individual mode
         zhat_accumulated_modes : npt.NDArray[float32]
-            Hindcast of field to predict using crosvalidation accumulating modes (1, 1->2, ..., 1->nm)
+            Hindcast of field to predict using crosvalidation for n modes (1, 1->2, ..., 1->nm)
         scf : npt.NDArray[float32]
             Squared covariance fraction of the mca for each mode
         r_z_zhat_t_separated_modes : npt.NDArray[float32]
-            Correlation between zhat and Z for each time (time series) for each mode separated
+            Correlation between zhat and Z for each time (time series) for each individual mode
         r_z_zhat_t_accumulated_modes : npt.NDArray[float32]
-            Correlation between zhat and Z for each time (time series) accumulating modes (1, 1->2, ..., 1->nm)
+            Correlation between zhat and Z for each time (time series) for n modes (1, 1->2, ..., 1->nm)
         p_z_zhat_t_separated_modes : npt.NDArray[float32]
-            P values of rt for each mode separated
+            P values of rt for each individual mode
         p_z_zhat_t_accumulated_modes : npt.NDArray[float32]
-            P values of rt accumulating modes (1, 1->2, ..., 1->nm)
+            P values of rt for n modes (1, 1->2, ..., 1->nm)
         r_z_zhat_s_separated_modes : npt.NDArray[float32]
-            Correlation between time series (for each point) of zhat and z (map) for each mode separated
+            Correlation between time series (for each point) of zhat and z (map) for each individual mode
         r_z_zhat_s_accumulated_modes : npt.NDArray[float32]
-            Correlation between time series (for each point) of zhat and z (map) accumulating modes (1, 1->2, ..., 1->nm)
+            Correlation between time series (for each point) of zhat and z (map) for n modes (1, 1->2, ..., 1->nm)
         p_z_zhat_s_separated_modes : npt.NDArray[float32]
-            P values of rr for each mode separated
+            P values of rr for each individual mode
         p_z_zhat_s_accumulated_modes : npt.NDArray[float32]
-            P values of rr accumulating modes (1, 1->2, ..., 1->nm)
+            P values of rr for n modes (1, 1->2, ..., 1->nm)
         r_uv : npt.NDArray[float32]
             Correlation score betweeen u and v for each mode
         r_uv_sig : npt.NDArray[float32]
@@ -76,9 +76,9 @@ class Crossvalidation(_Procedure):
         p_uv : npt.NDArray[float32]
             P value of ruv
         psi_separated_modes : npt.NDArray[np.float32]
-            Skill for each mode separated
+            Skill for each individual mode
         psi_accumulated_modes : npt.NDArray[np.float32]
-            Skill accumulating modes (1, 1->2, ..., 1->nm)
+            Skill for n modes (1, 1->2, ..., 1->nm)
         suy : npt.NDArray[np.float32]
             Correlation in space of the predictor with the singular vector. Dimension: y_space x time x nm
         suz : npt.NDArray[np.float32]
