@@ -151,6 +151,16 @@ class MCA(_Procedure):
         # first you calculate the covariance matrix
         # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
 
+    @property
+    def dsy(self) -> Preprocess:
+        """Preprocessed dataset introduced as predictor"""
+        return self._dsy
+
+    @property
+    def dsz(self) -> Preprocess:
+        """Preprocessed dataset introduced as predictand"""
+        return self._dsz
+
     @classmethod
     def from_land_arrays(
         cls,

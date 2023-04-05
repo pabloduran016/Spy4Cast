@@ -1,6 +1,6 @@
 .. Spy4Cast documentation master file
 
-.. |ICON| image:: _static/favicon.png
+.. |ICON| image:: _static/images/favicon.png
     :height: 1em
     :alt: Icon
 
@@ -76,7 +76,7 @@ Analyse results
     ax.set_title('Correlation between z and zhat')
     fig.show()
 
-.. image:: _static/example_index_figure.png
+.. image:: _static/images/example_index_figure.png
     :width: 60%
     :alt: Example plot
 
@@ -90,4 +90,5 @@ Table of contents
    tutorial
    methodologies
    plotting
+   Variables <variables/variables.rst>
    API Reference <toctrees/api-reference>

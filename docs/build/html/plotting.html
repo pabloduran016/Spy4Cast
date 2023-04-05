@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="toctrees/api-reference.html" /><link rel="prev" title="Methodologies" href="methodologies.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Variables" href="variables/variables.html" /><link rel="prev" title="Methodologies" href="methodologies.html" />
 
     <link rel="shortcut icon" href="_static/favicon.png"/><meta name="generator" content="sphinx-6.1.3, furo 2022.03.04"/>
         <title>Plotting - Spy4Cast 1.0.8 documentation</title>
@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="_static/css/style.css" />
     
     
 
@@ -158,8 +159,18 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="methodologies.html">Methodologies</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Plotting</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="toctrees/api-reference.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="variables/variables.html">Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="variables/dataset.html">Anom Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables/preprocess.html">Preprocess Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables/mca.html">MCA Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables/crossvalidation.html">Crossvalidation Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables/validation.html">Validation Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables/anom.html">Anom Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables/clim.html">Clim Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="toctrees/api-reference.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.index_regression.html">index_regression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.MCA.html">MCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Preprocess.html">Preprocess</a></li>
@@ -167,17 +178,17 @@
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.spy4cast.Validation.html">Validation</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/dataset.html">Dataset</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.dataset.Dataset.html">Dataset</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/meteo.html">Meteo</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/meteo.html">Meteo</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.PlotType.html">PlotType</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.Anom.html">Anom</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.meteo.Clim.html">Clim</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Region.html">Region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Month.html">Month</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.Color.html">Color</a></li>
@@ -186,7 +197,7 @@
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.stypes.ChunkType.html">ChunkType</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/errors.html">Errors</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="toctrees/api-reference-src/errors.html">Errors</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.errors.Spy4CastError.html">Spy4CastError</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.errors.PlotCreationError.html">PlotCreationError</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/spy4cast.errors.VariableSelectionError.html">VariableSelectionError</a></li>
@@ -249,6 +260,10 @@ own plotting functions instead of them.</p>
 <p>Every user is encouraged to use their own plotting functions with this 3 steps:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
+<p>Check out the <a class="reference internal" href="variables/variables.html#variables"><span class="std std-ref">variables</span></a> to learn which variables are inside each methodology.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>Check out the <a class="reference internal" href="tutorial.html#tutorial"><span class="std std-ref">tutorial</span></a> to learn how to save and load data.</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import the necessary libraries</span>
@@ -292,12 +307,12 @@ own plotting functions instead of them.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="toctrees/api-reference.html">
+          <a class="next-page" href="variables/variables.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">API Reference</div>
+                <div class="title">Variables</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>

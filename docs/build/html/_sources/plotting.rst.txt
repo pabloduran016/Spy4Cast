@@ -24,6 +24,10 @@ Every user is encouraged to use their own plotting functions with this 3 steps:
 
 .. note::
 
+    Check out the :ref:`variables<variables>` to learn which variables are inside each methodology.
+
+.. note::
+
     Check out the :ref:`tutorial<tutorial>` to learn how to save and load data.
 
 .. code:: python
@@ -61,5 +65,5 @@ Every user is encouraged to use their own plotting functions with this 3 steps:
     fig.suptitle('Correlation map between predicted (zhat) and real (z)', fontweight='bold')
     plt.show()
 
-.. image:: _static/example_crossvalidation_figure.png
+.. image:: _static/images/example_crossvalidation_figure.png
     :width: 70%

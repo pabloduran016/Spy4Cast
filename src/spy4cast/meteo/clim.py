@@ -70,6 +70,11 @@ class Clim(_Procedure, object):
             assert False, 'Unreachable'
 
     @property
+    def ds(self) -> Dataset:
+        """Dataset introduced"""
+        return self._ds
+
+    @property
     def type(self) -> PlotType:
         """Type of climatology passed in initialization
 

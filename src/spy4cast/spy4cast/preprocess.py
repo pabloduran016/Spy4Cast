@@ -102,6 +102,11 @@ class Preprocess(_Procedure):
         debugprint(f' took: {time_to_here():.03f} seconds')
 
     @property
+    def ds(self) -> Dataset:
+        """Dataset introduced"""
+        return self._ds
+
+    @property
     def meta(self) -> npt.NDArray[Any]:
         """Returns a np.ndarray containg information about the preprocessing
 

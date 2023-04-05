@@ -82,13 +82,13 @@ Here is an example of how you can use Spy4Cast API to plot the climatology of a 
 
 **Output:**
 
-.. image:: _static/clim-map-example.png
+.. image:: _static/images/clim-map-example.png
     :alt: Output for clim map
     :height: 25em
     :align: center
 
 
-.. image:: _static/clim-ts-example.png
+.. image:: _static/images/clim-ts-example.png
     :alt: Output for clim ts
     :height: 25em
     :align: center
@@ -104,12 +104,12 @@ Here is an example of how you can use Spy4Cast API to plot the anomaly of a give
 
 **Output:**
 
-.. image:: _static/anom-map-example.png
+.. image:: _static/images/anom-map-example.png
     :alt: Output for anom map
     :height: 25em
     :align: center
 
-.. image:: _static/anom-ts-example.png
+.. image:: _static/images/anom-ts-example.png
     :alt: Output for anom ts
     :height: 25em
     :align: center

@@ -267,6 +267,16 @@ class Crossvalidation(_Procedure):
         self.alpha = alpha
         debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
 
+    @property
+    def dsy(self) -> Preprocess:
+        """Preprocessed dataset introduced as predictor"""
+        return self._dsy
+
+    @property
+    def dsz(self) -> Preprocess:
+        """Preprocessed dataset introduced as predictand"""
+        return self._dsz
+
     def _crossvalidate_year(
         self,
         year: int,

@@ -122,7 +122,7 @@ Spy4Cast
 
 The main methodology of spy4cast is Spy4Cast :-).
 
-It requires a predictor dataset and a predictand dataset. Here is an example which you can download :download:`here <_static/docs-spy4cast-example.py>`
+It requires a predictor dataset and a predictand dataset. Here is an example which you can download :download:`here <_static/scripts/docs-spy4cast-example.py>`
 
 .. code:: python
 

@@ -78,6 +78,11 @@ class Anom(_Procedure):
         self._region.yearf = int(self.time[-1])
 
     @property
+    def ds(self) -> Dataset:
+        """Dataset introduced"""
+        return self._ds
+
+    @property
     def type(self) -> PlotType:
         """Type of anomaly passed in initialization
 
