@@ -272,7 +272,7 @@ class Dataset:
             self._var = var
 
         self._detect_vars()
-        self._roll_lon()
+        # self._roll_lon()
 
         # Check if values are in Kelvin
         if 'units' in self._ds.variables[self.var].attrs and self._ds.variables[self.var].attrs['units'] == 'K':
@@ -304,7 +304,7 @@ class Dataset:
         """
         Detect variables in dataset
         """
-        ds_dims = self._ds.dims
+        ds_dims = self._ds.coords
         not_found_lon = False
         if 'longitude' in ds_dims:
             self._lon_key = 'longitude'
@@ -323,7 +323,7 @@ class Dataset:
 
         '''
         # There are some datasets that sore latitude
-        # and longitde in other datavars that are accessed by an
+        # and longitude in other datavars that are accessed by an
         # index in the dimension i and j. We solve this by asserting
         # that the columns in the longitude matrix are the same and the
         # rows in the latitude matrix too and create new coordinates that
