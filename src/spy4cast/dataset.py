@@ -215,14 +215,14 @@ class Dataset:
         try:
             self._ds = xr.open_dataset(
                 os.path.join(self.dir, self.name),
-                mask_and_scale=False,
+                mask_and_scale=True,
                 chunks=self._chunks
             )
         except ValueError:
             try:
                 self._ds = xr.open_dataset(
                     os.path.join(self.dir, self.name),
-                    mask_and_scale=False,
+                    mask_and_scale=True,
                     decode_times=False,
                     chunks=self._chunks
                 )

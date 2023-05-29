@@ -450,26 +450,16 @@ def _anom(
         raise TypeError(f"Invalid type for array: {type(array)}")
 
     assert 'time' in array.dims, 'Cant\'t recognise time key in array'
-    # List of month values
-    months_set = set(array.groupby('time.month').groups.keys())
-    nm = len(months_set)
-    months = array['time.month'][:nm].data
-    # Create index to reshape time variab le
-    ind = pd.MultiIndex.from_product(
-        (array.time[nm - 1::nm]['time.year'].data, months),
-        names=('year', 'month')
-    )
-    if len(array.time) != len(ind):
-        raise ValueError('Strange time variable. Try slicing the dataset')
+    array = array.assign_coords(month=('time', array['time.month'].data))
+    array = array.assign_coords(year=('time', array['time.year'].data))
     if len(array.shape) == 3:  # 3d array
         # Reshape time variable
         lat_key = 'latitude' if 'latitude' in array.dims else 'lat'
         lon_key = 'longitude' if 'longitude' in array.dims else 'lon'
         assert lat_key in array.dims and lon_key in array.dims,\
             'Can\'t recognise keys'
-        arr = array.assign_coords(time=('time', ind))
         # arr must be a DataArray with dims=(months, year, lat, lon)
-        a = arr.groupby('year').mean()
+        a = array.groupby('year').mean()
         b: xr.DataArray = a - a.mean('year')
         if st:
             rv: xr.DataArray = b / b.std()
