@@ -272,7 +272,7 @@ class Dataset:
             self._var = var
 
         self._detect_vars()
-        # self._roll_lon()
+        self._roll_lon()
 
         # Check if values are in Kelvin
         if 'units' in self._ds.variables[self.var].attrs and self._ds.variables[self.var].attrs['units'] == 'K':

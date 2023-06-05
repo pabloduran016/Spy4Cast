@@ -121,8 +121,6 @@ def _plot_map(
         ticks = levels[np.arange(0, len(levels), len(levels) // nticks)]
 
     cmap = 'bwr' if cmap is None else cmap
-    print(sorted((lon[0], lon[-1])))
-    print(sorted((lat[-1], lat[0])))
     xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
     ylim = sorted((lat[-1], lat[0])) if ylim is None else ylim
 
@@ -136,8 +134,8 @@ def _plot_map(
     )
     ax.coastlines()
     cb.ax.tick_params(labelsize=11)
-    # ax.set_xlim(*xlim)
-    # ax.set_ylim(*ylim)
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*ylim)
     # # axs.margins(0)
     if title is not None:
         ax.set_title(title)

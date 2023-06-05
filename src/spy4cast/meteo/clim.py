@@ -1,5 +1,5 @@
 import os
-from typing import Type, Tuple, Optional, Union, Any, Sequence, Literal
+from typing import Type, Tuple, Optional, Union, Any, Sequence, Literal, List
 
 from matplotlib import pyplot as plt
 
@@ -296,8 +296,8 @@ class Clim(_Procedure, object):
         color: Optional[Color] = None,
         dir: str = '.',
         name: str = 'clim.png',
-        levels: Optional[list] = None,
-        ticks: Optional[list] = None,
+        levels: Optional[List[Any]] = None,
+        ticks: Optional[List[Any]] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the climatology map or time series
 
@@ -318,6 +318,10 @@ class Clim(_Procedure, object):
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
+        levels
+            Levels for the climatology map
+        ticks
+            Ticks for the climatology map
 
         Returns
         -------
