@@ -57,12 +57,6 @@ ts_anom.plot(show_plot=True, save_fig=True, name='anom-ts-example.png')
 
 ![Example 1 plot](examples/anomer_example.png)
 
-## Important Notes:
-
-· If you see anywhere in the docs or in the files `region` and think it is a typo, it is not. Python has a
-built-in function called `slice` and in this library we have decided to use `region` to avoid unexpected
-behaviours. I hope it is not too ugly...
-
 ## Documentation
 The documentation for this project is in https://spy4cast-docs.netlify.app
 
