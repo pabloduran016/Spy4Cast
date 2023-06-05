@@ -11,6 +11,8 @@ import numpy as np
 import cartopy.crs as ccrs
 import xarray as xr
 import numpy.typing as npt
+import cartopy.util
+
 import pandas as pd
 
 from ..stypes import Color
@@ -342,7 +344,7 @@ class Clim(_Procedure, object):
             fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if color is not None:
                 raise TypeError('Color parameter is not valid to plot a map climatology')
-            ax = fig.add_subplot(projection=ccrs.PlateCarree())
+            ax = fig.add_subplot(projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
             _plot_map(
                 arr=self.data.values,
                 lat=self.lat,

@@ -295,7 +295,7 @@ class Preprocess(_Procedure):
             else _get_index_from_sy(self.time, selected_year)
 
         fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
-        ax = fig.add_subplot(projection=ccrs.PlateCarree())
+        ax = fig.add_subplot(projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
 
         _plot_map(
             plotable[index], self.lat, self.lon, fig, ax,

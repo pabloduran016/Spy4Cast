@@ -432,19 +432,25 @@ class Dataset:
         else:
             timemask = (
                     (
-                            (time.month >= region.month0) &
-                            (time.year >= (region.year0 - 1)) &
-                            (time.year <= (region.yearf - 1))
+                        (time.month >= region.month0)     &
+                        (time.year >= (region.year0 - 1)) &
+                        (time.year <= (region.yearf - 1))
                     ) | (
-                            (time.month <= region.monthf) &
-                            (time.year >= region.year0) &
-                            (time.year <= region.yearf)
+                        (time.month <= region.monthf) &
+                        (time.year >= region.year0)   &
+                        (time.year <= region.yearf)
                     )
             )
 
         # Space region
-        latmask = (self.lat >= region.lat0) & (self.lat <= region.latf)
-        lonmask = (self.lon >= region.lon0) & (self.lon <= region.lonf)
+        if region.lat0 > region.latf:
+            latmask = ~((self.lat >= region.latf) & (self.lat <= region.lat0))
+        else:
+            latmask = (self.lat >= region.lat0) & (self.lat <= region.latf)
+        if region.lon0 > region.lonf:
+            lonmask = ~((self.lon >= region.lonf) & (self.lon <= region.lon0))
+        else:
+            lonmask = (self.lon >= region.lon0) & (self.lon <= region.lonf)
 
         self.data = self.data[{
             self._time_key: timemask,
@@ -472,7 +478,7 @@ class Dataset:
         return self
 
     def _check_region(
-            self: _T, region: Region
+        self: _T, region: Region
     ) -> _T:
         """Checks if the region selected (only time-related part),
         if provided, is valid for the given dataset.

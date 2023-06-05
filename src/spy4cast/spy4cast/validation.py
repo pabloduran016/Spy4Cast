@@ -334,9 +334,9 @@ class Validation(_Procedure):
         width = max(nzlon, nylon)
 
         fig = plt.figure(figsize=_calculate_figsize(height / width, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
-        ax0 = plt.subplot(311, projection=ccrs.PlateCarree())
-        ax1 = plt.subplot(312, projection=ccrs.PlateCarree())
-        ax2 = plt.subplot(313, projection=ccrs.PlateCarree())
+        ax0 = plt.subplot(311, projection=ccrs.PlateCarree(0 if self.validating_dsy.region.lon0 < self.validating_dsy.region.lonf else 180))
+        ax1 = plt.subplot(312, projection=ccrs.PlateCarree(0 if self.validating_dsz.region.lon0 < self.validating_dsz.region.lonf else 180))
+        ax2 = plt.subplot(313, projection=ccrs.PlateCarree(0 if self.validating_dsz.region.lon0 < self.validating_dsz.region.lonf else 180))
 
         zindex = _get_index_from_sy(self._validating_dsz.time, year)
         yindex = zindex
@@ -424,7 +424,7 @@ def _plot_validation_default(
 
     fig: plt.Figure = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
 
-    ax00 = fig.add_subplot(1, 2, 1, projection=ccrs.PlateCarree(0))
+    ax00 = fig.add_subplot(1, 2, 1, projection=ccrs.PlateCarree(0 if validation.validating_dsz.region.lon0 < validation.validating_dsz.region.lonf else 180))
     _plot_map(
         arr=validation.r_z_zhat_s_accumulated_modes[-1, :].reshape((nlat, nlon)),
         lat=validation.validating_dsz.lat,

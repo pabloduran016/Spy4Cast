@@ -352,11 +352,17 @@ class MCA(_Procedure):
 
         fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
 
-        axs = [
-            plt.subplot(nrows * 100 + ncols * 10 + i,
-                        projection=(ccrs.PlateCarree() if i > 3 else None))
-            for i in range(1, ncols * nrows + 1)
-        ]
+        axs = (
+            fig.add_subplot(nrows, ncols, 1),
+            fig.add_subplot(nrows, ncols, 2),
+            fig.add_subplot(nrows, ncols, 3),
+            fig.add_subplot(nrows, ncols, 4, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
+            fig.add_subplot(nrows, ncols, 5, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
+            fig.add_subplot(nrows, ncols, 6, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
+            fig.add_subplot(nrows, ncols, 7, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
+            fig.add_subplot(nrows, ncols, 8, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
+            fig.add_subplot(nrows, ncols, 9, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
+        )
 
         # Plot timeseries
         for i, ax in enumerate(axs[:3]):

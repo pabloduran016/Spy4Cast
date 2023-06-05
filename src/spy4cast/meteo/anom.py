@@ -383,8 +383,8 @@ class Anom(_Procedure):
             if color is not None:
                 raise TypeError('`color` parameter is not valid to plot a map anomaly')
             if year is None:
-                raise TypeError(f'`year` is a required argument for plotting an anomaly map')
-            ax = fig.add_subplot(projection=ccrs.PlateCarree())
+                raise TypeError(f'`Must provide argument `year` to plot anom')
+            ax = fig.add_subplot(projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
             _plot_map(
                 arr=self.data.sel({self._time_key: year}).values,
                 lat=self.lat,

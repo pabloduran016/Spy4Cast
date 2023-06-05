@@ -469,9 +469,9 @@ class Crossvalidation(_Procedure):
         width = max(nzlon, nylon)
 
         fig = plt.figure(figsize=_calculate_figsize(height / width, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
-        ax0 = plt.subplot(311, projection=ccrs.PlateCarree())
-        ax1 = plt.subplot(312, projection=ccrs.PlateCarree())
-        ax2 = plt.subplot(313, projection=ccrs.PlateCarree())
+        ax0 = plt.subplot(311, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180))
+        ax1 = plt.subplot(312, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180))
+        ax2 = plt.subplot(313, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180))
 
         zindex = _get_index_from_sy(self._dsz.time, year)
         yindex = zindex
@@ -684,7 +684,7 @@ def _plot_crossvalidation_elena(
         r_sig[cross.p_z_zhat_s_accumulated_modes[n_mode] > cross.alpha] = np.nan
         sk_sig = r_sig.reshape(nlat, nlon)
 
-        ax2 = fig.add_subplot(spec[2, n_mode], projection=ccrs.PlateCarree())
+        ax2 = fig.add_subplot(spec[2, n_mode], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180))
         axs.append(ax2)
         im = ax2.contourf(cross._dsz.lon, cross._dsz.lat, sk, levels=levels, cmap='coolwarm', transform=ccrs.PlateCarree())
         ax2.contourf(cross._dsz.lon, cross._dsz.lat, sk_sig, levels=levels, cmap='coolwarm', hatches='.', transform=ccrs.PlateCarree())
@@ -731,8 +731,8 @@ def _plot_crossvalidation_elena(
         else:
             sk_i = cross.r_z_zhat_s_accumulated_modes[n_mode - 1, :].reshape(nlat, nlon)
             # Skill modos
-            ax3 = fig.add_subplot(spec[3, n_mode], projection=ccrs.PlateCarree())
-            im = ax3.contourf(cross._dsz.lon, cross._dsz.lat, sk - sk_i, levels=levels, cmap='coolwarm', transform=ccrs.PlateCarree())
+            ax3 = fig.add_subplot(spec[3, n_mode], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180))
+            im = ax3.contourf(cross.dsz.lon, cross.dsz.lat, sk - sk_i, levels=levels, cmap='coolwarm', transform=ccrs.PlateCarree())
             # ax2.contourf(cross._dsz.lon,cross._dsz.lat,skill_sig[i,:,:],levels=levels,cmap='coolwarm',hatches='.',transform = ccrs.PlateCarree())
             ax3.coastlines()
             if n_mode == 3:
@@ -773,10 +773,13 @@ def _plot_crossvalidation_default(
     fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
     nrows = 3
     ncols = 2
-    axs = tuple(
-        plt.subplot(nrows * 100 + ncols * 10 + i,
-                    projection=(ccrs.PlateCarree() if i == 1 else None))
-        for i in range(1, ncols * nrows + 1)
+    axs = (
+        fig.add_subplot(nrows, ncols, 1, projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
+        fig.add_subplot(nrows, ncols, 2),
+        fig.add_subplot(nrows, ncols, 3),
+        fig.add_subplot(nrows, ncols, 4),
+        fig.add_subplot(nrows, ncols, 5),
+        fig.add_subplot(nrows, ncols, 6),
     )
 
     nzlat = len(cross._dsz.lat)
