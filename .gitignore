@@ -31,5 +31,4 @@ foo*
 *.bat
 *.cmd
 *.zip
-
-Spy4Cast.egg-info/
+*.egg-info

@@ -110,7 +110,9 @@ class Clim(_Procedure, object):
             assert False, 'Unreachable'
         if type(value) != np.ndarray:
             raise ValueError(f'Type of `lat` has to be `np.ndarray` got {type(value)}')
-        if np.dtype(value.dtype) != np.dtype('float32'):
+        if np.dtype(value.dtype) == np.dtype('float64'):
+            value = value.astype(np.float32)
+        elif np.dtype(value.dtype) != np.dtype('float32'):
             raise ValueError(f'Dtype of `lat` has to be `float32` got {np.dtype(value.dtype)}')
 
         if len(value) != self.data.shape[0]:
@@ -141,7 +143,9 @@ class Clim(_Procedure, object):
             assert False, 'Unreachable'
         if type(value) != np.ndarray:
             raise ValueError(f'Type of `lon` has to be `np.ndarray` got {type(value)}')
-        if np.dtype(value.dtype) != np.dtype('float32'):
+        if np.dtype(value.dtype) == np.dtype('float64'):
+            value = value.astype(np.float32)
+        elif np.dtype(value.dtype) != np.dtype('float32'):
             raise ValueError(f'Dtype of `lon` has to be `float32` got {np.dtype(value.dtype)}')
 
         if len(value) != self.data.shape[1]:
@@ -289,7 +293,9 @@ class Clim(_Procedure, object):
         cmap: Optional[str] = None,
         color: Optional[Color] = None,
         dir: str = '.',
-        name: str = 'clim.png'
+        name: str = 'clim.png',
+        levels: Optional[list] = None,
+        ticks: Optional[list] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the climatology map or time series
 
@@ -350,6 +356,8 @@ class Clim(_Procedure, object):
                 fig=fig,
                 ax=ax,
                 cmap=(cmap if cmap is not None else 'jet'),
+                levels=levels,
+                ticks=ticks
             )
             fig.suptitle(
                 f'Map of {self.var} ({region2str(self.region)})',
@@ -385,7 +393,7 @@ class Clim(_Procedure, object):
             Clim
         """
         if len(attrs) != 0:
-            raise TypeError('Only accepetd kwarg `type` accepted for load method')
+            raise TypeError('Only kwarg `type` accepted for load method')
         if type is None:
             raise TypeError('`type` is a required kwarg')
         return super().load(prefix, dir, type=_get_type(type))
