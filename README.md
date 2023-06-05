@@ -27,7 +27,7 @@ To get the latest stable version:
 
 ```python
 from spy4cast.meteo import Anom
-from spy4cast import Month, Region, set_silence, Dataset, F
+from spy4cast import Month, Region, set_silence, Dataset
 
 # Define constants ---------------------------------------------------------------------------------- #
 DATASET_DIR = '/Users/Shared/datasets/'
