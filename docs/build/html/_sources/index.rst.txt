@@ -30,7 +30,7 @@ Run the methodology
     ds_y = Dataset("sea_surface_temperature.nc", dir="datasets").open('sst')
     ds_y.slice(Region(-20, 20, -150, -90, Month.AUG, Month.NOV, 1971, 2003))
 
-    ds_z = Dataset("atmospheric_preasure.nc", dir="datasets").open('pr')
+    ds_z = Dataset("atmospheric_pressure.nc", dir="datasets").open('pr')
     ds_z.slice(Region(11.5, 16.5, -25, -15, Month.FEB, Month.MAY, 1972, 2004))
 
 .. code:: python
