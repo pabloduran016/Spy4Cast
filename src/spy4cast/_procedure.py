@@ -52,11 +52,7 @@ class _Procedure(ABC):
 
         if not os.path.exists(dir):
             _warning(f'Creating path {dir} that did not exist')
-            folders = dir.split('/')
-            for i, folder in enumerate(folders):
-                if os.path.exists('/'.join(folders[:i + 1])):
-                    continue
-                os.mkdir('/'.join(folders[:i + 1]))
+            os.makedirs(dir)
 
         for name, arr in variables:
             path = prefixed + name
