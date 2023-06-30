@@ -304,7 +304,7 @@ class Dataset:
         """
         Detect variables in dataset
         """
-        ds_dims = self._ds.coords
+        ds_dims = self._ds.dims
         not_found_lon = False
         if 'longitude' in ds_dims:
             self._lon_key = 'longitude'
