@@ -21,8 +21,9 @@ trying/
 other/
 examples/old/
 
-examples/plots
-examples/saved*
+examples/saved*/
+examples/data*/
+examples/plots*/
 
 foo*
 
