@@ -61,24 +61,30 @@ Example
 Spy4Cast: Preprocess, MCA and Crossvalidation
 +++++++++++++++++++++++++++++++++++++++++++++
 
-Here is an example of how you can use Spy4Cast API to **RUN** the full Spy4Cast methodology.
+Here is an example of how you can use Spy4Cast API to **RUN** the full Spy4Cast methodology and use the included plotting functions.
 
-**Click** :download:`here <../../examples/run-spy4cast-example.py>` **to download**
+**Click** :download:`here <../../examples/example_of_crossvalidation.py>` **to download**
 
-.. literalinclude:: ../../examples/run-spy4cast-example.py
+.. literalinclude:: ../../examples/example_of_crossvalidation.py
 
 Here is an example of how you can use Spy4Cast API to **PLOT** the previously ran Spy4Cast methodology.
 
-**Click** :download:`here <../../examples/plot-spy4cast-example.py>` **to download**
+**Click** :download:`here <../../examples/example_of_plotting_precalculated_crossvalidation_and_mca.py>` **to download**
 
-.. literalinclude:: ../../examples/plot-spy4cast-example.py
+.. literalinclude:: ../../examples/example_of_plotting_precalculated_crossvalidation_and_mca.py
+
+Here is an example of how you can use Spy4Cast API to **RUN** the Spy4Cast methodology and plot it using **CUSTOM PLOTTING FUNCTIONS**.
+
+**Click** :download:`here <../../examples/example_of_crossvalidation_with_custom_plotting.py>` **to download**
+
+.. literalinclude:: ../../examples/example_of_crossvalidation_with_custom_plotting.py
 
 Climatology
 +++++++++++
 
 Here is an example of how you can use Spy4Cast API to plot the climatology of a given .nc dataset
 
-.. literalinclude:: ../../examples/clim-example.py
+.. literalinclude:: ../../examples/example_of_ploting_climatology_maps_and_time_series.py
 
 **Output:**
 
@@ -99,7 +105,7 @@ Anomaly
 
 Here is an example of how you can use Spy4Cast API to plot the anomaly of a given .nc dataset
 
-.. literalinclude:: ../../examples/anom-example.py
+.. literalinclude:: ../../examples/example_of_ploting_anomaly_maps_and_time_series.py
 
 
 **Output:**
