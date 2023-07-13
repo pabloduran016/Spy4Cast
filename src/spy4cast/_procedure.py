@@ -43,7 +43,7 @@ class _Procedure(ABC):
     def save(self, prefix: str, dir: str = '.') -> None:
         clsname = type(self).__name__
         prefixed = os.path.join(dir, prefix)
-        _debuginfo(f'Saving {clsname} data in `{prefix}*.npy`')
+        _debuginfo(f'Saving {clsname} data in `{os.path.join(dir, prefix)}*.npy`')
 
         variables: List[Tuple[str, npt.NDArray[Any]]] = [
             (name, getattr(self, name))
