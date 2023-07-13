@@ -350,17 +350,17 @@ class MCA(_Procedure):
         nrows = 3
         ncols = 3
 
-        fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+        fig: plt.Figure = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
 
         axs = (
             fig.add_subplot(nrows, ncols, 1),
-            fig.add_subplot(nrows, ncols, 2),
-            fig.add_subplot(nrows, ncols, 3),
-            fig.add_subplot(nrows, ncols, 4, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
+            fig.add_subplot(nrows, ncols, 4),
+            fig.add_subplot(nrows, ncols, 7),
+            fig.add_subplot(nrows, ncols, 2, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
             fig.add_subplot(nrows, ncols, 5, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
-            fig.add_subplot(nrows, ncols, 6, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
-            fig.add_subplot(nrows, ncols, 7, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
-            fig.add_subplot(nrows, ncols, 8, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
+            fig.add_subplot(nrows, ncols, 8, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
+            fig.add_subplot(nrows, ncols, 3, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
+            fig.add_subplot(nrows, ncols, 6, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
             fig.add_subplot(nrows, ncols, 9, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
         )
 
@@ -402,7 +402,9 @@ class MCA(_Procedure):
             xlim = sorted((lons.values[0], lons.values[-1]))
             ylim = sorted((lats.values[-1], lats.values[0]))
 
-            for j, ax in enumerate(axs[3 * (i + 1):3 * (i + 1) + 3]):
+            ax: plt.Axes
+            current_axes = axs[3 * (i + 1):3 * (i + 1) + 3]
+            for j, ax in enumerate(current_axes):
                 title = f'{var_name} mode {j + 1}. ' \
                         f'SCF={self.scf[j]*100:.01f}'
 
@@ -413,14 +415,16 @@ class MCA(_Procedure):
                     if signs[j]:
                         t *= -1
 
-                _plot_map(
+                im = _plot_map(
                     t, lats, lons, fig, ax, title,
                     levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
+                    colorbar=j == 2,
                 )
                 ax.contourf(
                     lons, lats, th, colors='none', hatches='..', extend='both',
                     transform=ccrs.PlateCarree()
                 )
+
 
         fig.suptitle(
             f'Z({self._dsz.var}): {region2str(self._dsz.region)}, '

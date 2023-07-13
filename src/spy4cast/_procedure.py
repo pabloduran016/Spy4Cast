@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, Sequence, Union, Callable, \
     TypeVar, Any, Tuple, List, Type, cast
 
+import matplotlib.contour
 import numpy as np
 from matplotlib import pyplot as plt
 import xarray as xr
@@ -100,8 +101,9 @@ def _plot_map(
     cmap: Optional[str] = None,
     ticks: Optional[
         Union[npt.NDArray[np.float32], Sequence[float]]
-    ] = None
-) -> None:
+    ] = None,
+    colorbar: bool = True,
+) -> matplotlib.contour.QuadContourSet:
     if levels is None:
         n = 30
         _std = np.nanstd(arr)
@@ -113,7 +115,7 @@ def _plot_map(
             levels = None
 
     if ticks is None and levels is not None:
-        nticks = 6
+        nticks = 5
         ticks = levels[np.arange(0, len(levels), len(levels) // nticks)]
 
     cmap = 'bwr' if cmap is None else cmap
@@ -124,17 +126,19 @@ def _plot_map(
         lon, lat, arr, cmap=cmap, levels=levels,
         extend='both', transform=ccrs.PlateCarree()
     )
-    cb = fig.colorbar(
-        im, ax=ax, orientation='horizontal', pad=0.02,
-        ticks=ticks,
-    )
+    if colorbar:
+        cb = fig.colorbar(
+            im, ax=ax, orientation='horizontal', pad=0.02,
+            ticks=ticks,
+        )
+        cb.ax.tick_params(labelsize=11, labelrotation=0)
     ax.coastlines()
-    cb.ax.tick_params(labelsize=11)
     ax.set_xlim(*xlim)
     ax.set_ylim(*ylim)
     # # axs.margins(0)
     if title is not None:
         ax.set_title(title)
+    return im
 
 
 def _plot_ts(

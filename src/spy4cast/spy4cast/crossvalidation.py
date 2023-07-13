@@ -290,7 +290,7 @@ class Crossvalidation(_Procedure):
         montecarlo_iterations: Optional[int] = None,
     ) -> Tuple[npt.NDArray[np.float32], ...]:
         """Function of internal use that processes a single year for crossvalidation"""
-        debugprint('\tyear:', year, 'of', nt)
+        debugprint('\tyear:', year + 1, 'of', nt)
         z2 = LandArray(z.values[:, yrs != year])
         y2 = LandArray(y.values[:, yrs != year])
         mca_out = MCA.from_land_arrays(y2, z2, nm, alpha)
