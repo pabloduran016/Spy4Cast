@@ -11,6 +11,7 @@ Anom
    .. autosummary::
 
       ~Anom.data
+      ~Anom.ds
       ~Anom.lat
       ~Anom.lon
       ~Anom.region
@@ -30,6 +31,7 @@ Anom
    .. rubric:: Attributes Documentation
 
    .. autoattribute:: data
+   .. autoattribute:: ds
    .. autoattribute:: lat
    .. autoattribute:: lon
    .. autoattribute:: region

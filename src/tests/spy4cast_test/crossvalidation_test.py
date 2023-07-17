@@ -11,7 +11,7 @@ from spy4cast import Dataset, Month, Region
 from .. import BaseTestCase
 
 
-DATASETS_DIR = '/Users/Shared/datasets'
+DATASETS_FOLDER = '/Users/Shared/datasets'
 DATA_DIR = 'src/tests/data'
 HadISST_sst = 'HadISST_sst.nc'
 oisst_v2_mean_monthly = 'oisst_v2_mean_monthly.nc'
@@ -23,10 +23,10 @@ CHL = 'CHL'
 class CrossvalidationTest(BaseTestCase):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.y_ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
+        self.y_ds = Dataset(HadISST_sst, DATASETS_FOLDER).open(SST).slice(
             Region(-45, 45, -25, 25, Month.JAN, Month.MAR, 1998, 2002)
         )
-        self.z_ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASETS_DIR).open(CHL).slice(
+        self.z_ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASETS_FOLDER).open(CHL).slice(
             Region(36, 37, -3, -2, Month.JAN, Month.MAR, 1998, 2002), skip=4
         )
         self.y_preprocessed = Preprocess(self.y_ds)
@@ -69,10 +69,10 @@ class CrossvalidationTest(BaseTestCase):
     def test___init__(self) -> None:
         _ = Crossvalidation(self.y_preprocessed, self.z_preprocessed, 3, .1)
 
-        y_ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
+        y_ds = Dataset(HadISST_sst, DATASETS_FOLDER).open(SST).slice(
             Region(-45, 45, -25, 25, Month.JAN, Month.MAR, 1999, 2002)
         )
-        z_ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASETS_DIR).open(CHL).slice(
+        z_ds = Dataset(chl_1km_monthly_Sep1997_Dec2020, DATASETS_FOLDER).open(CHL).slice(
             Region(36, 37, -5.3, -2, Month.JAN, Month.MAR, 1998, 2002), skip=4
         )
         y_preprocessed = Preprocess(y_ds)
@@ -101,11 +101,11 @@ class CrossvalidationTest(BaseTestCase):
 
     def test_load(self) -> None:
         with self.assertRaises(TypeError):
-            Crossvalidation.load('prefix', 'dir', hello='hello')
+            Crossvalidation.load('prefix', 'folder', hello='hello')
         with self.assertRaises(TypeError):
-            Crossvalidation.load('prefix', 'dir')
+            Crossvalidation.load('prefix', 'folder')
         with self.assertRaises(TypeError):
-            Crossvalidation.load('prefix', 'dir', dsy=self.y_ds, dsz=self.z_ds)  # type: ignore
+            Crossvalidation.load('prefix', 'folder', dsy=self.y_ds, dsz=self.z_ds)  # type: ignore
         self.cross.save('cross_data_', 'cross-data')
         _ = Crossvalidation.load('cross_data_', 'cross-data', dsy=self.y_preprocessed, dsz=self.z_preprocessed)
         shutil.rmtree('cross-data')

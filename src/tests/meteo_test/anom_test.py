@@ -9,7 +9,7 @@ from .. import BaseTestCase
 from spy4cast import Region, Dataset, Month
 from spy4cast.meteo import Anom, PlotType
 
-DATASETS_DIR = '/Users/Shared/datasets'
+DATASETS_FOLDER = '/Users/Shared/datasets'
 DATA_DIR = 'src/tests/data'
 HadISST_sst = 'HadISST_sst.nc'
 oisst_v2_mean_monthly = 'oisst_v2_mean_monthly.nc'
@@ -20,7 +20,7 @@ CHLOS = 'chlos'
 class AnomTest(BaseTestCase):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
+        self.ds = Dataset(HadISST_sst, DATASETS_FOLDER).open(SST).slice(
             Region(-45, 45, -25, 25, Month.JAN, Month.MAR, 1870, 1990)
         )
         self.ts_anom = Anom(self.ds, 'ts', st=True)
@@ -105,7 +105,7 @@ class AnomTest(BaseTestCase):
 
     def test_get_region(self) -> None:
         xr_sst = xr.open_dataset(
-            os.path.join(DATASETS_DIR, HadISST_sst)
+            os.path.join(DATASETS_FOLDER, HadISST_sst)
         )[SST]
         xr_sst = xr_sst[xr_sst['time.month'] == 1]
 
@@ -164,7 +164,7 @@ class AnomTest(BaseTestCase):
 
     def test_from_xrarray(self) -> None:
         xr_sst = xr.open_dataset(
-            os.path.join(DATASETS_DIR, HadISST_sst)
+            os.path.join(DATASETS_FOLDER, HadISST_sst)
         )[SST]
         xr_sst = xr_sst[xr_sst['time.month'] == 1]
 
@@ -190,22 +190,22 @@ class AnomTest(BaseTestCase):
             self.map_anom.plot()
 
     def test_load(self) -> None:
-        dir = 'anom-data'
-        self.map_anom.save('anom_map_', dir)
-        self.ts_anom.save('anom_ts_', dir)
-        _ = Anom.load('anom_map_', dir, type='map')
-        _ = Anom.load('anom_ts_', dir, type='ts')
+        folder = 'anom-data'
+        self.map_anom.save('anom_map_', folder)
+        self.ts_anom.save('anom_ts_', folder)
+        _ = Anom.load('anom_map_', folder, type='map')
+        _ = Anom.load('anom_ts_', folder, type='ts')
         with self.assertRaises(TypeError):
-            _ = Anom.load('anom_map_', dir, type='map', hello='hello')
+            _ = Anom.load('anom_map_', folder, type='map', hello='hello')
         with self.assertRaises(TypeError):
-            _ = Anom.load('anom_map_', dir)
+            _ = Anom.load('anom_map_', folder)
         with self.assertRaises(ValueError):
-            _ = Anom.load('anom_map_', dir, type='ts')
+            _ = Anom.load('anom_map_', folder, type='ts')
         with self.assertRaises(ValueError):
-            _ = Anom.load('anom_ts_', dir, type='map')
-        for x in os.listdir(dir):
-            os.remove(os.path.join(dir, x))
-        os.removedirs(dir)
+            _ = Anom.load('anom_ts_', folder, type='map')
+        for x in os.listdir(folder):
+            os.remove(os.path.join(folder, x))
+        os.removedirs(folder)
 
     def test__anom(self) -> None:
         with self.assertRaises(TypeError):

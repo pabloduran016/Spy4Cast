@@ -11,7 +11,7 @@ from spy4cast.meteo import Clim
 from .. import BaseTestCase
 
 
-DATASETS_DIR = '/Users/Shared/datasets'
+DATASETS_FOLDER = '/Users/Shared/datasets'
 DATA_DIR = 'src/tests/data'
 HadISST_sst = 'HadISST_sst.nc'
 oisst_v2_mean_monthly = 'oisst_v2_mean_monthly.nc'
@@ -22,7 +22,7 @@ CHLOS = 'chlos'
 class PreprocessTest(BaseTestCase):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.ds = Dataset(HadISST_sst, DATASETS_DIR).open(SST).slice(
+        self.ds = Dataset(HadISST_sst, DATASETS_FOLDER).open(SST).slice(
             Region(-45, 45, -25, 25, Month.JAN, Month.MAR, 1870, 1990)
         )
         self.preprocessed = Preprocess(self.ds)

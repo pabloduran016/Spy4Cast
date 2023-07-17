@@ -2,9 +2,9 @@ import spy4cast as spy
 from spy4cast.stypes import F, Month, Region, RDArgs
 
 
-DATASET_DIR = '/datasets/'
-PLOTS_DIR = ''
-PLOTS_DATA_DIR = 'data/'
+DATASET_FOLDER = '/datasets/'
+PLOTS_FOLDER = ''
+PLOTS_DATA_FOLDER = 'data/'
 MCA_PLOT_NAME = 'mca_spy4cast_example.png'
 CROSS_PLOT_NAME = 'cross_spy4cast_example.png'
 ZHAT_PLOT_NAME = 'zhat_spy4cast_example.png'
@@ -33,10 +33,10 @@ def main() -> None:
     )  # PRECITAND: Z
 
     s = spy.Spy4Caster(
-            yargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=HadISST_sst, variable=SST, chunks=100),
-            zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=slp_ERA20_1900_2010, variable=MSL, chunks=100),
-            plot_dir=PLOTS_DIR, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME, zhat_plot_name=ZHAT_PLOT_NAME,
-            plot_data_dir=PLOTS_DATA_DIR)
+            yargs=RDArgs(dataset_folder=DATASET_FOLDER, dataset_name=HadISST_sst, variable=SST, chunks=100),
+            zargs=RDArgs(dataset_folder=DATASET_FOLDER, dataset_name=slp_ERA20_1900_2010, variable=MSL, chunks=100),
+            plot_folder=PLOTS_FOLDER, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME, zhat_plot_name=ZHAT_PLOT_NAME,
+            plot_data_folder=PLOTS_DATA_FOLDER)
     s.open_datasets()
     s.slice_datasets(yregion=sst_region, zregion=slp_region)
     s.preprocess(order=order, period=period)

@@ -10,6 +10,9 @@ Validation
 
    .. autosummary::
 
+      ~Validation.training_mca
+      ~Validation.validating_dsy
+      ~Validation.validating_dsz
       ~Validation.var_names
 
    .. rubric:: Methods Summary
@@ -22,6 +25,9 @@ Validation
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: training_mca
+   .. autoattribute:: validating_dsy
+   .. autoattribute:: validating_dsz
    .. autoattribute:: var_names
 
    .. rubric:: Methods Documentation

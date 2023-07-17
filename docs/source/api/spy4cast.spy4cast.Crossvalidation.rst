@@ -10,6 +10,8 @@ Crossvalidation
 
    .. autosummary::
 
+      ~Crossvalidation.dsy
+      ~Crossvalidation.dsz
       ~Crossvalidation.var_names
 
    .. rubric:: Methods Summary
@@ -22,6 +24,8 @@ Crossvalidation
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: dsy
+   .. autoattribute:: dsz
    .. autoattribute:: var_names
 
    .. rubric:: Methods Documentation

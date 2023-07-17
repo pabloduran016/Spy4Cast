@@ -157,7 +157,7 @@ class Validation(_Procedure):
         return self._validating_dsz
 
     @classmethod
-    def load(cls, prefix: str, dir: str = '.', *,
+    def load(cls, prefix: str, folder: str = '.', *,
              validating_dsy: Optional[Preprocess] = None,
              validating_dsz: Optional[Preprocess] = None,
              training_mca: Optional[MCA] = None,
@@ -168,7 +168,7 @@ class Validation(_Procedure):
         ----------
         prefix : str
             Prefix of the files containing the information for the object
-        dir : str
+        folder : str
             Directory of the files
         validating_dsy : Preprocess
             Preprocessed dataset of the validating predictor variable
@@ -189,7 +189,7 @@ class Validation(_Procedure):
             raise TypeError(
                 f'Unexpected types ({type(validating_dsy)}, {type(validating_dsz)} and {type(training_mca)}) for `validating_dsz`, `validating_dsy` and `training_mca`. Expected type `Preprocess`, `Preprocess` and `MCA`')
 
-        self: Validation = super().load(prefix, dir)
+        self: Validation = super().load(prefix, folder)
 
         self._validating_dsy = validating_dsy
         self._validating_dsz = validating_dsz
@@ -202,7 +202,7 @@ class Validation(_Procedure):
         save_fig: bool = False,
         show_plot: bool = False,
         halt_program: bool = False,
-        dir: Optional[str] = None,
+        folder: Optional[str] = None,
         name: Optional[str] = None,
         cmap: Optional[str] = None,
         map_ticks: Optional[
@@ -216,13 +216,13 @@ class Validation(_Procedure):
         Parameters
         ----------
         save_fig
-            Saves the fig in with `dir` / `name` parameters
+            Saves the fig in with `folder` / `name` parameters
         show_plot
             Shows the plot
         halt_program
             Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
             and stops execution. Else uses fig.show and does not halt program
-        dir
+        folder
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
@@ -262,12 +262,12 @@ class Validation(_Procedure):
         else:
             raise ValueError(f"Version can only be one of: `elena`, `default`")
 
-        if dir is None:
-            dir = '.'
+        if folder is None:
+            folder = '.'
         if name is None:
-            path = os.path.join(dir, f'crossvalidation-plot_z-{self._validating_dsz.var}_y-{self._validating_dsy.var}.png')
+            path = os.path.join(folder, f'crossvalidation-plot_z-{self._validating_dsz.var}_y-{self._validating_dsy.var}.png')
         else:
-            path = os.path.join(dir, name)
+            path = os.path.join(folder, name)
 
         _apply_flags_to_fig(
             fig, path,
@@ -285,7 +285,7 @@ class Validation(_Procedure):
         save_fig: bool = False,
         show_plot: bool = False,
         halt_program: bool = False,
-        dir: Optional[str] = None,
+        folder: Optional[str] = None,
         name: Optional[str] = None,
         cmap: str = 'bwr',
         yticks: Optional[
@@ -300,7 +300,7 @@ class Validation(_Procedure):
         Parameters
         ----------
         save_fig
-            Saves the fig in with `dir` / `name` parameters
+            Saves the fig in with `folder` / `name` parameters
         show_plot
             Shows the plot
         halt_program
@@ -308,7 +308,7 @@ class Validation(_Procedure):
             and stops execution. Else uses fig.show and does not halt program
         year
             Year to plot
-        dir
+        folder
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
@@ -373,12 +373,12 @@ class Validation(_Procedure):
 
         fig.subplots_adjust(hspace=.4)
 
-        if dir is None:
-            dir = '.'
+        if folder is None:
+            folder = '.'
         if name is None:
-            path = os.path.join(dir, f'crossvalidation-plot_z-{self._validating_dsz.var}_y-{self._validating_dsy.var}.png')
+            path = os.path.join(folder, f'crossvalidation-plot_z-{self._validating_dsz.var}_y-{self._validating_dsy.var}.png')
         else:
-            path = os.path.join(dir, name)
+            path = os.path.join(folder, name)
 
         _apply_flags_to_fig(
             fig, path,

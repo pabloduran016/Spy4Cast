@@ -258,7 +258,7 @@ class Preprocess(_Procedure):
         halt_program: bool = False,
         selected_year: Optional[int] = None,
         cmap: str = 'bwr',
-        dir: Optional[str] = None,
+        folder: Optional[str] = None,
         name: Optional[str] = None
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the preprocessed data for spy4cast methodologes
@@ -266,7 +266,7 @@ class Preprocess(_Procedure):
         Parameters
         ----------
         save_fig
-            Saves the fig in with `dir` / `name` parameters
+            Saves the fig in with `folder` / `name` parameters
         show_plot
             Shows the plot
         halt_program
@@ -274,7 +274,7 @@ class Preprocess(_Procedure):
             and stops execution. Else uses fig.show and does not halt program
         cmap
             Colormap for the map
-        dir
+        folder
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
@@ -304,12 +304,12 @@ class Preprocess(_Procedure):
         )
         fig.suptitle(f'{self.var}: {region2str(self.region)}', fontweight='bold')
 
-        if dir is None:
-            dir = '.'
+        if folder is None:
+            folder = '.'
         if name is None:
-            path = os.path.join(dir, f'preprocessed-plot_{self.var}.png')
+            path = os.path.join(folder, f'preprocessed-plot_{self.var}.png')
         else:
-            path = os.path.join(dir, name)
+            path = os.path.join(folder, name)
 
         _apply_flags_to_fig(
             fig, path,

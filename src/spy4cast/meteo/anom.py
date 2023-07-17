@@ -324,7 +324,7 @@ class Anom(_Procedure):
         year: Optional[int] = None,
         cmap: Optional[str] = None,
         color: Optional[Color] = None,
-        dir: str = '.',
+        folder: str = '.',
         name: str = 'anomaly.png'
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the anomaly map or time series
@@ -332,7 +332,7 @@ class Anom(_Procedure):
         Parameters
         ----------
         save_fig
-            Saves the fig in with `dir` / `name` parameters
+            Saves the fig in with `folder` / `name` parameters
         show_plot
             Shows the plot
         halt_program
@@ -344,7 +344,7 @@ class Anom(_Procedure):
             Colormap of the `map` types
         color
             Color of the line for `ts` types
-        dir
+        folder
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
@@ -400,7 +400,7 @@ class Anom(_Procedure):
         else:
             assert False, 'Unreachable'
 
-        path = os.path.join(dir, name)
+        path = os.path.join(folder, name)
         _apply_flags_to_fig(
             fig, path,
             save_fig=save_fig,
@@ -410,14 +410,14 @@ class Anom(_Procedure):
         return fig, [ax]
 
     @classmethod
-    def load(cls: Type['Anom'], prefix: str, dir: str = '.', *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Anom':
+    def load(cls: Type['Anom'], prefix: str, folder: str = '.', *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Anom':
         """Load an anom object from matrices and type
 
         Parameters
         ----------
         prefix : str
             Prefix of the files containing the information for the object
-        dir : str
+        folder : str
             Directory of the files
         type : 'map' or 'ts'
             Type of anomaly
@@ -430,7 +430,7 @@ class Anom(_Procedure):
             raise TypeError('Only accepetd kwarg `type` accepted for load method')
         if type is None:
             raise TypeError('`type` is a required keyword argument')
-        return super().load(prefix, dir, type=_get_type(type))
+        return super().load(prefix, folder, type=_get_type(type))
 
     @property
     def var_names(self) -> Tuple[str, ...]:

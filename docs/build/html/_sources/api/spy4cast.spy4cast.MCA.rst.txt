@@ -10,6 +10,8 @@ MCA
 
    .. autosummary::
 
+      ~MCA.dsy
+      ~MCA.dsz
       ~MCA.var_names
 
    .. rubric:: Methods Summary
@@ -22,6 +24,8 @@ MCA
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: dsy
+   .. autoattribute:: dsz
    .. autoattribute:: var_names
 
    .. rubric:: Methods Documentation

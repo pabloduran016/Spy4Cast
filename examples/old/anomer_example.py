@@ -1,7 +1,7 @@
 from spy4cast import Region, Month, F, AnomerMap
 
 
-DATASETS_DIR = '/Users/Shared/datasets/'
+DATASETS_FOLDER = '/Users/Shared/datasets/'
 HadISST_sst = 'HadISST_sst.nc'
 
 
@@ -13,7 +13,7 @@ sl = Region(
     year0=1871, yearf=2020,
     sy=1990,
 )
-a = AnomerMap(dataset_dir=DATASETS_DIR, dataset_name=HadISST_sst)
+a = AnomerMap(dataset_folder=DATASETS_FOLDER, dataset_name=HadISST_sst)
 a.open_dataset()
 a.slice_dataset(sl)
 a.apply()

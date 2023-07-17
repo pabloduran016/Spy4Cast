@@ -41,19 +41,19 @@ class _Procedure(ABC):
     def var_names(self) -> Tuple[str, ...]:
         raise NotImplementedError
 
-    def save(self, prefix: str, dir: str = '.') -> None:
+    def save(self, prefix: str, folder: str = '.') -> None:
         clsname = type(self).__name__
-        prefixed = os.path.join(dir, prefix)
-        _debuginfo(f'Saving {clsname} data in `{os.path.join(dir, prefix)}*.npy`')
+        prefixed = os.path.join(folder, prefix)
+        _debuginfo(f'Saving {clsname} data in `{os.path.join(folder, prefix)}*.npy`')
 
         variables: List[Tuple[str, npt.NDArray[Any]]] = [
             (name, getattr(self, name))
             for name in self.var_names
         ]
 
-        if not os.path.exists(dir):
-            _warning(f'Creating path {dir} that did not exist')
-            os.makedirs(dir)
+        if not os.path.exists(folder):
+            _warning(f'Creating path {folder} that did not exist')
+            os.makedirs(folder)
 
         for name, arr in variables:
             path = prefixed + name
@@ -62,10 +62,10 @@ class _Procedure(ABC):
             np.save(path, arr)
 
     @classmethod
-    def load(cls: Type[T], prefix: str, dir: str = '.', **attrs: Any) -> T:
+    def load(cls: Type[T], prefix: str, folder: str = '.', **attrs: Any) -> T:
         clsname = cls.__name__
         # print(clsname, cls)
-        prefixed = os.path.join(dir, prefix)
+        prefixed = os.path.join(folder, prefix)
         _debuginfo(f'Loading {clsname} data from `{prefixed}*`', end='')
         time_from_here()
 

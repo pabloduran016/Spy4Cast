@@ -41,7 +41,7 @@ class Dataset:
     ----
         name : str, default=''
             Directory where the dataset you want to use is located
-        dir : str, default='dataset.nc'
+        folder : str, default='dataset.nc'
             Name of the dataset
         chunks : `stypes.ChunkType`, optional
             Argument passed when loading the datasets
@@ -67,11 +67,11 @@ class Dataset:
     def __init__(
         self,
         name: str,
-        dir: str = '.',
+        folder: str = '.',
         chunks: Optional[ChunkType] = None
     ):
         self.name: str = name
-        self.dir: str = dir
+        self.folder: str = folder
         self._chunks: Optional[ChunkType] = chunks
 
     @classmethod
@@ -205,7 +205,7 @@ class Dataset:
             errors.DatasetError
                 If there is an error while opening the dataset
             errors.DatasetNotFoundError
-                If the dataset name or dir is not valid
+                If the dataset name or folder is not valid
             errors.VariableSelectionError
                 If teh variable selected does not exist or can not be inferred
         """
@@ -214,14 +214,14 @@ class Dataset:
 
         try:
             self._ds = xr.open_dataset(
-                os.path.join(self.dir, self.name),
+                os.path.join(self.folder, self.name),
                 mask_and_scale=True,
                 chunks=self._chunks
             )
         except ValueError:
             try:
                 self._ds = xr.open_dataset(
-                    os.path.join(self.dir, self.name),
+                    os.path.join(self.folder, self.name),
                     mask_and_scale=True,
                     decode_times=False,
                     chunks=self._chunks
@@ -580,11 +580,11 @@ class Dataset:
                 raise SelectedYearError(region.sy)
         return self
 
-    def save_nc(self: _T, name: str, dir: str = '.') -> _T:
+    def save_nc(self: _T, name: str, folder: str = '.') -> _T:
         """Saves the data as a netcdf4 file
         """
 
-        fig_data_path = os.path.join(dir, name)
+        fig_data_path = os.path.join(folder, name)
 
         # REMOVES NAN VALUES TO PREVENT ERRORS
         if self._lat_key in self.data.dims and \

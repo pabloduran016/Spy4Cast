@@ -294,7 +294,7 @@ class Clim(_Procedure, object):
         halt_program: bool = False,
         cmap: Optional[str] = None,
         color: Optional[Color] = None,
-        dir: str = '.',
+        folder: str = '.',
         name: str = 'clim.png',
         levels: Optional[List[Any]] = None,
         ticks: Optional[List[Any]] = None,
@@ -304,7 +304,7 @@ class Clim(_Procedure, object):
         Parameters
         ----------
         save_fig
-            Saves the fig in with `dir` / `name` parameters
+            Saves the fig in with `folder` / `name` parameters
         show_plot
             Shows the plot
         halt_program
@@ -314,7 +314,7 @@ class Clim(_Procedure, object):
             Colormap of the `map` types
         color
             Color of the line for `ts` types
-        dir
+        folder
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
@@ -372,7 +372,7 @@ class Clim(_Procedure, object):
         else:
             assert False, 'Unreachable'
 
-        path = os.path.join(dir, name)
+        path = os.path.join(folder, name)
         _apply_flags_to_fig(
             fig, path,
             save_fig=save_fig,
@@ -382,14 +382,14 @@ class Clim(_Procedure, object):
         return fig, [ax]
 
     @classmethod
-    def load(cls: Type['Clim'], prefix: str, dir: str = '.', *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Clim':
+    def load(cls: Type['Clim'], prefix: str, folder: str = '.', *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Clim':
         """Load an clim object from matrices and type
 
         Parameters
         ----------
         prefix : str
             Prefix of the files containing the information for the object
-        dir : str
+        folder : str
             Directory of the files
         type : 'map' or 'ts'
             Type of climatology
@@ -402,7 +402,7 @@ class Clim(_Procedure, object):
             raise TypeError('Only kwarg `type` accepted for load method')
         if type is None:
             raise TypeError('`type` is a required kwarg')
-        return super().load(prefix, dir, type=_get_type(type))
+        return super().load(prefix, folder, type=_get_type(type))
 
     @property
     def var_names(self) -> Tuple[str, ...]:

@@ -2,9 +2,9 @@ import spy4cast as spy
 from spy4cast.stypes import F, Month, Region, RDArgs
 
 
-DATASET_DIR = '/Users/Shared/datasets/'
-PLOTS_DIR = 'plots'
-PLOTS_DATA_DIR = 'saved_pac/'
+DATASET_FOLDER = '/Users/Shared/datasets/'
+PLOTS_FOLDER = 'plots'
+PLOTS_DATA_FOLDER = 'saved_pac/'
 MATS_PLOT_NAME = 'mats_spy4cast_chlorMED_pac.png'
 MCA_PLOT_NAME = 'mca_spy4cast_chlorMED_pac.png'
 CROSS_PLOT_NAME = 'cross_spy4cast_chlorMED_pac.png'
@@ -37,10 +37,10 @@ def main() -> None:
     selected_year = 2006
 
     s = spy.Spy4Caster(
-            yargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=oisst_v2_mean_monthly, variable=SST, chunks=100),
-            zargs=RDArgs(dataset_dir=DATASET_DIR, dataset_name=chl_1km_monthly_Sep1997_Dec2020, variable=CHL, chunks=100),
-            plot_dir=PLOTS_DIR, mats_plot_name=MATS_PLOT_NAME, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME, zhat_plot_name=ZHAT_PLOT_NAME,
-            plot_data_dir=PLOTS_DATA_DIR)
+            yargs=RDArgs(dataset_folder=DATASET_FOLDER, dataset_name=oisst_v2_mean_monthly, variable=SST, chunks=100),
+            zargs=RDArgs(dataset_folder=DATASET_FOLDER, dataset_name=chl_1km_monthly_Sep1997_Dec2020, variable=CHL, chunks=100),
+            plot_folder=PLOTS_FOLDER, mats_plot_name=MATS_PLOT_NAME, mca_plot_name=MCA_PLOT_NAME, cross_plot_name=CROSS_PLOT_NAME, zhat_plot_name=ZHAT_PLOT_NAME,
+            plot_data_folder=PLOTS_DATA_FOLDER)
     # TODO: Implement `ray` for multiprocessing in crossvalidation
     load = True
     if not load:
@@ -51,9 +51,9 @@ def main() -> None:
         s.crossvalidation(nm=nm, alpha=alpha, multiprocessing=False)
         s.run(show_plot=True, save_fig=True | F.SAVE_DATA, sy=selected_year, cmap='viridis')
     else:
-        s.load_preprocessed(PLOTS_DATA_DIR, 'save_preprocessed_', '.npy')
-        s.load_mca(PLOTS_DATA_DIR, 'save_mca_', '.npy')
-        s.load_crossvalidation(PLOTS_DATA_DIR, 'save_cross_', '.npy')
+        s.load_preprocessed(PLOTS_DATA_FOLDER, 'save_preprocessed_', '.npy')
+        s.load_mca(PLOTS_DATA_FOLDER, 'save_mca_', '.npy')
+        s.load_crossvalidation(PLOTS_DATA_FOLDER, 'save_cross_', '.npy')
         s.run(show_plot=True, save_fig=True, sy=selected_year, cmap='viridis')
     # s.plot_preprocessed()
     # s.plot_mca(show_plot=True, save_fig=True)

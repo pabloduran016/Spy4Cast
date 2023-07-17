@@ -11,6 +11,7 @@ Clim
    .. autosummary::
 
       ~Clim.data
+      ~Clim.ds
       ~Clim.lat
       ~Clim.lon
       ~Clim.region
@@ -29,6 +30,7 @@ Clim
    .. rubric:: Attributes Documentation
 
    .. autoattribute:: data
+   .. autoattribute:: ds
    .. autoattribute:: lat
    .. autoattribute:: lon
    .. autoattribute:: region

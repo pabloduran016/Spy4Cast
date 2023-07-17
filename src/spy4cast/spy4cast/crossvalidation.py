@@ -338,7 +338,7 @@ class Crossvalidation(_Procedure):
         save_fig: bool = False,
         show_plot: bool = False,
         halt_program: bool = False,
-        dir: Optional[str] = None,
+        folder: Optional[str] = None,
         name: Optional[str] = None,
         cmap: Optional[str] = None,
         map_ticks: Optional[
@@ -352,13 +352,13 @@ class Crossvalidation(_Procedure):
         Parameters
         ----------
         save_fig
-            Saves the fig in with `dir` / `name` parameters
+            Saves the fig in with `folder` / `name` parameters
         show_plot
             Shows the plot
         halt_program
             Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
             and stops execution. Else uses fig.show and does not halt program
-        dir
+        folder
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
@@ -398,12 +398,12 @@ class Crossvalidation(_Procedure):
         else:
             raise ValueError(f"Version can only be one of: `elena`, `default`")
 
-        if dir is None:
-            dir = '.'
+        if folder is None:
+            folder = '.'
         if name is None:
-            path = os.path.join(dir, f'crossvalidation-plot_z-{self._dsz.var}_y-{self._dsy.var}.png')
+            path = os.path.join(folder, f'crossvalidation-plot_z-{self._dsz.var}_y-{self._dsy.var}.png')
         else:
-            path = os.path.join(dir, name)
+            path = os.path.join(folder, name)
 
         _apply_flags_to_fig(
             fig, path,
@@ -420,7 +420,7 @@ class Crossvalidation(_Procedure):
         save_fig: bool = False,
         show_plot: bool = False,
         halt_program: bool = False,
-        dir: Optional[str] = None,
+        folder: Optional[str] = None,
         name: Optional[str] = None,
         cmap: str = 'bwr',
         yticks: Optional[
@@ -435,7 +435,7 @@ class Crossvalidation(_Procedure):
         Parameters
         ----------
         save_fig
-            Saves the fig in with `dir` / `name` parameters
+            Saves the fig in with `folder` / `name` parameters
         show_plot
             Shows the plot
         halt_program
@@ -443,7 +443,7 @@ class Crossvalidation(_Procedure):
             and stops execution. Else uses fig.show and does not halt program
         year
             Year to plot
-        dir
+        folder
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
@@ -508,12 +508,12 @@ class Crossvalidation(_Procedure):
 
         fig.subplots_adjust(hspace=.4)
 
-        if dir is None:
-            dir = '.'
+        if folder is None:
+            folder = '.'
         if name is None:
-            path = os.path.join(dir, f'crossvalidation-plot_z-{self._dsz.var}_y-{self._dsy.var}.png')
+            path = os.path.join(folder, f'crossvalidation-plot_z-{self._dsz.var}_y-{self._dsy.var}.png')
         else:
-            path = os.path.join(dir, name)
+            path = os.path.join(folder, name)
 
         _apply_flags_to_fig(
             fig, path,
@@ -528,7 +528,7 @@ class Crossvalidation(_Procedure):
     def load(
         cls,
         prefix: str,
-        dir: str = '.',
+        folder: str = '.',
         *,
         dsz: Optional[Preprocess] = None,
         dsy: Optional[Preprocess] = None,
@@ -541,7 +541,7 @@ class Crossvalidation(_Procedure):
         if type(dsz) != Preprocess or type(dsy) != Preprocess:
             raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
 
-        self: Crossvalidation = super().load(prefix, dir)
+        self: Crossvalidation = super().load(prefix, folder)
         self._dsz = dsz
         self._dsy = dsy
         return self

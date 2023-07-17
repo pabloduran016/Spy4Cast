@@ -27,10 +27,10 @@ Run the methodology
 .. code:: python
 
     # Selction of datasets
-    ds_y = Dataset("sea_surface_temperature.nc", dir="datasets").open('sst')
+    ds_y = Dataset("sea_surface_temperature.nc", folder="datasets").open('sst')
     ds_y.slice(Region(-20, 20, -150, -90, Month.AUG, Month.NOV, 1971, 2003))
 
-    ds_z = Dataset("atmospheric_pressure.nc", dir="datasets").open('pr')
+    ds_z = Dataset("atmospheric_pressure.nc", folder="datasets").open('pr')
     ds_z.slice(Region(11.5, 16.5, -25, -15, Month.FEB, Month.MAY, 1972, 2004))
 
 .. code:: python
@@ -38,14 +38,14 @@ Run the methodology
     # Data preprocessing: anomaly, filter and reshaping
     y = Preprocess(ds_y)
     z = Preprocess(ds_z)
-    y.save('y_', dir='saved_data')
-    z.save('z_', dir='saved_data')
+    y.save('y_', folder='saved_data')
+    z.save('z_', folder='saved_data')
 
 .. code:: python
 
     # Application of Maximum Covariance Anaysis for 3 modes and 0.1 significance level
     mca = MCA(y, z, 3, 0.1)
-    mca.save('mca_', dir='saved_data')
+    mca.save('mca_', folder='saved_data')
 
 Analyse results
 ---------------
@@ -59,12 +59,12 @@ Analyse results
 
 .. code:: python
 
-    y = Preprocess.load('y_', dir='saved_data')
-    z = Preprocess.load('z_', dir='saved_data')
+    y = Preprocess.load('y_', folder='saved_data')
+    z = Preprocess.load('z_', folder='saved_data')
 
 .. code:: python
 
-    mca = MCA.load('mca_', dir='saved_data', dsy=y, dsz=z)
+    mca = MCA.load('mca_', folder='saved_data', dsy=y, dsz=z)
 
 .. code:: python
 

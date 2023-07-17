@@ -298,7 +298,7 @@ class MCA(_Procedure):
         halt_program: bool = False,
         cmap: str = 'bwr',
         signs: Optional[Sequence[bool]] = None,
-        dir: Optional[str] = None,
+        folder: Optional[str] = None,
         name: Optional[str] = None,
         suy_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
@@ -312,7 +312,7 @@ class MCA(_Procedure):
         Parameters
         ----------
         save_fig
-            Saves the fig in with `dir` / `name` parameters
+            Saves the fig in with `folder` / `name` parameters
         show_plot
             Shows the plot
         halt_program
@@ -323,7 +323,7 @@ class MCA(_Procedure):
         signs
             Sequence of `True` or `False` values of same length as `nm`. Where `True` the
             mode output will be multipled by -1.
-        dir
+        folder
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
@@ -435,12 +435,12 @@ class MCA(_Procedure):
 
         fig.subplots_adjust(hspace=.4)
 
-        if dir is None:
-            dir = '.'
+        if folder is None:
+            folder = '.'
         if name is None:
-            path = os.path.join(dir, f'mca-plot_z-{self._dsz.var}_y-{self._dsy.var}.png')
+            path = os.path.join(folder, f'mca-plot_z-{self._dsz.var}_y-{self._dsy.var}.png')
         else:
-            path = os.path.join(dir, name)
+            path = os.path.join(folder, name)
 
         _apply_flags_to_fig(
             fig, path,
@@ -452,7 +452,7 @@ class MCA(_Procedure):
         return fig, axs
 
     @classmethod
-    def load(cls, prefix: str, dir: str = '.', *,
+    def load(cls, prefix: str, folder: str = '.', *,
              dsy: Optional[Preprocess] = None,
              dsz: Optional[Preprocess] = None,
              **attrs: Any) -> 'MCA':
@@ -462,7 +462,7 @@ class MCA(_Procedure):
         ----------
         prefix : str
             Prefix of the files containing the information for the object
-        dir : str
+        folder : str
             Directory of the files
         dsy : Preprocess
             Preprocessed dataset of the predictor variable
@@ -480,7 +480,7 @@ class MCA(_Procedure):
         if type(dsz) != Preprocess or type(dsy) != Preprocess:
             raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
 
-        self: MCA = super().load(prefix, dir)
+        self: MCA = super().load(prefix, folder)
 
         self._dsz = dsz
         self._dsy = dsy
