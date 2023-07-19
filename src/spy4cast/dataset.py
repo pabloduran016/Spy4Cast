@@ -459,7 +459,7 @@ class Dataset:
         }]
 
         if region.month0 <= region.monthf:
-            season_size = region.monthf - region.month0
+            season_size = region.monthf - region.month0 + 1
         else:
             season_size = region.monthf + 13 - region.month0  # region.month0 != region.monthf
 
