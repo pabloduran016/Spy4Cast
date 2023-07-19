@@ -450,8 +450,6 @@ def _anom(
         raise TypeError(f"Invalid type for array: {type(array)}")
 
     assert 'time' in array.dims, 'Cant\'t recognise time key in array'
-    array = array.assign_coords(month=('time', array['time.month'].data))
-    array = array.assign_coords(year=('time', array['time.year'].data))
     if len(array.shape) == 3:  # 3d array
         # Reshape time variable
         lat_key = 'latitude' if 'latitude' in array.dims else 'lat'
@@ -469,10 +467,7 @@ def _anom(
     elif len(array.shape) == 1:  # time series
         assert 'latitude' not in array.dims and 'longitude' not in array.dims,\
             'Unidimensional arrays time must be the only dimension'
-        arr = array.assign_coords(
-            time=('time', ind)
-        ).unstack('time').transpose('year', 'month')
-        a = arr.mean('month')
+        a = array.groupby('year').mean()
         b = a - a.mean('year')
         if st:
             rv = b / b.std()

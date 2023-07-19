@@ -4,3 +4,4 @@ xarray==2022.3.0
 dask
 pandas
 netcdf4
+scipy

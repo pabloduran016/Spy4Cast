@@ -458,6 +458,14 @@ class Dataset:
             self._lon_key: lonmask,
         }]
 
+        if region.month0 <= region.monthf:
+            season_size = region.monthf - region.month0
+        else:
+            season_size = region.monthf + 13 - region.month0  # region.month0 != region.monthf
+
+        self.data = self.data.assign_coords(year=(
+            'time', [year for year in range(region.year0, region.yearf + 1) for _ in range(season_size)]))
+
         latskipmask: npt.NDArray[np.bool_] = np.zeros(
             len(self.lat)
         ).astype(bool)

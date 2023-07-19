@@ -18,12 +18,7 @@ To get the latest version:
     (<your-env-name>) $ conda install cartopy
 ```
 
-To get the latest stable version:
-```console
-    $ pip install spy4cast
-```
-
-## Example
+## Example to plot anomaly map
 
 ```python
 from spy4cast.meteo import Anom
@@ -66,4 +61,5 @@ The documentation for this project is in https://spy4cast-docs.netlify.app
 - [cartopy](https://www.scitools.org.uk/cartopy/docs/latest/)
 - [matplotlib](https://www.matplotlib.org/stable/api/text_api.html#matplotlib.text.Text)
 - [dask](https://www.dask.org/)
+- [scipy](https://www.scipy.org/)
 - [sphinx](https://www.sphinx-doc.org/)
