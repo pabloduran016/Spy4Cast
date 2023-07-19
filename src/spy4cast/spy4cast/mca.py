@@ -30,7 +30,7 @@ class MCA(_Procedure):
     Parameters
     ----------
         dsy : Preprocess
-            predictor
+            Predictor
         dsz : Preprocess
             Predictand
         nm : int
