@@ -442,13 +442,15 @@ def _clim(array: xr.DataArray, dim: str = 'time') -> xr.DataArray:
     if not isinstance(array, xr.DataArray):
         raise TypeError(f"Expected type xarray.DataArray, got {type(array)}")
     if dim == 'year':
-        season_size = len(set(array['time.month'].values))
-        if len(array['time']) % season_size:
-            raise ValueError(f'Can not group time array of length {len(array["time"])} with season size of {season_size}')
-        years = array['time.year'][season_size-1::season_size].data
-        nyears = len(years)
-        rv: xr.DataArray = array.groupby_bins('time', nyears, labels=years).mean()
-        rv = rv.rename({'time_bins': 'year'})
+        # season_size = len(set(array['time.month'].values))
+        # if len(array['time']) % season_size:
+        #     raise ValueError(f'Can not group time array of length {len(array["time"])} with season size of {season_size}')
+        # years = array['time.year'][season_size-1::season_size].data
+        # nyears = len(years)
+        # rv: xr.DataArray = array.groupby_bins('time', nyears, labels=years).mean()
+        # rv = rv.rename({'time_bins': 'year'})
+
+        rv: xr.DataArray = array.groupby('year').mean()
     elif dim == 'month':
         rv = array.groupby('time.month').mean()
     elif dim == 'time':  # Apply across year and month

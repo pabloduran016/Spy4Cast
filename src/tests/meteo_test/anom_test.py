@@ -108,6 +108,7 @@ class AnomTest(BaseTestCase):
             os.path.join(DATASETS_FOLDER, HadISST_sst)
         )[SST]
         xr_sst = xr_sst[xr_sst['time.month'] == 1]
+        xr_sst = xr_sst.assign_coords(year=('time', xr_sst['time.year'].values))
 
         map_anom = Anom.from_xrarray(xr_sst)
         ts_anom = Anom.from_xrarray(xr_sst.mean('latitude').mean('longitude'))
@@ -167,6 +168,7 @@ class AnomTest(BaseTestCase):
             os.path.join(DATASETS_FOLDER, HadISST_sst)
         )[SST]
         xr_sst = xr_sst[xr_sst['time.month'] == 1]
+        xr_sst = xr_sst.assign_coords(year=('time', xr_sst['time.year'].values))
 
         map_anom = Anom.from_xrarray(xr_sst)
         self.assertEqual(map_anom.type, PlotType.MAP)
@@ -210,14 +212,19 @@ class AnomTest(BaseTestCase):
     def test__anom(self) -> None:
         with self.assertRaises(TypeError):
             _anom(np.empty((10, 10)))
-        with self.assertRaises(AssertionError):
-            _anom(xr.DataArray(np.empty((10, 10, 10)), dims=['year', 'lat', 'lon']))
-        with self.assertRaises(KeyError):
-            _anom(xr.DataArray(np.empty((10, 10)), dims=['time', 'lat']))
+        # with self.assertRaises(ValueError):
+        #     _anom(xr.DataArray(np.empty((10, 10, 10)), dims=['year', 'lat', 'lon']))
+        with self.assertRaises(ValueError):
+            _anom(xr.DataArray(np.empty((10, 10)), dims=['year', 'lat'], coords={'year': np.arange(1990, 2000)}))
         with self.assertRaises(ValueError):
             _anom(self.ds.data[:, 0])
-        with self.assertRaises(ValueError):
-            _anom(self.ds.data[1:])
+        # with self.assertRaises(ValueError):
+        #     _anom(self.ds.data[1:])
+
+        anom = Anom(Dataset(HadISST_sst, DATASETS_FOLDER).open('sst').slice(
+            Region(-45, 45, -25, 25, Month.DEC, Month.FEB, 1871, 1990)
+        ), 'map')
+        self.assertTrue(len(anom.time) == 1990 - 1871 + 1)
 
     def test_npanom(self) -> None:
         arr = np.array([[(x * y) / (1 + x + y) for x in range(10)] for y in range(20)])

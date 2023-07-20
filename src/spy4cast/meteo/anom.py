@@ -306,6 +306,8 @@ class Anom(_Procedure):
         """
         if len(array.shape) != 3 and len(array.shape) != 1:
             raise TypeError('Dimensions for array must be either 3 (MAP) or 1 (TS)')
+        if 'year' not in array.coords:
+            raise ValueError('Missing coord "year" for dataset anom')
         obj = Anom.__new__(Anom)
         obj._ds = Dataset.from_xrarray(array)
         obj.type = PlotType.MAP if len(array.shape) == 3 else PlotType.TS
@@ -449,14 +451,13 @@ def _anom(
     if not isinstance(array, xr.DataArray):
         raise TypeError(f"Invalid type for array: {type(array)}")
 
-    assert 'time' in array.dims, 'Cant\'t recognise time key in array'
+    assert 'year' in array.coords, 'Cant\'t recognise year or time key in array'
     if len(array.shape) == 3:  # 3d array
         # Reshape time variable
         lat_key = 'latitude' if 'latitude' in array.dims else 'lat'
         lon_key = 'longitude' if 'longitude' in array.dims else 'lon'
         assert lat_key in array.dims and lon_key in array.dims,\
             'Can\'t recognise keys'
-        # arr must be a DataArray with dims=(months, year, lat, lon)
         a = array.groupby('year').mean()
         b: xr.DataArray = a - a.mean('year')
         if st:

@@ -287,6 +287,8 @@ class Dataset:
                 lambda x: x != self.data.attrs['missing_value']
             )
 
+        self.data = self.data.assign_coords(year=('time', self.data['time.year'].data))
+
         return self
 
     def _roll_lon(self) -> None:
