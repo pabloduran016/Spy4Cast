@@ -296,7 +296,7 @@ class Clim(_Procedure, object):
         color: Optional[Color] = None,
         folder: str = '.',
         name: str = 'clim.png',
-        levels: Optional[List[Any]] = None,
+        levels: Optional[npt.NDArray[np.float32]] = None,
         ticks: Optional[List[Any]] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the climatology map or time series

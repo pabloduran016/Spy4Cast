@@ -88,7 +88,7 @@ else:
     training_mca = MCA(training_predictor_preprocessed, training_predictand_preprocessed, nm, alpha)
     training_mca.save(MCA_PREFIX, DATA_DIR)
 
-training_mca.plot(save_fig=True, cmap='viridis', name=MCA_PLOT_NAME, dir=PLOTS_DIR)
+training_mca.plot(save_fig=True, cmap='viridis', name=MCA_PLOT_NAME, folder=PLOTS_DIR)
 
 if LOAD_VALIDATION:
     validation = Validation.load(VALIDATION_PREFIX, DATA_DIR, validating_dsy=validating_predictor_preprocessed, validating_dsz=validating_predictand_preprocessed, training_mca=training_mca)
@@ -96,8 +96,8 @@ else:
     validation = Validation(training_mca, validating_predictor_preprocessed, validating_predictand_preprocessed)
     validation.save(VALIDATION_PREFIX, DATA_DIR)
 
-validation.plot(save_fig=True, dir=PLOTS_DIR, name=VALIDATION_PLOT_NAME, version='default')
-validation.plot_zhat(2015, save_fig=True, dir=PLOTS_DIR, name=VALIDATION_PLOT_NAME)
+validation.plot(save_fig=True, folder=PLOTS_DIR, name=VALIDATION_PLOT_NAME, version='default')
+validation.plot_zhat(2015, save_fig=True, folder=PLOTS_DIR, name=VALIDATION_PLOT_NAME)
 
 
 import matplotlib.pyplot as plt

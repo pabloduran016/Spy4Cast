@@ -18,13 +18,13 @@ mca = MCA(dsy=predictor_preprocessed, dsz=predictand_preprocessed, nm=nm, alpha=
 
 # We save the MCA data to avoid runnning it again as it takes some time to do it
 # We can also send this data across to other which the can load with just:
-# `MCA.load('mca_', dir='saved', dsy=predictor_preprocessed`, dsz=predictand_preprocessed)`
+# `MCA.load('mca_', folder='saved', dsy=predictor_preprocessed`, dsz=predictand_preprocessed)`
 # NOTE: predictor and predictand datasets can also be saved and load if necessary
-mca.save('mca_', dir='saved')
+mca.save('mca_', folder='saved')
 mca.plot(save_fig=True, name='mca.png')  # We don't add F.SHOW_PLOT because we will show all the plots together afterwards
 
 cross = Crossvalidation(dsy=predictor_preprocessed, dsz=predictand_preprocessed, nm=nm, alpha=alpha)
-cross.save('cross_', dir='saved')
+cross.save('cross_', folder='saved')
 cross.plot(save_fig=True, name='cross.png')
 
 

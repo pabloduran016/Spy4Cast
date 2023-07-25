@@ -106,8 +106,8 @@ class Crossvalidation(_Procedure):
     vs: npt.NDArray[np.float32]
     zhat_separated_modes: npt.NDArray[np.float32]
     zhat_accumulated_modes: npt.NDArray[np.float32]
-    psi_separated_modes: npt.NDArray[np.float32]
-    psi_accumulated_modes: npt.NDArray[np.float32]
+    # psi_separated_modes: npt.NDArray[np.float32]
+    # psi_accumulated_modes: npt.NDArray[np.float32]
     r_z_zhat_t_accumulated_modes: npt.NDArray[np.float32]
     p_z_zhat_t_accumulated_modes: npt.NDArray[np.float32]
     r_z_zhat_t_separated_modes: npt.NDArray[np.float32]
@@ -151,8 +151,8 @@ class Crossvalidation(_Procedure):
             'suy_sig',
             'suz_sig',
 
-            'psi_accumulated_modes',
-            'psi_separated_modes',
+            # 'psi_accumulated_modes',
+            # 'psi_separated_modes',
             'alpha',
         )
 
@@ -199,10 +199,10 @@ class Crossvalidation(_Procedure):
         self.zhat_separated_modes[:, self._dsz.land_data.land_mask, :] = np.nan
         self.zhat_accumulated_modes[:, self._dsz.land_data.land_mask, :] = np.nan
 
-        self.psi_separated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
-        self.psi_accumulated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
-        self.psi_separated_modes[:, :, self._dsy.land_data.land_mask, :][:, :, :, self._dsz.land_data.land_mask] = np.nan
-        self.psi_accumulated_modes[:, :, self._dsy.land_data.land_mask, :][:, :, :, self._dsz.land_data.land_mask] = np.nan
+        psi_separated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
+        psi_accumulated_modes = np.zeros([nm, nt, ny, nz], dtype=np.float32)
+        psi_separated_modes[:, :, self._dsy.land_data.land_mask, :][:, :, :, self._dsz.land_data.land_mask] = np.nan
+        psi_accumulated_modes[:, :, self._dsy.land_data.land_mask, :][:, :, :, self._dsz.land_data.land_mask] = np.nan
 
         self.suy = np.zeros([ny, nt, nm], dtype=np.float32)
         self.suy_sig = np.zeros([ny, nt, nm], dtype=np.float32)
@@ -240,7 +240,7 @@ class Crossvalidation(_Procedure):
                     self.scf[:, i], self.r_uv[:, i], self.r_uv_sig[:, i], self.p_uv[:, i], \
                         self.us[:, [x for x in range(nt) if x != i], i], \
                         self.vs[:, [x for x in range(nt) if x != i], i], \
-                        self.psi_separated_modes[:, i, :, :], self.psi_accumulated_modes[:, i, :, :], \
+                        psi_separated_modes[:, i, :, :], psi_accumulated_modes[:, i, :, :], \
                         self.zhat_separated_modes[:, :, i], self.zhat_accumulated_modes[:, :, i], \
                         self.suy[:, i, :], self.suy_sig[:, i, :], self.suz[:, i, :], self.suz_sig[:, i, :] = values
         else:
@@ -252,7 +252,7 @@ class Crossvalidation(_Procedure):
                 self.scf[:, i], self.r_uv[:, i], self.r_uv_sig[:, i], self.p_uv[:, i], \
                     self.us[:, [x for x in range(nt) if x != i], i], \
                     self.vs[:, [x for x in range(nt) if x != i], i], \
-                    self.psi_separated_modes[:, i, :, :], self.psi_accumulated_modes[:, i, :, :], \
+                    psi_separated_modes[:, i, :, :], psi_accumulated_modes[:, i, :, :], \
                     self.zhat_separated_modes[:, :, i], self.zhat_accumulated_modes[:, :, i], \
                     self.suy[:, i, :], self.suy_sig[:, i, :], self.suz[:, i, :], self.suz_sig[:, i, :] = out
 

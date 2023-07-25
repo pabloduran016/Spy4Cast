@@ -365,6 +365,7 @@ class MCA(_Procedure):
         )
 
         # Plot timeseries
+        ax: plt.Axes
         for i, ax in enumerate(axs[:3]):
             # # ax.margins(0)
             _plot_ts(
@@ -402,7 +403,6 @@ class MCA(_Procedure):
             xlim = sorted((lons.values[0], lons.values[-1]))
             ylim = sorted((lats.values[-1], lats.values[0]))
 
-            ax: plt.Axes
             current_axes = axs[3 * (i + 1):3 * (i + 1) + 3]
             for j, ax in enumerate(current_axes):
                 title = f'{var_name} mode {j + 1}. ' \
