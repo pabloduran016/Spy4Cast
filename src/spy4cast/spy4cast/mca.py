@@ -306,6 +306,12 @@ class MCA(_Procedure):
         suz_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
+        suy_levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
+        suz_levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the MCA results
 
@@ -331,6 +337,10 @@ class MCA(_Procedure):
             Ticks for the maps of the SUY output
         suz_ticks
             Ticks for the maps of the SUZ output
+        suy_levels
+            Levels for the maps of the SUY output
+        suz_levels
+            Levels for the maps of the SUZ output
 
         Returns
         -------
@@ -392,14 +402,15 @@ class MCA(_Procedure):
         # suy[suy == 0.0] = np.nan
 
         n = 20
-        for i, (var_name, su, ru, lats, lons, cm, ticks) in enumerate((
-                ('SUY', self.SUY, self.RUY_sig, self._dsy.lat, self._dsy.lon, 'bwr', suy_ticks),
-                ('SUZ', self.SUZ, self.RUZ_sig, self._dsz.lat, self._dsz.lon, cmap, suz_ticks)
+        for i, (var_name, su, ru, lats, lons, cm, ticks, levels) in enumerate((
+                ('SUY', self.SUY, self.RUY_sig, self._dsy.lat, self._dsy.lon, 'bwr', suy_ticks, suy_levels),
+                ('SUZ', self.SUZ, self.RUZ_sig, self._dsz.lat, self._dsz.lon, cmap, suz_ticks, suz_levels)
         )):
-            _std = np.nanstd(su)
-            _m = np.nanmean(su)
-            bound = max(abs(_m - _std), abs(_m + _std))
-            levels = np.linspace(-bound, bound, n)
+            if levels is None:
+                _std = np.nanstd(su)
+                _m = np.nanmean(su)
+                bound = max(abs(_m - _std), abs(_m + _std))
+                levels = np.linspace(-bound, bound, n)
             xlim = sorted((lons.values[0], lons.values[-1]))
             ylim = sorted((lats.values[-1], lats.values[0]))
 

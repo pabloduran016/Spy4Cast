@@ -344,6 +344,9 @@ class Crossvalidation(_Procedure):
         map_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
+        map_levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
         version: Literal["default", "elena"] = "default",
         mca: Optional[MCA] = None
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
@@ -366,6 +369,8 @@ class Crossvalidation(_Procedure):
             Colormap for the predicting maps
         map_ticks
             Ticks for the z map in version default
+        map_levels
+            Levels for the z map in version default
         version
             Select version from: `default` and `elena`
         mca
@@ -386,12 +391,14 @@ class Crossvalidation(_Procedure):
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
                 cmap = 'bwr'
-            fig, axs = _plot_crossvalidation_default(self, cmap, map_ticks)
+            fig, axs = _plot_crossvalidation_default(self, cmap, map_ticks, map_levels)
         elif version == "elena":
             if mca is None:
                 raise TypeError("Expected argument `mca` for version `elena`")
             if map_ticks is not None:
                 raise TypeError("Unexpected argument `map_ticks` for version `elena`")
+            if map_levels is not None:
+                raise TypeError("Unexpected argument `map_levels` for version `elena`")
             if cmap is not None:
                 raise TypeError("Unexpected argument `cmap` for version `elena`")
             fig, axs = _plot_crossvalidation_elena(self, mca)
@@ -752,7 +759,10 @@ def _plot_crossvalidation_default(
     cmap: str,
     map_ticks: Optional[
         Union[npt.NDArray[np.float32], Sequence[float]]
-    ]
+    ],
+    map_levels: Optional[
+        Union[npt.NDArray[np.float32], Sequence[float]]
+    ],
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     """
     Plots:
@@ -797,7 +807,8 @@ def _plot_crossvalidation_default(
         d, cross._dsz.lat, cross._dsz.lon, fig, axs[0],
         'Correlation in space between z and zhat',
         cmap=cmap,
-        ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None and not np.isnan(_mean) and not np.isnan(_std) else map_ticks)
+        ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None and not np.isnan(_mean) and not np.isnan(_std) else map_ticks),
+        levels=map_levels,
     )
     hatches = d.copy()
     hatches[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (
