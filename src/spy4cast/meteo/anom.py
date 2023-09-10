@@ -390,7 +390,7 @@ class Anom(_Procedure):
                 xtickslabels=[x for x in self.time.values[::1]],
             )
             fig.suptitle(
-                f'Time series of {self.var} ({region2str(self.region)})',
+                f'Anomaly time series of {self.var} ({region2str(self.region)})',
                 fontweight='bold'
             )
         elif self._type == PlotType.MAP:
@@ -412,7 +412,7 @@ class Anom(_Procedure):
                 ticks=ticks,
             )
             fig.suptitle(
-                f'Map of {self.var} ({region2str(self.region)})',
+                f'Anomaly map of {self.var} ({region2str(self.region)})',
                 fontweight='bold'
             )
         else:
