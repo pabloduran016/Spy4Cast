@@ -95,7 +95,9 @@ def _plot_map(
     fig: plt.Figure,
     ax: plt.Axes,
     title: Optional[str] = None,
-    levels: Optional[npt.NDArray[np.float32]] = None,
+    levels: Optional[
+        Union[npt.NDArray[np.float32], Sequence[float]]
+    ] = None,
     xlim: Optional[Sequence[int]] = None,
     ylim: Optional[Sequence[int]] = None,
     cmap: Optional[str] = None,
@@ -116,7 +118,7 @@ def _plot_map(
 
     if ticks is None and levels is not None:
         nticks = 5
-        ticks = levels[np.arange(0, len(levels), len(levels) // nticks)]
+        ticks = [levels[i] for i in np.arange(0, len(levels), len(levels) // nticks)]
 
     cmap = 'bwr' if cmap is None else cmap
     xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim

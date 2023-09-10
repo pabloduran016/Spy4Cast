@@ -296,8 +296,12 @@ class Clim(_Procedure, object):
         color: Optional[Color] = None,
         folder: str = '.',
         name: str = 'clim.png',
-        levels: Optional[npt.NDArray[np.float32]] = None,
-        ticks: Optional[List[Any]] = None,
+        levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
+        ticks: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the climatology map or time series
 
@@ -311,7 +315,7 @@ class Clim(_Procedure, object):
             Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
             and stops execution. Else uses fig.show and does not halt program
         cmap
-            Colormap of the `map` types
+            Colormap for the `map` types
         color
             Color of the line for `ts` types
         folder
@@ -334,7 +338,11 @@ class Clim(_Procedure, object):
         if self._type == PlotType.TS:
             fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
             if cmap is not None:
-                raise TypeError('cmap parameter is not valid to plot a time series climatology')
+                raise TypeError('`cmap` parameter is not valid to plot a time series climatology')
+            if levels is not None:
+                raise TypeError('`levels` parameter is not valid to plot a time series climatology')
+            if ticks is not None:
+                raise TypeError('`ticks` parameter is not valid to plot a time series climatology')
             ax = fig.add_subplot()
             _plot_ts(
                 time=self.time.values,
@@ -346,7 +354,7 @@ class Clim(_Procedure, object):
                 xtickslabels=[x for x in self.time.values[::1]],
             )
             fig.suptitle(
-                f'Time series of {self.var} ({region2str(self.region)})',
+                f'Climatology time series of {self.var} ({region2str(self.region)})',
                 fontweight='bold'
             )
         elif self._type == PlotType.MAP:
@@ -366,7 +374,7 @@ class Clim(_Procedure, object):
                 ticks=ticks
             )
             fig.suptitle(
-                f'Map of {self.var} ({region2str(self.region)})',
+                f'Climatology map of {self.var} ({region2str(self.region)})',
                 fontweight='bold'
             )
         else:

@@ -1,5 +1,5 @@
 import os
-from typing import Tuple, Optional, Type, Any, cast, Sequence, Literal
+from typing import Tuple, Optional, Type, Any, cast, Sequence, Literal, Union
 
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
@@ -327,7 +327,13 @@ class Anom(_Procedure):
         cmap: Optional[str] = None,
         color: Optional[Color] = None,
         folder: str = '.',
-        name: str = 'anomaly.png'
+        name: str = 'anomaly.png',
+        levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
+        ticks: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the anomaly map or time series
 
@@ -343,13 +349,17 @@ class Anom(_Procedure):
         year
             Requiered for plotting map anomalies
         cmap
-            Colormap of the `map` types
+            Colormap for the `map` types
         color
             Color of the line for `ts` types
         folder
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
+        levels
+            Levels for the anomaly map
+        ticks
+            Ticks for the anomaly map
 
         Returns
         -------
@@ -365,6 +375,10 @@ class Anom(_Procedure):
                 raise TypeError('`year` parameter is not valid to plot a time series anomaly')
             if cmap is not None:
                 raise TypeError('`cmap` parameter is not valid to plot a time series anomaly')
+            if levels is not None:
+                raise TypeError('`levels` parameter is not valid to plot a time series anomaly')
+            if ticks is not None:
+                raise TypeError('`ticks` parameter is not valid to plot a time series anomaly')
             ax = fig.add_subplot()
             _plot_ts(
                 time=self.time.values,
@@ -394,6 +408,8 @@ class Anom(_Procedure):
                 fig=fig,
                 ax=ax,
                 cmap=(cmap if cmap is not None else 'jet'),
+                levels=levels,
+                ticks=ticks,
             )
             fig.suptitle(
                 f'Map of {self.var} ({region2str(self.region)})',

@@ -1,3 +1,5 @@
+# mypy: ignore-errors
+
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.ticker import MaxNLocator
@@ -280,8 +282,8 @@ predictand_region = Region(
 )
 
 
-predictor = Dataset(PREDICTOR_NAME, dir=DATASET_DIR).open(PREDICTOR_VAR).slice(predictor_region, skip=3)
-predictand = Dataset(PREDICTAND_NAME, dir=DATASET_DIR).open(PREDICTAND_VAR).slice(predictand_region, skip=3)
+predictor = Dataset(PREDICTOR_NAME, folder=DATASET_DIR).open(PREDICTOR_VAR).slice(predictor_region, skip=3)
+predictand = Dataset(PREDICTAND_NAME, folder=DATASET_DIR).open(PREDICTAND_VAR).slice(predictand_region, skip=3)
 
 predictor_ppcessed = Preprocess(predictor)
 predictand_ppcessed = Preprocess(predictand)
