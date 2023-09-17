@@ -485,7 +485,7 @@ class Crossvalidation(_Procedure):
         if self._dsy.region.lon0 < self._dsy.region.lonf:
             y_xlim = sorted((self._dsy.lon.values[0], self._dsy.lon.values[-1]))
         else:
-            y_xlim = sorted((self._dsy.lon.values[0] - 180, self._dsy.lon.values[-1] + 180))
+            y_xlim = [self._dsy.region.lon0 - 180, self._dsy.region.lonf + 180]
         _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim)
 
         d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
@@ -500,7 +500,7 @@ class Crossvalidation(_Procedure):
         if self._dsz.region.lon0 < self._dsz.region.lonf:
             z_xlim = sorted((self._dsz.lon.values[0], self._dsz.lon.values[-1]))
         else:
-            z_xlim = sorted((self._dsz.lon.values[0] - 180, self._dsz.lon.values[-1] + 180))
+            z_xlim = [self._dsz.region.lon0 - 180, self._dsz.region.lonf + 180]
         _plot_map(
             d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim
@@ -810,7 +810,7 @@ def _plot_crossvalidation_default(
     if cross._dsz.region.lon0 < cross._dsz.region.lonf:
         xlim = sorted((cross._dsz.lon.values[0], cross._dsz.lon.values[-1]))
     else:
-        xlim = sorted((cross._dsz.lon.values[0] - 180, cross._dsz.lon.values[-1] + 180))
+        xlim = [cross._dsz.region.lon0 - 180, cross._dsz.region.lonf + 180]
     _plot_map(
         d, cross._dsz.lat, cross._dsz.lon, fig, axs[0],
         'Correlation in space between z and zhat',

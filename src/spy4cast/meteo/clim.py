@@ -366,7 +366,7 @@ class Clim(_Procedure, object):
             if self.region.lon0 < self.region.lonf:
                 xlim = sorted((self.lon.values[0], self.lon.values[-1]))
             else:
-                xlim = sorted((self.lon.values[0] - 180, self.lon.values[-1] + 180))
+                xlim = [self.region.lon0 - 180, self.region.lonf + 180]
             _plot_map(
                 arr=self.data.values,
                 lat=self.lat,

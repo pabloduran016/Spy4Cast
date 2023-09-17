@@ -347,7 +347,7 @@ class Validation(_Procedure):
         if self._validating_dsy.region.lon0 < self._validating_dsy.region.lonf:
             y_xlim = sorted((self._validating_dsy.lon.values[0], self._validating_dsy.lon.values[-1]))
         else:
-            y_xlim = sorted((self._validating_dsy.lon.values[0] - 180, self._validating_dsy.lon.values[-1] + 180))
+            y_xlim = [self._validating_dsy.region.lon0 - 180, self._validating_dsy.region.lonf + 180]
         _plot_map(d0[yindex], self._validating_dsy.lat, self._validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim)
 
         d1 = self.zhat.transpose().reshape((nts, nzlat, nzlon))
@@ -362,7 +362,7 @@ class Validation(_Procedure):
         if self._validating_dsz.region.lon0 < self._validating_dsz.region.lonf:
             z_xlim = sorted((self._validating_dsz.lon.values[0], self._validating_dsz.lon.values[-1]))
         else:
-            z_xlim = sorted((self._validating_dsz.lon.values[0] - 180, self._validating_dsz.lon.values[-1] + 180))
+            z_xlim = [self._validating_dsz.region.lon0 - 180, self._validating_dsz.region.lonf + 180]
         _plot_map(
             d1[zindex], self._validating_dsz.lat, self._validating_dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim,
@@ -436,7 +436,7 @@ def _plot_validation_default(
     if validation._validating_dsz.region.lon0 < validation._validating_dsz.region.lonf:
         z_xlim = sorted((validation._validating_dsz.lon.values[0], validation._validating_dsz.lon.values[-1]))
     else:
-        z_xlim = sorted((validation._validating_dsz.lon.values[0] - 180, validation._validating_dsz.lon.values[-1] + 180))
+        z_xlim = [validation._validating_dsz.region.lon0 - 180, validation._validating_dsz.region.lonf + 180]
     _plot_map(
         arr=validation.r_z_zhat_s_accumulated_modes[-1, :].reshape((nlat, nlon)),
         lat=validation.validating_dsz.lat,

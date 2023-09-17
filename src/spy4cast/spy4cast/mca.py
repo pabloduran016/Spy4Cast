@@ -414,7 +414,7 @@ class MCA(_Procedure):
             if region.lon0 < region.lonf:
                 xlim = sorted((lons.values[0], lons.values[-1]))
             else:
-                xlim = sorted((lons.values[0] - 180, lons.values[-1] + 180))
+                xlim = [region.lon0 - 180, region.lonf + 180]
             ylim = sorted((lats.values[-1], lats.values[0]))
 
             current_axes = axs[3 * (i + 1):3 * (i + 1) + 3]
