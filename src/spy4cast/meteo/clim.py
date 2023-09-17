@@ -363,6 +363,10 @@ class Clim(_Procedure, object):
             if color is not None:
                 raise TypeError('Color parameter is not valid to plot a map climatology')
             ax = fig.add_subplot(projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
+            if self.region.lon0 < self.region.lonf:
+                xlim = sorted((self.lon.values[0], self.lon.values[-1]))
+            else:
+                xlim = sorted((self.lon.values[0] - 180, self.lon.values[-1] + 180))
             _plot_map(
                 arr=self.data.values,
                 lat=self.lat,
@@ -371,7 +375,8 @@ class Clim(_Procedure, object):
                 ax=ax,
                 cmap=(cmap if cmap is not None else 'jet'),
                 levels=levels,
-                ticks=ticks
+                ticks=ticks,
+                xlim=xlim,
             )
             fig.suptitle(
                 f'Climatology map of {self.var} ({region2str(self.region)})',

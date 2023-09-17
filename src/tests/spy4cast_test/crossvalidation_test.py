@@ -60,8 +60,6 @@ class CrossvalidationTest(BaseTestCase):
             'suy_sig',
             'suz_sig',
 
-            'psi_accumulated_modes',
-            'psi_separated_modes',
             'alpha',
         )
         self.assertEqual(var_names, self.cross.var_names)

@@ -75,10 +75,6 @@ class Crossvalidation(_Procedure):
             Correlation score betweeen u and v for each mode where significative
         p_uv : npt.NDArray[float32]
             P value of ruv
-        psi_separated_modes : npt.NDArray[np.float32]
-            Skill for each individual mode
-        psi_accumulated_modes : npt.NDArray[np.float32]
-            Skill for n modes (1, 1->2, ..., 1->nm)
         suy : npt.NDArray[np.float32]
             Correlation in space of the predictor with the singular vector. Dimension: y_space x time x nm
         suz : npt.NDArray[np.float32]
@@ -486,7 +482,11 @@ class Crossvalidation(_Procedure):
 
         d0 = self._dsy.data.transpose().reshape((nts, nylat, nylon))
 
-        _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks)
+        if self._dsy.region.lon0 < self._dsy.region.lonf:
+            y_xlim = sorted((self._dsy.lon.values[0], self._dsy.lon.values[-1]))
+        else:
+            y_xlim = sorted((self._dsy.lon.values[0] - 180, self._dsy.lon.values[-1] + 180))
+        _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim)
 
         d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
         d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
@@ -497,13 +497,17 @@ class Crossvalidation(_Procedure):
         bound = max(abs(_m - _std), abs(_m + _std))
         levels = np.linspace(-bound, bound, n)
 
+        if self._dsz.region.lon0 < self._dsz.region.lonf:
+            z_xlim = sorted((self._dsz.lon.values[0], self._dsz.lon.values[-1]))
+        else:
+            z_xlim = sorted((self._dsz.lon.values[0] - 180, self._dsz.lon.values[-1] + 180))
         _plot_map(
             d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
-            cmap=cmap, levels=levels, ticks=zticks
+            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim
         )
         _plot_map(
             d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
-            cmap=cmap, levels=levels, ticks=zticks
+            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim
         )
 
         fig.suptitle(
@@ -803,12 +807,17 @@ def _plot_crossvalidation_default(
     _std = np.nanstd(d)
     mx = _mean + _std
     mn = _mean - _std
+    if cross._dsz.region.lon0 < cross._dsz.region.lonf:
+        xlim = sorted((cross._dsz.lon.values[0], cross._dsz.lon.values[-1]))
+    else:
+        xlim = sorted((cross._dsz.lon.values[0] - 180, cross._dsz.lon.values[-1] + 180))
     _plot_map(
         d, cross._dsz.lat, cross._dsz.lon, fig, axs[0],
         'Correlation in space between z and zhat',
         cmap=cmap,
         ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None and not np.isnan(_mean) and not np.isnan(_std) else map_ticks),
         levels=map_levels,
+        xlim=xlim,
     )
     hatches = d.copy()
     hatches[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (

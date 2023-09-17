@@ -401,6 +401,10 @@ class Anom(_Procedure):
             if year is None:
                 raise TypeError(f'`Must provide argument `year` to plot anom')
             ax = fig.add_subplot(projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
+            if self.region.lon0 < self.region.lonf:
+                xlim = sorted((self.lon.values[0], self.lon.values[-1]))
+            else:
+                xlim = sorted((self.lon.values[0] - 180, self.lon.values[-1] + 180))
             _plot_map(
                 arr=self.data.sel({self._time_key: year}).values,
                 lat=self.lat,
@@ -410,6 +414,7 @@ class Anom(_Procedure):
                 cmap=(cmap if cmap is not None else 'jet'),
                 levels=levels,
                 ticks=ticks,
+                xlim=xlim,
             )
             fig.suptitle(
                 f'Anomaly map of {self.var} ({region2str(self.region)})',

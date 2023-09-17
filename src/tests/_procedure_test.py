@@ -59,7 +59,7 @@ class ProcedureTest(BaseTestCase):
 
     def test__apply_flags_to_fig(self) -> None:
         fig = plt.figure()
-        path = "./plot.png"
+        path = "./plot__.png"
         if os.path.exists(path):
             os.remove(path)
         self.assertFalse(os.path.exists(path))
@@ -68,7 +68,7 @@ class ProcedureTest(BaseTestCase):
         plt.close(fig)
 
         fig = plt.figure()
-        path = "./plot.png"
+        path = "./plot__.png"
         self.assertFalse(os.path.exists(path))
         _apply_flags_to_fig(fig, path, save_fig=True, show_plot=True, halt_program=False)
         self.assertTrue(os.path.exists(path))
@@ -76,7 +76,7 @@ class ProcedureTest(BaseTestCase):
         plt.close(fig)
 
         fig = plt.figure()
-        path = "./plots/plot.png"
+        path = "./plots__/plot__.png"
         self.assertFalse(os.path.exists(path))
         _apply_flags_to_fig(fig, path, save_fig=True, show_plot=True, halt_program=True, _block=False)
         self.assertTrue(os.path.exists(path))

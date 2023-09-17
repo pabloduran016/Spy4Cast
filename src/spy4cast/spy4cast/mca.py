@@ -402,16 +402,19 @@ class MCA(_Procedure):
         # suy[suy == 0.0] = np.nan
 
         n = 20
-        for i, (var_name, su, ru, lats, lons, cm, ticks, levels) in enumerate((
-                ('SUY', self.SUY, self.RUY_sig, self._dsy.lat, self._dsy.lon, 'bwr', suy_ticks, suy_levels),
-                ('SUZ', self.SUZ, self.RUZ_sig, self._dsz.lat, self._dsz.lon, cmap, suz_ticks, suz_levels)
+        for i, (var_name, su, ru, lats, lons, cm, ticks, levels, region) in enumerate((
+                ('SUY', self.SUY, self.RUY_sig, self._dsy.lat, self._dsy.lon, 'bwr', suy_ticks, suy_levels, self._dsy.region),
+                ('SUZ', self.SUZ, self.RUZ_sig, self._dsz.lat, self._dsz.lon, cmap, suz_ticks, suz_levels, self._dsz.region)
         )):
             if levels is None:
                 _std = np.nanstd(su)
                 _m = np.nanmean(su)
                 bound = max(abs(_m - _std), abs(_m + _std))
                 levels = np.linspace(-bound, bound, n)
-            xlim = sorted((lons.values[0], lons.values[-1]))
+            if region.lon0 < region.lonf:
+                xlim = sorted((lons.values[0], lons.values[-1]))
+            else:
+                xlim = sorted((lons.values[0] - 180, lons.values[-1] + 180))
             ylim = sorted((lats.values[-1], lats.values[0]))
 
             current_axes = axs[3 * (i + 1):3 * (i + 1) + 3]

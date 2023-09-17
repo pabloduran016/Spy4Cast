@@ -297,10 +297,14 @@ class Preprocess(_Procedure):
         fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
         ax = fig.add_subplot(projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
 
+        if self.region.lon0 < self.region.lonf:
+            xlim = sorted((self.lon.values[0], self.lon.values[-1]))
+        else:
+            xlim = sorted((self.lon.values[0] - 180, self.lon.values[-1] + 180))
         _plot_map(
             plotable[index], self.lat, self.lon, fig, ax,
             f'Year {self.time[index].values}',
-            cmap=cmap,
+            cmap=cmap, xlim=xlim,
         )
         fig.suptitle(f'{self.var}: {region2str(self.region)}', fontweight='bold')
 
