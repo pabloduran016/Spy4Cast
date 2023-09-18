@@ -40,7 +40,7 @@ CROSS_PREFIX = 'cross_'
 CROSS_PLOT_NAME = 'cross.png'
 
 LOAD_PREPROCESSED = True
-LOAD_MCA = True
+LOAD_MCA = False
 LOAD_CROSS = True
 
 if LOAD_PREPROCESSED:

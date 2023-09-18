@@ -19,6 +19,7 @@ from .preprocess import Preprocess
 __all__ = [
     'MCA',
     'index_regression',
+    'calculate_psi',
 ]
 
 from ..land_array import LandArray
@@ -50,6 +51,8 @@ class MCA(_Procedure):
     ----------
         RUY : npt.NDArray[np.float32]
             Regression of the predictor field. Dimension: y_space x nm
+        psi : npt.NDArray[np.float32]
+            Regression coefficient of the MCA model, so that ZHAT = PSI * Y
         RUY_sig : npt.NDArray[np.float32]
             Regression of the predictor field where pvalue is smaller than alpha. Dimension: y_space x nm
         SUY : npt.NDArray[np.float32]
@@ -79,6 +82,7 @@ class MCA(_Procedure):
     """
     # TODO: Document MCA fields
     RUY: npt.NDArray[np.float32]
+    psi: npt.NDArray[np.float32]
     RUY_sig: npt.NDArray[np.float32]
     SUY: npt.NDArray[np.float32]
     SUY_sig: npt.NDArray[np.float32]
@@ -97,6 +101,7 @@ class MCA(_Procedure):
     def var_names(self) -> Tuple[str, ...]:
         """Returns the variables contained in the object (RUY, SUY, scf, ...)"""
         return (
+            'psi',
             'RUY',
             'RUY_sig',
             'SUY',
@@ -289,6 +294,7 @@ class MCA(_Procedure):
                 self.SUZ[:, i],
                 self.SUZ_sig[:, i]
             ) = index_regression(z_index_regression, self.Us[i, :], alpha, sig, montecarlo_iterations)
+        self.psi = calculate_psi(self.SUY, self.Us, z.values, nt, nm, ny)
 
     def plot(
         self,
@@ -590,3 +596,17 @@ def pearsonr_2d(y: npt.NDArray[np.float_], x: npt.NDArray[np.float_]) -> npt.NDA
     lower = np.sqrt(np.sum(np.power(x - np.mean(x), 2)) * np.sum(np.power(y - np.mean(y, axis=1)[:, None], 2), axis=1))
     rho: npt.NDArray[np.float_] = upper / lower
     return rho
+
+
+def calculate_psi(
+    suy: npt.NDArray[np.float32],
+    us: npt.NDArray[np.float32],
+    z: npt.NDArray[np.float32],
+    nt: int,
+    nm: int,
+    ny: int,
+) -> npt.NDArray[np.float32]:
+    # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
+    return cast(
+        npt.NDArray[np.float32],
+        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt * nm / ny)

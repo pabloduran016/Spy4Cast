@@ -11,7 +11,7 @@ from matplotlib.ticker import MaxNLocator
 from scipy import stats
 
 from . import MCA
-from .mca import index_regression
+from .mca import index_regression, calculate_psi
 from .. import Region
 from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
@@ -23,7 +23,6 @@ import xarray as xr
 
 __all__ = [
     'Crossvalidation',
-    'calculate_psi',
 ]
 
 
@@ -556,20 +555,6 @@ class Crossvalidation(_Procedure):
         self._dsz = dsz
         self._dsy = dsy
         return self
-
-
-def calculate_psi(
-    suy: npt.NDArray[np.float32],
-    us: npt.NDArray[np.float32],
-    z: npt.NDArray[np.float32],
-    nt: int,
-    nm: int,
-    ny: int,
-) -> npt.NDArray[np.float32]:
-    # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
-    return cast(
-        npt.NDArray[np.float32],
-        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt * nm / ny)
 
 
 def _plot_crossvalidation_elena(
