@@ -49,10 +49,10 @@ class MCA(_Procedure):
 
     Attributes
     ----------
-        RUY : npt.NDArray[np.float32]
-            Regression of the predictor field. Dimension: y_space x nm
         psi : npt.NDArray[np.float32]
             Regression coefficient of the MCA model, so that ZHAT = PSI * Y
+        RUY : npt.NDArray[np.float32]
+            Regression of the predictor field. Dimension: y_space x nm
         RUY_sig : npt.NDArray[np.float32]
             Regression of the predictor field where pvalue is smaller than alpha. Dimension: y_space x nm
         SUY : npt.NDArray[np.float32]
@@ -82,7 +82,6 @@ class MCA(_Procedure):
     """
     # TODO: Document MCA fields
     RUY: npt.NDArray[np.float32]
-    psi: npt.NDArray[np.float32]
     RUY_sig: npt.NDArray[np.float32]
     SUY: npt.NDArray[np.float32]
     SUY_sig: npt.NDArray[np.float32]
@@ -96,6 +95,7 @@ class MCA(_Procedure):
     Vs: npt.NDArray[np.float32]
     scf: npt.NDArray[np.float32]
     alpha: float
+    psi: npt.NDArray[np.float32]
 
     @property
     def var_names(self) -> Tuple[str, ...]:
@@ -549,7 +549,7 @@ def index_regression(
             Significative regression map
     """
     ns, nt = data.shape
-    reg = data.values.dot(index) / (nt - 1)
+    reg = data.values.dot(index) / nt
     cor = np.zeros(ns, dtype=np.float32)
     cor[data.land_mask] = np.nan
     pvalue = np.zeros(ns, dtype=np.float32)
@@ -609,4 +609,4 @@ def calculate_psi(
     # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
     return cast(
         npt.NDArray[np.float32],
-        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt * nm / ny)
+        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nm / ny)
