@@ -120,7 +120,6 @@ class Validation(_Procedure):
             self._training_mca.SUY[~common_y_land_mask, :],
             self._training_mca.Us[:, :],
             self._training_mca._dsz.data[~common_z_land_mask, :],
-            self._training_mca._dsy.time.shape[0],
             self._training_mca.Us.shape[0],
             self._training_mca._dsy.data.shape[0]
         ).reshape((~common_y_land_mask).sum() * (~common_z_land_mask).sum())

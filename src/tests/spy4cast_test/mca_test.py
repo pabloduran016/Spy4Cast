@@ -71,8 +71,7 @@ class MCATest(BaseTestCase):
         _ = MCA.from_land_arrays(self.z_preprocessed.land_data, self.z_preprocessed.land_data, 3, .1)
 
     def test__mca(self) -> None:
-        _ = MCA(self.y_preprocessed, self.z_preprocessed, 3, .1,
-                dsy_index_regression=self.y_preprocessed, dsz_index_regression=self.z_preprocessed)
+        _ = MCA(self.y_preprocessed, self.z_preprocessed, 3, .1,)
 
     def test_plot(self) -> None:
         with self.assertRaises(TypeError):

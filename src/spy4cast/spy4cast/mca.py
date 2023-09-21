@@ -40,10 +40,6 @@ class MCA(_Procedure):
             Significance level
         sig : {'monte-carlo', 'test-t'}
             Signification technique: monte-carlo or test-t
-        dsy_index_regression : optional, Preprocess
-            Predictor to send to index regression. Default is the same as y
-        dsz_index_regression : optional, Preprocess
-            Predictand to send to index regression. Default is the same as z
         montecarlo_iterations : optional, int
             Number of iterations for monte-carlo sig
 
@@ -125,8 +121,6 @@ class MCA(_Procedure):
         nm: int,
         alpha: float,
         sig: str = 'test-t',
-        dsy_index_regression: Optional[Preprocess] = None,
-        dsz_index_regression: Optional[Preprocess] = None,
         montecarlo_iterations: Optional[int] = None,
     ):
         self._dsz = dsz
@@ -147,10 +141,7 @@ class MCA(_Procedure):
                 f'{len(dsy.time)}'
             )
 
-        z_index_regression = dsz_index_regression.land_data if dsz_index_regression is not None else None
-        y_index_regression = dsy_index_regression.land_data if dsy_index_regression is not None else None
-
-        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, z_index_regression, y_index_regression, montecarlo_iterations)
+        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations)
         debugprint(f'       Took: {time_to_here():.03f} seconds')
 
         # first you calculate the covariance matrix
@@ -174,8 +165,6 @@ class MCA(_Procedure):
         nm: int,
         alpha: float,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
-        z_index_regression: Optional[npt.NDArray[np.float32]] = None,
-        y_index_regression: Optional[npt.NDArray[np.float32]] = None,
         montecarlo_iterations: Optional[int] = None,
     ) -> 'MCA':
         """
@@ -193,10 +182,6 @@ class MCA(_Procedure):
                Significance level
             sig : 'monte-carlo or 'test-t'
                 Signification technique: monte-carlo or test-t
-            z_index_regression : optional, array-like
-                Predictand (space x time) to send to index regression. Default is the same as z
-            y_index_regression : optional, array-like
-                Predictor (space x time) to send to index regression. Default is the same as y
             montecarlo_iterations : optional, int
                 Number of iterations for monte-carlo sig
 
@@ -210,10 +195,7 @@ class MCA(_Procedure):
             MCA
         """
         m = cls.__new__(MCA)
-        m._mca(z, y, nm, alpha, sig,
-               LandArray(z_index_regression) if z_index_regression is not None else z_index_regression,
-               LandArray(y_index_regression) if y_index_regression is not None else y_index_regression,
-               montecarlo_iterations)
+        m._mca(z, y, nm, alpha, sig, montecarlo_iterations)
         return m
 
     def _mca(
@@ -223,15 +205,8 @@ class MCA(_Procedure):
         nm: int,
         alpha: float,
         sig: str,
-        z_index_regression: Optional[LandArray] = None,
-        y_index_regression: Optional[LandArray] = None,
         montecarlo_iterations: Optional[int] = None
     ) -> None:
-        if y_index_regression is None:
-            y_index_regression = y
-        if z_index_regression is None:
-            z_index_regression = z
-
         nz, nt = z.shape
         ny, nt = y.shape
 
@@ -285,7 +260,7 @@ class MCA(_Procedure):
                 self.RUY_sig[:, i],
                 self.SUY[:, i],
                 self.SUY_sig[:, i]
-            ) = index_regression(y_index_regression, self.Us[i, :], alpha, sig, montecarlo_iterations)
+            ) = index_regression(y, self.Us[i, :], alpha, sig, montecarlo_iterations)
 
             (
                 self.RUZ[:, i],
@@ -293,8 +268,8 @@ class MCA(_Procedure):
                 self.RUZ_sig[:, i],
                 self.SUZ[:, i],
                 self.SUZ_sig[:, i]
-            ) = index_regression(z_index_regression, self.Us[i, :], alpha, sig, montecarlo_iterations)
-        self.psi = calculate_psi(self.SUY, self.Us, z.values, nt, nm, ny)
+            ) = index_regression(z, self.Us[i, :], alpha, sig, montecarlo_iterations)
+        self.psi = calculate_psi(self.SUY, self.Us, z.values, nm, ny)
 
     def plot(
         self,
@@ -602,7 +577,6 @@ def calculate_psi(
     suy: npt.NDArray[np.float32],
     us: npt.NDArray[np.float32],
     z: npt.NDArray[np.float32],
-    nt: int,
     nm: int,
     ny: int,
 ) -> npt.NDArray[np.float32]:

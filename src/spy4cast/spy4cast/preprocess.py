@@ -23,24 +23,16 @@ __all__ = [
 
 
 class Preprocess(_Procedure):
-    """Maximum covariance analysis between y (predictor) and Z (predictand)
+    """Preprocess variables for MCA and Crossvalidation: anomaly and reshaping
 
     Parameters
     ----------
-        dsy : Preprocess
-            predictor
-        dsz : Preprocess
-            Predictand
-        nm : int
-            Number of modes
-        alpha : float
-            Significance level
-        sig : {'monte-carlo', 'test-t'}
-            Signification technique: monte-carlo or test-t
-        dsy_index_regression : optional, Preprocess
-            Predictor to send to index regression. Default is the same as y
-        dsz_index_regression : optional, Preprocess
-            Predictand to send to index regression. Default is the same as z
+        ds : Dataset
+            Dataset to preprocess
+        order : optional, int
+            If specified as well as period, a butterworth filter with those parameters will be applied
+        period : optional, float
+            If specified as well as period, a butterworth filter with those parameters will be applied
     """
     _time: xr.DataArray
     _lat: xr.DataArray
@@ -60,7 +52,7 @@ class Preprocess(_Procedure):
         self,
         ds: Dataset,
         order: Optional[int] = None,
-        period: Optional[int] = None
+        period: Optional[float] = None
     ):
         _debuginfo(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
