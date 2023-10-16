@@ -359,9 +359,14 @@ class MCA(_Procedure):
         ax: plt.Axes
         for i, ax in enumerate(axs[:3]):
             # # ax.margins(0)
+            us = self.Us[i, :]
+            vs = self.Vs[i, :]
+            if signs is not None and signs[i]:
+                us *= -1
+                vs *= -1
             _plot_ts(
                 time=self._dsy.time.values,
-                arr=self.Us[i, :],
+                arr=us,
                 ax=ax,
                 title=f'Us Vs mode {i + 1}',
                 color='green',
@@ -369,7 +374,7 @@ class MCA(_Procedure):
             )
             _plot_ts(
                 time=self._dsz.time.values,
-                arr=self.Vs[i, :],
+                arr=vs,
                 ax=ax,
                 title=None,
                 color='blue',
