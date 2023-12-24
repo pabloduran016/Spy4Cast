@@ -98,8 +98,8 @@ def _plot_map(
     levels: Optional[
         Union[npt.NDArray[np.float32], Sequence[float]]
     ] = None,
-    xlim: Optional[Sequence[int]] = None,
-    ylim: Optional[Sequence[int]] = None,
+    xlim: Optional[Sequence[float]] = None,
+    ylim: Optional[Sequence[float]] = None,
     cmap: Optional[str] = None,
     ticks: Optional[
         Union[npt.NDArray[np.float32], Sequence[float]]

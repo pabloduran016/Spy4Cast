@@ -210,7 +210,9 @@ class MCA(_Procedure):
         nz, nt = z.shape
         ny, nt = y.shape
 
-        c = np.dot(signal.detrend(y.not_land_values), np.transpose(z.not_land_values))
+        y.values[~y.land_mask] = signal.detrend(y.not_land_values)
+
+        c = np.dot(y.not_land_values, np.transpose(z.not_land_values))
         if type(c) == np.ma.MaskedArray:
             c = c.data
 
@@ -269,7 +271,7 @@ class MCA(_Procedure):
                 self.SUZ[:, i],
                 self.SUZ_sig[:, i]
             ) = index_regression(z, self.Us[i, :], alpha, sig, montecarlo_iterations)
-        self.psi = calculate_psi(self.SUY, self.Us, z.values, nm, ny)
+        self.psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, nm)
 
     def plot(
         self,
@@ -293,6 +295,7 @@ class MCA(_Procedure):
         suz_levels: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
+        figsize: Optional[Tuple[float, float]] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the MCA results
 
@@ -322,6 +325,8 @@ class MCA(_Procedure):
             Levels for the maps of the SUY output
         suz_levels
             Levels for the maps of the SUZ output
+        figsize
+            Set figure size. See `plt.figure`
 
         Returns
         -------
@@ -341,7 +346,8 @@ class MCA(_Procedure):
         nrows = 3
         ncols = 3
 
-        fig: plt.Figure = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+        figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is not None else figsize
+        fig: plt.Figure = plt.figure(figsize=figsize)
 
         axs = (
             fig.add_subplot(nrows, ncols, 1),
@@ -582,10 +588,11 @@ def calculate_psi(
     suy: npt.NDArray[np.float32],
     us: npt.NDArray[np.float32],
     z: npt.NDArray[np.float32],
-    nm: int,
+    nt: int,
     ny: int,
+    nm: int,
 ) -> npt.NDArray[np.float32]:
-    # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
+    # (((SUY * inv(Us * Us')) * Us) * Z') / (ny * nm**2)
     return cast(
         npt.NDArray[np.float32],
-        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nm / ny)
+        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) / ny)

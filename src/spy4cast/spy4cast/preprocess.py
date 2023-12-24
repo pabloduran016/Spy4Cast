@@ -251,7 +251,8 @@ class Preprocess(_Procedure):
         selected_year: Optional[int] = None,
         cmap: str = 'bwr',
         folder: Optional[str] = None,
-        name: Optional[str] = None
+        name: Optional[str] = None,
+        figsize: Optional[Tuple[float, float]] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the preprocessed data for spy4cast methodologes
 
@@ -270,6 +271,8 @@ class Preprocess(_Procedure):
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
+        figsize
+            Set figure size. See `plt.figure`
 
         Returns
         -------
@@ -286,7 +289,8 @@ class Preprocess(_Procedure):
         index = 0 if selected_year is None \
             else _get_index_from_sy(self.time, selected_year)
 
-        fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+        figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+        fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
 
         if self.region.lon0 < self.region.lonf:

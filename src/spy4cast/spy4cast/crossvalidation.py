@@ -306,8 +306,8 @@ class Crossvalidation(_Procedure):
         zhat_accumulated_modes[:, z2.land_mask] = np.nan
 
         for mode in range(nm):
-            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, mode:mode + 1], mca_out.Us[mode:mode + 1, :], z2.not_land_values, 1, ny).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
-            psi_accumulated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, :mode + 1], mca_out.Us[:mode + 1, :], z2.not_land_values, 1, ny).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
+            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, mode:mode + 1], mca_out.Us[mode:mode + 1, :], z2.not_land_values, nt - 1, ny, nm).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
+            psi_accumulated_modes[mode, ~np.isnan(psi_accumulated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, :mode + 1], mca_out.Us[:mode + 1, :], z2.not_land_values, nt - 1, ny, mode + 1).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
 
             zhat_separated_modes[mode, ~z2.land_mask] = np.dot(np.transpose(y.not_land_values[:, year]), psi_separated_modes[mode, ~y2.land_mask, :][:, ~z2.land_mask])
             zhat_accumulated_modes[mode, ~z2.land_mask] = np.dot(np.transpose(y.not_land_values[:, year]), psi_accumulated_modes[mode, ~y2.land_mask, :][:, ~z2.land_mask])
@@ -343,7 +343,8 @@ class Crossvalidation(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         version: Literal["default", "elena"] = "default",
-        mca: Optional[MCA] = None
+        mca: Optional[MCA] = None,
+        figsize: Optional[Tuple[float, float]] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the Crossvalidation results
 
@@ -370,6 +371,8 @@ class Crossvalidation(_Procedure):
             Select version from: `default` and `elena`
         mca
             MCA results for version `elena`
+        figsize
+            Set figure size. See `plt.figure`
 
         Returns
         -------
@@ -386,7 +389,7 @@ class Crossvalidation(_Procedure):
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
                 cmap = 'bwr'
-            fig, axs = _plot_crossvalidation_default(self, cmap, map_ticks, map_levels)
+            fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels)
         elif version == "elena":
             if mca is None:
                 raise TypeError("Expected argument `mca` for version `elena`")
@@ -396,7 +399,7 @@ class Crossvalidation(_Procedure):
                 raise TypeError("Unexpected argument `map_levels` for version `elena`")
             if cmap is not None:
                 raise TypeError("Unexpected argument `cmap` for version `elena`")
-            fig, axs = _plot_crossvalidation_elena(self, mca)
+            fig, axs = _plot_crossvalidation_elena(self, figsize, mca)
         else:
             raise ValueError(f"Version can only be one of: `elena`, `default`")
 
@@ -431,6 +434,7 @@ class Crossvalidation(_Procedure):
         zticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
+        figsize: Optional[Tuple[float, float]] = None,
     ) -> Tuple[plt.Figure, Tuple[plt.Axes, plt.Axes, plt.Axes]]:
         """Plots the map of Zhat
 
@@ -455,6 +459,8 @@ class Crossvalidation(_Procedure):
             Ticks for the y map
         zticks
             Ticks for the z map
+        figsize
+            Set figure size. See `plt.figure`
 
         Returns
         -------
@@ -469,8 +475,9 @@ class Crossvalidation(_Procedure):
 
         height = nylat + nzlat + nzlat
         width = max(nzlon, nylon)
-
-        fig = plt.figure(figsize=_calculate_figsize(height / width, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+        
+        figsize = _calculate_figsize(height / width, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+        fig = plt.figure(figsize=figsize)
         ax0 = plt.subplot(311, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180))
         ax1 = plt.subplot(312, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180))
         ax2 = plt.subplot(313, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180))
@@ -559,9 +566,11 @@ class Crossvalidation(_Procedure):
 
 def _plot_crossvalidation_elena(
     cross: Crossvalidation,
+    figsize: Optional[Tuple[float, float]],
     mca: MCA,
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
-    fig = plt.figure(figsize=(24, 8.5))
+    figsize = (24, 8.5) if figsize is None else figsize
+    fig = plt.figure(figsize=figsize)
     # fig = plt.figure(figsize=(28, 24))
 
     nm = cross.us.shape[0]
@@ -745,6 +754,7 @@ def _plot_crossvalidation_elena(
 
 def _plot_crossvalidation_default(
     cross: Crossvalidation,
+    figsize: Optional[Tuple[float, float]],
     cmap: str,
     map_ticks: Optional[
         Union[npt.NDArray[np.float32], Sequence[float]]
@@ -768,8 +778,8 @@ def _plot_crossvalidation_default(
     #    r_z_zhat_s    r_z_zhat_t
     #       scf           r_uv_1
     #     r_uv_1          r_uv_2
-
-    fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+    figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+    fig = plt.figure(figsize=figsize)
     nrows = 3
     ncols = 2
     axs = (

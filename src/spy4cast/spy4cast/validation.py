@@ -120,8 +120,9 @@ class Validation(_Procedure):
             self._training_mca.SUY[~common_y_land_mask, :],
             self._training_mca.Us[:, :],
             self._training_mca._dsz.data[~common_z_land_mask, :],
+            self._training_mca.Us.shape[1],
+            self._training_mca._dsy.data.shape[0],
             self._training_mca.Us.shape[0],
-            self._training_mca._dsy.data.shape[0]
         ).reshape((~common_y_land_mask).sum() * (~common_z_land_mask).sum())
 
         self.zhat[0, ~common_z_land_mask, :] = np.dot(
@@ -208,7 +209,8 @@ class Validation(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         version: Literal["default", "elena"] = "default",
-        mca: Optional[MCA] = None
+        mca: Optional[MCA] = None,
+        figsize: Optional[Tuple[float, float]] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the Crossvalidation results
 
@@ -233,6 +235,8 @@ class Validation(_Procedure):
             Select version from: `default` and `elena`
         mca
             MCA results for version `elena`
+        figsize
+            Set figure size. See `plt.figure`
 
         Returns
         -------
@@ -249,7 +253,7 @@ class Validation(_Procedure):
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
                 cmap = 'bwr'
-            fig, axs = _plot_validation_default(self, cmap, map_ticks)
+            fig, axs = _plot_validation_default(self, figsize, cmap, map_ticks)
         elif version == "elena":
             if mca is None:
                 raise TypeError("Expected argument `mca` for version `elena`")
@@ -257,7 +261,7 @@ class Validation(_Procedure):
                 raise TypeError("Unexpected argument `map_ticks` for version `elena`")
             if cmap is not None:
                 raise TypeError("Unexpected argument `cmap` for version `elena`")
-            fig, axs = _plot_validation_elena(self, mca)
+            fig, axs = _plot_validation_elena(self, figsize, mca)
         else:
             raise ValueError(f"Version can only be one of: `elena`, `default`")
 
@@ -293,6 +297,7 @@ class Validation(_Procedure):
         zticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
+        figsize: Optional[Tuple[float, float]] = None,
     ) -> Tuple[plt.Figure, Tuple[plt.Axes, plt.Axes, plt.Axes]]:
         """Plots the map of Zhat
 
@@ -317,6 +322,8 @@ class Validation(_Procedure):
             Ticks for the y map
         zticks
             Ticks for the z map
+        figsize
+            Set figure size. See `plt.figure`
 
         Returns
         -------
@@ -332,7 +339,8 @@ class Validation(_Procedure):
         height = nylat + nzlat + nzlat
         width = max(nzlon, nylon)
 
-        fig = plt.figure(figsize=_calculate_figsize(height / width, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+        figsize = _calculate_figsize(height / width, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+        fig = plt.figure(figsize=figsize)
         ax0 = plt.subplot(311, projection=ccrs.PlateCarree(0 if self.validating_dsy.region.lon0 < self.validating_dsy.region.lonf else 180))
         ax1 = plt.subplot(312, projection=ccrs.PlateCarree(0 if self.validating_dsz.region.lon0 < self.validating_dsz.region.lonf else 180))
         ax2 = plt.subplot(313, projection=ccrs.PlateCarree(0 if self.validating_dsz.region.lon0 < self.validating_dsz.region.lonf else 180))
@@ -399,6 +407,7 @@ class Validation(_Procedure):
 
 def _plot_validation_elena(
     validation: Validation,
+    figsize: Optional[Tuple[float, float]],
     mca: MCA,
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     raise NotImplementedError
@@ -406,6 +415,7 @@ def _plot_validation_elena(
 
 def _plot_validation_default(
     validation: Validation,
+    figsize: Optional[Tuple[float, float]],
     cmap: str,
     map_ticks: Optional[
         Union[npt.NDArray[np.float32], Sequence[float]]
@@ -429,7 +439,8 @@ def _plot_validation_default(
 
     nlat, nlon = len(validation.validating_dsz.lat), (len(validation.validating_dsz.lon))
 
-    fig: plt.Figure = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+    figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+    fig: plt.Figure = plt.figure(figsize=figsize)
 
     ax00 = fig.add_subplot(1, 2, 1, projection=ccrs.PlateCarree(0 if validation.validating_dsz.region.lon0 < validation.validating_dsz.region.lonf else 180))
     if validation._validating_dsz.region.lon0 < validation._validating_dsz.region.lonf:
@@ -443,7 +454,9 @@ def _plot_validation_default(
         fig=fig,
         ax=ax00,
         title='Correlation in space: z vs zhat',
-        xlim=z_xlim
+        xlim=z_xlim,
+        cmap=cmap,
+        ticks=map_ticks,
     )
 
     ax01 = fig.add_subplot(1, 2, 2)

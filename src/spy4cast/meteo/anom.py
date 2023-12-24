@@ -334,6 +334,7 @@ class Anom(_Procedure):
         ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
+        figsize: Optional[Tuple[float, float]] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the anomaly map or time series
 
@@ -360,6 +361,8 @@ class Anom(_Procedure):
             Levels for the anomaly map
         ticks
             Ticks for the anomaly map
+        figsize
+            Set figure size. See `plt.figure`
 
         Returns
         -------
@@ -370,7 +373,8 @@ class Anom(_Procedure):
             Tuple of axes in figure
         """
         if self._type == PlotType.TS:
-            fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+            figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is not None else figsize
+            fig = plt.figure(figsize=figsize)
             if year is not None:
                 raise TypeError('`year` parameter is not valid to plot a time series anomaly')
             if cmap is not None:
@@ -395,7 +399,8 @@ class Anom(_Procedure):
             )
         elif self._type == PlotType.MAP:
             nlat, nlon = len(self.lat), len(self.lon)
-            fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+            figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is not None else figsize
+            fig = plt.figure(figsize=figsize)
             if color is not None:
                 raise TypeError('`color` parameter is not valid to plot a map anomaly')
             if year is None:

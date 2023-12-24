@@ -302,6 +302,7 @@ class Clim(_Procedure, object):
         ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
+        figsize: Optional[Tuple[float, float]] = None,
     ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
         """Plot the climatology map or time series
 
@@ -326,6 +327,8 @@ class Clim(_Procedure, object):
             Levels for the climatology map
         ticks
             Ticks for the climatology map
+        figsize
+            Set figure size. See `plt.figure`
 
         Returns
         -------
@@ -336,7 +339,8 @@ class Clim(_Procedure, object):
             Tuple of axes in figure
         """
         if self._type == PlotType.TS:
-            fig = plt.figure(figsize=_calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+            figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is not None else figsize
+            fig = plt.figure(figsize=figsize)
             if cmap is not None:
                 raise TypeError('`cmap` parameter is not valid to plot a time series climatology')
             if levels is not None:
@@ -359,7 +363,8 @@ class Clim(_Procedure, object):
             )
         elif self._type == PlotType.MAP:
             nlat, nlon = len(self.lat), len(self.lon)
-            fig = plt.figure(figsize=_calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT))
+            figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is not None else figsize
+            fig = plt.figure(figsize=figsize)
             if color is not None:
                 raise TypeError('Color parameter is not valid to plot a map climatology')
             ax = fig.add_subplot(projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
