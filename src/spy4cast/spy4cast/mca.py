@@ -592,7 +592,12 @@ def calculate_psi(
     ny: int,
     nm: int,
 ) -> npt.NDArray[np.float32]:
-    # (((SUY * inv(Us * Us')) * Us) * Z') / (ny * nm**2)
+    # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
     return cast(
         npt.NDArray[np.float32],
-        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) / ny)
+        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt * nm / ny)
+    # (((SUY * inv(Us * Us')) * Us) * Z') / (ny * nm**2)
+    # return cast(
+    #     npt.NDArray[np.float32],
+    #     np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nm / ny) 
+
