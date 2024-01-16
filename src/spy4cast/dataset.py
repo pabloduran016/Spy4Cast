@@ -273,7 +273,7 @@ class Dataset:
             self._var = var
 
         self._detect_vars()
-        self._roll_lon()
+        # self._roll_lon()
 
         # Check if values are in Kelvin
         if 'units' in self._ds.variables[self.var].attrs and self._ds.variables[self.var].attrs['units'] == 'K':
@@ -294,7 +294,7 @@ class Dataset:
 
     def _roll_lon(self) -> None:
         """
-        Roll longitude if it iis from 0 to 360
+        Roll longitude if it is from 0 to 360
         """
         if self._ds[self._lon_key].max() > 180:
             self._ds = self._ds.assign_coords({
