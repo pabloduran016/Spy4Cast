@@ -317,7 +317,7 @@ class Crossvalidation(_Procedure):
         r_uv_sig = np.zeros(nm, dtype=np.float32)
         p_uv = np.zeros(nm, dtype=np.float32)
         for m in range(nm):
-            r_uv[m], p_uv[m], r_uv_sig[m], _, _ = index_regression(LandArray(mca_out.Us[m:m+1, :]), mca_out.Vs[m:m+1, :].T, alpha, sig, montecarlo_iterations)
+            r_uv[m], p_uv[m], r_uv_sig[m], _, _ = index_regression(mca_out.Us[m, :], mca_out.Vs[m, :].T, alpha, sig, montecarlo_iterations)
 
         scf = mca_out.scf
         return (
@@ -838,7 +838,7 @@ def _plot_crossvalidation_default(
 
     axs[1].scatter(
         cross._dsz.time[cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha],
-        cross.p_z_zhat_t_accumulated_modes[-1, :][cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha]
+        cross.r_z_zhat_t_accumulated_modes[-1, :][cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha]
     )
     axs[1].set_title('Correlation in space between z and zhat')
     axs[1].grid(True)

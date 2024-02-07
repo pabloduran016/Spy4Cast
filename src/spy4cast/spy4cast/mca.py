@@ -548,7 +548,7 @@ def _new_mca_page(
 
 
 def index_regression(
-    data: LandArray,
+    data: Union[LandArray, npt.NDArray[np.float_]],
     index: npt.NDArray[np.float32],
     alpha: float,
     sig: str,
@@ -588,18 +588,30 @@ def index_regression(
         reg_sig : npt.NDArray[np.float32] (space)
             Significative regression map
     """
-    ns, nt = data.shape
-    reg = data.values.dot(index) / nt
+    if len(data.shape) == 2:
+        ns, nt = data.shape
+    elif len(data.shape) == 1:
+        ns, nt = 1, data.shape[0]
+    else:
+        assert False, "Unreachable"
     cor = np.zeros(ns, dtype=np.float32)
-    cor[data.land_mask] = np.nan
     pvalue = np.zeros(ns, dtype=np.float32)
-    pvalue[data.land_mask] = np.nan
+    if type(data) == LandArray:
+        reg = data.values.dot(index) / nt
+        cor[data.land_mask] = np.nan
+        pvalue[data.land_mask] = np.nan
+        not_land_values = data.not_land_values
+        land_mask = data.land_mask
+    else:
+        reg = np.array([np.dot(data, index) / nt])
+        not_land_values = data
+        land_mask = np.zeros(1, dtype=np.bool_)
 
 
     if sig == 'test-t':
-        result = np.apply_along_axis(stats.pearsonr, 1, data.not_land_values, index)
-        cor[~data.land_mask] = result[:, 0]
-        pvalue[~data.land_mask] = result[:, 1]
+        result = np.apply_along_axis(stats.pearsonr, 1, not_land_values, index)
+        cor[~land_mask] = result[:, 0]
+        pvalue[~land_mask] = result[:, 1]
 
         cor_sig = cor.copy()
         reg_sig = reg.copy()
@@ -611,10 +623,21 @@ def index_regression(
 
         corp = np.empty([ns, montecarlo_iterations])
         for p in range(montecarlo_iterations):
-            corp[~data.land_mask, p] = pearsonr_2d(data.not_land_values, np.random.permutation(index))
+            if len(data.shape) == 2:
+                corp[~land_mask, p] = pearsonr_2d(not_land_values, np.random.permutation(index))
+            elif len(data.shape) == 1:
+                corp[~land_mask, p] = stats.pearsonr(not_land_values, np.random.permutation(index))[0]
+            else:
+                assert False, "Unreachable"
 
-        result = np.apply_along_axis(stats.pearsonr, 1, data.not_land_values, index)
-        cor[~data.land_mask] = result[:, 0]
+        if len(data.shape) == 2:
+            result = np.apply_along_axis(stats.pearsonr, 1, data.not_land_values, index)
+            cor[~land_mask] = result[:, 0]
+        elif len(data.shape) == 1:
+            result = stats.pearsonr(not_land_values, index)
+            cor[~land_mask] = result[0]
+        else:
+            assert False, "Unreachable"
 
         for nn in range(ns):
             hcor = np.count_nonzero((cor[nn] > 0) & (corp[nn, :] < cor[nn]) | (cor[nn] < 0) & (corp[nn, :] > cor[nn]))
