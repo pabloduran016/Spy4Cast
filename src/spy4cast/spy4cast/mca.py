@@ -6,7 +6,7 @@ import numpy as np
 import numpy.typing as npt  # type: ignore
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec  # type: ignore
-from matplotlib import ticker
+from matplotlib import ticker, patches
 import cartopy.crs as ccrs
 from scipy import sparse, signal
 from scipy.signal.signaltools import axis_reverse
@@ -303,6 +303,10 @@ class MCA(_Procedure):
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
         nm: Optional[int] = None,
+        map_y: Optional[Preprocess] = None,
+        map_z: Optional[Preprocess] = None,
+        sig: Optional[Literal["monte-carlo", "test-t"]] = None,
+        montecarlo_iterations: Optional[int] = None,
     ) -> Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]:
         """Plot the MCA results
 
@@ -336,6 +340,14 @@ class MCA(_Procedure):
             Set figure size. See `plt.figure`
         nm : int
             Number of modes to plot
+        map_y : Preprocess
+            Y to plot the map
+        map_z : Preprocess
+            Z to plot the map
+        sig : {"monte-carlo", "test-t"}
+            Significance method when map_y or map_z is set
+        montecarlo_iterations : int
+            when monte-carlo sig and map_y or map_z is set
 
         Returns
         -------
@@ -346,11 +358,38 @@ class MCA(_Procedure):
             Tuple of axes in figure
         """
         nm = self.nm if nm is None else nm
+        if nm > self.nm:
+            raise ValueError(f"Can not draw more modes ({nm}) than the ones used for then methodology ({self.nm})")
         if signs is not None:
             if len(signs) != nm:
                 raise TypeError(f'Expected signs to be a sequence of the same length as number of modes ({nm})')
             if any(type(x) != bool for x in signs):
                 raise TypeError(f'Expected signs to be a sequence of boolean: either True or False, got {signs}')
+
+        if montecarlo_iterations is not None and map_y is None and map_z is None and sig != 'monte-carlo':
+            assert False
+        if sig is not None and map_y is None and map_z is None:
+            assert False
+        sig = 'test-t' if sig is None else sig
+
+        if map_y is None:
+            map_y = self.dsy
+            ruy, ruy_sig, = self.RUY, self.RUY_sig
+        else:
+            ny = map_y.shape[0]
+            ruy = np.zeros([ny, nm], dtype=np.float32)
+            ruy_sig = np.zeros([ny, nm], dtype=np.float32)
+            for i in range(nm):
+                ruy[:, i], _, ruy_sig[:, i], _, _ = index_regression(map_y.land_data, self.Us[i, :], self.alpha, sig, montecarlo_iterations)
+        if map_z is None:
+            map_z = self.dsz
+            ruz, ruz_sig, = self.RUZ, self.RUZ_sig
+        else:
+            nz = map_z.shape[0]
+            ruz = np.zeros([nz, nm], dtype=np.float32)
+            ruz_sig = np.zeros([nz, nm], dtype=np.float32)
+            for i in range(nm):
+                ruz[:, i], _, ruz_sig[:, i], _, _ = index_regression(map_z.land_data, self.Us[i, :], self.alpha, sig, montecarlo_iterations)
 
         figs = []
         axs: List[Tuple[plt.Axes, ...]] = []
@@ -360,6 +399,7 @@ class MCA(_Procedure):
             fig_i, axs_i = _new_mca_page(
                 self, cmap=cmap, signs=signs, ruy_ticks=ruy_ticks, ruz_ticks=ruz_ticks, 
                 ruy_levels=ruy_levels, ruz_levels=ruz_levels, figsize=figsize, mode0=mode0, modef=modef,
+                ruy=ruy, ruy_sig=ruy_sig, ruz=ruz, ruz_sig=ruz_sig, map_y=map_y, map_z=map_z,
             )
 
             if folder is None:
@@ -439,7 +479,13 @@ def _new_mca_page(
     ],
     figsize: Optional[Tuple[float, float]],
     mode0: int,
-    modef: int
+    modef: int,
+    ruy: npt.NDArray[np.float_],
+    ruy_sig: npt.NDArray[np.float_],
+    ruz: npt.NDArray[np.float_],
+    ruz_sig: npt.NDArray[np.float_],
+    map_y: Preprocess,
+    map_z: Preprocess,
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     nm = modef - mode0 + 1
 
@@ -492,10 +538,11 @@ def _new_mca_page(
         ax_ts.grid(True)
 
         # RUY and RUZ map
-        for j, (var_name, ru, ru_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point) in enumerate((
-            ('RUY', mca.RUY, mca.RUY_sig, mca._dsy.lat, mca._dsy.lon, 'bwr', ruy_ticks, ruy_levels, mca._dsy.region, mca.dsy.region.lon0 >= mca.dsy.region.lonf),
-            ('RUZ', mca.RUZ, mca.RUZ_sig, mca._dsz.lat, mca._dsz.lon, cmap, ruz_ticks, ruz_levels, mca._dsz.region, mca.dsz.region.lon0 >= mca.dsz.region.lonf)
+        for j, (var_name, ru, ru_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point, original_region) in enumerate((
+            ('RUY', ruy, ruy_sig, map_y.lat, map_y.lon, 'bwr', ruy_ticks, ruy_levels, map_y.region, map_y.region.lon0 >= map_y.region.lonf, mca.dsy.region),
+            ('RUZ', ruz, ruz_sig, map_z.lat, map_z.lon, cmap, ruz_ticks, ruz_levels, map_z.region, map_z.region.lon0 >= map_z.region.lonf, mca.dsz.region)
         )):
+            
             if region.lon0 < region.lonf:
                 xlim = sorted((lons.values[0], lons.values[-1]))
             else:
@@ -532,6 +579,13 @@ def _new_mca_page(
                 lons, lats, th, colors='none', hatches='..', extend='both',
                 transform=ccrs.PlateCarree()
             )
+            rect = patches.Rectangle(
+                xy=[original_region.lon0, original_region.lat0], 
+                width=abs(original_region.lonf - original_region.lon0),
+                height=abs(original_region.latf - original_region.lat0),
+                facecolor='none', edgecolor='r',
+                transform=ccrs.PlateCarree())
+            ax_map.add_patch(rect)
 
     axs[0].legend(loc='upper left')
 

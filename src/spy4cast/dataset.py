@@ -416,9 +416,9 @@ class Dataset:
         """
 
         new_region = copy(region)
-        while new_region.lon0 >= 180:
+        while new_region.lon0 > 180:
             new_region.lon0 -= 360
-        while new_region.lonf >= 180:
+        while new_region.lonf > 180:
             new_region.lonf -= 360
         while new_region.lon0 < -180:
             new_region.lon0 += 360
