@@ -382,6 +382,7 @@ class Clim(_Procedure, object):
                 levels=levels,
                 ticks=ticks,
                 xlim=xlim,
+                add_cyclic_point=self.region.lon0 >= self.region.lonf,
             )
             fig.suptitle(
                 f'Climatology map of {self.var} ({region2str(self.region)})',

@@ -304,7 +304,7 @@ class Preprocess(_Procedure):
             plotable[index], self.lat, self.lon, fig, ax,
             f'Year {self.time[index].values}',
             cmap=cmap, xlim=xlim, cax=fig.add_subplot(gs[1]),
-            add_cyclic_point=self.region.lon0 >= self.region.lonf
+            add_cyclic_point=self.region.lon0 >= self.region.lonf,
         )
         fig.suptitle(f'{self.var}: {region2str(self.region)}', fontweight='bold')
 

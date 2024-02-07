@@ -420,6 +420,7 @@ class Anom(_Procedure):
                 levels=levels,
                 ticks=ticks,
                 xlim=xlim,
+                add_cyclic_point=self.region.lon0 >= self.region.lonf,
             )
             fig.suptitle(
                 f'Anomaly map of {self.var} ({region2str(self.region)})',
