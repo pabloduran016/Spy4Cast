@@ -5,6 +5,7 @@ from typing import Tuple, Optional, Any, Union, Sequence, cast, Literal, List
 import numpy as np
 import numpy.typing as npt
 import matplotlib.pyplot as plt
+from matplotlib import ticker
 import matplotlib.gridspec as gridspec
 import cartopy.crs as ccrs
 from matplotlib.ticker import MaxNLocator
@@ -473,14 +474,14 @@ class Crossvalidation(_Procedure):
         nts, nylat, nylon = len(self._dsy.time), len(self._dsy.lat), len(self._dsy.lon)
         nts, nzlat, nzlon = len(self._dsz.time), len(self._dsz.lat), len(self._dsz.lon)
 
-        height = nylat + nzlat + nzlat
-        width = max(nzlon, nylon)
-        
-        figsize = _calculate_figsize(height / width, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+        figsize = _calculate_figsize(1.5, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
         fig = plt.figure(figsize=figsize)
-        ax0 = plt.subplot(311, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180))
-        ax1 = plt.subplot(312, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180))
-        ax2 = plt.subplot(313, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180))
+
+        gs = gridspec.GridSpec(5, 1, height_ratios=[1, 0.1, 1, 1, 0.1], hspace=0.7)
+
+        ax0 = plt.subplot(gs[0], projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180))
+        ax1 = plt.subplot(gs[2], projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180))
+        ax2 = plt.subplot(gs[3], projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180))
 
         zindex = _get_index_from_sy(self._dsz.time, year)
         yindex = zindex
@@ -492,7 +493,8 @@ class Crossvalidation(_Procedure):
             y_xlim = sorted((self._dsy.lon.values[0], self._dsy.lon.values[-1]))
         else:
             y_xlim = [self._dsy.region.lon0 - 180, self._dsy.region.lonf + 180]
-        _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim)
+        _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim, 
+                  cax=fig.add_subplot(gs[1]))
 
         d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
         d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
@@ -509,11 +511,11 @@ class Crossvalidation(_Procedure):
             z_xlim = [self._dsz.region.lon0 - 180, self._dsz.region.lonf + 180]
         _plot_map(
             d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
-            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim
+            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim, colorbar=False
         )
         _plot_map(
             d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
-            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim
+            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim, cax=fig.add_subplot(gs[4]),
         )
 
         fig.suptitle(
@@ -778,17 +780,12 @@ def _plot_crossvalidation_default(
     #    r_z_zhat_s    r_z_zhat_t
     #       scf           r_uv_1
     #     r_uv_1          r_uv_2
-    figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+    figsize = _calculate_figsize(1/3, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
     fig = plt.figure(figsize=figsize)
-    nrows = 3
-    ncols = 2
+    gs = gridspec.GridSpec(2, 2, height_ratios=[1, 0.08], width_ratios=[1, 1.2])
     axs = (
-        fig.add_subplot(nrows, ncols, 1, projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
-        fig.add_subplot(nrows, ncols, 2),
-        fig.add_subplot(nrows, ncols, 3),
-        fig.add_subplot(nrows, ncols, 4),
-        fig.add_subplot(nrows, ncols, 5),
-        fig.add_subplot(nrows, ncols, 6),
+        fig.add_subplot(gs[0, 0], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
+        fig.add_subplot(gs[:, 1]),
     )
 
     nzlat = len(cross._dsz.lat)
@@ -806,17 +803,24 @@ def _plot_crossvalidation_default(
         xlim = sorted((cross._dsz.lon.values[0], cross._dsz.lon.values[-1]))
     else:
         xlim = [cross._dsz.region.lon0 - 180, cross._dsz.region.lonf + 180]
-    _plot_map(
+    im = _plot_map(
         d, cross._dsz.lat, cross._dsz.lon, fig, axs[0],
         'Correlation in space between z and zhat',
         cmap=cmap,
         ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None and not np.isnan(_mean) and not np.isnan(_std) else map_ticks),
         levels=map_levels,
         xlim=xlim,
+        colorbar=False,
     )
     hatches = d.copy()
     hatches[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (
                 cross.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
+    cb = fig.colorbar(im, cax=fig.add_subplot(gs[1, 0]), orientation='horizontal', ticks=map_ticks)
+    if map_ticks is None:
+        tick_locator = ticker.MaxNLocator(nbins=5, prune='both', steps=[2, 5])
+        #ticks = tick_locator.tick_values(vmin=cb.vmin, vmax=cb.vmax)
+        #cb.ax.set_xticks(ticks)
+        cb.ax.xaxis.set_major_locator(tick_locator)
 
     axs[0].contourf(
         cross._dsz.lon, cross._dsz.lat, hatches,
@@ -836,7 +840,8 @@ def _plot_crossvalidation_default(
     axs[1].set_title('Correlation in space between z and zhat')
     axs[1].grid(True)
     # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
-
+    
+    '''
     # ------ scf ------ #
     for mode in range(cross.scf.shape[0]):
         _plot_ts(
@@ -862,6 +867,7 @@ def _plot_crossvalidation_default(
             f'Us for mode {mode + 1}'
         )
         axs[3 + mode].legend()
+    '''
 
     fig.suptitle(
         f'Z({cross._dsz.var}): {region2str(cross._dsz.region)}, '

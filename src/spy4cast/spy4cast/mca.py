@@ -2,8 +2,10 @@ import os
 from typing import Optional, Tuple, Any, Sequence, Union, cast, Literal
 
 import numpy as np
-import numpy.typing as npt
+import numpy.typing as npt  # type: ignore
 from matplotlib import pyplot as plt
+import matplotlib.gridspec as gridspec  # type: ignore
+from matplotlib import ticker
 import cartopy.crs as ccrs
 from scipy import sparse, signal
 import scipy.sparse.linalg
@@ -346,19 +348,27 @@ class MCA(_Procedure):
         nrows = 3
         ncols = 3
 
-        figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+        figsize = _calculate_figsize(0.6, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
         fig: plt.Figure = plt.figure(figsize=figsize)
 
+        nylat, nylon = len(self.dsy.lat), len(self.dsy.lon)
+        yratio = nylon / nylat
+        nzlat, nzlon = len(self.dsz.lat), len(self.dsz.lon)
+        zratio = nzlon / nzlat
+        gs = gridspec.GridSpec(nrows + 1, ncols, height_ratios=[1, 1, 1, 0.15],
+                               width_ratios=[max(yratio, zratio), yratio, zratio],
+                               hspace=0.7)
+
         axs = (
-            fig.add_subplot(nrows, ncols, 1),
-            fig.add_subplot(nrows, ncols, 4),
-            fig.add_subplot(nrows, ncols, 7),
-            fig.add_subplot(nrows, ncols, 2, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
-            fig.add_subplot(nrows, ncols, 5, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
-            fig.add_subplot(nrows, ncols, 8, projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
-            fig.add_subplot(nrows, ncols, 3, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
-            fig.add_subplot(nrows, ncols, 6, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
-            fig.add_subplot(nrows, ncols, 9, projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
+            fig.add_subplot(gs[0, 0]),
+            fig.add_subplot(gs[1, 0]),
+            fig.add_subplot(gs[2, 0]),
+            fig.add_subplot(gs[0, 1], projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
+            fig.add_subplot(gs[1, 1], projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
+            fig.add_subplot(gs[2, 1], projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
+            fig.add_subplot(gs[0, 2], projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
+            fig.add_subplot(gs[1, 2], projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
+            fig.add_subplot(gs[2, 2], projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
         )
 
         # Plot timeseries
@@ -376,7 +386,7 @@ class MCA(_Procedure):
                 ax=ax,
                 title=f'Us Vs mode {i + 1}',
                 color='green',
-                label='Us'
+                label='Us',
             )
             _plot_ts(
                 time=self._dsz.time.values,
@@ -386,6 +396,7 @@ class MCA(_Procedure):
                 color='blue',
                 label='Vs'
             )
+            ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=7, integer=True))
             ax.legend()
             ax.grid(True)
         axs[0].legend(loc='upper left')
@@ -424,8 +435,15 @@ class MCA(_Procedure):
                 im = _plot_map(
                     t, lats, lons, fig, ax, title,
                     levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
-                    colorbar=j == 2,
+                    colorbar=False,
                 )
+                if j == 2:
+                    cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, i + 1]), orientation='horizontal', ticks=ticks,)
+                    if ticks is None:
+                        tick_locator = ticker.MaxNLocator(nbins=5, prune='both', symmetric=True)
+                        ticks = tick_locator.tick_values(vmin=cb.vmin, vmax=cb.vmax)
+                        cb.ax.set_xticks(ticks)
+                    #cb.ax.xaxis.set_tick_params(rotation=20)
                 ax.contourf(
                     lons, lats, th, colors='none', hatches='..', extend='both',
                     transform=ccrs.PlateCarree()

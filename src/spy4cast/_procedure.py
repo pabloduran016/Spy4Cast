@@ -5,6 +5,7 @@ from typing import Optional, Sequence, Union, Callable, \
     TypeVar, Any, Tuple, List, Type, cast
 
 import matplotlib.contour
+from matplotlib import ticker
 import numpy as np
 from matplotlib import pyplot as plt
 import xarray as xr
@@ -105,34 +106,32 @@ def _plot_map(
         Union[npt.NDArray[np.float32], Sequence[float]]
     ] = None,
     colorbar: bool = True,
+    cax: Optional[plt.Axes] = None,
+    labels: bool = True,
 ) -> matplotlib.contour.QuadContourSet:
-    if levels is None:
-        n = 30
-        _std = np.nanstd(arr)
-        _m = np.nanmean(arr)
-
-        levels = np.unique(np.linspace(_m - _std, _m + _std, n))
-
-        if len(levels) <= 1:
-            levels = None
-
-    if ticks is None and levels is not None:
-        nticks = 5
-        ticks = [levels[i] for i in np.arange(0, len(levels), len(levels) // nticks)]
-
     cmap = 'bwr' if cmap is None else cmap
     xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
     ylim = sorted((lat[-1], lat[0])) if ylim is None else ylim
 
     im = ax.contourf(
         lon, lat, arr, cmap=cmap, levels=levels,
-        extend='both', transform=ccrs.PlateCarree()
+        extend='both', transform=ccrs.PlateCarree(),
     )
+    levels = im.levels
+    if labels:
+        gl = ax.gridlines(alpha=0, draw_labels=True)
+        gl.xlocator = ticker.MaxNLocator(3)
+        gl.ylocator = ticker.MaxNLocator(3)
+        gl.top_labels = False
+        gl.right_labels = False
     if colorbar:
         cb = fig.colorbar(
-            im, ax=ax, orientation='horizontal', pad=0.02,
-            ticks=ticks,
+            im, ax=ax if cax is None else None, cax=cax, orientation='horizontal', pad=0.02,
+            ticks=ticks, 
         )
+        if ticks is None:
+            tick_locator = ticker.MaxNLocator(nbins=5, prune='both', steps=[2, 5])
+            cb.ax.xaxis.set_major_locator(tick_locator)
         cb.ax.tick_params(labelsize=11, labelrotation=0)
     ax.coastlines()
     ax.set_xlim(*xlim)
@@ -152,6 +151,7 @@ def _plot_ts(
     xlabel: Optional[str] = None,
     color: Union[Color, str, None] = None,
     xtickslabels: Optional[List[Union[str, int]]] = None,
+    xticks: Optional[List[Union[str, int, float]]] = None,
     only_int_xlabels: bool = True,
     label: Optional[str] = None,
 ) -> None:
@@ -160,13 +160,15 @@ def _plot_ts(
 
     ax.plot(time, arr, linewidth=3, color=color, label=label)
     ax.set_xlim(time[0], time[-1])
+    if xticks is not None:
+        ax.set_xticks(xticks)
     if xtickslabels is not None:
         ax.set_xticklabels(xtickslabels)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     if title is not None:
         ax.set_title(title)
-    if only_int_xlabels:
+    if only_int_xlabels and xticks is None and xtickslabels is None:
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
 
