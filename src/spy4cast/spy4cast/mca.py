@@ -346,7 +346,7 @@ class MCA(_Procedure):
         nrows = 3
         ncols = 3
 
-        figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is not None else figsize
+        figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
         fig: plt.Figure = plt.figure(figsize=figsize)
 
         axs = (

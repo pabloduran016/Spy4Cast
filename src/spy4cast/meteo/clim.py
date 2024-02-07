@@ -339,7 +339,7 @@ class Clim(_Procedure, object):
             Tuple of axes in figure
         """
         if self._type == PlotType.TS:
-            figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is not None else figsize
+            figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
             fig = plt.figure(figsize=figsize)
             if cmap is not None:
                 raise TypeError('`cmap` parameter is not valid to plot a time series climatology')
@@ -363,7 +363,7 @@ class Clim(_Procedure, object):
             )
         elif self._type == PlotType.MAP:
             nlat, nlon = len(self.lat), len(self.lon)
-            figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is not None else figsize
+            figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
             fig = plt.figure(figsize=figsize)
             if color is not None:
                 raise TypeError('Color parameter is not valid to plot a map climatology')
