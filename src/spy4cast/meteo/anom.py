@@ -335,7 +335,7 @@ class Anom(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
-    ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
+    ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes]]:
         """Plot the anomaly map or time series
 
         Parameters
@@ -366,10 +366,10 @@ class Anom(_Procedure):
 
         Returns
         -------
-        plt.Figure
-            Figure object from matplotlib
+        Tuple[plt.Figure]
+            Figures object from matplotlib
 
-        Sequence[plt.Axes]
+        Tuple[plt.Axes]
             Tuple of axes in figure
         """
         if self._type == PlotType.TS:
@@ -435,7 +435,7 @@ class Anom(_Procedure):
             show_plot=show_plot,
             halt_program=halt_program
         )
-        return fig, [ax]
+        return (fig, ), (ax, )
 
     @classmethod
     def load(cls: Type['Anom'], prefix: str, folder: str = '.', *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Anom':

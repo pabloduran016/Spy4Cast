@@ -35,6 +35,7 @@ class MCATest(BaseTestCase):
 
     def test_var_names(self) -> None:
         var_names = (
+            'psi',
             'RUY',
             'RUY_sig',
             'SUY',
@@ -49,6 +50,7 @@ class MCATest(BaseTestCase):
             'Vs',
             'scf',
             'alpha',
+            'nm',
         )
         self.assertEqual(var_names, self.mca.var_names)
 

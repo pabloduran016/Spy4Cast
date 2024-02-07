@@ -10,6 +10,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import xarray as xr
 import cartopy.crs as ccrs
+import cartopy.util
 import numpy.typing as npt
 from matplotlib.ticker import MaxNLocator
 
@@ -26,6 +27,7 @@ __all__ = [
     '_apply_flags_to_fig',
     '_get_index_from_sy',
     '_calculate_figsize',
+    '_add_cyclic_point',
     'MAX_WIDTH',
     'MAX_HEIGHT',
 ]
@@ -35,7 +37,7 @@ MAX_HEIGHT = 8
 
 
 class _Procedure(ABC):
-    plot: Callable[..., Tuple[plt.Figure, Sequence[plt.Axes]]] = abstractmethod(lambda: (plt.figure(), []))
+    plot: Callable[..., Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]] = abstractmethod(lambda: ((), ()))
 
     @property
     @abstractmethod
@@ -108,7 +110,10 @@ def _plot_map(
     colorbar: bool = True,
     cax: Optional[plt.Axes] = None,
     labels: bool = True,
+    add_cyclic_point: bool = False,
 ) -> matplotlib.contour.QuadContourSet:
+    if add_cyclic_point:
+        arr, lon = _add_cyclic_point(arr, coord=lon)
     cmap = 'bwr' if cmap is None else cmap
     xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
     ylim = sorted((lat[-1], lat[0])) if ylim is None else ylim
@@ -236,3 +241,28 @@ def _calculate_figsize(ratio: Optional[float], maxwidth: float, maxheight: float
     assert w <= maxwidth, f"{w = }, {maxwidth = }, {ratio = }"
 
     return w, h
+
+
+def _add_cyclic_point(
+    data: npt.NDArray[np.float_], coord: npt.NDArray[np.float_] = None, axis: int = -1
+) -> Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]]:
+    if coord.ndim != 1:
+        raise ValueError('The coordinate must be 1-dimensional.')
+    if len(coord) != data.shape[axis]:
+        raise ValueError(f'The length of the coordinate does not match '
+                         f'the size of the corresponding dimension of '
+                         f'the data array: len(coord) = {len(coord)}, '
+                         f'data.shape[{axis}] = {data.shape[axis]}.')
+    delta_coord = np.diff(coord)
+    #if not np.allclose(delta_coord, delta_coord[0]):
+    #    raise ValueError('The coordinate must be equally spaced.')
+    new_coord = np.ma.concatenate((coord, coord[-1:] + delta_coord[0]))
+    slicer = [slice(None)] * data.ndim
+    try:
+        slicer[axis] = slice(0, 1)
+    except IndexError:
+        raise ValueError('The specified axis does not correspond to an '
+                         'array dimension.')
+    new_data = np.ma.concatenate((data, data[tuple(slicer)]), axis=axis)
+    return new_data, new_coord
+

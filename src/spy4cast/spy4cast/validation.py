@@ -1,6 +1,7 @@
 import os
 from math import floor
 from typing import Tuple, Optional, Any, Union, Sequence, cast, Literal, List
+from cartopy.util import add_cyclic_point
 
 import numpy as np
 import numpy.typing as npt
@@ -211,7 +212,7 @@ class Validation(_Procedure):
         version: Literal["default", "elena"] = "default",
         mca: Optional[MCA] = None,
         figsize: Optional[Tuple[float, float]] = None,
-    ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
+    ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
         """Plot the Crossvalidation results
 
         Parameters
@@ -240,10 +241,10 @@ class Validation(_Procedure):
 
         Returns
         -------
-        plt.Figure
-            Figure object from matplotlib
+        Tuple[plt.Figure]
+            Figures object from matplotlib
 
-        Sequence[plt.Axes]
+        Tuple[plt.Axes]
             Tuple of axes in figure
         """
         fig: plt.Figure
@@ -279,7 +280,7 @@ class Validation(_Procedure):
             halt_program=halt_program
         )
 
-        return fig, axs
+        return (fig, ), axs
 
 
     def plot_zhat(
@@ -355,7 +356,8 @@ class Validation(_Procedure):
             y_xlim = sorted((self._validating_dsy.lon.values[0], self._validating_dsy.lon.values[-1]))
         else:
             y_xlim = [self._validating_dsy.region.lon0 - 180, self._validating_dsy.region.lonf + 180]
-        _plot_map(d0[yindex], self._validating_dsy.lat, self._validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim)
+        _plot_map(d0[yindex], self._validating_dsy.lat, self._validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim,
+                  add_cyclic_point=self._validating_dsy.region.lon0 >= self._validating_dsy.region.lonf)
 
         d1 = self.zhat.transpose().reshape((nts, nzlat, nzlon))
         d2 = self._validating_dsz.data.transpose().reshape((nts, nzlat, nzlon))
@@ -373,10 +375,12 @@ class Validation(_Procedure):
         _plot_map(
             d1[zindex], self._validating_dsz.lat, self._validating_dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim,
+            add_cyclic_point=self._validating_dsz.region.lon0 >= self._validating_dsz.region.lonf,
         )
         _plot_map(
             d2[zindex], self._validating_dsz.lat, self._validating_dsz.lon, fig, ax2, f'Z on year {year}',
             cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim,
+            add_cyclic_point=self._validating_dsz.region.lon0 >= self._validating_dsz.region.lonf,
         )
 
         fig.suptitle(
@@ -457,6 +461,7 @@ def _plot_validation_default(
         xlim=z_xlim,
         cmap=cmap,
         ticks=map_ticks,
+        add_cyclic_point=validation.validating_dsz.region.lon0 >= validation.validating_dsz.region.lonf,
     )
 
     ax01 = fig.add_subplot(1, 2, 2)

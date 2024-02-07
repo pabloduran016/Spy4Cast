@@ -346,7 +346,7 @@ class Crossvalidation(_Procedure):
         version: Literal["default", "elena"] = "default",
         mca: Optional[MCA] = None,
         figsize: Optional[Tuple[float, float]] = None,
-    ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
+    ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
         """Plot the Crossvalidation results
 
         Parameters
@@ -377,10 +377,10 @@ class Crossvalidation(_Procedure):
 
         Returns
         -------
-        plt.Figure
-            Figure object from matplotlib
+        Tuple[plt.Figure]
+            Figures object from matplotlib
 
-        Sequence[plt.Axes]
+        Tuple[plt.Axes]
             Tuple of axes in figure
         """
         fig: plt.Figure
@@ -418,7 +418,7 @@ class Crossvalidation(_Procedure):
             halt_program=halt_program
         )
 
-        return fig, axs
+        return (fig, ), axs
 
     def plot_zhat(
         self,
@@ -494,7 +494,7 @@ class Crossvalidation(_Procedure):
         else:
             y_xlim = [self._dsy.region.lon0 - 180, self._dsy.region.lonf + 180]
         _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim, 
-                  cax=fig.add_subplot(gs[1]))
+                  cax=fig.add_subplot(gs[1]), add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf)
 
         d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
         d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
@@ -511,11 +511,13 @@ class Crossvalidation(_Procedure):
             z_xlim = [self._dsz.region.lon0 - 180, self._dsz.region.lonf + 180]
         _plot_map(
             d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
-            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim, colorbar=False
+            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim, colorbar=False,
+            add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf,
         )
         _plot_map(
             d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
             cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim, cax=fig.add_subplot(gs[4]),
+            add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf,
         )
 
         fig.suptitle(
@@ -811,6 +813,7 @@ def _plot_crossvalidation_default(
         levels=map_levels,
         xlim=xlim,
         colorbar=False,
+        add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
     )
     hatches = d.copy()
     hatches[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (

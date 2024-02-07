@@ -1,5 +1,6 @@
 import os
-from typing import Optional, Tuple, Any, Sequence, Union, cast, Literal
+import math
+from typing import Optional, Tuple, Any, Sequence, Union, cast, Literal, List
 
 import numpy as np
 import numpy.typing as npt  # type: ignore
@@ -8,6 +9,7 @@ import matplotlib.gridspec as gridspec  # type: ignore
 from matplotlib import ticker
 import cartopy.crs as ccrs
 from scipy import sparse, signal
+from scipy.signal.signaltools import axis_reverse
 import scipy.sparse.linalg
 import xarray as xr
 from scipy.stats import stats
@@ -114,6 +116,7 @@ class MCA(_Procedure):
             'Vs',
             'scf',
             'alpha',
+            'nm',
         )
 
     def __init__(
@@ -254,6 +257,7 @@ class MCA(_Procedure):
         self.Vs = ((v - v.mean(0)) / v.std(0)).transpose()
         self.scf = scf
         self.alpha = alpha
+        self.nm = nm
 
         self.pvalruy = np.zeros([ny, nm], dtype=np.float32)
         self.pvalruz = np.zeros([nz, nm], dtype=np.float32)
@@ -298,7 +302,8 @@ class MCA(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
-    ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
+        nm: Optional[int] = None,
+    ) -> Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]:
         """Plot the MCA results
 
         Parameters
@@ -329,145 +334,56 @@ class MCA(_Procedure):
             Levels for the maps of the RUZ output
         figsize
             Set figure size. See `plt.figure`
+        nm : int
+            Number of modes to plot
 
         Returns
         -------
-        plt.Figure
-            Figure object from matplotlib
+        Tuple[plt.Figure]
+            Figures object from matplotlib
 
-        Sequence[plt.Axes]
+        Tuple[plt.Axes]
             Tuple of axes in figure
         """
-        nm = 3
+        nm = self.nm if nm is None else nm
         if signs is not None:
             if len(signs) != nm:
                 raise TypeError(f'Expected signs to be a sequence of the same length as number of modes ({nm})')
             if any(type(x) != bool for x in signs):
                 raise TypeError(f'Expected signs to be a sequence of boolean: either True or False, got {signs}')
 
-        nrows = 3
-        ncols = 3
-
-        nylat, nylon = len(self.dsy.lat), len(self.dsy.lon)
-        yratio = nylon / nylat
-        nzlat, nzlon = len(self.dsz.lat), len(self.dsz.lon)
-        zratio = nzlon / nzlat
-        gs = gridspec.GridSpec(nrows + 1, ncols, height_ratios=[1, 1, 1, 0.15],
-                               width_ratios=[0.9*max(yratio, zratio), yratio, zratio],
-                               hspace=0.7)
-
-        figsize = _calculate_figsize(np.mean((1/zratio, 1/yratio)), maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
-        fig: plt.Figure = plt.figure(figsize=figsize)
-
-        axs = (
-            fig.add_subplot(gs[0, 0]),
-            fig.add_subplot(gs[1, 0]),
-            fig.add_subplot(gs[2, 0]),
-            fig.add_subplot(gs[0, 1], projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
-            fig.add_subplot(gs[1, 1], projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
-            fig.add_subplot(gs[2, 1], projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180)),
-            fig.add_subplot(gs[0, 2], projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
-            fig.add_subplot(gs[1, 2], projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
-            fig.add_subplot(gs[2, 2], projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180)),
-        )
-
-        # Plot timeseries
-        ax: plt.Axes
-        for i, ax in enumerate(axs[:3]):
-            # # ax.margins(0)
-            us = self.Us[i, :]
-            vs = self.Vs[i, :]
-            if signs is not None and signs[i]:
-                us *= -1
-                vs *= -1
-            _plot_ts(
-                time=self._dsy.time.values,
-                arr=us,
-                ax=ax,
-                title=f'Us Vs mode {i + 1}',
-                color='green',
-                label='Us',
+        figs = []
+        axs: List[Tuple[plt.Axes, ...]] = []
+        for i in range(math.ceil(nm / 3)):
+            mode0 = 3 * i
+            modef = min(nm - 1, 3 * (i + 1) - 1)
+            fig_i, axs_i = _new_mca_page(
+                self, cmap=cmap, signs=signs, ruy_ticks=ruy_ticks, ruz_ticks=ruz_ticks, 
+                ruy_levels=ruy_levels, ruz_levels=ruz_levels, figsize=figsize, mode0=mode0, modef=modef,
             )
-            _plot_ts(
-                time=self._dsz.time.values,
-                arr=vs,
-                ax=ax,
-                title=None,
-                color='blue',
-                label='Vs'
-            )
-            ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=5, integer=True))
-            ax.legend()
-            ax.grid(True)
-        axs[0].legend(loc='upper left')
 
-        for i, (var_name, ru, ru_sig, lats, lons, cm, ticks, levels, region) in enumerate((
-                ('RUY', self.RUY, self.RUY_sig, self._dsy.lat, self._dsy.lon, 'bwr', ruy_ticks, ruy_levels, self._dsy.region),
-                ('RUZ', self.RUZ, self.RUZ_sig, self._dsz.lat, self._dsz.lon, cmap, ruz_ticks, ruz_levels, self._dsz.region)
-        )):
-            if region.lon0 < region.lonf:
-                xlim = sorted((lons.values[0], lons.values[-1]))
+            if folder is None:
+                folder = '.'
+            if name is None:
+                path = os.path.join(folder, f'mca-plot_z-{self._dsz.var}_y-{self._dsy.var}_{i}.png')
             else:
-                xlim = [region.lon0 - 180, region.lonf + 180]
-            ylim = sorted((lats.values[-1], lats.values[0]))
+                path = os.path.join(folder, name)
 
-            if levels is None:
-                _m = np.mean((np.abs(np.nanmax(ru)), np.abs(np.nanmin(ru))))
-                levels = np.linspace(-_m, +_m, 8)
+            _apply_flags_to_fig(
+                fig_i, path,
+                save_fig=save_fig,
+                show_plot=show_plot,
+                halt_program=False,
+            )
 
-            current_axes = axs[3 * (i + 1):3 * (i + 1) + 3]
-            for j, ax in enumerate(current_axes):
-                title = f'{var_name} mode {j + 1}. ' \
-                        f'SCF={self.scf[j]*100:.01f}'
+            figs.append(fig_i)
+            axs.extend(axs_i)
 
-                t = ru[:, j].transpose().reshape((len(lats), len(lons)))
-                th = ru_sig[:, j].transpose().reshape((len(lats), len(lons)))
+        if show_plot and halt_program:
+            plt.show(block=True)
 
-                if signs is not None:
-                    if signs[j]:
-                        t *= -1
+        return tuple(figs), tuple(axs)
 
-                im = _plot_map(
-                    t, lats, lons, fig, ax, title,
-                    levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
-                    colorbar=False,
-                )
-                if j == 2:
-                    cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, i + 1]), orientation='horizontal', ticks=ticks,)
-                    if ticks is None:
-                        tick_locator = ticker.MaxNLocator(nbins=5, prune='both', symmetric=True)
-                        cb.ax.xaxis.set_major_locator(tick_locator)
-                    #cb.ax.xaxis.set_tick_params(rotation=20)
-                ax.contourf(
-                    lons, lats, th, colors='none', hatches='..', extend='both',
-                    transform=ccrs.PlateCarree()
-                )
-
-
-        fig.suptitle(
-            f'Z({self._dsz.var}): {region2str(self._dsz.region)}, '
-            f'Y({self._dsy.var}): {region2str(self._dsy.region)}. '
-            f'Alpha: {self.alpha}',
-            fontweight='bold'
-        )
-
-        fig.subplots_adjust(hspace=.4)
-
-        if folder is None:
-            folder = '.'
-        if name is None:
-            path = os.path.join(folder, f'mca-plot_z-{self._dsz.var}_y-{self._dsy.var}.png')
-        else:
-            path = os.path.join(folder, name)
-
-        _apply_flags_to_fig(
-            fig, path,
-            save_fig=save_fig,
-            show_plot=show_plot,
-            halt_program=halt_program,
-        )
-
-        return fig, axs
 
     @classmethod
     def load(cls, prefix: str, folder: str = '.', *,
@@ -503,6 +419,132 @@ class MCA(_Procedure):
         self._dsz = dsz
         self._dsy = dsy
         return self
+
+
+def _new_mca_page(
+    mca: MCA, 
+    cmap: str,
+    signs: Optional[Sequence[bool]],
+    ruy_ticks: Optional[
+        Union[npt.NDArray[np.float32], Sequence[float]]
+    ],
+    ruz_ticks: Optional[
+        Union[npt.NDArray[np.float32], Sequence[float]]
+    ],
+    ruy_levels: Optional[
+        Union[npt.NDArray[np.float32], Sequence[float]]
+    ],
+    ruz_levels: Optional[
+        Union[npt.NDArray[np.float32], Sequence[float]]
+    ],
+    figsize: Optional[Tuple[float, float]],
+    mode0: int,
+    modef: int
+) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
+    nm = modef - mode0 + 1
+
+    nylat, nylon = len(mca.dsy.lat), len(mca.dsy.lon)
+    yratio = nylon / nylat
+    nzlat, nzlon = len(mca.dsz.lat), len(mca.dsz.lon)
+    zratio = nzlon / nzlat
+    gs = gridspec.GridSpec(nm + 1, 3, height_ratios=[*[1]*nm, 0.15],
+                           width_ratios=[0.9*max(yratio, zratio), yratio, zratio],
+                           hspace=0.7)
+
+    figsize = _calculate_figsize(np.mean((1/zratio, 1/yratio)), maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+    fig: plt.Figure = plt.figure(figsize=figsize)
+
+    axs = (
+        *(fig.add_subplot(gs[i, 0]) for i in range(nm)),
+        *(fig.add_subplot(gs[i, 1], projection=ccrs.PlateCarree(0 if mca.dsy.region.lon0 < mca.dsy.region.lonf else 180)) for i in range(nm)),
+        *(fig.add_subplot(gs[i, 2], projection=ccrs.PlateCarree(0 if mca.dsz.region.lon0 < mca.dsz.region.lonf else 180)) for i in range(nm)),
+    )
+
+    for i in range(nm):
+        mode = mode0 + i
+
+        # Us and Vs Time series
+        ax_ts = axs[i]
+
+        us = mca.Us[mode, :]
+        vs = mca.Vs[mode, :]
+        if signs is not None and signs[mode]:
+            us *= -1
+            vs *= -1
+        _plot_ts(
+            time=mca._dsy.time.values,
+            arr=us,
+            ax=ax_ts,
+            title=f'Us Vs mode {mode + 1}',
+            color='green',
+            label='Us',
+        )
+        _plot_ts(
+            time=mca._dsz.time.values,
+            arr=vs,
+            ax=ax_ts,
+            title=None,
+            color='blue',
+            label='Vs'
+        )
+        ax_ts.xaxis.set_major_locator(ticker.MaxNLocator(nbins=5, integer=True))
+        ax_ts.legend()
+        ax_ts.grid(True)
+
+        # RUY and RUZ map
+        for j, (var_name, ru, ru_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point) in enumerate((
+            ('RUY', mca.RUY, mca.RUY_sig, mca._dsy.lat, mca._dsy.lon, 'bwr', ruy_ticks, ruy_levels, mca._dsy.region, mca.dsy.region.lon0 >= mca.dsy.region.lonf),
+            ('RUZ', mca.RUZ, mca.RUZ_sig, mca._dsz.lat, mca._dsz.lon, cmap, ruz_ticks, ruz_levels, mca._dsz.region, mca.dsz.region.lon0 >= mca.dsz.region.lonf)
+        )):
+            if region.lon0 < region.lonf:
+                xlim = sorted((lons.values[0], lons.values[-1]))
+            else:
+                xlim = [region.lon0 - 180, region.lonf + 180]
+            ylim = sorted((lats.values[-1], lats.values[0]))
+
+            if levels is None:
+                _m = np.mean((np.abs(np.nanmax(ru)), np.abs(np.nanmin(ru))))
+                levels = np.linspace(-_m, +_m, 8)
+
+            ax_map = axs[nm * (j + 1) + i]
+            title = f'{var_name} mode {mode + 1}. ' \
+                    f'SCF={mca.scf[mode]*100:.01f}'
+
+            t = ru[:, mode].transpose().reshape((len(lats), len(lons)))
+            th = ru_sig[:, mode].transpose().reshape((len(lats), len(lons)))
+
+            if signs is not None:
+                if signs[mode]:
+                    t *= -1
+
+            im = _plot_map(
+                t, lats, lons, fig, ax_map, title,
+                levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
+                colorbar=False, add_cyclic_point=add_cyclic_point
+            )
+            if i == nm - 1:
+                cb = fig.colorbar(im, cax=fig.add_subplot(gs[nm, j + 1]), orientation='horizontal', ticks=ticks,)
+                if ticks is None:
+                    tick_locator = ticker.MaxNLocator(nbins=5, prune='both', symmetric=True)
+                    cb.ax.xaxis.set_major_locator(tick_locator)
+                #cb.ax.xaxis.set_tick_params(rotation=20)
+            ax_map.contourf(
+                lons, lats, th, colors='none', hatches='..', extend='both',
+                transform=ccrs.PlateCarree()
+            )
+
+    axs[0].legend(loc='upper left')
+
+    fig.suptitle(
+        f'Z({mca._dsz.var}): {region2str(mca._dsz.region)}, '
+        f'Y({mca._dsy.var}): {region2str(mca._dsy.region)}. '
+        f'Alpha: {mca.alpha}',
+        fontweight='bold'
+    )
+
+    fig.subplots_adjust(hspace=.4)
+
+    return fig, axs
 
 
 def index_regression(

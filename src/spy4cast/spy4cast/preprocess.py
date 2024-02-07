@@ -1,8 +1,10 @@
 import os
 from typing import Optional, Tuple, Any, cast, Sequence, Literal
+from cartopy.util import add_cyclic_point
 
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import gridspec
 import numpy.typing as npt
 from scipy import signal
 import xarray as xr
@@ -12,7 +14,7 @@ from .. import Region, Month
 from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
-    MAX_HEIGHT
+    MAX_HEIGHT, _add_cyclic_point
 from ..land_array import LandArray
 from ..meteo import Anom
 
@@ -253,7 +255,7 @@ class Preprocess(_Procedure):
         folder: Optional[str] = None,
         name: Optional[str] = None,
         figsize: Optional[Tuple[float, float]] = None,
-    ) -> Tuple[plt.Figure, Sequence[plt.Axes]]:
+    ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes]]:
         """Plot the preprocessed data for spy4cast methodologes
 
         Parameters
@@ -276,10 +278,10 @@ class Preprocess(_Procedure):
 
         Returns
         -------
-        plt.Figure
-            Figure object from matplotlib
+        Tuple[plt.Figure]
+            Figures object from matplotlib
 
-        Sequence[plt.Axes]
+        Tuple[plt.Axes]
             Tuple of axes in figure
         """
         nt, nlat, nlon = len(self.time), len(self.lat), len(self.lon)
@@ -291,7 +293,8 @@ class Preprocess(_Procedure):
 
         figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
         fig = plt.figure(figsize=figsize)
-        ax = fig.add_subplot(projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
+        gs = gridspec.GridSpec(2, 1, height_ratios=[1, 0.05])
+        ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
 
         if self.region.lon0 < self.region.lonf:
             xlim = sorted((self.lon.values[0], self.lon.values[-1]))
@@ -300,7 +303,8 @@ class Preprocess(_Procedure):
         _plot_map(
             plotable[index], self.lat, self.lon, fig, ax,
             f'Year {self.time[index].values}',
-            cmap=cmap, xlim=xlim,
+            cmap=cmap, xlim=xlim, cax=fig.add_subplot(gs[1]),
+            add_cyclic_point=self.region.lon0 >= self.region.lonf
         )
         fig.suptitle(f'{self.var}: {region2str(self.region)}', fontweight='bold')
 
@@ -317,4 +321,4 @@ class Preprocess(_Procedure):
             show_plot=show_plot,
             halt_program=halt_program,
         )
-        return fig, [ax]
+        return (fig, ), (ax, )
