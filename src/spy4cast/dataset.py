@@ -1,3 +1,4 @@
+from copy import copy
 import os
 import traceback
 import warnings
@@ -413,6 +414,18 @@ class Dataset:
         --------
         stypes.Region
         """
+
+        new_region = copy(region)
+        while new_region.lon0 >= 180:
+            new_region.lon0 -= 360
+        while new_region.lonf >= 180:
+            new_region.lonf -= 360
+        while new_region.lon0 < -180:
+            new_region.lon0 += 360
+        while new_region.lonf < -180:
+            new_region.lonf += 360
+
+        region = new_region
 
         self._check_region(region)
         self._region = region
