@@ -285,16 +285,16 @@ class MCA(_Procedure):
         signs: Optional[Sequence[bool]] = None,
         folder: Optional[str] = None,
         name: Optional[str] = None,
-        suy_ticks: Optional[
+        ruy_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-        suz_ticks: Optional[
+        ruz_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-        suy_levels: Optional[
+        ruy_levels: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-        suz_levels: Optional[
+        ruz_levels: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
@@ -319,14 +319,14 @@ class MCA(_Procedure):
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
-        suy_ticks
-            Ticks for the maps of the SUY output
-        suz_ticks
-            Ticks for the maps of the SUZ output
-        suy_levels
-            Levels for the maps of the SUY output
-        suz_levels
-            Levels for the maps of the SUZ output
+        ruy_ticks
+            Ticks for the maps of the RUY output
+        ruz_ticks
+            Ticks for the maps of the RUZ output
+        ruy_levels
+            Levels for the maps of the RUY output
+        ruz_levels
+            Levels for the maps of the RUZ output
         figsize
             Set figure size. See `plt.figure`
 
@@ -348,16 +348,16 @@ class MCA(_Procedure):
         nrows = 3
         ncols = 3
 
-        figsize = _calculate_figsize(0.6, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
-        fig: plt.Figure = plt.figure(figsize=figsize)
-
         nylat, nylon = len(self.dsy.lat), len(self.dsy.lon)
         yratio = nylon / nylat
         nzlat, nzlon = len(self.dsz.lat), len(self.dsz.lon)
         zratio = nzlon / nzlat
         gs = gridspec.GridSpec(nrows + 1, ncols, height_ratios=[1, 1, 1, 0.15],
-                               width_ratios=[max(yratio, zratio), yratio, zratio],
+                               width_ratios=[0.9*max(yratio, zratio), yratio, zratio],
                                hspace=0.7)
+
+        figsize = _calculate_figsize(np.mean((1/zratio, 1/yratio)), maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+        fig: plt.Figure = plt.figure(figsize=figsize)
 
         axs = (
             fig.add_subplot(gs[0, 0]),
@@ -396,37 +396,32 @@ class MCA(_Procedure):
                 color='blue',
                 label='Vs'
             )
-            ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=7, integer=True))
+            ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=5, integer=True))
             ax.legend()
             ax.grid(True)
         axs[0].legend(loc='upper left')
 
-        # suy = SUY
-        # suy[suy == 0.0] = np.nan
-
-        n = 20
-        for i, (var_name, su, ru, lats, lons, cm, ticks, levels, region) in enumerate((
-                ('SUY', self.SUY, self.RUY_sig, self._dsy.lat, self._dsy.lon, 'bwr', suy_ticks, suy_levels, self._dsy.region),
-                ('SUZ', self.SUZ, self.RUZ_sig, self._dsz.lat, self._dsz.lon, cmap, suz_ticks, suz_levels, self._dsz.region)
+        for i, (var_name, ru, ru_sig, lats, lons, cm, ticks, levels, region) in enumerate((
+                ('RUY', self.RUY, self.RUY_sig, self._dsy.lat, self._dsy.lon, 'bwr', ruy_ticks, ruy_levels, self._dsy.region),
+                ('RUZ', self.RUZ, self.RUZ_sig, self._dsz.lat, self._dsz.lon, cmap, ruz_ticks, ruz_levels, self._dsz.region)
         )):
-            if levels is None:
-                _std = np.nanstd(su)
-                _m = np.nanmean(su)
-                bound = max(abs(_m - _std), abs(_m + _std))
-                levels = np.linspace(-bound, bound, n)
             if region.lon0 < region.lonf:
                 xlim = sorted((lons.values[0], lons.values[-1]))
             else:
                 xlim = [region.lon0 - 180, region.lonf + 180]
             ylim = sorted((lats.values[-1], lats.values[0]))
 
+            if levels is None:
+                _m = np.mean((np.abs(np.nanmax(ru)), np.abs(np.nanmin(ru))))
+                levels = np.linspace(-_m, +_m, 8)
+
             current_axes = axs[3 * (i + 1):3 * (i + 1) + 3]
             for j, ax in enumerate(current_axes):
                 title = f'{var_name} mode {j + 1}. ' \
                         f'SCF={self.scf[j]*100:.01f}'
 
-                t = su[:, j].transpose().reshape((len(lats), len(lons)))
-                th = ru[:, j].transpose().reshape((len(lats), len(lons)))
+                t = ru[:, j].transpose().reshape((len(lats), len(lons)))
+                th = ru_sig[:, j].transpose().reshape((len(lats), len(lons)))
 
                 if signs is not None:
                     if signs[j]:
@@ -441,8 +436,7 @@ class MCA(_Procedure):
                     cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, i + 1]), orientation='horizontal', ticks=ticks,)
                     if ticks is None:
                         tick_locator = ticker.MaxNLocator(nbins=5, prune='both', symmetric=True)
-                        ticks = tick_locator.tick_values(vmin=cb.vmin, vmax=cb.vmax)
-                        cb.ax.set_xticks(ticks)
+                        cb.ax.xaxis.set_major_locator(tick_locator)
                     #cb.ax.xaxis.set_tick_params(rotation=20)
                 ax.contourf(
                     lons, lats, th, colors='none', hatches='..', extend='both',
