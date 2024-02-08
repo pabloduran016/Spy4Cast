@@ -489,9 +489,9 @@ def _new_mca_page(
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     nm = modef - mode0 + 1
 
-    nylat, nylon = len(mca.dsy.lat), len(mca.dsy.lon)
+    nylat, nylon = len(map_y.lat), len(map_y.lon)
     yratio = nylon / nylat
-    nzlat, nzlon = len(mca.dsz.lat), len(mca.dsz.lon)
+    nzlat, nzlon = len(map_z.lat), len(map_z.lon)
     zratio = nzlon / nzlat
     gs = gridspec.GridSpec(nm + 1, 3, height_ratios=[*[1]*nm, 0.15],
                            width_ratios=[0.9*max(yratio, zratio), yratio, zratio],
@@ -555,7 +555,7 @@ def _new_mca_page(
 
             ax_map = axs[nm * (j + 1) + i]
             title = f'{var_name} mode {mode + 1}. ' \
-                    f'SCF={mca.scf[mode]*100:.01f}'
+                    f'SCF={mca.scf[mode]*100:.01f}%'
 
             t = ru[:, mode].transpose().reshape((len(lats), len(lons)))
             th = ru_sig[:, mode].transpose().reshape((len(lats), len(lons)))
@@ -696,12 +696,12 @@ def index_regression(
         for nn in range(ns):
             hcor = np.count_nonzero((cor[nn] > 0) & (corp[nn, :] < cor[nn]) | (cor[nn] < 0) & (corp[nn, :] > cor[nn]))
             # nivel de confianza
-            pvalue[nn] = hcor / montecarlo_iterations
+            pvalue[nn] = 1 - hcor / montecarlo_iterations
 
         cor_sig = cor.copy()
         reg_sig = reg.copy()
-        cor_sig[pvalue >= (1 - alpha)] = np.nan
-        reg_sig[pvalue >= (1 - alpha)] = np.nan
+        cor_sig[pvalue > alpha] = np.nan
+        reg_sig[pvalue > alpha] = np.nan
     else:
         raise ValueError(f'Unrecognized `sig` parameter: {sig}')
 
