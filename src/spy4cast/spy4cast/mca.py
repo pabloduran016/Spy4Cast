@@ -1,6 +1,7 @@
 import os
 import math
 from typing import Optional, Tuple, Any, Sequence, Union, cast, Literal, List
+from dask.array import assert_eq
 
 import numpy as np
 import numpy.typing as npt  # type: ignore
@@ -579,10 +580,16 @@ def _new_mca_page(
                 lons, lats, th, colors='none', hatches='..', extend='both',
                 transform=ccrs.PlateCarree()
             )
+            width = original_region.lonf - original_region.lon0 if original_region.lonf > original_region.lon0 else \
+                    original_region.lonf + 360 - original_region.lon0 
+            assert width >= 0
+            height = original_region.latf - original_region.lat0 if original_region.latf > original_region.lat0 else \
+                    original_region.latf + 360 - original_region.lat0 
+            assert height >= 0
             rect = patches.Rectangle(
-                xy=[original_region.lon0, original_region.lat0], 
-                width=abs(original_region.lonf - original_region.lon0),
-                height=abs(original_region.latf - original_region.lat0),
+                xy=[original_region.lon0, original_region.lat0],
+                width=width,
+                height=height,
                 facecolor='none', edgecolor='r',
                 transform=ccrs.PlateCarree())
             ax_map.add_patch(rect)
