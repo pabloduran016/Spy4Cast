@@ -670,9 +670,16 @@ def index_regression(
 
 
     if sig == 'test-t':
-        result = np.apply_along_axis(stats.pearsonr, 1, not_land_values, index)
-        cor[~land_mask] = result[:, 0]
-        pvalue[~land_mask] = result[:, 1]
+        if len(data.shape) == 2:
+            result = np.apply_along_axis(stats.pearsonr, 1, not_land_values, index)
+            cor[~land_mask] = result[:, 0]
+            pvalue[~land_mask] = result[:, 1]
+        elif len(data.shape) == 1:
+            result = stats.pearsonr(not_land_values, index)
+            cor[~land_mask] = result[0]
+            pvalue[~land_mask] = result[1]
+        else:
+            assert False, "Unreachable"
 
         cor_sig = cor.copy()
         reg_sig = reg.copy()
