@@ -35,6 +35,8 @@ class Preprocess(_Procedure):
             If specified as well as period, a butterworth filter with those parameters will be applied
         period : optional, float
             If specified as well as period, a butterworth filter with those parameters will be applied
+        freq : {'high', 'low'}, default = 'high'
+            If specified as well as period, a butterworth filter with those parameters will be applied
     """
     _time: xr.DataArray
     _lat: xr.DataArray
@@ -54,7 +56,8 @@ class Preprocess(_Procedure):
         self,
         ds: Dataset,
         order: Optional[int] = None,
-        period: Optional[float] = None
+        period: Optional[float] = None,
+        freq: Literal["high", "low"] = "high"
     ):
         _debuginfo(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
@@ -63,7 +66,7 @@ class Preprocess(_Procedure):
         self._ds: Dataset = ds
 
         if order is not None and period is not None:
-            b, a = cast(Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]], signal.butter(order, 1 / period, btype='high', analog=False, output='ba', fs=None))
+            b, a = cast(Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]], signal.butter(order, 1 / period, btype=freq, analog=False, output='ba', fs=None))
             anomaly = xr.apply_ufunc(
                 lambda ts: signal.filtfilt(b, a, ts),
                 anomaly,
