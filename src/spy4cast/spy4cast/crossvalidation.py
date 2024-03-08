@@ -346,6 +346,7 @@ class Crossvalidation(_Procedure):
         version: Literal["default", "elena"] = "default",
         mca: Optional[MCA] = None,
         figsize: Optional[Tuple[float, float]] = None,
+        nm: Optional[int] = None,
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
         """Plot the Crossvalidation results
 
@@ -374,6 +375,9 @@ class Crossvalidation(_Procedure):
             MCA results for version `elena`
         figsize
             Set figure size. See `plt.figure`
+        nm : int, optional
+            Number of modes to use for the corssvalidation plot. Must be less than or equal
+            to nm used to run the methodology. If -1 use all modes.
 
         Returns
         -------
@@ -390,7 +394,7 @@ class Crossvalidation(_Procedure):
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
                 cmap = 'bwr'
-            fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels)
+            fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels, nm)
         elif version == "elena":
             if mca is None:
                 raise TypeError("Expected argument `mca` for version `elena`")
@@ -766,6 +770,7 @@ def _plot_crossvalidation_default(
     map_levels: Optional[
         Union[npt.NDArray[np.float32], Sequence[float]]
     ],
+    nm: Optional[int] = None,
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     """
     Plots:
@@ -796,7 +801,9 @@ def _plot_crossvalidation_default(
 
     # ------ r_z_zhat_s and p_z_zhat_s ------ #
     # Correlation map
-    d = cross.r_z_zhat_s_accumulated_modes[-1, :].transpose().reshape((nzlat, nzlon))
+    if nm is not None and not 1 <= nm <= cross.r_z_zhat_s_accumulated_modes.shape[0]:
+        raise ValueError(f"Parameter `nm` must be positive an less than or equal to the number of modes used in the methodology, {cross.r_z_zhat_s_accumulated_modes.shape[0]}, but got {nm}")
+    d = cross.r_z_zhat_s_accumulated_modes[(-1 if nm is None else nm - 1), :].transpose().reshape((nzlat, nzlon))
     _mean = np.nanmean(d)
     _std = np.nanstd(d)
     mx = _mean + _std

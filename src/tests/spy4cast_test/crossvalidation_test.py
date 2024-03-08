@@ -81,6 +81,7 @@ class CrossvalidationTest(BaseTestCase):
     def test_plot(self) -> None:
         mca = MCA(self.y_preprocessed, self.z_preprocessed, 3, .1)
         self.cross.plot(version='default', name='name')
+        self.cross.plot(nm=2)
         self.cross.plot(version='elena', mca=mca)
         with self.assertRaises(TypeError):
             self.cross.plot(version='default', mca=mca)
@@ -92,6 +93,12 @@ class CrossvalidationTest(BaseTestCase):
             self.cross.plot(version='elena', mca=mca, cmap='cmap')
         with self.assertRaises(ValueError):
             self.cross.plot(version='nothing')  # type: ignore
+        with self.assertRaises(ValueError):
+            self.cross.plot(version='default', nm=4)
+        with self.assertRaises(ValueError):
+            self.cross.plot(version='default', nm=-1)
+        with self.assertRaises(ValueError):
+            self.cross.plot(version='default', nm=0)
 
     def test_plot_zhat(self) -> None:
         self.cross.plot_zhat(year=1999)
