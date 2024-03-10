@@ -43,12 +43,36 @@ To get the latest version:
        $ pip install spy4cast
 
 
+Use cfgrib
+----------
+
+To use cfgrib you need to install the cfgrib package that depends on the eccodes package
+
+On Linux
+++++++++
+
+.. code-block:: console
+
+    (<your-env-name>) $ sudo apt-get install libeccodes0
+    (<your-env-name>) $ pip install cfgrib
+
+
+On Mac
+++++++
+
+.. code-block:: console
+
+    (<your-env-name>) $ brew install eccodes
+    (<your-env-name>) $ pip install cfgrib
+
+
 Upgrade Version
 ---------------
 
 .. code-block:: console
 
-    (<your-env-name>) $ pip install --upgrade git+https://github.com/pabloduran016/Spy4Cast
+    (<your-env-name>) $ pip uninstall spy4cast
+    (<your-env-name>) $ pip install --upgrade --no-cache-dir git+https://github.com/pabloduran016/Spy4Cast
 
 .. warning::
 

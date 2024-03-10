@@ -61,8 +61,8 @@ else:
     mca = MCA(predictor_preprocessed, predictand_preprocessed, nm, alpha)
     mca.save(MCA_PREFIX, DATA_FOLDER)
 
-mca.plot(save_fig=True, cmap='viridis', name=MCA_PLOT_NAME, folder=PLOTS_FOLDER, suy_ticks=[-0.25, -0.125, 0, 0.125, 0.25],
-         suz_ticks=[-0.15, -0.075, 0, 0.075, 0.15])
+mca.plot(save_fig=True, cmap='viridis', name=MCA_PLOT_NAME, folder=PLOTS_FOLDER, ruy_ticks=[-0.25, -0.125, 0, 0.125, 0.25],
+         ruz_ticks=[-0.15, -0.075, 0, 0.075, 0.15])
 
 if LOAD_CROSS:
     cross = Crossvalidation.load(CROSS_PREFIX, DATA_FOLDER, dsy=predictor_preprocessed, dsz=predictand_preprocessed)
