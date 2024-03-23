@@ -1,7 +1,7 @@
 Preprocess Variables
 ====================
 
-Variables for the Preprocess methodology that can be accessed for plotting.
+Variables for the :doc:`/api/spy4cast.spy4cast.Preprocess` methodology that can be accessed for plotting.
 
 
 .. table::

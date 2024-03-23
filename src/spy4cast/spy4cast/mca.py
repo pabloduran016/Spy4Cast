@@ -336,10 +336,10 @@ class MCA(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         ruy_levels: Optional[
-            Union[npt.NDArray[np.float32], Sequence[float]]
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         ruz_levels: Optional[
-            Union[npt.NDArray[np.float32], Sequence[float]]
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
         nm: Optional[int] = None,
@@ -350,8 +350,6 @@ class MCA(_Procedure):
         plot_type: Literal["contour", "pcolor"] = "contour",
     ) -> Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]:
         """Plot the MCA results
-
-        .. _mca_plot:
 
         Parameters
         ----------
@@ -592,10 +590,10 @@ def _new_mca_page(
         Union[npt.NDArray[np.float32], Sequence[float]]
     ],
     ruy_levels: Optional[
-        Union[npt.NDArray[np.float32], Sequence[float]]
+        Union[npt.NDArray[np.float32], Sequence[float], bool]
     ],
     ruz_levels: Optional[
-        Union[npt.NDArray[np.float32], Sequence[float]]
+        Union[npt.NDArray[np.float32], Sequence[float], bool]
     ],
     figsize: Optional[Tuple[float, float]],
     mode0: int,
@@ -671,8 +669,7 @@ def _new_mca_page(
             ylim = sorted((lats.values[-1], lats.values[0]))
 
             if levels is None:
-                _m = np.mean((np.abs(np.nanmax(ru)), np.abs(np.nanmin(ru))))
-                levels = np.linspace(-_m, +_m, 8)
+                levels = np.linspace(-1, +1, 20)
 
             ax_map = axs[nm * (j + 1) + i]
             title = f'{var_name} mode {mode + 1}. ' \

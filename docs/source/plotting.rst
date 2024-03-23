@@ -13,8 +13,37 @@ These fast plots are meant for debugging and to see the results right away.
 They are not heavily tested and can break sometimes. We recommend using your
 own plotting functions instead of them.
 
-Evry methodology owns a `.plot()` function that takes in several arguments
+Every methodology owns a `.plot()` function that takes in several arguments
 (check out the :ref:`tutorial<tutorial>`) to make a fast plot.
+
+.. panels::
+    :body: p-0
+
+    .. link-button:: Preprocess.plot
+        :type: ref
+        :text: Preprocess.plot()
+        :classes: btn btn-primary btn-block
+
+    ---
+
+    .. link-button:: MCA.plot
+        :type: ref
+        :text: MCA.plot()
+        :classes: btn btn-primary btn-block
+
+    ---
+
+    .. link-button:: Crossvalidation.plot
+        :type: ref
+        :text: Crossvalidation.plot()
+        :classes: btn btn-primary btn-block
+
+    ---
+
+    .. link-button:: Crossvalidation.plot_zhat
+        :type: ref
+        :text: Crossvalidation.plot_zhat()
+        :classes: btn btn-primary btn-block
 
 
 Own plots
@@ -67,3 +96,5 @@ Every user is encouraged to use their own plotting functions with this 3 steps:
 
 .. image:: _static/images/example_crossvalidation_figure.png
     :width: 70%
+    :align: center
+

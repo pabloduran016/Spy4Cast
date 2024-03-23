@@ -383,7 +383,7 @@ class Crossvalidation(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         map_levels: Optional[
-            Union[npt.NDArray[np.float32], Sequence[float]]
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         version: Literal["default", 2] = "default",
         mca: Optional[MCA] = None,
@@ -527,6 +527,12 @@ class Crossvalidation(_Procedure):
         zticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
+        y_levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
+        ] = None,
+        z_levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
+        ] = None,
         figsize: Optional[Tuple[float, float]] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
     ) -> Tuple[plt.Figure, Tuple[plt.Axes, plt.Axes, plt.Axes]]:
@@ -553,6 +559,10 @@ class Crossvalidation(_Procedure):
             Ticks for the y map
         zticks
             Ticks for the z map
+        y_levels
+            Levels for the map y
+        z_levels
+            Levels for the map z
         figsize
             Set figure size. See `plt.figure`
         plot_type : {"contour", "pcolor"}, defaut = "pcolor"
@@ -568,11 +578,11 @@ class Crossvalidation(_Procedure):
 
         Returns
         -------
-        plt.Figure
-            Figure object from matplotlib
+        figure : plt.Figure
+            Figure object from matplotlib. In this case just one
 
-        Sequence[plt.Axes]
-            Tuple of axes in figure
+        axes : Sequence[plt.Axes]
+            Tuple of axes in figure. In this case 3: y, z and zhat
         """
         if plot_type not in ("contour", "pcolor"):
             raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
@@ -600,16 +610,14 @@ class Crossvalidation(_Procedure):
         else:
             y_xlim = [self._dsy.region.lon0 - 180, self._dsy.region.lonf + 180]
         _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim, 
-                  cax=fig.add_subplot(gs[1]), add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type)
+                  cax=fig.add_subplot(gs[1]), add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type,
+                  levels=y_levels)
 
         d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
         d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
 
-        n = 30
-        _std = np.nanstd(d2[zindex])
-        _m = np.nanmean(d2[zindex])
-        bound = max(abs(_m - _std), abs(_m + _std))
-        levels = np.linspace(-bound, bound, n)
+        n = 20
+        levels = np.linspace(-1, 1, n) if z_levels is None else z_levels
 
         if self._dsz.region.lon0 < self._dsz.region.lonf:
             z_xlim = sorted((self._dsz.lon.values[0], self._dsz.lon.values[-1]))
@@ -920,7 +928,7 @@ def _plot_crossvalidation_default(
         Union[npt.NDArray[np.float32], Sequence[float]]
     ],
     map_levels: Optional[
-        Union[npt.NDArray[np.float32], Sequence[float]]
+        Union[npt.NDArray[np.float32], Sequence[float], bool]
     ],
     nm: Optional[int] = None,
     plot_type: Literal["contour", "pcolor"] = "contour",

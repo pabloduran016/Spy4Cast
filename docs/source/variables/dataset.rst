@@ -1,7 +1,7 @@
 Dataset Variables
 =================
 
-Variables for Dataset that can be accessed for plotting.
+Variables for :doc:`/api/spy4cast.dataset.Dataset` that can be accessed for plotting.
 
 
 .. table::

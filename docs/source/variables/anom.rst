@@ -1,7 +1,7 @@
 Anom Variables
 ==============
 
-Variables for the Anom methodology that can be accessed for plotting.
+Variables for the :doc:`/api/spy4cast.meteo.Anom` methodology that can be accessed for plotting.
 
 .. table::
     :class: variables-table

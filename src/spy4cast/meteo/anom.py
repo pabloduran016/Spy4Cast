@@ -329,7 +329,7 @@ class Anom(_Procedure):
         folder: str = '.',
         name: str = 'anomaly.png',
         levels: Optional[
-            Union[npt.NDArray[np.float32], Sequence[float]]
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]

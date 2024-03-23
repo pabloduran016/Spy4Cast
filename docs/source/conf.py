@@ -38,6 +38,7 @@ release = version
 extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.napoleon',
+    'sphinx_panels',
     'enum_tools.autoenum',
     'sphinx_automodapi.automodapi',
     'sphinx_automodapi.smart_resolver',

@@ -1,7 +1,7 @@
 Clim Variables
 ==============
 
-Variables for the Clim methodology that can be accessed for plotting.
+Variables for the :doc:`/api/spy4cast.meteo.Clim` methodology that can be accessed for plotting.
 
 
 .. table::

@@ -297,7 +297,7 @@ class Clim(_Procedure, object):
         folder: str = '.',
         name: str = 'clim.png',
         levels: Optional[
-            Union[npt.NDArray[np.float32], Sequence[float]]
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]

@@ -132,11 +132,11 @@ def _plot_map(
         if levels is False:
             norm = None
         else:
-            if levels is None:
-                levels = MaxNLocator(nbins=15).tick_values(arr.min(), arr.max())
+            if levels is None or levels is True:
+                levels = MaxNLocator(nbins=30).tick_values(np.nanmin(arr), np.nanmax(arr))
             cmap_val = plt.colormaps[cmap]
             norm = BoundaryNorm(levels, ncolors=cmap_val.N, clip=True)
-        latstep, lonstep = np.diff(lat[:2]), np.diff(lon[:2])
+        latstep, lonstep = np.diff(lat[:2])[0], np.diff(lon[:2])[0]
         p_lat = np.append(lat - 0.5 * latstep, lat[-1] + 0.5 * latstep)
         p_lon = np.append(lon - 0.5 * lonstep, lon[-1] + 0.5 * lonstep)
         im = ax.pcolormesh(
