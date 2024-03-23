@@ -37,6 +37,46 @@ class Preprocess(_Procedure):
             If specified as well as period, a butterworth filter with those parameters will be applied
         freq : {'high', 'low'}, default = 'high'
             If specified as well as period, a butterworth filter with those parameters will be applied
+
+    Examples
+    --------
+
+    Preprocess a dataset with one line
+
+    >>> from spy4cast import Dataset, Region, Month
+    >>> from spy4cast.spy4cast import Preprocess
+    >>> ds = Dataset("dataset.nc").open("sst").slice(
+    ...     Region(-40, 40, -20, 20, Month.JAN, Month.MAR, 1940, 2000))
+    >>> y = Preprocess(ds)
+
+    Add a butterworth filter
+
+    >>> y = Preprocess(ds, period=12, order=4)
+
+    Acces all the :doc:`/variables/preprocess` easily
+
+    >>> data = y.data.reshape((len(y.lat), len(y.lon), len(y.time)))
+    >>> # Plot with any plotting library
+    >>> import matplotlib.pyplot as plt
+    >>> import cartopy.crs as ccrs
+    >>> fig = plt.figure()
+    >>> ax = fig.add_subplot(projection=ccrs.PlateCarree())
+    >>> ax.contourf(y.lon, y.lat, data[:, :, 0])
+    >>> ax.coastlines()
+    >>> plt.show()
+
+    Save the preprocess in a file to use later
+
+    >>> y.save("sst_preprocessed_", folder="saved_data")
+
+    Avoid loading the dataset and work with the preprocessed data directly
+
+    >>> y = Preprocess.load("sst_preprocessed_", folder="saved_data")
+
+    Plot a map with just one line to visualize the anomaly
+
+    >>> y.plot(1990, show_plot=True, halt_program=True)
+
     """
     _time: xr.DataArray
     _lat: xr.DataArray
@@ -100,12 +140,13 @@ class Preprocess(_Procedure):
 
     @property
     def ds(self) -> Dataset:
-        """Dataset introduced"""
+        """Dataset that has been preprocessed. On loaded preprocess this raises an error"""
         return self._ds
 
     @property
     def meta(self) -> npt.NDArray[Any]:
-        """Returns a np.ndarray containg information about the preprocessing
+        """Returns a np.ndarray containg information about the preprocessed
+        dataset. It includes the region and the variable
 
         First 9 values is region as numpy, then variable as str
         """
@@ -118,7 +159,7 @@ class Preprocess(_Procedure):
 
     @property
     def time(self) -> xr.DataArray:
-        """Time coordinate of the data: years"""
+        """Time coordinate of the data in years."""
         return self._time
 
     @time.setter
@@ -133,7 +174,7 @@ class Preprocess(_Procedure):
 
     @property
     def lat(self) -> xr.DataArray:
-        """Latitude coordinate of the variable: from -90 to 90"""
+        """Latitude coordinate of the variable in degrees ranging from -90 to 90"""
         return self._lat
 
     @lat.setter
@@ -152,7 +193,7 @@ class Preprocess(_Procedure):
 
     @property
     def lon(self) -> xr.DataArray:
-        """Longitude coordinate of the data: -180 to 180"""
+        """Longitude coordinate of the data in degrees ranging from -180 to 180"""
         return self._lon
 
     @lon.setter
@@ -171,17 +212,20 @@ class Preprocess(_Procedure):
 
     @property
     def shape(self) -> Tuple[int, ...]:
-        """Shape of the data: space x time"""
+        """Shape of the data as a tuple of space x time"""
         return self._land_data.shape
 
     @property
     def land_data(self) -> LandArray:
-        """Data but organised in a land array: to organise datta points in land that doesnt contain information"""
+        """Data but organised in a land array. This includes a mask that indicates where the land
+        is in the dataset by masking the `nan` values. This is useful when handling variables like
+        sea surface temperature"""
         return self._land_data
 
     @property
     def data(self) -> npt.NDArray[np.float_]:
-        """Raw data in the object"""
+        """Raw data in the object with `nan` as in the original dataset. It has dimensions of
+        space x time. Should be reshaped like: data.reshape((nlat, nlon, ntime))"""
         return self._land_data.values
 
     @data.setter
@@ -215,7 +259,7 @@ class Preprocess(_Procedure):
 
     @property
     def var(self) -> str:
-        """Name of the variable loaded"""
+        """Name of the variable of the dataset that was preprocessed."""
         return self._var if hasattr(self, '_var') else self._ds.var if hasattr(self, '_ds') else ''
 
     @var.setter
@@ -228,7 +272,7 @@ class Preprocess(_Procedure):
 
     @property
     def region(self) -> Region:
-        """Region used to slice the dataset"""
+        """Region used to slice the original dataset"""
         if hasattr(self, '_region'):
             return self._region
         elif hasattr(self, '_ds'):
@@ -258,6 +302,7 @@ class Preprocess(_Procedure):
         folder: Optional[str] = None,
         name: Optional[str] = None,
         figsize: Optional[Tuple[float, float]] = None,
+        plot_type: Literal["contour", "pcolor"] = "contour",
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes]]:
         """Plot the preprocessed data for spy4cast methodologes
 
@@ -278,15 +323,33 @@ class Preprocess(_Procedure):
             Name of the fig saved if `save_fig` is `True`
         figsize
             Set figure size. See `plt.figure`
+        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
+            Plot type. If `contour` it will use function `ax.contourf`, 
+            if `pcolor` `ax.pcolormesh`.
+
+        Examples
+        --------
+
+        Plot the anomaly on any year of the dataset
+
+        >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+        ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))
+        >>> # Plot 1990, 1991, 1992 and save 1990
+        >>> y.plot(1990, show_plot=True, save_fig=True, name='y_1990.png')
+        >>> y.plot(1991, show_plot=True, cmap='viridis')  # Change the default color map
+        >>> y.plot(1992, show_plot=True, halt_program=True)  # halt_program lets you show multiple figures at the same time
 
         Returns
         -------
-        Tuple[plt.Figure]
-            Figures object from matplotlib
+        figures : Tuple[plt.Figure]
+            Figures objects from matplotlib. In this case just one figure with one axes
 
-        Tuple[plt.Axes]
-            Tuple of axes in figure
+        ax : Tuple[plt.Axes]
+            Tuple of axes in figure. In this case just one axes
         """
+        if plot_type not in ("contour", "pcolor"):
+            raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
+
         nt, nlat, nlon = len(self.time), len(self.lat), len(self.lon)
 
         plotable = self.land_data.values.transpose().reshape((nt, nlat, nlon))
@@ -308,6 +371,7 @@ class Preprocess(_Procedure):
             f'Year {self.time[index].values}',
             cmap=cmap, xlim=xlim, cax=fig.add_subplot(gs[1]),
             add_cyclic_point=self.region.lon0 >= self.region.lonf,
+            plot_type=plot_type,
         )
         fig.suptitle(f'{self.var}: {region2str(self.region)}', fontweight='bold')
 

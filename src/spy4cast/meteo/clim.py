@@ -303,6 +303,7 @@ class Clim(_Procedure, object):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
+        plot_type: Optional[Literal["contour", "pcolor"]] = None,
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes]]:
         """Plot the climatology map or time series
 
@@ -329,14 +330,17 @@ class Clim(_Procedure, object):
             Ticks for the climatology map
         figsize
             Set figure size. See `plt.figure`
+        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
+            Plot type for map. If `contour` it will use function `ax.contourf`, 
+            if `pcolor` `ax.pcolormesh`.
 
         Returns
         -------
-        Tuple[plt.Figure]
-            Figures object from matplotlib
+        figures : Tuple[plt.Figure]
+            Figures objects from matplotlib. In this case just one figure
 
-        Tuple[plt.Axes]
-            Tuple of axes in figure
+        ax : Tuple[plt.Axes]
+            Tuple of axes in figure. In this case just one axes
         """
         if self._type == PlotType.TS:
             figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
@@ -347,6 +351,8 @@ class Clim(_Procedure, object):
                 raise TypeError('`levels` parameter is not valid to plot a time series climatology')
             if ticks is not None:
                 raise TypeError('`ticks` parameter is not valid to plot a time series climatology')
+            if plot_type is not None:
+                raise TypeError('`plot_type` parameter is not valid to plot a time series climatology')
             ax = fig.add_subplot()
             _plot_ts(
                 time=self.time.values,
@@ -362,6 +368,8 @@ class Clim(_Procedure, object):
                 fontweight='bold'
             )
         elif self._type == PlotType.MAP:
+            if plot_type not in ("contour", "pcolor"):
+                raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
             nlat, nlon = len(self.lat), len(self.lon)
             figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
             fig = plt.figure(figsize=figsize)
@@ -383,6 +391,7 @@ class Clim(_Procedure, object):
                 ticks=ticks,
                 xlim=xlim,
                 add_cyclic_point=self.region.lon0 >= self.region.lonf,
+                plot_type=plot_type,
             )
             fig.suptitle(
                 f'Climatology map of {self.var} ({region2str(self.region)})',
@@ -441,22 +450,22 @@ def _clim(array: xr.DataArray, dim: str = 'time') -> xr.DataArray:
 
     Parameters
     ----------
-        array : xr.DataArray
-            Xarray DataArray where you wish to perform the climatology
+    array : xr.DataArray
+        Xarray DataArray where you wish to perform the climatology
 
-        dim : str, default='time'
-            Dimension where the climatology is going to be performed on
+    dim : str, default='time'
+        Dimension where the climatology is going to be performed on
 
     See Also
     --------
-    plotters.ClimerTS, plotters.ClimerMap
+    Anom
 
     Raises
     ------
-        TypeError
-            If array is not an instance of `xr.DataArray`
-        ValueError
-            If dim is not `month`, `time` or `year`
+    TypeError
+        If array is not an instance of `xr.DataArray`
+    ValueError
+        If dim is not `month`, `time` or `year`
     """
     if not isinstance(array, xr.DataArray):
         raise TypeError(f"Expected type xarray.DataArray, got {type(array)}")
@@ -478,3 +487,4 @@ def _clim(array: xr.DataArray, dim: str = 'time') -> xr.DataArray:
     else:
         raise ValueError(f'Invalid dim {dim}')
     return rv
+

@@ -45,49 +45,91 @@ class Crossvalidation(_Procedure):
         sig : {'monte-carlo', 'test-t'}
             Signification technique: monte-carlo or test-t
 
+    Examples
+    --------
+    Run the methodology with a predicting and a predictor field
+
+    >>> from spy4cast import Dataset, Region, Month
+    >>> from spy4cast.spy4cast import MCA, Preprocess
+    >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+    ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))
+    >>> z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+    ...         Region(-30, 30, -120, 120, Month.DEC, Month.FEB, 1961, 2011)))
+    >>> map_y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+    ...         Region(-80, 30, -70, 50, Month.JUN, Month.AUG, 1960, 2010)))
+    >>> map_z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+    ...         Region(-60, 60, -150, 150, Month.DEC, Month.FEB, 1961, 2011)))
+    >>> mca = Crossvalidation(y, z, 3, 0.01)
+
+    All the :doc:`/variables/crossvalidation` easily accesioble
+
+    >>> cor = cross.r_z_zhat_s_separated_modes.reshape((3, len(z.lat), len(z.lon)))  # 3 is the number of modes
+    >>> # Plot with any plotting library
+    >>> import matplotlib.pyplot as plt
+    >>> import cartopy.crs as ccrs
+    >>> fig = plt.figure()
+    >>> ax = fig.add_subplot(projection=ccrs.PlateCarree())
+    >>> ax.contourf(z.lon, z.lat, cor[0, :, :])
+    >>> ax.coastlines()
+
+    Save the data in .npy to use in a different run
+
+    >>> cross.save("saved_cross_", folder="saved_data")
+
+    Reuse the previuosly ran data easily with one line
+
+    >>> cross = cross.load("saved_cross_", folder="saved_data", dsy=y, dsz=z)  # IMPORTANT TO USE dsy= and dsz=
+
+    Plot with one line and several options
+
+    >>> # plot_type=pcolor to use pcolormesh, change the default cmap and figisze with a single option
+    >>> # halt_program=False does not halt execution and lets us create two plots at the same time: crossvalidation 
+    >>> cross.plot_zhat(1990, show_plot=True, halt_program=False, cmap="jet", figsize=(20, 10), plot_type="pcolor")  
+    >>> cross.plot(show_plot=True, halt_program=True, cmap="jet", figsize=(20, 10), plot_type="pcolor")
+
     Attributes
     ----------
-        zhat_separated_modes : npt.NDArray[float32]
+        zhat_separated_modes 
             Hindcast of field to predict using crosvalidation for each individual mode
-        zhat_accumulated_modes : npt.NDArray[float32]
+        zhat_accumulated_modes 
             Hindcast of field to predict using crosvalidation for n modes (1, 1->2, ..., 1->nm)
-        scf : npt.NDArray[float32]
+        scf 
             Squared covariance fraction of the mca for each mode
-        r_z_zhat_t_separated_modes : npt.NDArray[float32]
+        r_z_zhat_t_separated_modes 
             Correlation between zhat and Z for each time (time series) for each individual mode
-        r_z_zhat_t_accumulated_modes : npt.NDArray[float32]
+        r_z_zhat_t_accumulated_modes 
             Correlation between zhat and Z for each time (time series) for n modes (1, 1->2, ..., 1->nm)
-        p_z_zhat_t_separated_modes : npt.NDArray[float32]
+        p_z_zhat_t_separated_modes 
             P values of rt for each individual mode
-        p_z_zhat_t_accumulated_modes : npt.NDArray[float32]
+        p_z_zhat_t_accumulated_modes 
             P values of rt for n modes (1, 1->2, ..., 1->nm)
-        r_z_zhat_s_separated_modes : npt.NDArray[float32]
+        r_z_zhat_s_separated_modes 
             Correlation between time series (for each point) of zhat and z (map) for each individual mode
-        r_z_zhat_s_accumulated_modes : npt.NDArray[float32]
+        r_z_zhat_s_accumulated_modes 
             Correlation between time series (for each point) of zhat and z (map) for n modes (1, 1->2, ..., 1->nm)
-        p_z_zhat_s_separated_modes : npt.NDArray[float32]
+        p_z_zhat_s_separated_modes 
             P values of rr for each individual mode
-        p_z_zhat_s_accumulated_modes : npt.NDArray[float32]
+        p_z_zhat_s_accumulated_modes 
             P values of rr for n modes (1, 1->2, ..., 1->nm)
-        r_uv : npt.NDArray[float32]
+        r_uv 
             Correlation score betweeen u and v for each mode
-        r_uv_sig : npt.NDArray[float32]
+        r_uv_sig 
             Correlation score betweeen u and v for each mode where significative
-        p_uv : npt.NDArray[float32]
+        p_uv 
             P value of ruv
-        suy : npt.NDArray[np.float32]
+        suy 
             Correlation in space of the predictor with the singular vector. Dimension: y_space x time x nm
-        suz : npt.NDArray[np.float32]
+        suz 
             Correlation in space of the predictand with the singular vector. Dimension: z_space x time x nm
-        suy_sig : npt.NDArray[np.float32]
+        suy_sig 
             Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x time x nm
-        suz_sig : npt.NDArray[np.float32]
+        suz_sig 
             Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x time x nm
-        us : npt.NDArray[float32]
+        us 
             Singular vectors of the predictor field. Dimension: nm x time x time
-        vs : npt.NDArray[float32]
+        vs 
             Singular vectors of the predictand field. Dimension: nm x time x time
-        alpha : float
+        alpha 
             Correlation factor
 
     See Also
@@ -343,10 +385,11 @@ class Crossvalidation(_Procedure):
         map_levels: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-        version: Literal["default", "elena"] = "default",
+        version: Literal["default", 2] = "default",
         mca: Optional[MCA] = None,
         figsize: Optional[Tuple[float, float]] = None,
         nm: Optional[int] = None,
+        plot_type: Literal["contour", "pcolor"] = "contour",
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
         """Plot the Crossvalidation results
 
@@ -355,7 +398,8 @@ class Crossvalidation(_Procedure):
         save_fig
             Saves the fig in with `folder` / `name` parameters
         show_plot
-            Shows the plot
+            Shows the plot but does NOT stop the program. Calls `fig.show`. 
+            If you want the behaviour of `plt.plot` add the halt_program option.
         halt_program
             Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
             and stops execution. Else uses fig.show and does not halt program
@@ -370,43 +414,87 @@ class Crossvalidation(_Procedure):
         map_levels
             Levels for the z map in version default
         version
-            Select version from: `default` and `elena`
+            Select version from: `default` and `2`
         mca
-            MCA results for version `elena`
+            MCA results for version `2`
         figsize
             Set figure size. See `plt.figure`
         nm : int, optional
             Number of modes to use for the corssvalidation plot. Must be less than or equal
             to nm used to run the methodology. If -1 use all modes.
+        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
+            Plot type. If `contour` it will use function `ax.contourf`, 
+            if `pcolor` `ax.pcolormesh`.
 
         Returns
         -------
-        Tuple[plt.Figure]
-            Figures object from matplotlib
+        figures : Tuple[plt.Figure]
+            Figures objects from matplotlib. In this case just one figure
 
-        Tuple[plt.Axes]
-            Tuple of axes in figure
+        ax : Tuple[plt.Axes]
+            Tuple of axes in figure. In the default case: 2 axes
+
+        Examples
+        --------
+
+        Plot and halt the program
+
+        >>> cross.plot(show_plot=True, halt_program=True)
+
+        Save the plot 
+
+        >>> cross.plot(save_fig=True, name="cross_plot.png")
+
+        Plot with pcolormesh and be precise with the resolution
+
+        >>> cross.plot(save_fig=True, name="cross_plot.png", plot_type="pcolor")
+
+        Plot cross result in a bigger region
+
+        >>> from spy4cast import Dataset, Region, Month
+        >>> from spy4cast.spy4cast import cross, Preprocess
+        >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+        ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))
+        >>> z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+        ...         Region(-30, 30, -120, 120, Month.DEC, Month.FEB, 1961, 2011)))
+        >>> map_y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+        ...         Region(-80, 30, -70, 50, Month.JUN, Month.AUG, 1960, 2010)))
+        >>> map_z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+        ...         Region(-60, 60, -150, 150, Month.DEC, Month.FEB, 1961, 2011)))
+        >>> cross = Crossvalidation(y, z, 3, 0.01)
+        >>> cross.plot(show_plot=True, halt_program=True, map_y=map_y, map_z=map_z)
+
+
+        Plot and not halt the program
+
+        >>> cross.plot(show_plot=True)
+        >>> # .... Compute crossvalidation for example
+        >>> import matplotlib.pyplot as plt
+        >>> plt.show()  # Will show the previously ran plot
+        
         """
         fig: plt.Figure
         axs: Sequence[plt.Axes]
+        if plot_type not in ("contour", "pcolor"):
+            raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
         if version == "default":
             if mca is not None:
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
                 cmap = 'bwr'
-            fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels, nm)
-        elif version == "elena":
+            fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels, nm, plot_type)
+        elif int(version) == 2:
             if mca is None:
-                raise TypeError("Expected argument `mca` for version `elena`")
+                raise TypeError("Expected argument `mca` for version `2`")
             if map_ticks is not None:
-                raise TypeError("Unexpected argument `map_ticks` for version `elena`")
+                raise TypeError("Unexpected argument `map_ticks` for version `2`")
             if map_levels is not None:
-                raise TypeError("Unexpected argument `map_levels` for version `elena`")
+                raise TypeError("Unexpected argument `map_levels` for version `2`")
             if cmap is not None:
-                raise TypeError("Unexpected argument `cmap` for version `elena`")
-            fig, axs = _plot_crossvalidation_elena(self, figsize, mca)
+                raise TypeError("Unexpected argument `cmap` for version `2`")
+            fig, axs = _plot_crossvalidation_2(self, figsize, mca)
         else:
-            raise ValueError(f"Version can only be one of: `elena`, `default`")
+            raise ValueError(f"Version can only be one of: `2`, `default`")
 
         if folder is None:
             folder = '.'
@@ -440,6 +528,7 @@ class Crossvalidation(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
+        plot_type: Literal["contour", "pcolor"] = "contour",
     ) -> Tuple[plt.Figure, Tuple[plt.Axes, plt.Axes, plt.Axes]]:
         """Plots the map of Zhat
 
@@ -466,6 +555,16 @@ class Crossvalidation(_Procedure):
             Ticks for the z map
         figsize
             Set figure size. See `plt.figure`
+        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
+            Plot type. If `contour` it will use function `ax.contourf`, 
+            if `pcolor` `ax.pcolormesh`.
+
+        Examples
+        --------
+        
+        Plot a year prediction
+
+        >>> cross.plot_zhat(1990, show_plot=True, halt_program=True, save_fig=True, name="zhat_1990.png")
 
         Returns
         -------
@@ -475,6 +574,9 @@ class Crossvalidation(_Procedure):
         Sequence[plt.Axes]
             Tuple of axes in figure
         """
+        if plot_type not in ("contour", "pcolor"):
+            raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
+
         nts, nylat, nylon = len(self._dsy.time), len(self._dsy.lat), len(self._dsy.lon)
         nts, nzlat, nzlon = len(self._dsz.time), len(self._dsz.lat), len(self._dsz.lon)
 
@@ -498,7 +600,7 @@ class Crossvalidation(_Procedure):
         else:
             y_xlim = [self._dsy.region.lon0 - 180, self._dsy.region.lonf + 180]
         _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim, 
-                  cax=fig.add_subplot(gs[1]), add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf)
+                  cax=fig.add_subplot(gs[1]), add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type)
 
         d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
         d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
@@ -516,12 +618,12 @@ class Crossvalidation(_Procedure):
         _plot_map(
             d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim, colorbar=False,
-            add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf,
+            add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
         )
         _plot_map(
             d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
             cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim, cax=fig.add_subplot(gs[4]),
-            add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf,
+            add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
         )
 
         fig.suptitle(
@@ -559,6 +661,56 @@ class Crossvalidation(_Procedure):
         dsy: Optional[Preprocess] = None,
         **attrs: Any
     ) -> 'Crossvalidation':
+        """Load an Crossvalidation object from .npy files saved in Crossvalidation.save.
+
+        Parameters
+        ----------
+        prefix : str
+            Prefix of the files containing the information for the object
+        folder : str
+            Directory of the files
+        dsy : Preprocess
+            ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predictor variable
+        dsz : Preprocess
+            ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predicting variable
+
+        Returns
+        -------
+            Crossvalidation
+
+        Examples
+        --------
+        Load with just one line
+
+        >>> cross = Crossvalidation.load(prefix="cross_", folder="saved_data")
+
+        Save: on a previous run the crossvalidation is calcuated
+        
+        >>> from spy4cast import Dataset, Region, Month
+        >>> from spy4cast.spy4cast import cross, Preprocess
+        >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+        ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))
+        >>> z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+        ...         Region(-30, 30, -120, 120, Month.DEC, Month.FEB, 1961, 2011)))
+        >>> cross = Crossvalidation(y, z, 3, 0.01)
+        >>> cross.save("saved_cross_", folder="data")  # Save the output
+
+        Load: To avoid running the methodology again for plotting and analysis load the data directly
+
+        >>> from spy4cast.spy4cast import cross, Preprocess
+        >>> from spy4cast import Dataset, Region, Month
+        >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+        ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))  # YOU SHOULD USE THE SAME REGION
+        >>> z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+        ...         Region(-30, 30, -120, 120, Month.DEC, Month.FEB, 1961, 2011)))
+        >>> cross = Crossvalidation.load("saved_cross_", folder="data", dsy=y, dsz=z)  # IMPORTANT TO USE dsy= and dsz=
+
+        Then you can plot as usual
+
+        >>> cross.plot(save_fig=True, name="cross.png")
+        >>> cross.plot_zhat(1999, save_fig=True, name="zhat_1999.png")
+
+        """
         if len(attrs) != 0:
             raise TypeError('Load only takes two keyword arguments: dsz and dsy')
         if dsz is None or dsy is None:
@@ -572,7 +724,7 @@ class Crossvalidation(_Procedure):
         return self
 
 
-def _plot_crossvalidation_elena(
+def _plot_crossvalidation_2(
     cross: Crossvalidation,
     figsize: Optional[Tuple[float, float]],
     mca: MCA,
@@ -771,6 +923,7 @@ def _plot_crossvalidation_default(
         Union[npt.NDArray[np.float32], Sequence[float]]
     ],
     nm: Optional[int] = None,
+    plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     """
     Plots:
@@ -821,7 +974,9 @@ def _plot_crossvalidation_default(
         xlim=xlim,
         colorbar=False,
         add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
+        plot_type=plot_type,
     )
+
     hatches = d.copy()
     hatches[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (
                 cross.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan

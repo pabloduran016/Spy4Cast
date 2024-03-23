@@ -71,7 +71,7 @@ else:
     cross.save(CROSS_PREFIX, DATA_FOLDER)
 
 # cross.plot(save_fig=True, folder=PLOTS_FOLDER, name=CROSS_PLOT_NAME, version='default', mca=mca)
-cross.plot(save_fig=True, folder=PLOTS_FOLDER, name=CROSS_PLOT_NAME, version='elena', mca=mca)
+cross.plot(save_fig=True, folder=PLOTS_FOLDER, name=CROSS_PLOT_NAME, version=2, mca=mca)
 
 
 import matplotlib.pyplot as plt

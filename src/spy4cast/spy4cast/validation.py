@@ -209,9 +209,10 @@ class Validation(_Procedure):
         map_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-        version: Literal["default", "elena"] = "default",
+        version: Literal["default", 2] = "default",
         mca: Optional[MCA] = None,
         figsize: Optional[Tuple[float, float]] = None,
+        plot_type: Literal["contour", "pcolor"] = "contour",
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
         """Plot the Crossvalidation results
 
@@ -233,11 +234,14 @@ class Validation(_Procedure):
         map_ticks
             Ticks for the z map in version default
         version
-            Select version from: `default` and `elena`
+            Select version from: `default` and `2`
         mca
-            MCA results for version `elena`
+            MCA results for version `2`
         figsize
             Set figure size. See `plt.figure`
+        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
+            Plot type. If `contour` it will use function `ax.contourf`, 
+            if `pcolor` `ax.pcolormesh`.
 
         Returns
         -------
@@ -249,22 +253,24 @@ class Validation(_Procedure):
         """
         fig: plt.Figure
         axs: Sequence[plt.Axes]
+        if plot_type not in ("contour", "pcolor"):
+            raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
         if version == "default":
             if mca is not None:
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
                 cmap = 'bwr'
             fig, axs = _plot_validation_default(self, figsize, cmap, map_ticks)
-        elif version == "elena":
+        elif int(version) == 2:
             if mca is None:
-                raise TypeError("Expected argument `mca` for version `elena`")
+                raise TypeError("Expected argument `mca` for version `2`")
             if map_ticks is not None:
-                raise TypeError("Unexpected argument `map_ticks` for version `elena`")
+                raise TypeError("Unexpected argument `map_ticks` for version `2`")
             if cmap is not None:
-                raise TypeError("Unexpected argument `cmap` for version `elena`")
-            fig, axs = _plot_validation_elena(self, figsize, mca)
+                raise TypeError("Unexpected argument `cmap` for version `2`")
+            fig, axs = _plot_validation_2(self, figsize, mca)
         else:
-            raise ValueError(f"Version can only be one of: `elena`, `default`")
+            raise ValueError(f"Version can only be one of: `2`, `default`")
 
         if folder is None:
             folder = '.'
@@ -299,6 +305,7 @@ class Validation(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
+        plot_type: Literal["contour", "pcolor"] = "contour",
     ) -> Tuple[plt.Figure, Tuple[plt.Axes, plt.Axes, plt.Axes]]:
         """Plots the map of Zhat
 
@@ -325,6 +332,9 @@ class Validation(_Procedure):
             Ticks for the z map
         figsize
             Set figure size. See `plt.figure`
+        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
+            Plot type. If `contour` it will use function `ax.contourf`, 
+            if `pcolor` `ax.pcolormesh`.
 
         Returns
         -------
@@ -334,6 +344,9 @@ class Validation(_Procedure):
         Sequence[plt.Axes]
             Tuple of axes in figure
         """
+        if plot_type not in ("contour", "pcolor"):
+            raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
+        
         nts, nylat, nylon = len(self._validating_dsy.time), len(self._validating_dsy.lat), len(self._validating_dsy.lon)
         nts, nzlat, nzlon = len(self._validating_dsz.time), len(self._validating_dsz.lat), len(self._validating_dsz.lon)
 
@@ -357,7 +370,7 @@ class Validation(_Procedure):
         else:
             y_xlim = [self._validating_dsy.region.lon0 - 180, self._validating_dsy.region.lonf + 180]
         _plot_map(d0[yindex], self._validating_dsy.lat, self._validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim,
-                  add_cyclic_point=self._validating_dsy.region.lon0 >= self._validating_dsy.region.lonf)
+                  add_cyclic_point=self._validating_dsy.region.lon0 >= self._validating_dsy.region.lonf, plot_type=plot_type)
 
         d1 = self.zhat.transpose().reshape((nts, nzlat, nzlon))
         d2 = self._validating_dsz.data.transpose().reshape((nts, nzlat, nzlon))
@@ -375,12 +388,12 @@ class Validation(_Procedure):
         _plot_map(
             d1[zindex], self._validating_dsz.lat, self._validating_dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim,
-            add_cyclic_point=self._validating_dsz.region.lon0 >= self._validating_dsz.region.lonf,
+            add_cyclic_point=self._validating_dsz.region.lon0 >= self._validating_dsz.region.lonf, plot_type=plot_type,
         )
         _plot_map(
             d2[zindex], self._validating_dsz.lat, self._validating_dsz.lon, fig, ax2, f'Z on year {year}',
             cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim,
-            add_cyclic_point=self._validating_dsz.region.lon0 >= self._validating_dsz.region.lonf,
+            add_cyclic_point=self._validating_dsz.region.lon0 >= self._validating_dsz.region.lonf, plot_type=plot_type,
         )
 
         fig.suptitle(
@@ -409,7 +422,7 @@ class Validation(_Procedure):
         return fig, (ax0, ax1, ax2)
 
 
-def _plot_validation_elena(
+def _plot_validation_2(
     validation: Validation,
     figsize: Optional[Tuple[float, float]],
     mca: MCA,
@@ -423,7 +436,8 @@ def _plot_validation_default(
     cmap: str,
     map_ticks: Optional[
         Union[npt.NDArray[np.float32], Sequence[float]]
-    ]
+    ],
+    plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     """
     Plots:
@@ -462,6 +476,7 @@ def _plot_validation_default(
         cmap=cmap,
         ticks=map_ticks,
         add_cyclic_point=validation.validating_dsz.region.lon0 >= validation.validating_dsz.region.lonf,
+        plot_type=plot_type,
     )
 
     ax01 = fig.add_subplot(1, 2, 2)

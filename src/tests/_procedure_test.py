@@ -63,6 +63,31 @@ class ProcedureTest(BaseTestCase):
         )
         plt.close(fig)
 
+        nlat = 20
+        nlon = 30
+        lat = np.linspace(-20, 20, nlat)
+        _lon = np.arange(-179.5, 179.5, 10) 
+        lon = np.concatenate([_lon[:nlon//2], _lon[-nlon//2:]])
+        arr = np.array([[x for x in range(nlon)] for _ in range(nlat)])
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection=ccrs.PlateCarree())
+        _plot_map(
+            arr=arr,
+            lat=lat,
+            lon=lon,
+            fig=fig,
+            ax=ax,
+            title='This is a title',
+            levels=None,
+            xlim=None,
+            ylim=None,
+            cmap=None,
+            ticks=None,
+            add_cyclic_point=False,
+            plot_type="pcolor",
+        )
+        plt.close(fig)
+
     def test__plot_ts(self) -> None:
         fig = plt.figure()
         ax = fig.add_subplot(111)
