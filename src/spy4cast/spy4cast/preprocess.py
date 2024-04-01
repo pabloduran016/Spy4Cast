@@ -104,16 +104,18 @@ class Preprocess(_Procedure):
         assert len(ds.data.dims) == 3
         anomaly = Anom(ds, 'map').data
         self._ds: Dataset = ds
+        
+        anomaly = anomaly.transpose(
+            'year', ds._lat_key,  ds._lon_key
+        )
+
+        nt, nlat, nlon = anomaly.shape
+
+        data = anomaly.values.reshape((nt, nlat * nlon)).transpose()  # space x time
 
         if order is not None and period is not None:
             b, a = cast(Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]], signal.butter(order, 2 / period, btype=freq, analog=False, output='ba', fs=None))
-            anomaly = xr.apply_ufunc(
-                lambda ts: signal.filtfilt(b, a, ts),
-                anomaly,
-                dask='allowed',
-                input_core_dims=[['year']],
-                output_core_dims=[['year']]
-            )
+            data = np.apply_along_axis(lambda ts: signal.filtfilt(b, a, ts), 1, data)
         elif order is not None or period is not None:
             if order is None:
                 raise TypeError('Missing keyword argument `order`')
@@ -122,15 +124,7 @@ class Preprocess(_Procedure):
             else:
                 assert False, 'Unreachable'
 
-        anomaly = anomaly.transpose(
-            'year', ds._lat_key,  ds._lon_key
-        )
-
-        nt, nlat, nlon = anomaly.shape
-
-        self._land_data = LandArray(anomaly.values.reshape(
-            (nt, nlat * nlon)
-        ).transpose())
+        self._land_data = LandArray(data)
 
         self._time = anomaly['year']
         self._lat = anomaly[ds._lat_key]
