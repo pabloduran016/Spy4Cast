@@ -358,7 +358,7 @@ class MCA(_Procedure):
         Parameters
         ----------
         save_fig
-            Saves the fig in with `folder` / `name` parameters
+            Saves the fig using `folder` and `name` parameters
         show_plot
             Shows the plot but does NOT stop the program. Calls `fig.show`. 
             If you want the behaviour of `plt.plot` add the halt_program option.

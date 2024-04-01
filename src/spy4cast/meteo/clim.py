@@ -310,7 +310,7 @@ class Clim(_Procedure, object):
         Parameters
         ----------
         save_fig
-            Saves the fig in with `folder` / `name` parameters
+            Saves the fig using `folder` and `name` parameters
         show_plot
             Shows the plot
         halt_program
