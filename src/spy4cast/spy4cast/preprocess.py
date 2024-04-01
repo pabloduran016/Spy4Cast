@@ -106,7 +106,7 @@ class Preprocess(_Procedure):
         self._ds: Dataset = ds
 
         if order is not None and period is not None:
-            b, a = cast(Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]], signal.butter(order, 1 / period, btype=freq, analog=False, output='ba', fs=None))
+            b, a = cast(Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]], signal.butter(order, 2 / period, btype=freq, analog=False, output='ba', fs=None))
             anomaly = xr.apply_ufunc(
                 lambda ts: signal.filtfilt(b, a, ts),
                 anomaly,
