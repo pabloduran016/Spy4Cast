@@ -348,6 +348,7 @@ class MCA(_Procedure):
         nm: Optional[int] = None,
         map_y: Optional[Preprocess] = None,
         map_z: Optional[Preprocess] = None,
+        rect_color: Union[Tuple[int, int, int], str] = "r",
         sig: Optional[Literal["monte-carlo", "test-t"]] = None,
         montecarlo_iterations: Optional[int] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
@@ -389,6 +390,8 @@ class MCA(_Procedure):
             Y to plot the map
         map_z : Preprocess
             Z to plot the map
+        rect_color: (r, g, b) or string, default = "r"
+            Color of the rectangle when using map_y and map_z that outlines the region where the methodology was originally ran
         sig : {"monte-carlo", "test-t"}
             Significance method when map_y or map_z is set
         montecarlo_iterations : int
@@ -488,7 +491,8 @@ class MCA(_Procedure):
             fig_i, axs_i = _new_mca_page(
                 self, cmap=cmap, signs=signs, ruy_ticks=ruy_ticks, ruz_ticks=ruz_ticks, 
                 ruy_levels=ruy_levels, ruz_levels=ruz_levels, figsize=figsize, mode0=mode0, modef=modef,
-                ruy=ruy, ruy_sig=ruy_sig, ruz=ruz, ruz_sig=ruz_sig, map_y=map_y, map_z=map_z, plot_type=plot_type
+                ruy=ruy, ruy_sig=ruy_sig, ruz=ruz, ruz_sig=ruz_sig, map_y=map_y, map_z=map_z, plot_type=plot_type, 
+                rect_color=rect_color,
             )
 
             if folder is None:
@@ -607,6 +611,7 @@ def _new_mca_page(
     ruz_sig: npt.NDArray[np.float_],
     map_y: Preprocess,
     map_z: Preprocess,
+    rect_color: Union[Tuple[int, int, int], str],
     plot_type: Literal["contour", "pcolor"],
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     nm = modef - mode0 + 1
@@ -710,7 +715,7 @@ def _new_mca_page(
                 xy=[original_region.lon0, original_region.lat0],
                 width=width,
                 height=height,
-                facecolor='none', edgecolor='r',
+                facecolor='none', edgecolor=rect_color,
                 transform=ccrs.PlateCarree())
             ax_map.add_patch(rect)
 
