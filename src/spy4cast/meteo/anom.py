@@ -329,7 +329,7 @@ class Anom(_Procedure):
         folder: str = '.',
         name: str = 'anomaly.png',
         levels: Optional[
-            Union[npt.NDArray[np.float32], Sequence[float], bool]
+            Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
@@ -404,6 +404,8 @@ class Anom(_Procedure):
                 fontweight='bold'
             )
         elif self._type == PlotType.MAP:
+            if plot_type is None:
+                plot_type = 'contour'
             if plot_type not in ("contour", "pcolor"):
                 raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
             nlat, nlon = len(self.lat), len(self.lon)

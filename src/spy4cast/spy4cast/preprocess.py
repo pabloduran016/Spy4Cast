@@ -122,7 +122,7 @@ class Preprocess(_Procedure):
 
         if order is not None and period is not None:
             b, a = cast(Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]], signal.butter(order, 2 / period, btype=freq, analog=False, output='ba', fs=None))
-            data = np.apply_along_axis(lambda ts: signal.filtfilt(b, a, ts), 1, data)
+            data = np.apply_along_axis(lambda ts: cast(Tuple[npt.NDArray[np.float_]], signal.filtfilt(b, a, ts)), 1, data)
         elif order is not None or period is not None:
             if order is None:
                 raise TypeError('Missing keyword argument `order`')

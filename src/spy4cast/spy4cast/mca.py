@@ -661,7 +661,10 @@ def _new_mca_page(
             label='Vs'
         )
         ax_ts.xaxis.set_major_locator(ticker.MaxNLocator(nbins=5, integer=True))
-        ax_ts.legend()
+        ax_ts.set_xlim(xmin=min(mca._dsy.time.values[0], mca._dsz.time.values[0]), 
+                       xmax=max(mca._dsy.time.values[-1], mca._dsz.time.values[-1]))
+        if i == 0:
+            ax_ts.legend()
         ax_ts.grid(True)
 
         # RUY and RUZ map
