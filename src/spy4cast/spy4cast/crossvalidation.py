@@ -952,12 +952,11 @@ def _plot_crossvalidation_default(
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     figsize = _calculate_figsize(1/3, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
     fig = plt.figure(figsize=figsize)
-    gs = gridspec.GridSpec(2, 6, height_ratios=[1, 0.08], wspace=1)
-    # gs = gridspec.GridSpec(4, 6, height_ratios=[1, 0.08, 1, 0.08], width_ratios=[1, 1, 1, 1, 1, 1], wspace=0.1)
+    gs = gridspec.GridSpec(4, 6, height_ratios=[1, 0.08, 1, 0.08], width_ratios=[1, 1, 1, 1, 1, 1], wspace=0.1)
     axs = (
         fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
         fig.add_subplot(gs[0:2, 3:6]),
-        # fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
+        fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
     )
 
     nzlat = len(cross._dsz.lat)
@@ -1019,27 +1018,27 @@ def _plot_crossvalidation_default(
     # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
 
     # RMSE
-    # lon = cross._dsz.lon
-    # lat = cross._dsz.lat
-    # time = cross._dsz.time
-    # nlon, nlat, nt = len(lon), len(lat), len(time)
-    # zhat = cross.zhat_accumulated_modes[-1, :].transpose().reshape((nt, nlat, nlon))
-    # zdata = cross._dsz.data.transpose().reshape((nt, nlat, nlon))
+    lon = cross._dsz.lon
+    lat = cross._dsz.lat
+    time = cross._dsz.time
+    nlon, nlat, nt = len(lon), len(lat), len(time)
+    zhat = cross.zhat_accumulated_modes[-1, :].transpose().reshape((nt, nlat, nlon))
+    zdata = cross._dsz.data.transpose().reshape((nt, nlat, nlon))
 
-    # d = np.sqrt(np.nansum((zhat - zdata)**2, axis=0) / nt)
+    d = np.sqrt(np.nansum((zhat - zdata)**2, axis=0) / nt)
 
-    # im = _plot_map(
-    #     d, cross._dsz.lat, cross._dsz.lon, fig, axs[2],
-    #     'RMSE',
-    #     cmap="Reds",
-    #     ticks=None,
-    #     levels=None,
-    #     xlim=xlim,
-    #     colorbar=False,
-    #     add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
-    #     plot_type=plot_type,
-    # )
-    # cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 2:4]), orientation='horizontal')
+    im = _plot_map(
+        d, cross._dsz.lat, cross._dsz.lon, fig, axs[2],
+        'RMSE',
+        cmap="Reds",
+        ticks=None,
+        levels=None,
+        xlim=xlim,
+        colorbar=False,
+        add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
+        plot_type=plot_type,
+    )
+    cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 2:4]), orientation='horizontal')
     # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
     
     '''
