@@ -933,27 +933,14 @@ def _plot_crossvalidation_default(
     nm: Optional[int] = None,
     plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
-    """
-    Plots:
-      - r_z_zhat_s and p_z_zhat_s: Cartopy map of r
-        and then hatches when p is <= alpha
-      - r_z_zhat_t and p_z_zhat_t: Bar plot of r
-        and then points when p is <= alpha
-      - scf: Draw scf for all times for mode i.
-        For the time being all in one plot
-      - US
-    """
-
-    # Layout:
-    #    r_z_zhat_s    r_z_zhat_t
-    #       scf           r_uv_1
-    #     r_uv_1          r_uv_2
     figsize = _calculate_figsize(1/3, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
     fig = plt.figure(figsize=figsize)
-    gs = gridspec.GridSpec(2, 2, height_ratios=[1, 0.08], width_ratios=[1, 1.2])
+    gs = gridspec.GridSpec(2, 6, height_ratios=[1, 0.08], wspace=1)
+    # gs = gridspec.GridSpec(4, 6, height_ratios=[1, 0.08, 1, 0.08], width_ratios=[1, 1, 1, 1, 1, 1], wspace=0.1)
     axs = (
-        fig.add_subplot(gs[0, 0], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
-        fig.add_subplot(gs[:, 1]),
+        fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
+        fig.add_subplot(gs[0:2, 3:6]),
+        # fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
     )
 
     nzlat = len(cross._dsz.lat)
@@ -988,7 +975,7 @@ def _plot_crossvalidation_default(
     hatches = d.copy()
     hatches[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (
                 cross.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
-    cb = fig.colorbar(im, cax=fig.add_subplot(gs[1, 0]), orientation='horizontal', ticks=map_ticks)
+    cb = fig.colorbar(im, cax=fig.add_subplot(gs[1, 0:3]), orientation='horizontal', ticks=map_ticks)
     if map_ticks is None:
         tick_locator = ticker.MaxNLocator(nbins=5, prune='both', steps=[2, 5])
         #ticks = tick_locator.tick_values(vmin=cb.vmin, vmax=cb.vmax)
@@ -1013,6 +1000,30 @@ def _plot_crossvalidation_default(
     axs[1].set_title('Correlation in space between z and zhat')
     axs[1].grid(True)
     # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
+
+    # RMSE
+    # lon = cross._dsz.lon
+    # lat = cross._dsz.lat
+    # time = cross._dsz.time
+    # nlon, nlat, nt = len(lon), len(lat), len(time)
+    # zhat = cross.zhat_accumulated_modes[-1, :].transpose().reshape((nt, nlat, nlon))
+    # zdata = cross._dsz.data.transpose().reshape((nt, nlat, nlon))
+
+    # d = np.sqrt(np.nansum((zhat - zdata)**2, axis=0) / nt)
+
+    # im = _plot_map(
+    #     d, cross._dsz.lat, cross._dsz.lon, fig, axs[2],
+    #     'RMSE',
+    #     cmap="Reds",
+    #     ticks=None,
+    #     levels=None,
+    #     xlim=xlim,
+    #     colorbar=False,
+    #     add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
+    #     plot_type=plot_type,
+    # )
+    # cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 2:4]), orientation='horizontal')
+    # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
     
     '''
     # ------ scf ------ #
