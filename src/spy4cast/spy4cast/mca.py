@@ -32,6 +32,9 @@ from ..land_array import LandArray
 class MCA(_Procedure):
     """Maximum covariance analysis between y (predictor) and Z (predictand)
 
+    .. note::
+        **Always** detrends the `y` field  on the time axis
+
     Parameters
     ----------
         dsy : Preprocess
@@ -255,7 +258,7 @@ class MCA(_Procedure):
         nz, nt = z.shape
         ny, nt = y.shape
 
-        y.values[~y.land_mask] = signal.detrend(y.not_land_values)
+        y.values[~y.land_mask] = signal.detrend(y.not_land_values)  # detrend in time
 
         c = np.dot(y.not_land_values, np.transpose(z.not_land_values))
         if type(c) == np.ma.MaskedArray:

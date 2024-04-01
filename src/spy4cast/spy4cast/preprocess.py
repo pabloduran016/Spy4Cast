@@ -37,6 +37,8 @@ class Preprocess(_Procedure):
             If specified as well as period, a butterworth filter with those parameters will be applied
         freq : {'high', 'low'}, default = 'high'
             If specified as well as period, a butterworth filter with those parameters will be applied
+        detrend : bool, default = False
+            Apply `scipy.signal.detrend` on the time axis.
 
     Examples
     --------
@@ -52,6 +54,10 @@ class Preprocess(_Procedure):
     Add a butterworth filter
 
     >>> y = Preprocess(ds, period=12, order=4)
+
+    Detrend
+
+    >>> y = Preprocess(ds, detrend=True)
 
     Acces all the :doc:`/variables/preprocess` easily
 
@@ -97,7 +103,8 @@ class Preprocess(_Procedure):
         ds: Dataset,
         order: Optional[int] = None,
         period: Optional[float] = None,
-        freq: Literal["high", "low"] = "high"
+        freq: Literal["high", "low"] = "high",
+        detrend: bool = False,
     ):
         _debuginfo(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
@@ -125,6 +132,9 @@ class Preprocess(_Procedure):
                 assert False, 'Unreachable'
 
         self._land_data = LandArray(data)
+
+        if detrend:
+            self._land_data.values[~self._land_data.land_mask] = signal.detrend(self._land_data.not_land_values)  # detrend in time
 
         self._time = anomaly['year']
         self._lat = anomaly[ds._lat_key]
