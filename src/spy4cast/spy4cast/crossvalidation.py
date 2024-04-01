@@ -521,10 +521,10 @@ class Crossvalidation(_Procedure):
         folder: Optional[str] = None,
         name: Optional[str] = None,
         cmap: str = 'bwr',
-        yticks: Optional[
+        y_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-        zticks: Optional[
+        z_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         y_levels: Optional[
@@ -555,9 +555,9 @@ class Crossvalidation(_Procedure):
             Name of the fig saved if `save_fig` is `True`
         cmap
             Colormap for the predicting map
-        yticks
+        y_ticks
             Ticks for the y map
-        zticks
+        z_ticks
             Ticks for the z map
         y_levels
             Levels for the map y
@@ -609,7 +609,7 @@ class Crossvalidation(_Procedure):
             y_xlim = sorted((self._dsy.lon.values[0], self._dsy.lon.values[-1]))
         else:
             y_xlim = [self._dsy.region.lon0 - 180, self._dsy.region.lonf + 180]
-        _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim, 
+        _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim, 
                   cax=fig.add_subplot(gs[1]), add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type,
                   levels=y_levels)
 
@@ -625,12 +625,12 @@ class Crossvalidation(_Procedure):
             z_xlim = [self._dsz.region.lon0 - 180, self._dsz.region.lonf + 180]
         _plot_map(
             d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
-            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim, colorbar=False,
+            cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim, colorbar=False,
             add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
         )
         _plot_map(
             d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
-            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim, cax=fig.add_subplot(gs[4]),
+            cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim, cax=fig.add_subplot(gs[4]),
             add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
         )
 
