@@ -320,7 +320,7 @@ class MCA(_Procedure):
                 self.SUZ[:, i],
                 self.SUZ_sig[:, i]
             ) = index_regression(z, self.Us[i, :], alpha, sig, montecarlo_iterations)
-        self.psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, nm)
+        self.psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, nm, scf)
 
     def plot(
         self,
@@ -865,8 +865,10 @@ def calculate_psi(
     nt: int,
     ny: int,
     nm: int,
+    scf: npt.NDArray[np.float_],
 ) -> npt.NDArray[np.float32]:
     # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
+    # suy = suy * scf[np.newaxis, :]
     return cast(
         npt.NDArray[np.float32],
         np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt * nm / ny)

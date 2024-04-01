@@ -33,3 +33,10 @@ foo*
 *.cmd
 *.zip
 *.egg-info
+
+build
+
+data-*
+plots-*
+runs/
+

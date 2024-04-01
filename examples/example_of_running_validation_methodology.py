@@ -59,9 +59,9 @@ MCA_PLOT_NAME = 'mca.png'
 VALIDATION_PREFIX = 'validation_'
 VALIDATION_PLOT_NAME = 'validation.png'
 
-LOAD_PREPROCESSED = True
-LOAD_MCA = True
-LOAD_VALIDATION = True
+LOAD_PREPROCESSED = False
+LOAD_MCA = False
+LOAD_VALIDATION = False
 
 if LOAD_PREPROCESSED:
     training_predictor_preprocessed = Preprocess.load(TRAINING_PREDICTOR_PREPROCESSED_PREFIX, DATA_DIR)
@@ -97,7 +97,7 @@ else:
     validation.save(VALIDATION_PREFIX, DATA_DIR)
 
 validation.plot(save_fig=True, folder=PLOTS_DIR, name=VALIDATION_PLOT_NAME, version='default')
-validation.plot_zhat(2015, save_fig=True, folder=PLOTS_DIR, name=VALIDATION_PLOT_NAME)
+validation.plot_zhat(2015, save_fig=True, folder=PLOTS_DIR, name="zhat_" + VALIDATION_PLOT_NAME)
 
 
 import matplotlib.pyplot as plt

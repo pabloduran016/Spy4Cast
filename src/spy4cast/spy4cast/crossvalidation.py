@@ -59,7 +59,7 @@ class Crossvalidation(_Procedure):
     ...         Region(-80, 30, -70, 50, Month.JUN, Month.AUG, 1960, 2010)))
     >>> map_z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
     ...         Region(-60, 60, -150, 150, Month.DEC, Month.FEB, 1961, 2011)))
-    >>> mca = Crossvalidation(y, z, 3, 0.01)
+    >>> mca = MCA(y, z, 3, 0.01)
 
     All the :doc:`/variables/crossvalidation` easily accesioble
 
@@ -78,7 +78,7 @@ class Crossvalidation(_Procedure):
 
     Reuse the previuosly ran data easily with one line
 
-    >>> cross = cross.load("saved_cross_", folder="saved_data", dsy=y, dsz=z)  # IMPORTANT TO USE dsy= and dsz=
+    >>> cross = Crossvalidation.load("saved_cross_", folder="saved_data", dsy=y, dsz=z)  # IMPORTANT TO USE dsy= and dsz=
 
     Plot with one line and several options
 
@@ -349,8 +349,24 @@ class Crossvalidation(_Procedure):
         zhat_accumulated_modes[:, z2.land_mask] = np.nan
 
         for mode in range(nm):
-            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, mode:mode + 1], mca_out.Us[mode:mode + 1, :], z2.not_land_values, nt - 1, ny, nm).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
-            psi_accumulated_modes[mode, ~np.isnan(psi_accumulated_modes[mode])] = calculate_psi(mca_out.SUY[~y2.land_mask, :mode + 1], mca_out.Us[:mode + 1, :], z2.not_land_values, nt - 1, ny, mode + 1).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
+            psi_separated_modes[mode, ~np.isnan(psi_separated_modes[mode])] = calculate_psi(
+                mca_out.SUY[~y2.land_mask, mode:mode + 1], 
+                mca_out.Us[mode:mode + 1, :],
+                z2.not_land_values, 
+                nt - 1, 
+                ny,
+                nm,
+                mca_out.scf[mode:mode + 1]
+            ).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
+            psi_accumulated_modes[mode, ~np.isnan(psi_accumulated_modes[mode])] = calculate_psi(
+                mca_out.SUY[~y2.land_mask, :mode + 1], 
+                mca_out.Us[:mode + 1, :],
+                z2.not_land_values,
+                nt - 1,
+                ny,
+                mode + 1,
+                mca_out.scf[:mode + 1]
+            ).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
 
             zhat_separated_modes[mode, ~z2.land_mask] = np.dot(np.transpose(y.not_land_values[:, year]), psi_separated_modes[mode, ~y2.land_mask, :][:, ~z2.land_mask])
             zhat_accumulated_modes[mode, ~z2.land_mask] = np.dot(np.transpose(y.not_land_values[:, year]), psi_accumulated_modes[mode, ~y2.land_mask, :][:, ~z2.land_mask])
@@ -452,7 +468,7 @@ class Crossvalidation(_Procedure):
         Plot cross result in a bigger region
 
         >>> from spy4cast import Dataset, Region, Month
-        >>> from spy4cast.spy4cast import cross, Preprocess
+        >>> from spy4cast.spy4cast import Crossvalidation, Preprocess
         >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
         ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))
         >>> z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
@@ -617,8 +633,9 @@ class Crossvalidation(_Procedure):
         d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
 
         n = 20
-        levels = np.linspace(-1, 1, n) if z_levels is None else z_levels
-
+        _m = np.nanmean([np.nanmean(d2), np.nanmean(d1)])
+        _s = np.nanmean([np.nanstd(d2), np.nanstd(d1)])
+        levels = np.linspace(_m -2*_s, _m + 2*_s, n)
         if self._dsz.region.lon0 < self._dsz.region.lonf:
             z_xlim = sorted((self._dsz.lon.values[0], self._dsz.lon.values[-1]))
         else:
@@ -695,7 +712,7 @@ class Crossvalidation(_Procedure):
         Save: on a previous run the crossvalidation is calcuated
         
         >>> from spy4cast import Dataset, Region, Month
-        >>> from spy4cast.spy4cast import cross, Preprocess
+        >>> from spy4cast.spy4cast import Crossvalidation, Preprocess
         >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
         ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))
         >>> z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
@@ -705,7 +722,7 @@ class Crossvalidation(_Procedure):
 
         Load: To avoid running the methodology again for plotting and analysis load the data directly
 
-        >>> from spy4cast.spy4cast import cross, Preprocess
+        >>> from spy4cast.spy4cast import Crossvalidation, Preprocess
         >>> from spy4cast import Dataset, Region, Month
         >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
         ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))  # YOU SHOULD USE THE SAME REGION
