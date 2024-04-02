@@ -89,10 +89,10 @@ class Validation(_Procedure):
 
     Attributes
     ----------
-        psi : npt.NDArray[np.float32]
+        psi_accumulated_modes : npt.NDArray[np.float32]
             Psi calculated with the training MCA data. Dimension: 1 x training_y_space x training_z_space
-        zhat : npt.NDArray[np.float32]
-            Zhat predicted for the predictand. Dimension: 1 x validating_z_space x validating_z_time
+        zhat_accumulated_modes : npt.NDArray[np.float32]
+            Zhat predicted for the predictand using all modes accumulated. Dimension: 1 x validating_z_space x validating_z_time
         r_z_zhat_t_accumulated_modes : npt.NDArray[np.float32]
             Correlation in time for accumlating all modes selected (nm) between z and zhat. Dimension: 1 x valudating_z_time
         p_z_zhat_t_accumulated_modes : npt.NDArray[np.float32]
@@ -112,8 +112,8 @@ class Validation(_Procedure):
     def var_names(self) -> Tuple[str, ...]:
         """Returns the variables contained in the object"""
         return (
-            'psi',
-            'zhat',
+            'psi_accumulated_modes',
+            'zhat_accumulated_modes',
             'r_z_zhat_t_accumulated_modes',
             'p_z_zhat_t_accumulated_modes',
             'r_z_zhat_s_accumulated_modes',
@@ -158,14 +158,14 @@ class Validation(_Procedure):
         common_z_land_mask = validating_dsz.land_data.land_mask | training_mca._dsz.land_data.land_mask
         common_y_land_mask = validating_dsy.land_data.land_mask | training_mca._dsy.land_data.land_mask
 
-        self.psi = np.zeros([1, training_mca._dsy.data.shape[0], training_mca._dsz.data.shape[0]], dtype=np.float32)
-        self.zhat = np.zeros([1, validating_dsz.land_data.shape[0], validating_dsz.time.shape[0]], dtype=np.float32)
+        self.psi_accumulated_modes = np.zeros([1, training_mca._dsy.data.shape[0], training_mca._dsz.data.shape[0]], dtype=np.float32)
+        self.zhat_accumulated_modes = np.zeros([1, validating_dsz.land_data.shape[0], validating_dsz.time.shape[0]], dtype=np.float32)
 
-        self.psi[:, common_y_land_mask, :] = np.nan
-        self.psi[:, :, common_z_land_mask] = np.nan
-        self.zhat[:, common_z_land_mask] = np.nan
+        self.psi_accumulated_modes[:, common_y_land_mask, :] = np.nan
+        self.psi_accumulated_modes[:, :, common_z_land_mask] = np.nan
+        self.zhat_accumulated_modes[:, common_z_land_mask] = np.nan
 
-        self.psi[0, ~np.isnan(self.psi[0])] = calculate_psi(
+        self.psi_accumulated_modes[0, ~np.isnan(self.psi_accumulated_modes[0])] = calculate_psi(
             self._training_mca.SUY[~common_y_land_mask, :],
             self._training_mca.Us[:, :],
             self._training_mca._dsz.data[~common_z_land_mask, :],
@@ -175,19 +175,19 @@ class Validation(_Procedure):
             self._training_mca.scf
         ).reshape((~common_y_land_mask).sum() * (~common_z_land_mask).sum())
 
-        self.zhat[0, ~common_z_land_mask, :] = np.dot(
+        self.zhat_accumulated_modes[0, ~common_z_land_mask, :] = np.dot(
             validating_dsy.land_data.not_land_values[:, :].T,
-            self.psi[0, ~common_y_land_mask, :][:, ~common_z_land_mask]).T
+            self.psi_accumulated_modes[0, ~common_y_land_mask, :][:, ~common_z_land_mask]).T
 
         new_z_land_array = LandArray(self._validating_dsz.data)
         new_z_land_array.update_land(common_z_land_mask)
         self.r_z_zhat_t_accumulated_modes, self.p_z_zhat_t_accumulated_modes, \
             _r_z_zhat_t_separated_modes, _p_z_zhat_t_separated_modes \
-            = calculate_time_correlation(new_z_land_array, self.zhat)
+            = calculate_time_correlation(new_z_land_array, self.zhat_accumulated_modes)
 
         self.r_z_zhat_s_accumulated_modes, self.p_z_zhat_s_accumulated_modes, \
             _r_z_zhat_s_separated_modes, _p_z_zhat_s_separated_modes \
-            = calculate_space_correlation(new_z_land_array, self.zhat)
+            = calculate_space_correlation(new_z_land_array, self.zhat_accumulated_modes)
 
         debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
 
@@ -514,7 +514,7 @@ class Validation(_Procedure):
         _plot_map(d0[yindex], self._validating_dsy.lat, self._validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim,
                   add_cyclic_point=self._validating_dsy.region.lon0 >= self._validating_dsy.region.lonf, plot_type=plot_type)
 
-        d1 = self.zhat.transpose().reshape((nts, nzlat, nzlon))
+        d1 = self.zhat_accumulated_modes.transpose().reshape((nts, nzlat, nzlon))
         d2 = self._validating_dsz.data.transpose().reshape((nts, nzlat, nzlon))
 
         n = 20
@@ -584,15 +584,14 @@ def _plot_validation_default(
     nm: Optional[int] = None,
     plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
-    figsize = _calculate_figsize(1/3, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+    figsize = _calculate_figsize(1.5/3, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
     fig = plt.figure(figsize=figsize)
 
-    gs = gridspec.GridSpec(2, 6, height_ratios=[1, 0.08], wspace=1)
-    # gs = gridspec.GridSpec(4, 6, height_ratios=[1, 0.08, 1, 0.08], width_ratios=[1, 1, 1, 1, 1, 1], wspace=0.1)
+    gs = gridspec.GridSpec(4, 6, height_ratios=[1, 0.08, 1, 0.08], width_ratios=[1, 1, 1, 1, 1, 1], wspace=1, hspace=0.5)
     axs = (
         fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(0 if validation.validating_dsz.region.lon0 < validation.validating_dsz.region.lonf else 180)),
         fig.add_subplot(gs[0:2, 3:6]),
-        # fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
+        fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(0 if validation.validating_dsz.region.lon0 < validation.validating_dsz.region.lonf else 180)),
     )
 
     nzlat, nzlon = len(validation.validating_dsz.lat), (len(validation.validating_dsz.lon))
@@ -651,10 +650,33 @@ def _plot_validation_default(
     axs[1].grid(True)
     # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
 
+    # RMSE
+    lon = validation.validating_dsz.lon
+    lat = validation.validating_dsz.lat
+    time = validation.validating_dsz.time
+    nlon, nlat, nt = len(lon), len(lat), len(time)
+    zhat = validation.zhat_accumulated_modes[-1, :].transpose().reshape((nt, nlat, nlon))
+    zdata = validation.validating_dsz.data.transpose().reshape((nt, nlat, nlon))
+
+    d = np.sqrt(np.nansum((zhat - zdata)**2, axis=0) / nt)
+
+    im = _plot_map(
+        d, validation.validating_dsz.lat, validation.validating_dsz.lon, fig, axs[2],
+        'RMSE',
+        cmap="Reds",
+        ticks=None,
+        levels=None,
+        xlim=z_xlim,
+        colorbar=False,
+        add_cyclic_point=validation.validating_dsz.region.lon0 >= validation.validating_dsz.region.lonf,
+        plot_type=plot_type,
+    )
+    cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 2:4]), orientation='horizontal')
+
     fig.suptitle(
         f'Z({validation.validating_dsz.var}): {region2str(validation.validating_dsz.region)}, '
-            f'Y({validation.validating_dsy.var}): {region2str(validation.validating_dsy.region)}. '
-            f'Alpha: {validation.training_mca.alpha}',
+        f'Y({validation.validating_dsy.var}): {region2str(validation.validating_dsy.region)}. '
+        f'Alpha: {validation.training_mca.alpha}',
         fontweight='bold'
     )
 
