@@ -428,11 +428,17 @@ class Validation(_Procedure):
         folder: Optional[str] = None,
         name: Optional[str] = None,
         cmap: str = 'bwr',
-        yticks: Optional[
+        y_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-        zticks: Optional[
+        z_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
+        ] = None,
+        y_levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
+        ] = None,
+        z_levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
@@ -456,10 +462,14 @@ class Validation(_Procedure):
             Name of the fig saved if `save_fig` is `True`
         cmap
             Colormap for the predicting map
-        yticks
+        y_ticks
             Ticks for the y map
-        zticks
+        z_ticks
             Ticks for the z map
+        y_levels
+            Levels for the map y
+        z_levels
+            Levels for the map z
         figsize
             Set figure size. See `plt.figure`
         plot_type : {"contour", "pcolor"}, defaut = "pcolor"
@@ -511,8 +521,9 @@ class Validation(_Procedure):
             y_xlim = sorted((self._validating_dsy.lon.values[0], self._validating_dsy.lon.values[-1]))
         else:
             y_xlim = [self._validating_dsy.region.lon0 - 180, self._validating_dsy.region.lonf + 180]
-        _plot_map(d0[yindex], self._validating_dsy.lat, self._validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=yticks, xlim=y_xlim,
-                  add_cyclic_point=self._validating_dsy.region.lon0 >= self._validating_dsy.region.lonf, plot_type=plot_type)
+        _plot_map(d0[yindex], self._validating_dsy.lat, self._validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim,
+                  add_cyclic_point=self._validating_dsy.region.lon0 >= self._validating_dsy.region.lonf, plot_type=plot_type,
+                  levels=y_levels)
 
         d1 = self.zhat_accumulated_modes.transpose().reshape((nts, nzlat, nzlon))
         d2 = self._validating_dsz.data.transpose().reshape((nts, nzlat, nzlon))
@@ -520,7 +531,7 @@ class Validation(_Procedure):
         n = 20
         _m = np.nanmean([np.nanmean(d2), np.nanmean(d1)])
         _s = np.nanmean([np.nanstd(d2), np.nanstd(d1)])
-        levels = np.linspace(_m -2*_s, _m + 2*_s, n)
+        levels = z_levels if z_levels is not None else np.linspace(_m -2*_s, _m + 2*_s, n)
 
         if self._validating_dsz.region.lon0 < self._validating_dsz.region.lonf:
             z_xlim = sorted((self._validating_dsz.lon.values[0], self._validating_dsz.lon.values[-1]))
@@ -528,12 +539,12 @@ class Validation(_Procedure):
             z_xlim = [self._validating_dsz.region.lon0 - 180, self._validating_dsz.region.lonf + 180]
         _plot_map(
             d1[zindex], self._validating_dsz.lat, self._validating_dsz.lon, fig, ax1, f'Zhat on year {year}',
-            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim,
+            cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim,
             add_cyclic_point=self._validating_dsz.region.lon0 >= self._validating_dsz.region.lonf, plot_type=plot_type,
         )
         _plot_map(
             d2[zindex], self._validating_dsz.lat, self._validating_dsz.lon, fig, ax2, f'Z on year {year}',
-            cmap=cmap, levels=levels, ticks=zticks, xlim=z_xlim,
+            cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim,
             add_cyclic_point=self._validating_dsz.region.lon0 >= self._validating_dsz.region.lonf, plot_type=plot_type,
         )
 
