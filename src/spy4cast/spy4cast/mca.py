@@ -700,7 +700,6 @@ def _new_mca_page(
                 t, lats, lons, fig, ax_map, title,
                 levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
                 colorbar=False, add_cyclic_point=add_cyclic_point, plot_type=plot_type,
-                central_longitude=central_longitude
             )
             if i == nm - 1:
                 cb = fig.colorbar(im, cax=fig.add_subplot(gs[nm, j + 1]), orientation='horizontal', ticks=ticks,)

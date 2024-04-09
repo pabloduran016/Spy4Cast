@@ -608,7 +608,8 @@ def _plot_validation_default(
     axs = (
         fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(central_longitude_z)),
         fig.add_subplot(gs[0:2, 3:6]),
-        fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(central_longitude_z)),
+        fig.add_subplot(gs[2, 0:3], projection=ccrs.PlateCarree(central_longitude_z)),
+        fig.add_subplot(gs[2:4, 3:6]),
     )
 
     nzlat, nzlon = len(validation.validating_dsz.lat), (len(validation.validating_dsz.lon))
@@ -668,10 +669,10 @@ def _plot_validation_default(
     lat = validation.validating_dsz.lat
     time = validation.validating_dsz.time
     nlon, nlat, nt = len(lon), len(lat), len(time)
-    zhat = validation.zhat_accumulated_modes[-1, :].transpose().reshape((nt, nlat, nlon))
-    zdata = validation.validating_dsz.data.transpose().reshape((nt, nlat, nlon))
+    zhat = validation.zhat_accumulated_modes[-1, :]  # space x time
+    zdata = validation.validating_dsz.data  # space x time
 
-    d = np.sqrt(np.nansum((zhat - zdata)**2, axis=0) / nt)
+    rmse_map = np.sqrt(np.nansum((zhat - zdata)**2, axis=1) / nt).reshape((nlat, nlon))
 
     im = _plot_map(
         d, validation.validating_dsz.lat, validation.validating_dsz.lon, fig, axs[2],
@@ -684,7 +685,15 @@ def _plot_validation_default(
         add_cyclic_point=validation.validating_dsz.region.lon0 >= validation.validating_dsz.region.lonf,
         plot_type=plot_type,
     )
-    cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 2:4]), orientation='horizontal')
+    cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 0:3]), orientation='horizontal')
+
+    # RMSE time series
+    rmse_ts = np.sqrt(np.nansum((zhat - zdata)**2, axis=0) / (nlat * nlon))
+    axs[3].bar(validation.validating_dsz.time.values, rmse_ts, color="orange")
+    axs[3].xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
+    
+    axs[3].set_title('RMSE time series')
+    axs[3].grid(True)
 
     fig.suptitle(
         f'Z({validation.validating_dsz.var}): {region2str(validation.validating_dsz.region)}, '

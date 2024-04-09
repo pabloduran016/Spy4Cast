@@ -115,7 +115,6 @@ def _plot_map(
     labels: bool = True,
     add_cyclic_point: bool = False,
     plot_type: Literal["contour", "pcolor"] = "contour",
-    central_longitude: int = 0
 ) -> matplotlib.contour.QuadContourSet:
     if add_cyclic_point:
         arr, lon = _add_cyclic_point(arr, coord=lon)
@@ -311,6 +310,7 @@ def _get_xlim_from_region(lon0: float, lonf: float, cm: float) -> Tuple[float, f
 
     
 def _get_central_longitude_from_region(lon0: float, lonf: float) -> float:
+    central_longitude: float
     if lon0 < lonf:
         central_longitude = np.mean([lonf, lon0])
     else:

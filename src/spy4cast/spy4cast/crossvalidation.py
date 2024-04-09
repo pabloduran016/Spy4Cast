@@ -631,7 +631,7 @@ class Crossvalidation(_Procedure):
 
         _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim, 
                   cax=fig.add_subplot(gs[1]), add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type,
-                  levels=y_levels, central_longitude=central_longitude_y)
+                  levels=y_levels)
 
         d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
         d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
@@ -644,13 +644,11 @@ class Crossvalidation(_Procedure):
             d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim, colorbar=False,
             add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
-            central_longitude=central_longitude_z
         )
         _plot_map(
             d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
             cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim, cax=fig.add_subplot(gs[4]),
             add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
-            central_longitude=central_longitude_z
         )
 
         fig.suptitle(
@@ -965,7 +963,8 @@ def _plot_crossvalidation_default(
     axs = (
         fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(central_longitude_z)),
         fig.add_subplot(gs[0:2, 3:6]),
-        fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(central_longitude_z)),
+        fig.add_subplot(gs[2, 0:3], projection=ccrs.PlateCarree(central_longitude_z)),
+        fig.add_subplot(gs[2:4, 3:6]),
     )
 
     nzlat = len(cross._dsz.lat)
@@ -991,7 +990,6 @@ def _plot_crossvalidation_default(
         colorbar=False,
         add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
         plot_type=plot_type,
-        central_longitude=central_longitude_z
     )
 
     hatches = d.copy()
@@ -1028,13 +1026,13 @@ def _plot_crossvalidation_default(
     lat = cross._dsz.lat
     time = cross._dsz.time
     nlon, nlat, nt = len(lon), len(lat), len(time)
-    zhat = cross.zhat_accumulated_modes[-1, :].transpose().reshape((nt, nlat, nlon))
-    zdata = cross._dsz.data.transpose().reshape((nt, nlat, nlon))
+    zhat = cross.zhat_accumulated_modes[-1, :]  # space x time
+    zdata = cross._dsz.data  # space x time
 
-    d = np.sqrt(np.nansum((zhat - zdata)**2, axis=0) / nt)
+    rmse_map = np.sqrt(np.nansum((zhat - zdata)**2, axis=1) / nt).reshape((nlat, nlon))
 
     im = _plot_map(
-        d, cross._dsz.lat, cross._dsz.lon, fig, axs[2],
+        rmse_map, cross._dsz.lat, cross._dsz.lon, fig, axs[2],
         'RMSE map',
         cmap="Reds",
         ticks=None,
@@ -1043,21 +1041,18 @@ def _plot_crossvalidation_default(
         colorbar=False,
         add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
         plot_type=plot_type,
-        central_longitude=central_longitude_z
     )
-    cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 2:4]), orientation='horizontal')
+    cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 0:3]), orientation='horizontal')
     # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
     
-    # # RMSE time series
-    # axs[1].bar(cross._dsz.time.values, cross.r_z_zhat_t_accumulated_modes[-1, :])
-    # axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
-    #
-    # axs[1].scatter(
-    #     cross._dsz.time[cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha],
-    #     cross.r_z_zhat_t_accumulated_modes[-1, :][cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha]
-    # )
-    # axs[1].set_title('ACC time series')
-    # axs[1].grid(True)
+    # RMSE time series
+    rmse_ts = np.sqrt(np.nansum((zhat - zdata)**2, axis=0) / (nlat * nlon))
+    axs[3].bar(cross._dsz.time.values, rmse_ts, color="orange")
+    axs[3].xaxis.set_major_locator(MaxNLocator(integer=True))
+    
+    axs[3].set_title('RMSE time series')
+    axs[3].grid(True)
+
     '''
     # ------ scf ------ #
     for mode in range(cross.scf.shape[0]):
