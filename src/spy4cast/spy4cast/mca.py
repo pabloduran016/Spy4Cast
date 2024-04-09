@@ -16,7 +16,8 @@ from scipy.stats import stats
 
 from .. import Region
 from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
-from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts
+from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts, \
+    _get_xlim_from_region, _get_central_longitude_from_region
 from .preprocess import Preprocess
 
 
@@ -627,10 +628,17 @@ def _new_mca_page(
     figsize = _calculate_figsize(np.mean((1/zratio, 1/yratio)), maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
     fig: plt.Figure = plt.figure(figsize=figsize)
 
+    # central longitude
+    central_longitude_y = _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
+    y_xlim = _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
+
+    central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+    z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+
     axs = (
         *(fig.add_subplot(gs[i, 0]) for i in range(nm)),
-        *(fig.add_subplot(gs[i, 1], projection=ccrs.PlateCarree(0 if mca.dsy.region.lon0 < mca.dsy.region.lonf else 180)) for i in range(nm)),
-        *(fig.add_subplot(gs[i, 2], projection=ccrs.PlateCarree(0 if mca.dsz.region.lon0 < mca.dsz.region.lonf else 180)) for i in range(nm)),
+        *(fig.add_subplot(gs[i, 1], projection=ccrs.PlateCarree(central_longitude_y)) for i in range(nm)),
+        *(fig.add_subplot(gs[i, 2], projection=ccrs.PlateCarree(central_longitude_z)) for i in range(nm)),
     )
 
     for i in range(nm):
@@ -668,15 +676,10 @@ def _new_mca_page(
         ax_ts.grid(True)
 
         # RUY and RUZ map
-        for j, (var_name, ru, ru_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point, original_region) in enumerate((
-            ('RUY', ruy, ruy_sig, map_y.lat, map_y.lon, 'bwr', ruy_ticks, ruy_levels, map_y.region, map_y.region.lon0 >= map_y.region.lonf, mca.dsy.region),
-            ('RUZ', ruz, ruz_sig, map_z.lat, map_z.lon, cmap, ruz_ticks, ruz_levels, map_z.region, map_z.region.lon0 >= map_z.region.lonf, mca.dsz.region)
+        for j, (var_name, ru, ru_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point, original_region, central_longitude, xlim) in enumerate((
+            ('RUY', ruy, ruy_sig, map_y.lat, map_y.lon, 'bwr', ruy_ticks, ruy_levels, map_y.region, map_y.region.lon0 >= map_y.region.lonf, mca.dsy.region, central_longitude_y, y_xlim),
+            ('RUZ', ruz, ruz_sig, map_z.lat, map_z.lon, cmap, ruz_ticks, ruz_levels, map_z.region, map_z.region.lon0 >= map_z.region.lonf, mca.dsz.region, central_longitude_z, z_xlim)
         )):
-            
-            if region.lon0 < region.lonf:
-                xlim = sorted((lons.values[0], lons.values[-1]))
-            else:
-                xlim = [region.lon0 - 180, region.lonf + 180]
             ylim = sorted((lats.values[-1], lats.values[0]))
 
             if levels is None:
@@ -696,7 +699,8 @@ def _new_mca_page(
             im = _plot_map(
                 t, lats, lons, fig, ax_map, title,
                 levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
-                colorbar=False, add_cyclic_point=add_cyclic_point, plot_type=plot_type
+                colorbar=False, add_cyclic_point=add_cyclic_point, plot_type=plot_type,
+                central_longitude=central_longitude
             )
             if i == nm - 1:
                 cb = fig.colorbar(im, cax=fig.add_subplot(gs[nm, j + 1]), orientation='horizontal', ticks=ticks,)
@@ -871,7 +875,7 @@ def calculate_psi(
     # suy = suy * scf[np.newaxis, :]
     return cast(
         npt.NDArray[np.float32],
-        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt * nm / ny)
+        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt / ny)
     # (((SUY * inv(Us * Us')) * Us) * Z') / (ny * nm**2)
     # return cast(
     #     npt.NDArray[np.float32],

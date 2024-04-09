@@ -16,7 +16,7 @@ from .mca import index_regression, calculate_psi
 from .. import Region
 from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
-    MAX_HEIGHT, _plot_ts
+    MAX_HEIGHT, _plot_ts, _get_central_longitude_from_region, _get_xlim_from_region
 from ..land_array import LandArray
 from .preprocess import Preprocess
 import xarray as xr
@@ -611,9 +611,17 @@ class Crossvalidation(_Procedure):
 
         gs = gridspec.GridSpec(5, 1, height_ratios=[1, 0.1, 1, 1, 0.1], hspace=0.7)
 
-        ax0 = plt.subplot(gs[0], projection=ccrs.PlateCarree(0 if self.dsy.region.lon0 < self.dsy.region.lonf else 180))
-        ax1 = plt.subplot(gs[2], projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180))
-        ax2 = plt.subplot(gs[3], projection=ccrs.PlateCarree(0 if self.dsz.region.lon0 < self.dsz.region.lonf else 180))
+        # central longitude
+        map_y, map_z = self._dsy, self._dsz
+        central_longitude_y = _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
+        y_xlim = _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
+
+        central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+        z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+
+        ax0 = plt.subplot(gs[0], projection=ccrs.PlateCarree(central_longitude_y))
+        ax1 = plt.subplot(gs[2], projection=ccrs.PlateCarree(central_longitude_z))
+        ax2 = plt.subplot(gs[3], projection=ccrs.PlateCarree(central_longitude_z))
 
         zindex = _get_index_from_sy(self._dsz.time, year)
         yindex = zindex
@@ -621,13 +629,9 @@ class Crossvalidation(_Procedure):
 
         d0 = self._dsy.data.transpose().reshape((nts, nylat, nylon))
 
-        if self._dsy.region.lon0 < self._dsy.region.lonf:
-            y_xlim = sorted((self._dsy.lon.values[0], self._dsy.lon.values[-1]))
-        else:
-            y_xlim = [self._dsy.region.lon0 - 180, self._dsy.region.lonf + 180]
         _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim, 
                   cax=fig.add_subplot(gs[1]), add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type,
-                  levels=y_levels)
+                  levels=y_levels, central_longitude=central_longitude_y)
 
         d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
         d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
@@ -635,20 +639,18 @@ class Crossvalidation(_Procedure):
         n = 20
         _m = np.nanmean([np.nanmean(d2), np.nanmean(d1)])
         _s = np.nanmean([np.nanstd(d2), np.nanstd(d1)])
-        levels = np.linspace(_m -2*_s, _m + 2*_s, n)
-        if self._dsz.region.lon0 < self._dsz.region.lonf:
-            z_xlim = sorted((self._dsz.lon.values[0], self._dsz.lon.values[-1]))
-        else:
-            z_xlim = [self._dsz.region.lon0 - 180, self._dsz.region.lonf + 180]
+        levels = z_levels if z_levels is not None else np.linspace(_m -2*_s, _m + 2*_s, n)
         _plot_map(
             d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim, colorbar=False,
             add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
+            central_longitude=central_longitude_z
         )
         _plot_map(
             d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
             cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim, cax=fig.add_subplot(gs[4]),
             add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
+            central_longitude=central_longitude_z
         )
 
         fig.suptitle(
@@ -953,10 +955,17 @@ def _plot_crossvalidation_default(
     figsize = _calculate_figsize(1.5/3, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
     fig = plt.figure(figsize=figsize)
     gs = gridspec.GridSpec(4, 6, height_ratios=[1, 0.08, 1, 0.08], width_ratios=[1, 1, 1, 1, 1, 1], wspace=1, hspace=0.5)
+
+    # central longitude
+    map_z = cross._dsz
+
+    central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+    z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+
     axs = (
-        fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
+        fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(central_longitude_z)),
         fig.add_subplot(gs[0:2, 3:6]),
-        fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180)),
+        fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(central_longitude_z)),
     )
 
     nzlat = len(cross._dsz.lat)
@@ -972,20 +981,17 @@ def _plot_crossvalidation_default(
     _std = np.nanstd(d)
     mx = _mean + _std
     mn = _mean - _std
-    if cross._dsz.region.lon0 < cross._dsz.region.lonf:
-        xlim = sorted((cross._dsz.lon.values[0], cross._dsz.lon.values[-1]))
-    else:
-        xlim = [cross._dsz.region.lon0 - 180, cross._dsz.region.lonf + 180]
     im = _plot_map(
         d, cross._dsz.lat, cross._dsz.lon, fig, axs[0],
-        'Correlation in space between z and zhat',
+        'ACC map',
         cmap=cmap,
         ticks=(np.arange(round(mn * 10) / 10, floor(mx * 10) / 10 + .05, .1) if map_ticks is None and not np.isnan(_mean) and not np.isnan(_std) else map_ticks),
         levels=map_levels,
-        xlim=xlim,
+        xlim=z_xlim,
         colorbar=False,
         add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
         plot_type=plot_type,
+        central_longitude=central_longitude_z
     )
 
     hatches = d.copy()
@@ -1013,7 +1019,7 @@ def _plot_crossvalidation_default(
         cross._dsz.time[cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha],
         cross.r_z_zhat_t_accumulated_modes[-1, :][cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha]
     )
-    axs[1].set_title('Correlation in space between z and zhat')
+    axs[1].set_title('ACC time series')
     axs[1].grid(True)
     # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
 
@@ -1029,18 +1035,29 @@ def _plot_crossvalidation_default(
 
     im = _plot_map(
         d, cross._dsz.lat, cross._dsz.lon, fig, axs[2],
-        'RMSE',
+        'RMSE map',
         cmap="Reds",
         ticks=None,
         levels=None,
-        xlim=xlim,
+        xlim=z_xlim,
         colorbar=False,
         add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
         plot_type=plot_type,
+        central_longitude=central_longitude_z
     )
     cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 2:4]), orientation='horizontal')
     # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
     
+    # # RMSE time series
+    # axs[1].bar(cross._dsz.time.values, cross.r_z_zhat_t_accumulated_modes[-1, :])
+    # axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
+    #
+    # axs[1].scatter(
+    #     cross._dsz.time[cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha],
+    #     cross.r_z_zhat_t_accumulated_modes[-1, :][cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha]
+    # )
+    # axs[1].set_title('ACC time series')
+    # axs[1].grid(True)
     '''
     # ------ scf ------ #
     for mode in range(cross.scf.shape[0]):

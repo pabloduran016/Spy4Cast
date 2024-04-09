@@ -17,7 +17,7 @@ from .mca import index_regression
 from .. import Region
 from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
-    MAX_HEIGHT, _plot_ts
+    MAX_HEIGHT, _plot_ts, _get_xlim_from_region, _get_central_longitude_from_region
 from ..land_array import LandArray
 from .preprocess import Preprocess
 import xarray as xr
@@ -506,9 +506,17 @@ class Validation(_Procedure):
 
         gs = gridspec.GridSpec(5, 1, height_ratios=[1, 0.1, 1, 1, 0.1], hspace=0.7)
 
-        ax0 = plt.subplot(gs[0], projection=ccrs.PlateCarree(0 if self.validating_dsy.region.lon0 < self.validating_dsy.region.lonf else 180))
-        ax1 = plt.subplot(gs[2], projection=ccrs.PlateCarree(0 if self.validating_dsz.region.lon0 < self.validating_dsz.region.lonf else 180))
-        ax2 = plt.subplot(gs[3], projection=ccrs.PlateCarree(0 if self.validating_dsz.region.lon0 < self.validating_dsz.region.lonf else 180))
+        # central longitude
+        map_y, map_z = self._validating_dsy, self._validating_dsz
+        central_longitude_y = _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
+        y_xlim = _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
+
+        central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+        z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+
+        ax0 = plt.subplot(gs[0], projection=ccrs.PlateCarree(central_longitude_y))
+        ax1 = plt.subplot(gs[2], projection=ccrs.PlateCarree(central_longitude_z))
+        ax2 = plt.subplot(gs[3], projection=ccrs.PlateCarree(central_longitude_z))
 
 
         zindex = _get_index_from_sy(self._validating_dsz.time, year)
@@ -517,10 +525,6 @@ class Validation(_Procedure):
 
         d0 = self._validating_dsy.data.transpose().reshape((nts, nylat, nylon))
 
-        if self._validating_dsy.region.lon0 < self._validating_dsy.region.lonf:
-            y_xlim = sorted((self._validating_dsy.lon.values[0], self._validating_dsy.lon.values[-1]))
-        else:
-            y_xlim = [self._validating_dsy.region.lon0 - 180, self._validating_dsy.region.lonf + 180]
         _plot_map(d0[yindex], self._validating_dsy.lat, self._validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim,
                   add_cyclic_point=self._validating_dsy.region.lon0 >= self._validating_dsy.region.lonf, plot_type=plot_type,
                   levels=y_levels)
@@ -533,10 +537,6 @@ class Validation(_Procedure):
         _s = np.nanmean([np.nanstd(d2), np.nanstd(d1)])
         levels = z_levels if z_levels is not None else np.linspace(_m -2*_s, _m + 2*_s, n)
 
-        if self._validating_dsz.region.lon0 < self._validating_dsz.region.lonf:
-            z_xlim = sorted((self._validating_dsz.lon.values[0], self._validating_dsz.lon.values[-1]))
-        else:
-            z_xlim = [self._validating_dsz.region.lon0 - 180, self._validating_dsz.region.lonf + 180]
         _plot_map(
             d1[zindex], self._validating_dsz.lat, self._validating_dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim,
@@ -599,10 +599,16 @@ def _plot_validation_default(
     fig = plt.figure(figsize=figsize)
 
     gs = gridspec.GridSpec(4, 6, height_ratios=[1, 0.08, 1, 0.08], width_ratios=[1, 1, 1, 1, 1, 1], wspace=1, hspace=0.5)
+
+    # central longitude
+    map_z = validation._validating_dsz
+    central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+    z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+
     axs = (
-        fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(0 if validation.validating_dsz.region.lon0 < validation.validating_dsz.region.lonf else 180)),
+        fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(central_longitude_z)),
         fig.add_subplot(gs[0:2, 3:6]),
-        fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(0 if validation.validating_dsz.region.lon0 < validation.validating_dsz.region.lonf else 180)),
+        fig.add_subplot(gs[2, 2:4], projection=ccrs.PlateCarree(central_longitude_z)),
     )
 
     nzlat, nzlon = len(validation.validating_dsz.lat), (len(validation.validating_dsz.lon))
@@ -616,10 +622,6 @@ def _plot_validation_default(
     _std = np.nanstd(d)
     mx = _mean + _std
     mn = _mean - _std
-    if validation._validating_dsz.region.lon0 < validation._validating_dsz.region.lonf:
-        z_xlim = sorted((validation._validating_dsz.lon.values[0], validation._validating_dsz.lon.values[-1]))
-    else:
-        z_xlim = [validation._validating_dsz.region.lon0 - 180, validation._validating_dsz.region.lonf + 180]
     im = _plot_map(
         d, validation.validating_dsz.lat, validation.validating_dsz.lon, fig, axs[0],
         'Correlation in space between z and zhat',
