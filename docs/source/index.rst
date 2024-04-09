@@ -14,7 +14,19 @@ Welcome to Spy4Cast's documentation! |ICON|
        If you see anywhere in the docs or in the files `region` and think it is a typo, it is not. Python has a built-in function called `slice` and in this library we have decided to use `region` to avoid unexpected behaviours. I hope it is not too ugly...
 
 .. note::
-   This project is under active developement
+    This project is under active developement
+
+
+
+Installation
+------------
+
+.. code-block:: console
+
+    (<your-env-name>) $ conda install cartopy
+    (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
+
+
 
 Run the methodology
 -------------------
@@ -43,9 +55,23 @@ Run the methodology
 
 .. code:: python
 
-    # Application of Maximum Covariance Anaysis for 3 modes and 0.1 significance level
-    mca = MCA(y, z, 3, 0.1)
-    mca.save('mca_', folder='saved_data')
+    # application of maximum covariance anaysis for 3 modes and 0.1 significance level
+    mca = mca(y, z, 3, 0.1)
+    mca.save('mca_', folder='saved_data')  # Save and load data later with MCA.load
+
+
+.. code:: python
+
+   cross = Crossvalidation(y, z, 3, 0.01)
+   cross.save("cross_", folder="saved_data")  # Load data later with: Crossvalidation.load
+
+
+.. code:: python
+
+   mca.plot(show_plot=True)
+   mca.plot(show_plot=True, halt_program=True)  # halt_program to be able to see all the figures together
+
+
 
 Analyse results
 ---------------
@@ -82,15 +108,17 @@ Analyse results
     :width: 60%
     :alt: Example plot
 
+
 Table of contents
 -----------------
 
 .. toctree::
-   :maxdepth: 1
-   
-   usage
-   tutorial
-   methodologies
-   plotting
-   Variables <variables/variables.rst>
-   API Reference <toctrees/api-reference>
+    :maxdepth: 1
+    
+    installation
+    example
+    tutorial
+    plotting
+    Output Variables <variables/variables.rst>
+    API Reference <toctrees/api-reference>
+

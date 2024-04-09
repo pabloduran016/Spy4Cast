@@ -1,7 +1,6 @@
 import os
 import math
 from typing import Optional, Tuple, Any, Sequence, Union, cast, Literal, List
-from dask.array import assert_eq
 
 import numpy as np
 import numpy.typing as npt  # type: ignore
@@ -33,6 +32,9 @@ from ..land_array import LandArray
 class MCA(_Procedure):
     """Maximum covariance analysis between y (predictor) and Z (predictand)
 
+    .. note::
+        **Always** detrends the `y` field  on the time axis
+
     Parameters
     ----------
         dsy : Preprocess
@@ -48,38 +50,78 @@ class MCA(_Procedure):
         montecarlo_iterations : optional, int
             Number of iterations for monte-carlo sig
 
+    Examples
+    --------
+    Run the methodology with a predicting and a predictor field
+
+    >>> from spy4cast import Dataset, Region, Month
+    >>> from spy4cast.spy4cast import MCA, Preprocess
+    >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+    ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))
+    >>> z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+    ...         Region(-30, 30, -120, 120, Month.DEC, Month.FEB, 1961, 2011)))
+    >>> map_y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+    ...         Region(-80, 30, -70, 50, Month.JUN, Month.AUG, 1960, 2010)))
+    >>> map_z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+    ...         Region(-60, 60, -150, 150, Month.DEC, Month.FEB, 1961, 2011)))
+    >>> mca = MCA(y, z, 3, 0.01)
+
+    All the :doc:`/variables/mca` easily accesioble
+
+    >>> y_regression = mca.RUY.reshape((len(y.lat), len(y.lon), 6))  # 6 is the number of modes
+    >>> # Plot with any plotting library
+    >>> import matplotlib.pyplot as plt
+    >>> import cartopy.crs as ccrs
+    >>> fig = plt.figure()
+    >>> ax = fig.add_subplot(projection=ccrs.PlateCarree())
+    >>> ax.contourf(y.lon, y.lat, y_regression[:, :, 0])
+    >>> ax.coastlines()
+
+    Save the data in .npy to use in a different run
+
+    >>> mca.save("saved_mca_", folder="saved_data")
+
+    Reuse the previuosly ran data easily with one line
+
+    >>> mca = MCA.load("saved_mca_", folder="saved_data", dsy=y, dsz=z)  # IMPORTANT TO USE dsy= and dsz=
+
+    Plot with one line and several options
+
+    >>> mca.plot(show_plot=True, halt_program=True, cmap="jet", figsize=(20, 10))
+
+
     Attributes
     ----------
-        psi : npt.NDArray[np.float32]
-            Regression coefficient of the MCA model, so that ZHAT = PSI * Y
-        RUY : npt.NDArray[np.float32]
-            Regression of the predictor field. Dimension: y_space x nm
-        RUY_sig : npt.NDArray[np.float32]
-            Regression of the predictor field where pvalue is smaller than alpha. Dimension: y_space x nm
-        SUY : npt.NDArray[np.float32]
-            Correlation in space of the predictor with the singular vector. Dimension: y_space x nm
-        SUY_sig : npt.NDArray[np.float32]
-            Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x nm
-        RUZ : npt.NDArray[np.float32]
-            Regression of the predictand field. Dimension: z_space x nm
-        RUZ_sig : npt.NDArray[np.float32]
-            Regression of the predictand field where pvalue is smaller than alpha. Dimension: z_space x nm
-        SUZ : npt.NDArray[np.float32]
-            Correlation in space of the predictand with the singular vector. Dimension: z_space x nm
-        SUZ_sig : npt.NDArray[np.float32]
-            Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x nm
-        pvalruy : npt.NDArray[np.float32]
-            Pvalue of the correlation of the predictor field. Dimension: y_space x nm
-        pvalruz : npt.NDArray[np.float32]
-            Pvalue of the correlation of the predictand field. Dimension: z_space x nm
-        Us : npt.NDArray[np.float32]
-            Singular vectors of the predictor field. Dimension: nm x time
-        Vs : npt.NDArray[np.float32]
-            Singular vectors of the predictand field. Dimension: nm x time
-        scf : npt.NDArray[np.float32]
-            Square covariance fraction of the singular values. Dimension: nm
-        alpha : float
-            Significance coeficient.
+    psi
+        Regression coefficient of the MCA model, so that ZHAT = PSI * Y
+    RUY 
+        Regression of the predictor field. Dimension: y_space x nm
+    RUY_sig
+        Regression of the predictor field where pvalue is smaller than alpha. Dimension: y_space x nm
+    SUY
+        Correlation in space of the predictor with the singular vector. Dimension: y_space x nm
+    SUY_sig
+        Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x nm
+    RUZ
+        Regression of the predictand field. Dimension: z_space x nm
+    RUZ_sig 
+        Regression of the predictand field where pvalue is smaller than alpha. Dimension: z_space x nm
+    SUZ 
+        Correlation in space of the predictand with the singular vector. Dimension: z_space x nm
+    SUZ_sig 
+        Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x nm
+    pvalruy
+        Pvalue of the correlation of the predictor field. Dimension: y_space x nm
+    pvalruz
+        Pvalue of the correlation of the predictand field. Dimension: z_space x nm
+    Us 
+        Singular vectors of the predictor field. Dimension: nm x time
+    Vs
+        Singular vectors of the predictand field. Dimension: nm x time
+    scf
+        Square covariance fraction of the singular values. Dimension: nm
+    alpha
+        Significance coeficient.
     """
     # TODO: Document MCA fields
     RUY: npt.NDArray[np.float32]
@@ -216,7 +258,7 @@ class MCA(_Procedure):
         nz, nt = z.shape
         ny, nt = y.shape
 
-        y.values[~y.land_mask] = signal.detrend(y.not_land_values)
+        y.values[~y.land_mask] = signal.detrend(y.not_land_values)  # detrend in time
 
         c = np.dot(y.not_land_values, np.transpose(z.not_land_values))
         if type(c) == np.ma.MaskedArray:
@@ -278,7 +320,7 @@ class MCA(_Procedure):
                 self.SUZ[:, i],
                 self.SUZ_sig[:, i]
             ) = index_regression(z, self.Us[i, :], alpha, sig, montecarlo_iterations)
-        self.psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, nm)
+        self.psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, nm, scf)
 
     def plot(
         self,
@@ -297,29 +339,32 @@ class MCA(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         ruy_levels: Optional[
-            Union[npt.NDArray[np.float32], Sequence[float]]
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         ruz_levels: Optional[
-            Union[npt.NDArray[np.float32], Sequence[float]]
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
         nm: Optional[int] = None,
         map_y: Optional[Preprocess] = None,
         map_z: Optional[Preprocess] = None,
+        rect_color: Union[Tuple[int, int, int], str] = "r",
         sig: Optional[Literal["monte-carlo", "test-t"]] = None,
         montecarlo_iterations: Optional[int] = None,
+        plot_type: Literal["contour", "pcolor"] = "contour",
     ) -> Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]:
         """Plot the MCA results
 
         Parameters
         ----------
         save_fig
-            Saves the fig in with `folder` / `name` parameters
+            Saves the fig using `folder` and `name` parameters
         show_plot
-            Shows the plot
+            Shows the plot but does NOT stop the program. Calls `fig.show`. 
+            If you want the behaviour of `plt.plot` add the halt_program option.
         halt_program
             Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
-            and stops execution. Else uses fig.show and does not halt program
+            and stops execution. Else uses `fig.show` and does not halt program
         cmap
             Colormap for the predicting maps
         signs
@@ -345,18 +390,61 @@ class MCA(_Procedure):
             Y to plot the map
         map_z : Preprocess
             Z to plot the map
+        rect_color: (r, g, b) or string, default = "r"
+            Color of the rectangle when using map_y and map_z that outlines the region where the methodology was originally ran
         sig : {"monte-carlo", "test-t"}
             Significance method when map_y or map_z is set
         montecarlo_iterations : int
             when monte-carlo sig and map_y or map_z is set
+        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
+            Plot type. If `contour` it will use function `ax.contourf`, 
+            if `pcolor` `ax.pcolormesh`.
 
         Returns
         -------
-        Tuple[plt.Figure]
-            Figures object from matplotlib
+        figures : Tuple[plt.Figure]
+            Figures objects from matplotlib. One figure per page of MCA with 3 modes per page
 
-        Tuple[plt.Axes]
-            Tuple of axes in figure
+        ax : Tuple[plt.Axes]
+            Tuple of axes in figure. In this case 3 axes per mode: Us/Vs, Y, Z
+
+        Examples
+        -------
+
+        Plot and halt the program
+
+        >>> mca.plot(show_plot=True, halt_program=True)
+
+        Save the plot 
+
+        >>> mca.plot(save_fig=True, name="mca_plot.png")
+
+        Plot with pcolormesh and be precise with the resolution
+
+        >>> mca.plot(save_fig=True, name="mca_plot.png", plot_type="pcolor")
+
+        Plot MCA result in a bigger region
+
+        >>> from spy4cast import Dataset, Region, Month
+        >>> from spy4cast.spy4cast import MCA, Preprocess
+        >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+        ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))
+        >>> z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+        ...         Region(-30, 30, -120, 120, Month.DEC, Month.FEB, 1961, 2011)))
+        >>> map_y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+        ...         Region(-80, 30, -70, 50, Month.JUN, Month.AUG, 1960, 2010)))
+        >>> map_z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+        ...         Region(-60, 60, -150, 150, Month.DEC, Month.FEB, 1961, 2011)))
+        >>> mca = MCA(y, z, 3, 0.01)
+        >>> mca.plot(show_plot=True, halt_program=True, map_y=map_y, map_z=map_z)
+
+
+        Plot and not halt the program
+
+        >>> mca.plot(show_plot=True)
+        >>> # .... Compute crossvalidation for example
+        >>> import matplotlib.pyplot as plt
+        >>> plt.show()  # Will show the previously ran plot
         """
         nm = self.nm if nm is None else nm
         if nm > self.nm:
@@ -372,6 +460,9 @@ class MCA(_Procedure):
         if sig is not None and map_y is None and map_z is None:
             assert False
         sig = 'test-t' if sig is None else sig
+
+        if plot_type not in ("contour", "pcolor"):
+            raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
 
         if map_y is None:
             map_y = self.dsy
@@ -400,7 +491,8 @@ class MCA(_Procedure):
             fig_i, axs_i = _new_mca_page(
                 self, cmap=cmap, signs=signs, ruy_ticks=ruy_ticks, ruz_ticks=ruz_ticks, 
                 ruy_levels=ruy_levels, ruz_levels=ruz_levels, figsize=figsize, mode0=mode0, modef=modef,
-                ruy=ruy, ruy_sig=ruy_sig, ruz=ruz, ruz_sig=ruz_sig, map_y=map_y, map_z=map_z,
+                ruy=ruy, ruy_sig=ruy_sig, ruz=ruz, ruz_sig=ruz_sig, map_y=map_y, map_z=map_z, plot_type=plot_type, 
+                rect_color=rect_color,
             )
 
             if folder is None:
@@ -431,7 +523,7 @@ class MCA(_Procedure):
              dsy: Optional[Preprocess] = None,
              dsz: Optional[Preprocess] = None,
              **attrs: Any) -> 'MCA':
-        """Load an MCA object from matrices and type
+        """Load an MCA object from .npy files saved in MCA.save.
 
         Parameters
         ----------
@@ -440,13 +532,45 @@ class MCA(_Procedure):
         folder : str
             Directory of the files
         dsy : Preprocess
-            Preprocessed dataset of the predictor variable
+            ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predictor variable
         dsz : Preprocess
-            Preprocessed dataset of the predicting variable
+            ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predicting variable
 
         Returns
         -------
             MCA
+
+        Examples
+        --------
+        Load with just one line
+
+        >>> mca = MCA.load(prefix="mca_", folder="saved_data")
+
+        Save: on a previous run the MCA is calcuated
+        
+        >>> from spy4cast import Dataset, Region, Month
+        >>> from spy4cast.spy4cast import MCA, Preprocess
+        >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+        ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))
+        >>> z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+        ...         Region(-30, 30, -120, 120, Month.DEC, Month.FEB, 1961, 2011)))
+        >>> mca = MCA(y, z, 3, 0.01)
+        >>> mca.save("saved_mca_", folder="data")  # Save the output
+
+        Load: To avoid running the methodology again for plotting and analysis load the data directly
+
+        >>> from spy4cast.spy4cast import MCA, Preprocess
+        >>> from spy4cast import Dataset, Region, Month
+        >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
+        ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))  # YOU SHOULD USE THE SAME REGION
+        >>> z = Preprocess(Dataset("dataset_z.nc").open("z").slice(
+        ...         Region(-30, 30, -120, 120, Month.DEC, Month.FEB, 1961, 2011)))
+        >>> mca = MCA.load("saved_mca_", folder="data", dsy=y, dsz=z)  # IMPORTANT TO USE dsy= and dsz=
+
+        Then you can plot as usual
+
+        >>> mca.plot(save_fig=True, name="mca.png")
+
         """
         if len(attrs) != 0:
             raise TypeError('Load only takes two keyword arguments: dsy and dsz')
@@ -473,10 +597,10 @@ def _new_mca_page(
         Union[npt.NDArray[np.float32], Sequence[float]]
     ],
     ruy_levels: Optional[
-        Union[npt.NDArray[np.float32], Sequence[float]]
+        Union[npt.NDArray[np.float32], Sequence[float], bool]
     ],
     ruz_levels: Optional[
-        Union[npt.NDArray[np.float32], Sequence[float]]
+        Union[npt.NDArray[np.float32], Sequence[float], bool]
     ],
     figsize: Optional[Tuple[float, float]],
     mode0: int,
@@ -487,6 +611,8 @@ def _new_mca_page(
     ruz_sig: npt.NDArray[np.float_],
     map_y: Preprocess,
     map_z: Preprocess,
+    rect_color: Union[Tuple[int, int, int], str],
+    plot_type: Literal["contour", "pcolor"],
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     nm = modef - mode0 + 1
 
@@ -535,7 +661,10 @@ def _new_mca_page(
             label='Vs'
         )
         ax_ts.xaxis.set_major_locator(ticker.MaxNLocator(nbins=5, integer=True))
-        ax_ts.legend()
+        ax_ts.set_xlim(xmin=min(mca._dsy.time.values[0], mca._dsz.time.values[0]), 
+                       xmax=max(mca._dsy.time.values[-1], mca._dsz.time.values[-1]))
+        if i == 0:
+            ax_ts.legend()
         ax_ts.grid(True)
 
         # RUY and RUZ map
@@ -551,8 +680,7 @@ def _new_mca_page(
             ylim = sorted((lats.values[-1], lats.values[0]))
 
             if levels is None:
-                _m = np.mean((np.abs(np.nanmax(ru)), np.abs(np.nanmin(ru))))
-                levels = np.linspace(-_m, +_m, 8)
+                levels = np.linspace(-1, +1, 20)
 
             ax_map = axs[nm * (j + 1) + i]
             title = f'{var_name} mode {mode + 1}. ' \
@@ -568,7 +696,7 @@ def _new_mca_page(
             im = _plot_map(
                 t, lats, lons, fig, ax_map, title,
                 levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
-                colorbar=False, add_cyclic_point=add_cyclic_point
+                colorbar=False, add_cyclic_point=add_cyclic_point, plot_type=plot_type
             )
             if i == nm - 1:
                 cb = fig.colorbar(im, cax=fig.add_subplot(gs[nm, j + 1]), orientation='horizontal', ticks=ticks,)
@@ -590,7 +718,7 @@ def _new_mca_page(
                 xy=[original_region.lon0, original_region.lat0],
                 width=width,
                 height=height,
-                facecolor='none', edgecolor='r',
+                facecolor='none', edgecolor=rect_color,
                 transform=ccrs.PlateCarree())
             ax_map.add_patch(rect)
 
@@ -664,6 +792,7 @@ def index_regression(
         not_land_values = data.not_land_values
         land_mask = data.land_mask
     else:
+        assert type(data) == np.ndarray
         reg = np.array([np.dot(data, index) / nt])
         not_land_values = data
         land_mask = np.zeros(1, dtype=np.bool_)
@@ -699,7 +828,7 @@ def index_regression(
                 assert False, "Unreachable"
 
         if len(data.shape) == 2:
-            result = np.apply_along_axis(stats.pearsonr, 1, data.not_land_values, index)
+            result = np.apply_along_axis(stats.pearsonr, 1, not_land_values, index)
             cor[~land_mask] = result[:, 0]
         elif len(data.shape) == 1:
             result = stats.pearsonr(not_land_values, index)
@@ -736,8 +865,10 @@ def calculate_psi(
     nt: int,
     ny: int,
     nm: int,
+    scf: npt.NDArray[np.float_],
 ) -> npt.NDArray[np.float32]:
     # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
+    # suy = suy * scf[np.newaxis, :]
     return cast(
         npt.NDArray[np.float32],
         np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt * nm / ny)

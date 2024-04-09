@@ -2,15 +2,17 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Methodologies" href="methodologies.html" /><link rel="prev" title="Usage" href="usage.html" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Plotting" href="plotting.html" /><link rel="prev" title="Usage Example" href="example.html" />
 
-    <link rel="shortcut icon" href="_static/favicon.png"/><meta name="generator" content="sphinx-6.1.3, furo 2022.03.04"/>
-        <title>Tutorial - Spy4Cast 1.0.8 documentation</title>
+    <link rel="shortcut icon" href="_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>Tutorial - Spy4Cast 1.0.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-dropdown.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="_static/css/style.css" />
     
     
@@ -38,10 +40,12 @@
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -123,7 +127,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Spy4Cast 1.0.8 documentation</div></a>
+      <a href="index.html"><div class="brand">Spy4Cast 1.0.9 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +150,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">Spy4Cast 1.0.8 documentation</span>
+  <span class="sidebar-brand-text">Spy4Cast 1.0.9 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -155,11 +159,11 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">Usage Example</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="methodologies.html">Methodologies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="variables/variables.html">Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="variables/variables.html">Output Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="variables/dataset.html">Dataset Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variables/preprocess.html">Preprocess Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variables/mca.html">MCA Variables</a></li>
@@ -230,7 +234,9 @@
           </svg>
           <span>Back to top</span>
         </a>
-        <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
@@ -252,9 +258,9 @@
 <p>You can open a dataset really easily with a line of code using the <cite>Dataset</cite> interface:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span>
 
-<span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>  <span class="c1"># If no dir is specified it look sin the current directory</span>
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
-<span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
+<span class="n">DIR</span> <span class="o">=</span> <span class="s2">&quot;data/&quot;</span>  <span class="c1"># If no dir is specified it look sin the current directory</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;dataset.nc&quot;</span>
+<span class="n">VAR</span> <span class="o">=</span> <span class="s2">&quot;sst&quot;</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -264,15 +270,15 @@
 <p>Most of the times you would like to slice a region of the dataset. You will need to use <cite>Region</cite> and <cite>Month</cite> for that:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Month</span><span class="p">,</span> <span class="n">Region</span>  <span class="c1"># --- new --- #</span>
 
-<span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
-<span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
+<span class="n">DIR</span> <span class="o">=</span> <span class="s2">&quot;data/&quot;</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;dataset.nc&quot;</span>
+<span class="n">VAR</span> <span class="o">=</span> <span class="s2">&quot;sst&quot;</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span>
 
 <span class="c1"># --- new --- #</span>
 
 <span class="c1"># Latitulde goes from -90 to 90 and longitude form -180 to 180.</span>
-<span class="c1"># If the dataset you use doesn't work like that and longiutde</span>
+<span class="c1"># If the dataset you use doesn&#39;t work like that and longiutde</span>
 <span class="c1"># goes from 0 to 360 when you open the dataset this will be</span>
 <span class="c1"># changed so you ALWAYS have to latitude from -90 to 90</span>
 <span class="c1"># and longitude form -180 to 180</span>
@@ -300,29 +306,29 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span>
 
-<span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
-<span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
+<span class="n">DIR</span> <span class="o">=</span> <span class="s2">&quot;data/&quot;</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;dataset.nc&quot;</span>
+<span class="n">VAR</span> <span class="o">=</span> <span class="s2">&quot;sst&quot;</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
     <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
 <span class="p">)</span>
 <span class="n">preprocesed</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
-<span class="n">preprocesed</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_preprocess_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
+<span class="n">preprocesed</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;save_preprocess_&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;saved&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
 
-<span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
-<span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
+<span class="n">DIR</span> <span class="o">=</span> <span class="s2">&quot;data/&quot;</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;dataset.nc&quot;</span>
+<span class="n">VAR</span> <span class="o">=</span> <span class="s2">&quot;sst&quot;</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
     <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
 <span class="p">)</span>
-<span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, 'ts')</span>
-<span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
+<span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">&#39;map&#39;</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, &#39;ts&#39;)</span>
+<span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;plots&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;plot.png&#39;</span><span class="p">)</span>
 <span class="c1"># --- new --- #</span>
-<span class="n">clim</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'save_clim_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
+<span class="n">clim</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;save_clim_&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;saved&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -331,14 +337,14 @@
 <p>You can use the saved data with a simple line of code</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span>
 
-<span class="n">preprocessed</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_preprocess_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
-<span class="n">preprocessed</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">selected_year</span><span class="o">=</span><span class="mi">1990</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
+<span class="n">preprocessed</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;save_preprocess_&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;saved&#39;</span><span class="p">)</span>
+<span class="n">preprocessed</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">selected_year</span><span class="o">=</span><span class="mi">1990</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;plots&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;plot.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
 
-<span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'save_clim_'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'saved'</span><span class="p">)</span>
-<span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
+<span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;save_clim_&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;saved&#39;</span><span class="p">)</span>
+<span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;plots&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;plot.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -353,11 +359,11 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">Preprocess</span><span class="p">,</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Crossvalidation</span><span class="p">,</span> <span class="n">Validation</span>
 
-<span class="n">predictor</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">'predictor.nc'</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'predictor-var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="n">predictor</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">&#39;predictor.nc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;predictor-var&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
     <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1990</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">predictand</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">'predictand.nc'</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'predictand-var'</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="n">predictand</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">&#39;predictand.nc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;predictand-var&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
     <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1871</span><span class="p">,</span> <span class="mi">1991</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
@@ -422,14 +428,14 @@ plotting functions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Clim</span>
 
-<span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
-<span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
+<span class="n">DIR</span> <span class="o">=</span> <span class="s2">&quot;data/&quot;</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;dataset.nc&quot;</span>
+<span class="n">VAR</span> <span class="o">=</span> <span class="s2">&quot;sst&quot;</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
     <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
 <span class="p">)</span>
-<span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, 'ts')</span>
-<span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
+<span class="n">clim</span> <span class="o">=</span> <span class="n">Clim</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">&#39;map&#39;</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, &#39;ts&#39;)</span>
+<span class="n">clim</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;plots&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;plot.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can slice a dataset with only a Month and a year (<code class="code docutils literal notranslate"><span class="pre">Region(-90,</span> <span class="pre">90,</span> <span class="pre">-180,</span> <span class="pre">180,</span> <span class="pre">Month.JAN,</span> <span class="pre">Month.JAN,</span> <span class="pre">1900,</span> <span class="pre">1900)</span></code>)
@@ -441,15 +447,15 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
 <span class="kn">from</span> <span class="nn">spy4cast.meteo</span> <span class="kn">import</span> <span class="n">Anom</span>
 
-<span class="n">DIR</span> <span class="o">=</span> <span class="s2">"data/"</span>
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"dataset.nc"</span>
-<span class="n">VAR</span> <span class="o">=</span> <span class="s2">"sst"</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
+<span class="n">DIR</span> <span class="o">=</span> <span class="s2">&quot;data/&quot;</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;dataset.nc&quot;</span>
+<span class="n">VAR</span> <span class="o">=</span> <span class="s2">&quot;sst&quot;</span>  <span class="c1"># Variable to use in the dataset. For example `sst`</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">DIR</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">VAR</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
     <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JAN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">MAR</span><span class="p">,</span> <span class="mi">1870</span><span class="p">,</span> <span class="mi">1995</span><span class="p">)</span>
 <span class="p">)</span>
-<span class="n">anom</span> <span class="o">=</span> <span class="n">Anom</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">'map'</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, 'ts')</span>
-<span class="c1"># A year is needed because Anom produces lots of maps (if you use 'ts', the year parameter becomes invalid)</span>
-<span class="n">anom</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="mi">1990</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'jet'</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">'plots'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'plot.png'</span><span class="p">)</span>
+<span class="n">anom</span> <span class="o">=</span> <span class="n">Anom</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s1">&#39;map&#39;</span><span class="p">)</span>  <span class="c1"># You can plot a time series with Clim(ds, &#39;ts&#39;)</span>
+<span class="c1"># A year is needed because Anom produces lots of maps (if you use &#39;ts&#39;, the year parameter becomes invalid)</span>
+<span class="n">anom</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="mi">1990</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;plots&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;plot.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -461,23 +467,23 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="methodologies.html">
+          <a class="next-page" href="plotting.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Methodologies</div>
+                <div class="title">Plotting</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="usage.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+          <a class="prev-page" href="example.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Usage</div>
+                <div class="title">Usage Example</div>
                 
               </div>
             </a>
@@ -507,7 +513,7 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Contents
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
@@ -544,6 +550,9 @@ and plot the clmatollogy of this dataset if you want to plot a certain month and
     </aside>
   </div>
 </div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/scripts/furo.js"></script>

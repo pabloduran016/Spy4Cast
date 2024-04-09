@@ -2,15 +2,17 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Preprocess" href="spy4cast.spy4cast.Preprocess.html" /><link rel="prev" title="index_regression" href="spy4cast.spy4cast.index_regression.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-6.1.3, furo 2022.03.04"/>
-        <title>MCA - Spy4Cast 1.0.8 documentation</title>
+    <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>MCA - Spy4Cast 1.0.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-dropdown.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../_static/css/style.css" />
     
     
@@ -38,10 +40,12 @@
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -123,7 +127,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Spy4Cast 1.0.8 documentation</div></a>
+      <a href="../index.html"><div class="brand">Spy4Cast 1.0.9 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +150,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">Spy4Cast 1.0.8 documentation</span>
+  <span class="sidebar-brand-text">Spy4Cast 1.0.9 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -155,11 +159,11 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example.html">Usage Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../methodologies.html">Methodologies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting.html">Plotting</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../variables/variables.html">Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../variables/variables.html">Output Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../variables/dataset.html">Dataset Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../variables/preprocess.html">Preprocess Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../variables/mca.html">MCA Variables</a></li>
@@ -230,7 +234,9 @@
           </svg>
           <span>Back to top</span>
         </a>
-        <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
@@ -248,11 +254,15 @@
 <h1>MCA<a class="headerlink" href="#mca" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.spy4cast.</span></span><span class="sig-name descname"><span class="pre">MCA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'test-t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">montecarlo_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.spy4cast.MCA" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spy4cast.spy4cast.</span></span><span class="sig-name descname"><span class="pre">MCA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'test-t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">montecarlo_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy4cast.spy4cast.MCA" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Procedure</span></code></p>
 <p>Maximum covariance analysis between y (predictor) and Z (predictand)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Always</strong> detrends the <cite>y</cite> field  on the time axis</p>
+</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dsy</strong> (<a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.Preprocess"><em>Preprocess</em></a>) – Predictor</p></li>
 <li><p><strong>dsz</strong> (<a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.Preprocess"><em>Preprocess</em></a>) – Predictand</p></li>
@@ -263,158 +273,216 @@
 </ul>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Run the methodology with a predicting and a predictor field</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Preprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_y.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1960</span><span class="p">,</span> <span class="mi">2010</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_z.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="mi">1961</span><span class="p">,</span> <span class="mi">2011</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">map_y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_y.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">80</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">70</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1960</span><span class="p">,</span> <span class="mi">2010</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">map_z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_z.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="o">-</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="mi">1961</span><span class="p">,</span> <span class="mi">2011</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>All the <a class="reference internal" href="../variables/mca.html"><span class="doc">MCA Variables</span></a> easily accesioble</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y_regression</span> <span class="o">=</span> <span class="n">mca</span><span class="o">.</span><span class="n">RUY</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">lat</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">lon</span><span class="p">),</span> <span class="mi">6</span><span class="p">))</span>  <span class="c1"># 6 is the number of modes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Plot with any plotting library</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="n">y_regression</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Save the data in .npy to use in a different run</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;saved_mca_&quot;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;saved_data&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Reuse the previuosly ran data easily with one line</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;saved_mca_&quot;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;saved_data&quot;</span><span class="p">,</span> <span class="n">dsy</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>  <span class="c1"># IMPORTANT TO USE dsy= and dsz=</span>
+</pre></div>
+</div>
+<p>Plot with one line and several options</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">halt_program</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;jet&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.psi">
 <span class="sig-name descname"><span class="pre">psi</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.psi" title="Permalink to this definition">#</a></dt>
 <dd><p>Regression coefficient of the MCA model, so that ZHAT = PSI * Y</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.RUY">
 <span class="sig-name descname"><span class="pre">RUY</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.RUY" title="Permalink to this definition">#</a></dt>
 <dd><p>Regression of the predictor field. Dimension: y_space x nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.RUY_sig">
 <span class="sig-name descname"><span class="pre">RUY_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.RUY_sig" title="Permalink to this definition">#</a></dt>
 <dd><p>Regression of the predictor field where pvalue is smaller than alpha. Dimension: y_space x nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.SUY">
 <span class="sig-name descname"><span class="pre">SUY</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.SUY" title="Permalink to this definition">#</a></dt>
 <dd><p>Correlation in space of the predictor with the singular vector. Dimension: y_space x nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.SUY_sig">
 <span class="sig-name descname"><span class="pre">SUY_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.SUY_sig" title="Permalink to this definition">#</a></dt>
 <dd><p>Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.RUZ">
 <span class="sig-name descname"><span class="pre">RUZ</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.RUZ" title="Permalink to this definition">#</a></dt>
 <dd><p>Regression of the predictand field. Dimension: z_space x nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.RUZ_sig">
 <span class="sig-name descname"><span class="pre">RUZ_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.RUZ_sig" title="Permalink to this definition">#</a></dt>
 <dd><p>Regression of the predictand field where pvalue is smaller than alpha. Dimension: z_space x nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.SUZ">
 <span class="sig-name descname"><span class="pre">SUZ</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.SUZ" title="Permalink to this definition">#</a></dt>
 <dd><p>Correlation in space of the predictand with the singular vector. Dimension: z_space x nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.SUZ_sig">
 <span class="sig-name descname"><span class="pre">SUZ_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.SUZ_sig" title="Permalink to this definition">#</a></dt>
 <dd><p>Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.pvalruy">
 <span class="sig-name descname"><span class="pre">pvalruy</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.pvalruy" title="Permalink to this definition">#</a></dt>
 <dd><p>Pvalue of the correlation of the predictor field. Dimension: y_space x nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.pvalruz">
 <span class="sig-name descname"><span class="pre">pvalruz</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.pvalruz" title="Permalink to this definition">#</a></dt>
 <dd><p>Pvalue of the correlation of the predictand field. Dimension: z_space x nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.Us">
 <span class="sig-name descname"><span class="pre">Us</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.Us" title="Permalink to this definition">#</a></dt>
 <dd><p>Singular vectors of the predictor field. Dimension: nm x time</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.Vs">
 <span class="sig-name descname"><span class="pre">Vs</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.Vs" title="Permalink to this definition">#</a></dt>
 <dd><p>Singular vectors of the predictand field. Dimension: nm x time</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.scf">
 <span class="sig-name descname"><span class="pre">scf</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.scf" title="Permalink to this definition">#</a></dt>
 <dd><p>Square covariance fraction of the singular values. Dimension: nm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>npt.NDArray[np.float32]</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.alpha">
 <span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.alpha" title="Permalink to this definition">#</a></dt>
 <dd><p>Significance coeficient.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
+
 <p class="rubric">Attributes Summary</p>
-<div class="table-wrapper"><table class="autosummary longtable docutils align-default">
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.dsy" title="spy4cast.spy4cast.MCA.dsy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dsy</span></code></a></p></td>
 <td><p>Preprocessed dataset introduced as predictor</p></td>
@@ -426,44 +494,54 @@
 <td><p>Returns the variables contained in the object (RUY, SUY, scf, ...)</p></td>
 </tr>
 </tbody>
-</table></div>
+</table>
+</div>
 <p class="rubric">Methods Summary</p>
-<div class="table-wrapper"><table class="autosummary longtable docutils align-default">
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.from_land_arrays" title="spy4cast.spy4cast.MCA.from_land_arrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_land_arrays</span></code></a>(y, z, nm, alpha[, sig, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.from_land_arrays" title="spy4cast.spy4cast.MCA.from_land_arrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_land_arrays</span></code></a>(y, z, nm, alpha[, sig, ...])</p></td>
 <td><p>Alternative constructor for mca that takes Land Array</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.load" title="spy4cast.spy4cast.MCA.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(prefix[, folder, dsy, dsz])</p></td>
-<td><p>Load an MCA object from matrices and type</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.load" title="spy4cast.spy4cast.MCA.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(prefix[, folder, dsy, dsz])</p></td>
+<td><p>Load an MCA object from .npy files saved in MCA.save.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.plot" title="spy4cast.spy4cast.MCA.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>(*[, save_fig, show_plot, halt_program, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.spy4cast.MCA.plot" title="spy4cast.spy4cast.MCA.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>(*[, save_fig, show_plot, halt_program, ...])</p></td>
 <td><p>Plot the MCA results</p></td>
 </tr>
 </tbody>
-</table></div>
+</table>
+</div>
 <p class="rubric">Attributes Documentation</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.dsy">
 <span class="sig-name descname"><span class="pre">dsy</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.dsy" title="Permalink to this definition">#</a></dt>
 <dd><p>Preprocessed dataset introduced as predictor</p>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.dsz">
 <span class="sig-name descname"><span class="pre">dsz</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.dsz" title="Permalink to this definition">#</a></dt>
 <dd><p>Preprocessed dataset introduced as predictand</p>
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.var_names">
 <span class="sig-name descname"><span class="pre">var_names</span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.var_names" title="Permalink to this definition">#</a></dt>
 <dd><p>Returns the variables contained in the object (RUY, SUY, scf, …)</p>
 </dd></dl>
+
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.from_land_arrays">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_land_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LandArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LandArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'test-t'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'monte-carlo'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'test-t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">montecarlo_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#spy4cast.spy4cast.MCA" title="spy4cast.spy4cast.mca.MCA"><span class="pre">MCA</span></a></span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.from_land_arrays" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_land_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LandArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LandArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'test-t'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'monte-carlo'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'test-t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">montecarlo_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spy4cast.spy4cast.MCA" title="spy4cast.spy4cast.mca.MCA"><span class="pre">MCA</span></a></span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.from_land_arrays" title="Permalink to this definition">#</a></dt>
 <dd><p>Alternative constructor for mca that takes Land Array</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>y</strong> (<em>LandArray</em>) – Predictor (space x time)</p></li>
 <li><p><strong>z</strong> (<em>LandArray</em>) – Predictand (space x time)</p></li>
@@ -473,65 +551,143 @@
 <li><p><strong>montecarlo_iterations</strong> (<em>optional</em><em>, </em><em>int</em>) – Number of iterations for monte-carlo sig</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>MCA object with the methodology performed</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#spy4cast.spy4cast.MCA" title="spy4cast.spy4cast.MCA">MCA</a></p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.load">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attrs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#spy4cast.spy4cast.MCA" title="spy4cast.spy4cast.mca.MCA"><span class="pre">MCA</span></a></span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.load" title="Permalink to this definition">#</a></dt>
-<dd><p>Load an MCA object from matrices and type</p>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attrs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spy4cast.spy4cast.MCA" title="spy4cast.spy4cast.mca.MCA"><span class="pre">MCA</span></a></span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.load" title="Permalink to this definition">#</a></dt>
+<dd><p>Load an MCA object from .npy files saved in MCA.save.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>prefix</strong> (<em>str</em>) – Prefix of the files containing the information for the object</p></li>
 <li><p><strong>folder</strong> (<em>str</em>) – Directory of the files</p></li>
-<li><p><strong>dsy</strong> (<a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.Preprocess"><em>Preprocess</em></a>) – Preprocessed dataset of the predictor variable</p></li>
-<li><p><strong>dsz</strong> (<a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.Preprocess"><em>Preprocess</em></a>) – Preprocessed dataset of the predicting variable</p></li>
+<li><p><strong>dsy</strong> (<a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.Preprocess"><em>Preprocess</em></a>) – ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predictor variable</p></li>
+<li><p><strong>dsz</strong> (<a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.Preprocess"><em>Preprocess</em></a>) – ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predicting variable</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#spy4cast.spy4cast.MCA" title="spy4cast.spy4cast.MCA">MCA</a></p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Load with just one line</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;mca_&quot;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;saved_data&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Save: on a previous run the MCA is calcuated</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Preprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_y.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1960</span><span class="p">,</span> <span class="mi">2010</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_z.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="mi">1961</span><span class="p">,</span> <span class="mi">2011</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;saved_mca_&quot;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>  <span class="c1"># Save the output</span>
+</pre></div>
+</div>
+<p>Load: To avoid running the methodology again for plotting and analysis load the data directly</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Preprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_y.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1960</span><span class="p">,</span> <span class="mi">2010</span><span class="p">)))</span>  <span class="c1"># YOU SHOULD USE THE SAME REGION</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_z.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="mi">1961</span><span class="p">,</span> <span class="mi">2011</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;saved_mca_&quot;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="n">dsy</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">dsz</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>  <span class="c1"># IMPORTANT TO USE dsy= and dsz=</span>
+</pre></div>
+</div>
+<p>Then you can plot as usual</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mca.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.MCA.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_plot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halt_program</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bwr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suy_ticks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suz_ticks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suy_levels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suz_levels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Figure</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Axes</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.plot" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_plot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halt_program</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bwr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ruy_ticks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ruz_ticks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ruy_levels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ruz_levels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float32</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rect_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'monte-carlo'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'test-t'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">montecarlo_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'contour'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'pcolor'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'contour'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Figure</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Axes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spy4cast.spy4cast.MCA.plot" title="Permalink to this definition">#</a></dt>
 <dd><p>Plot the MCA results</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>save_fig</strong> – Saves the fig in with <cite>folder</cite> / <cite>name</cite> parameters</p></li>
-<li><p><strong>show_plot</strong> – Shows the plot</p></li>
+<li><p><strong>save_fig</strong> – Saves the fig using <cite>folder</cite> and <cite>name</cite> parameters</p></li>
+<li><p><strong>show_plot</strong> – Shows the plot but does NOT stop the program. Calls <cite>fig.show</cite>.
+If you want the behaviour of <cite>plt.plot</cite> add the halt_program option.</p></li>
 <li><p><strong>halt_program</strong> – Only used if <cite>show_plot</cite> is <cite>True</cite>. If <cite>True</cite> shows the plot if plt.show
-and stops execution. Else uses fig.show and does not halt program</p></li>
+and stops execution. Else uses <cite>fig.show</cite> and does not halt program</p></li>
 <li><p><strong>cmap</strong> – Colormap for the predicting maps</p></li>
 <li><p><strong>signs</strong> – Sequence of <cite>True</cite> or <cite>False</cite> values of same length as <cite>nm</cite>. Where <cite>True</cite> the
 mode output will be multipled by -1.</p></li>
 <li><p><strong>folder</strong> – Directory to save fig if <cite>save_fig</cite> is <cite>True</cite></p></li>
 <li><p><strong>name</strong> – Name of the fig saved if <cite>save_fig</cite> is <cite>True</cite></p></li>
-<li><p><strong>suy_ticks</strong> – Ticks for the maps of the SUY output</p></li>
-<li><p><strong>suz_ticks</strong> – Ticks for the maps of the SUZ output</p></li>
-<li><p><strong>suy_levels</strong> – Levels for the maps of the SUY output</p></li>
-<li><p><strong>suz_levels</strong> – Levels for the maps of the SUZ output</p></li>
+<li><p><strong>ruy_ticks</strong> – Ticks for the maps of the RUY output</p></li>
+<li><p><strong>ruz_ticks</strong> – Ticks for the maps of the RUZ output</p></li>
+<li><p><strong>ruy_levels</strong> – Levels for the maps of the RUY output</p></li>
+<li><p><strong>ruz_levels</strong> – Levels for the maps of the RUZ output</p></li>
 <li><p><strong>figsize</strong> – Set figure size. See <cite>plt.figure</cite></p></li>
+<li><p><strong>nm</strong> (<em>int</em>) – Number of modes to plot</p></li>
+<li><p><strong>map_y</strong> (<a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.Preprocess"><em>Preprocess</em></a>) – Y to plot the map</p></li>
+<li><p><strong>map_z</strong> (<a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.Preprocess"><em>Preprocess</em></a>) – Z to plot the map</p></li>
+<li><p><strong>rect_color</strong> (<em>(</em><em>r</em><em>, </em><em>g</em><em>, </em><em>b</em><em>) or </em><em>string</em><em>, </em><em>default = &quot;r&quot;</em>) – Color of the rectangle when using map_y and map_z that outlines the region where the methodology was originally ran</p></li>
+<li><p><strong>sig</strong> (<em>{&quot;monte-carlo&quot;</em><em>, </em><em>&quot;test-t&quot;}</em>) – Significance method when map_y or map_z is set</p></li>
+<li><p><strong>montecarlo_iterations</strong> (<em>int</em>) – when monte-carlo sig and map_y or map_z is set</p></li>
+<li><p><strong>plot_type</strong> (<em>{&quot;contour&quot;</em><em>, </em><em>&quot;pcolor&quot;}</em><em>, </em><em>defaut = &quot;pcolor&quot;</em>) – Plot type. If <cite>contour</cite> it will use function <cite>ax.contourf</cite>,
+if <cite>pcolor</cite> <cite>ax.pcolormesh</cite>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><em>plt.Figure</em> – Figure object from matplotlib</p></li>
-<li><p><em>Sequence[plt.Axes]</em> – Tuple of axes in figure</p></li>
+<li><p><strong>figures</strong> (<em>Tuple[plt.Figure]</em>) – Figures objects from matplotlib. One figure per page of MCA with 3 modes per page</p></li>
+<li><p><strong>ax</strong> (<em>Tuple[plt.Axes]</em>) – Tuple of axes in figure. In this case 3 axes per mode: Us/Vs, Y, Z</p></li>
 </ul>
 </p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Plot and halt the program</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">halt_program</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Save the plot</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mca_plot.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot with pcolormesh and be precise with the resolution</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mca_plot.png&quot;</span><span class="p">,</span> <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;pcolor&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot MCA result in a bigger region</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spy4cast</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spy4cast.spy4cast</span> <span class="kn">import</span> <span class="n">MCA</span><span class="p">,</span> <span class="n">Preprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_y.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1960</span><span class="p">,</span> <span class="mi">2010</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_z.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="mi">1961</span><span class="p">,</span> <span class="mi">2011</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">map_y</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_y.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">80</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">70</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">JUN</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">AUG</span><span class="p">,</span> <span class="mi">1960</span><span class="p">,</span> <span class="mi">2010</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">map_z</span> <span class="o">=</span> <span class="n">Preprocess</span><span class="p">(</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;dataset_z.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Region</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="o">-</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span> <span class="mi">1961</span><span class="p">,</span> <span class="mi">2011</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">halt_program</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">map_y</span><span class="o">=</span><span class="n">map_y</span><span class="p">,</span> <span class="n">map_z</span><span class="o">=</span><span class="n">map_z</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot and not halt the program</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># .... Compute crossvalidation for example</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  <span class="c1"># Will show the previously ran plot</span>
+</pre></div>
+</div>
 </dd></dl>
+
 </dd></dl>
+
 </section>
 
         </article>
@@ -546,10 +702,10 @@ mode output will be multipled by -1.</p></li>
                 </div>
                 <div class="title">Preprocess</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
           <a class="prev-page" href="spy4cast.spy4cast.index_regression.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
@@ -585,7 +741,7 @@ mode output will be multipled by -1.</p></li>
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Contents
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
@@ -628,6 +784,9 @@ mode output will be multipled by -1.</p></li>
     </aside>
   </div>
 </div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/scripts/furo.js"></script>

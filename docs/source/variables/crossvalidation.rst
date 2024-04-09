@@ -1,7 +1,7 @@
 Crossvalidation Variables
 =========================
 
-Variables for the Crossvalidation methodology that can be accessed for plotting.
+Variables for the :doc:`/api/spy4cast.spy4cast.Crossvalidation` methodology that can be accessed for plotting.
 
 
 .. table::

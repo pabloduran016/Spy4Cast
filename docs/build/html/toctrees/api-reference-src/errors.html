@@ -2,15 +2,17 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Spy4CastError" href="../../api/spy4cast.errors.Spy4CastError.html" /><link rel="prev" title="ChunkType" href="../../api/spy4cast.stypes.ChunkType.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-6.1.3, furo 2022.03.04"/>
-        <title>Errors - Spy4Cast 1.0.8 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>Errors - Spy4Cast 1.0.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-dropdown.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/style.css" />
     
     
@@ -38,10 +40,12 @@
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -123,7 +127,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Spy4Cast 1.0.8 documentation</div></a>
+      <a href="../../index.html"><div class="brand">Spy4Cast 1.0.9 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +150,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">Spy4Cast 1.0.8 documentation</span>
+  <span class="sidebar-brand-text">Spy4Cast 1.0.9 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -155,11 +159,11 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example.html">Usage Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../methodologies.html">Methodologies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plotting.html">Plotting</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../variables/variables.html">Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../variables/variables.html">Output Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../variables/dataset.html">Dataset Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../variables/preprocess.html">Preprocess Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../variables/mca.html">MCA Variables</a></li>
@@ -230,7 +234,9 @@
           </svg>
           <span>Back to top</span>
         </a>
-        <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
@@ -249,7 +255,12 @@
 <p>Collection of excpetions that are raised from functions in the api</p>
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">#</a></h2>
-<div class="table-wrapper"><table class="autosummary longtable docutils align-default">
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.errors.Spy4CastError.html#spy4cast.errors.Spy4CastError" title="spy4cast.errors.Spy4CastError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spy4CastError</span></code></a>([e])</p></td>
 <td><p>Base Class for all custom excpetions of the project</p></td>
@@ -257,10 +268,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.errors.PlotCreationError.html#spy4cast.errors.PlotCreationError" title="spy4cast.errors.PlotCreationError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotCreationError</span></code></a>([e])</p></td>
 <td><p>Exception raised when there is an error during plot creation</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.errors.VariableSelectionError.html#spy4cast.errors.VariableSelectionError" title="spy4cast.errors.VariableSelectionError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableSelectionError</span></code></a>(variable, *args[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.errors.VariableSelectionError.html#spy4cast.errors.VariableSelectionError" title="spy4cast.errors.VariableSelectionError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableSelectionError</span></code></a>(variable, *args[, ...])</p></td>
 <td><p>Exception raised when there is an error when loading the dataset and the variable given is not valid</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.errors.TimeBoundsSelectionError.html#spy4cast.errors.TimeBoundsSelectionError" title="spy4cast.errors.TimeBoundsSelectionError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeBoundsSelectionError</span></code></a>(msg, *args)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.errors.TimeBoundsSelectionError.html#spy4cast.errors.TimeBoundsSelectionError" title="spy4cast.errors.TimeBoundsSelectionError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeBoundsSelectionError</span></code></a>(msg, *args)</p></td>
 <td><p>Exception raised when checking a region that has non-valid time constraints</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.errors.PlotShowingError.html#spy4cast.errors.PlotShowingError" title="spy4cast.errors.PlotShowingError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotShowingError</span></code></a>([e])</p></td>
@@ -269,7 +280,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.errors.DataSavingError.html#spy4cast.errors.DataSavingError" title="spy4cast.errors.DataSavingError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataSavingError</span></code></a>([e])</p></td>
 <td><p>Exception raised when there is an error while saving the data</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.errors.SelectedYearError.html#spy4cast.errors.SelectedYearError" title="spy4cast.errors.SelectedYearError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelectedYearError</span></code></a>(s_year, *args)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/spy4cast.errors.SelectedYearError.html#spy4cast.errors.SelectedYearError" title="spy4cast.errors.SelectedYearError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelectedYearError</span></code></a>(s_year, *args)</p></td>
 <td><p>Exception raised when the selected year is not valid</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../../api/spy4cast.errors.DatasetNotFoundError.html#spy4cast.errors.DatasetNotFoundError" title="spy4cast.errors.DatasetNotFoundError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DatasetNotFoundError</span></code></a>([e])</p></td>
@@ -282,7 +293,8 @@
 <td><p>Exception raised when there is an error with the data used to create the plot</p></td>
 </tr>
 </tbody>
-</table></div>
+</table>
+</div>
 </section>
 </section>
 
@@ -298,10 +310,10 @@
                 </div>
                 <div class="title">Spy4CastError</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
           <a class="prev-page" href="../../api/spy4cast.stypes.ChunkType.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
@@ -337,7 +349,7 @@
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Contents
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
@@ -357,6 +369,9 @@
     </aside>
   </div>
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>

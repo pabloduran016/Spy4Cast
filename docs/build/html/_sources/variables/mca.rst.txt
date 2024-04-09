@@ -1,7 +1,7 @@
 MCA Variables
 =============
 
-Variables for the MCA methodology that can be accessed for plotting.
+Variables for the :doc:`/api/spy4cast.spy4cast.MCA` methodology that can be accessed for plotting.
 
 
 .. table::

@@ -29,6 +29,8 @@ class PreprocessTest(BaseTestCase):
 
     def test___init__(self) -> None:
         _ = Preprocess(self.ds, order=5, period=12)
+        _ = Preprocess(self.ds, order=5, period=12, freq='high')
+        _ = Preprocess(self.ds, order=5, period=12, freq='low')
         ppcessed = Preprocess(self.ds)
 
         self.assertEqual(len(ppcessed.lat) * len(ppcessed.lon), ppcessed.shape[0])
@@ -40,6 +42,8 @@ class PreprocessTest(BaseTestCase):
             _ = Preprocess(self.ds, period=13)
         with self.assertRaises(AssertionError):
             _ = Preprocess(Clim(self.ds, 'ts'))  # type: ignore
+        with self.assertRaises(ValueError):
+            _ = Preprocess(self.ds, order=5, period=12, freq='kBeiub')  # type: ignore
 
     def test_var_names(self) -> None:
         var_names = (

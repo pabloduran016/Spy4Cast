@@ -1,7 +1,7 @@
 Validation Variables
 ====================
 
-Variables for the validation methodology that can be accessed for plotting.
+Variables for the :doc:`/api/spy4cast.spy4cast.Validation` methodology that can be accessed for plotting.
 
 
 .. table::

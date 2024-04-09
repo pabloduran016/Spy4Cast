@@ -335,13 +335,14 @@ class Anom(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
+        plot_type: Optional[Literal["contour", "pcolor"]] = None,
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes]]:
         """Plot the anomaly map or time series
 
         Parameters
         ----------
         save_fig
-            Saves the fig in with `folder` / `name` parameters
+            Saves the fig using `folder` and `name` parameters
         show_plot
             Shows the plot
         halt_program
@@ -363,14 +364,17 @@ class Anom(_Procedure):
             Ticks for the anomaly map
         figsize
             Set figure size. See `plt.figure`
+        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
+            Plot type for map. If `contour` it will use function `ax.contourf`, 
+            if `pcolor` `ax.pcolormesh`.
 
         Returns
         -------
-        Tuple[plt.Figure]
-            Figures object from matplotlib
+        figures : Tuple[plt.Figure]
+            Figures objects from matplotlib. In this case just one figure
 
-        Tuple[plt.Axes]
-            Tuple of axes in figure
+        ax : Tuple[plt.Axes]
+            Tuple of axes in figure. In this case just one axes
         """
         if self._type == PlotType.TS:
             figsize = _calculate_figsize(None, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
@@ -383,6 +387,8 @@ class Anom(_Procedure):
                 raise TypeError('`levels` parameter is not valid to plot a time series anomaly')
             if ticks is not None:
                 raise TypeError('`ticks` parameter is not valid to plot a time series anomaly')
+            if plot_type is not None:
+                raise TypeError('`plot_type` parameter is not valid to plot a time series climatology')
             ax = fig.add_subplot()
             _plot_ts(
                 time=self.time.values,
@@ -398,6 +404,10 @@ class Anom(_Procedure):
                 fontweight='bold'
             )
         elif self._type == PlotType.MAP:
+            if plot_type is None:
+                plot_type = 'contour'
+            if plot_type not in ("contour", "pcolor"):
+                raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
             nlat, nlon = len(self.lat), len(self.lon)
             figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
             fig = plt.figure(figsize=figsize)
@@ -421,6 +431,7 @@ class Anom(_Procedure):
                 ticks=ticks,
                 xlim=xlim,
                 add_cyclic_point=self.region.lon0 >= self.region.lonf,
+                plot_type=plot_type,
             )
             fig.suptitle(
                 f'Anomaly map of {self.var} ({region2str(self.region)})',

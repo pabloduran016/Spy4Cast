@@ -5,6 +5,10 @@ table.variables-table {
 
 table.variables-table td:first-child {
     font-weight: bold;
-    color: #ff236f;
-    font-style: italic;
+    color: #b2e1e5;
+    font-family: monospace;
+}
+
+.btn {
+    text-decoration: none
 }

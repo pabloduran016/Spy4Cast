@@ -2,12 +2,13 @@ import os
 import traceback
 from abc import ABC, abstractmethod
 from typing import Optional, Sequence, Union, Callable, \
-    TypeVar, Any, Tuple, List, Type, cast
+    TypeVar, Any, Tuple, List, Type, cast, Literal
 
 import matplotlib.contour
 from matplotlib import ticker
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib.colors import BoundaryNorm
 import xarray as xr
 import cartopy.crs as ccrs
 import cartopy.util
@@ -99,7 +100,7 @@ def _plot_map(
     ax: plt.Axes,
     title: Optional[str] = None,
     levels: Optional[
-        Union[npt.NDArray[np.float32], Sequence[float]]
+        Union[npt.NDArray[np.float32], Sequence[float], bool]
     ] = None,
     xlim: Optional[Sequence[float]] = None,
     ylim: Optional[Sequence[float]] = None,
@@ -111,6 +112,7 @@ def _plot_map(
     cax: Optional[plt.Axes] = None,
     labels: bool = True,
     add_cyclic_point: bool = False,
+    plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> matplotlib.contour.QuadContourSet:
     if add_cyclic_point:
         arr, lon = _add_cyclic_point(arr, coord=lon)
@@ -118,11 +120,30 @@ def _plot_map(
     xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
     ylim = sorted((lat[-1], lat[0])) if ylim is None else ylim
 
-    im = ax.contourf(
-        lon, lat, arr, cmap=cmap, levels=levels,
-        extend='both', transform=ccrs.PlateCarree(),
-    )
-    levels = im.levels
+    if plot_type == "contour":
+        if levels is False or levels is True:
+            levels = None
+        im = ax.contourf(
+            lon, lat, arr, cmap=cmap, levels=levels,
+            extend='both', transform=ccrs.PlateCarree(),
+        )
+        levels = im.levels
+    elif plot_type == "pcolor":
+        if levels is False:
+            norm = None
+        else:
+            if levels is None or levels is True:
+                levels = MaxNLocator(nbins=30).tick_values(np.nanmin(arr), np.nanmax(arr))
+            cmap_val = plt.colormaps[cmap]
+            norm = BoundaryNorm(levels, ncolors=cmap_val.N, clip=True)
+        latstep, lonstep = np.diff(lat[:2])[0], np.diff(lon[:2])[0]
+        p_lat = np.append(lat - 0.5 * latstep, lat[-1] + 0.5 * latstep)
+        p_lon = np.append(lon - 0.5 * lonstep, lon[-1] + 0.5 * lonstep)
+        im = ax.pcolormesh(
+            p_lon, p_lat, arr, cmap=cmap, norm=norm, transform=ccrs.PlateCarree()
+        )
+    else:
+        assert False, f"Unreachable: {plot_type}"
     if labels:
         gl = ax.gridlines(alpha=0, draw_labels=True)
         gl.xlocator = ticker.MaxNLocator(3)
@@ -244,7 +265,7 @@ def _calculate_figsize(ratio: Optional[float], maxwidth: float, maxheight: float
 
 
 def _add_cyclic_point(
-    data: npt.NDArray[np.float_], coord: npt.NDArray[np.float_] = None, axis: int = -1
+    data: npt.NDArray[np.float_], coord: npt.NDArray[np.float_], axis: int = -1
 ) -> Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]]:
     if coord.ndim != 1:
         raise ValueError('The coordinate must be 1-dimensional.')
@@ -256,13 +277,13 @@ def _add_cyclic_point(
     delta_coord = np.diff(coord)
     #if not np.allclose(delta_coord, delta_coord[0]):
     #    raise ValueError('The coordinate must be equally spaced.')
-    new_coord = np.ma.concatenate((coord, coord[-1:] + delta_coord[0]))
+    new_coord = np.concatenate((coord, coord[-1:] + delta_coord[0]))
     slicer = [slice(None)] * data.ndim
     try:
         slicer[axis] = slice(0, 1)
     except IndexError:
         raise ValueError('The specified axis does not correspond to an '
                          'array dimension.')
-    new_data = np.ma.concatenate((data, data[tuple(slicer)]), axis=axis)
+    new_data = np.concatenate((data, data[tuple(slicer)]), axis=axis)
     return new_data, new_coord
 

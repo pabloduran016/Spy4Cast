@@ -1,7 +1,7 @@
 .. _variables:
 
-Variables
-=========
+Output Variables
+================
 
 Each methodology holds a different number of variables. You can lear about it here!
 

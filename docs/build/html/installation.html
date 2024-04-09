@@ -2,15 +2,17 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Plotting" href="plotting.html" /><link rel="prev" title="Tutorial" href="tutorial.html" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Usage Example" href="example.html" /><link rel="prev" title="Welcome to Spy4Cast’s documentation!" href="index.html" />
 
-    <link rel="shortcut icon" href="_static/favicon.png"/><meta name="generator" content="sphinx-6.1.3, furo 2022.03.04"/>
-        <title>Methodologies - Spy4Cast 1.0.8 documentation</title>
+    <link rel="shortcut icon" href="_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>Installation - Spy4Cast 1.0.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-dropdown.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="_static/css/style.css" />
     
     
@@ -38,10 +40,12 @@
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -123,7 +127,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Spy4Cast 1.0.8 documentation</div></a>
+      <a href="index.html"><div class="brand">Spy4Cast 1.0.9 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +150,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">Spy4Cast 1.0.8 documentation</span>
+  <span class="sidebar-brand-text">Spy4Cast 1.0.9 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -155,11 +159,11 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">Usage Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Methodologies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="variables/variables.html">Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="variables/variables.html">Output Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="variables/dataset.html">Dataset Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variables/preprocess.html">Preprocess Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variables/mca.html">MCA Variables</a></li>
@@ -230,7 +234,9 @@
           </svg>
           <span>Back to top</span>
         </a>
-        <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
@@ -244,21 +250,62 @@
           </label>
         </div>
         <article role="main">
-          <section id="methodologies">
-<h1>Methodologies<a class="headerlink" href="#methodologies" title="Permalink to this heading">#</a></h1>
-<section id="spy4cast">
-<h2>Spy4Cast<a class="headerlink" href="#spy4cast" title="Permalink to this heading">#</a></h2>
-<p>Find coupled patterns in a predictor (atlatic sea surface temperature for example) and a predicting
-variable (pacific sea surface temprature) by using Maximum Covariance Analysis and year based crossvalidation.
-Example: <a class="reference internal" href="tutorial.html#spy4cast-tutorial"><span class="std std-ref">Spy4Cast</span></a></p>
+          <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h1>
+<p>To use Spy4Cast, first install it using git:</p>
+<p>To get the latest version:</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The environment must be compatible with all the dependencies and Cartopy probably needs it to be 3.9 or lower</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You have to have installed git (<a class="reference external" href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Install Git</a>)</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You have to have installed anaconda (<a class="reference external" href="https://docs.anaconda.com/anaconda/install/index.html">Install Anaconda</a>)</p>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>&lt;your-env-name&gt;<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9
+<span class="gp">$ </span>conda<span class="w"> </span>activate<span class="w"> </span>&lt;your-env-name&gt;
+<span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>conda<span class="w"> </span>install<span class="w"> </span>pip
+<span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>conda<span class="w"> </span>install<span class="w"> </span>cartopy
+<span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/pabloduran016/Spy4Cast
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Cartopy has to be installed with conda because pip version does not work</p>
+</div>
+<section id="use-cfgrib">
+<h2>Use cfgrib<a class="headerlink" href="#use-cfgrib" title="Permalink to this heading">#</a></h2>
+<p>To use cfgrib you need to install the cfgrib package that depends on the eccodes package</p>
+<section id="on-linux">
+<h3>On Linux<a class="headerlink" href="#on-linux" title="Permalink to this heading">#</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>libeccodes0
+<span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>cfgrib
+</pre></div>
+</div>
 </section>
-<section id="clim">
-<h2>Clim<a class="headerlink" href="#clim" title="Permalink to this heading">#</a></h2>
-<p>Performs the climatology of a certain variable in a certain region. Example: <a class="reference internal" href="tutorial.html#clim-tutorial"><span class="std std-ref">Clim</span></a></p>
+<section id="on-mac">
+<h3>On Mac<a class="headerlink" href="#on-mac" title="Permalink to this heading">#</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>brew<span class="w"> </span>install<span class="w"> </span>eccodes
+<span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>cfgrib
+</pre></div>
+</div>
 </section>
-<section id="anom">
-<h2>Anom<a class="headerlink" href="#anom" title="Permalink to this heading">#</a></h2>
-<p>Performs the anomaly of a certain variable in a certain region. Example: <a class="reference internal" href="tutorial.html#anom-tutorial"><span class="std std-ref">Anom</span></a></p>
+</section>
+<section id="upgrade-version">
+<h2>Upgrade Version<a class="headerlink" href="#upgrade-version" title="Permalink to this heading">#</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>pip<span class="w"> </span>uninstall<span class="w"> </span>spy4cast
+<span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--no-cache-dir<span class="w"> </span>git+https://github.com/pabloduran016/Spy4Cast
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Sometimes the command above is not enough and you need to uninstall spy4cast
+before upgrading (<code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">uninstall</span> <span class="pre">spy4cast</span></code>)</p>
+</div>
 </section>
 </section>
 
@@ -267,23 +314,23 @@ Example: <a class="reference internal" href="tutorial.html#spy4cast-tutorial"><s
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="plotting.html">
+          <a class="next-page" href="example.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Plotting</div>
+                <div class="title">Usage Example</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="tutorial.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Tutorial</div>
+                <div class="title">Home</div>
                 
               </div>
             </a>
@@ -313,16 +360,19 @@ Example: <a class="reference internal" href="tutorial.html#spy4cast-tutorial"><s
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Contents
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Methodologies</a><ul>
-<li><a class="reference internal" href="#spy4cast">Spy4Cast</a></li>
-<li><a class="reference internal" href="#clim">Clim</a></li>
-<li><a class="reference internal" href="#anom">Anom</a></li>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#use-cfgrib">Use cfgrib</a><ul>
+<li><a class="reference internal" href="#on-linux">On Linux</a></li>
+<li><a class="reference internal" href="#on-mac">On Mac</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upgrade-version">Upgrade Version</a></li>
 </ul>
 </li>
 </ul>
@@ -335,6 +385,9 @@ Example: <a class="reference internal" href="tutorial.html#spy4cast-tutorial"><s
     </aside>
   </div>
 </div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/scripts/furo.js"></script>
