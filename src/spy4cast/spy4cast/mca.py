@@ -353,6 +353,8 @@ class MCA(_Procedure):
         sig: Optional[Literal["monte-carlo", "test-t"]] = None,
         montecarlo_iterations: Optional[int] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
+        height_ratios: Optional[List[int]] = None,
+        width_ratios: Optional[List[int]] = None,
     ) -> Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]:
         """Plot the MCA results
 
@@ -400,6 +402,10 @@ class MCA(_Procedure):
         plot_type : {"contour", "pcolor"}, defaut = "pcolor"
             Plot type. If `contour` it will use function `ax.contourf`, 
             if `pcolor` `ax.pcolormesh`.
+        height_ratios: list[float], optional
+            Height ratios passed in to matplotlib.gridspec.Gridspec
+        width_ratios: list[float], optional
+            Width ratios passed in to matplotlib.gridspec.Gridspec
 
         Returns
         -------
@@ -493,7 +499,7 @@ class MCA(_Procedure):
                 self, cmap=cmap, signs=signs, ruy_ticks=ruy_ticks, ruz_ticks=ruz_ticks, 
                 ruy_levels=ruy_levels, ruz_levels=ruz_levels, figsize=figsize, mode0=mode0, modef=modef,
                 ruy=ruy, ruy_sig=ruy_sig, ruz=ruz, ruz_sig=ruz_sig, map_y=map_y, map_z=map_z, plot_type=plot_type, 
-                rect_color=rect_color,
+                rect_color=rect_color, height_ratios=height_ratios, width_ratios=width_ratios,
             )
 
             if folder is None:
@@ -614,18 +620,20 @@ def _new_mca_page(
     map_z: Preprocess,
     rect_color: Union[Tuple[int, int, int], str],
     plot_type: Literal["contour", "pcolor"],
+    width_ratios: Optional[List[float]],
+    height_ratios: Optional[List[float]],
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     nm = modef - mode0 + 1
 
-    nylat, nylon = len(map_y.lat), len(map_y.lon)
-    yratio = nylon / nylat
-    nzlat, nzlon = len(map_z.lat), len(map_z.lon)
-    zratio = nzlon / nzlat
-    gs = gridspec.GridSpec(nm + 1, 3, height_ratios=[*[1]*nm, 0.15],
-                           width_ratios=[0.9*max(yratio, zratio), yratio, zratio],
+    y_wratio = (map_y.region.lonf if map_y.region.lonf > map_y.region.lon0 else map_y.region.lonf + 360) - map_y.region.lon0
+    z_wratio = (map_z.region.lonf if map_z.region.lonf > map_z.region.lon0 else map_z.region.lonf + 360) - map_z.region.lon0
+    gs = gridspec.GridSpec(nm + 1, 3, 
+                           height_ratios=(height_ratios if height_ratios is not None else [*[1]*nm, 0.15]),
+                           width_ratios=(width_ratios if width_ratios is not None else 
+                                         [0.9*max(y_wratio, z_wratio), y_wratio, z_wratio]),
                            hspace=0.7)
 
-    figsize = _calculate_figsize(np.mean((1/zratio, 1/yratio)), maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+    figsize = _calculate_figsize(1/nm, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
     fig: plt.Figure = plt.figure(figsize=figsize)
 
     # central longitude

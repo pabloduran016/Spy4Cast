@@ -497,7 +497,7 @@ class Crossvalidation(_Procedure):
             if mca is not None:
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
-                cmap = 'bwr'
+                cmap = 'jet'
             fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels, nm, plot_type)
         elif int(version) == 2:
             if mca is None:

@@ -151,8 +151,8 @@ def _plot_map(
     ax.set_extent(extent, crs=ccrs.PlateCarree())
     if labels:
         gl = ax.gridlines(alpha=0, draw_labels=True)
-        gl.xlocator = ticker.MaxNLocator(4, min_n_ticks=3)
-        gl.ylocator = ticker.MaxNLocator(4, min_n_ticks=3)
+        gl.xlocator = ticker.MaxNLocator(6, min_n_ticks=3)
+        gl.ylocator = ticker.MaxNLocator(6, min_n_ticks=3)
         gl.top_labels = False
         gl.right_labels = False
     if colorbar:
