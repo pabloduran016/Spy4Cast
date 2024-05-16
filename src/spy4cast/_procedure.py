@@ -16,7 +16,7 @@ import numpy.typing as npt
 from matplotlib.ticker import MaxNLocator
 
 from ._functions import time_from_here, time_to_here, _warning, _error, _debuginfo, debugprint
-from .stypes import Color
+from .stypes import Color, Region
 
 T = TypeVar('T', bound='_Procedure')
 
@@ -29,6 +29,8 @@ __all__ = [
     '_get_index_from_sy',
     '_calculate_figsize',
     '_add_cyclic_point',
+    '_get_central_longitude_from_region',
+    '_get_xlim_from_region',
     'MAX_WIDTH',
     'MAX_HEIGHT',
 ]
@@ -117,8 +119,6 @@ def _plot_map(
     if add_cyclic_point:
         arr, lon = _add_cyclic_point(arr, coord=lon)
     cmap = 'bwr' if cmap is None else cmap
-    xlim = sorted((lon[0], lon[-1])) if xlim is None else xlim
-    ylim = sorted((lat[-1], lat[0])) if ylim is None else ylim
 
     if plot_type == "contour":
         if levels is False or levels is True:
@@ -144,10 +144,15 @@ def _plot_map(
         )
     else:
         assert False, f"Unreachable: {plot_type}"
+    ax.coastlines()
+    xlim = xlim if xlim is not None else (lon.min(), lon.max())
+    ylim = ylim if ylim is not None else (lat.min(), lat.max())
+    extent = [*xlim, *ylim]
+    ax.set_extent(extent, crs=ccrs.PlateCarree())
     if labels:
         gl = ax.gridlines(alpha=0, draw_labels=True)
-        gl.xlocator = ticker.MaxNLocator(3)
-        gl.ylocator = ticker.MaxNLocator(3)
+        gl.xlocator = ticker.MaxNLocator(6, min_n_ticks=3)
+        gl.ylocator = ticker.MaxNLocator(6, min_n_ticks=3)
         gl.top_labels = False
         gl.right_labels = False
     if colorbar:
@@ -159,9 +164,6 @@ def _plot_map(
             tick_locator = ticker.MaxNLocator(nbins=5, prune='both', steps=[2, 5])
             cb.ax.xaxis.set_major_locator(tick_locator)
         cb.ax.tick_params(labelsize=11, labelrotation=0)
-    ax.coastlines()
-    ax.set_xlim(*xlim)
-    ax.set_ylim(*ylim)
     # # axs.margins(0)
     if title is not None:
         ax.set_title(title)
@@ -287,3 +289,33 @@ def _add_cyclic_point(
     new_data = np.concatenate((data, data[tuple(slicer)]), axis=axis)
     return new_data, new_coord
 
+
+def _get_xlim_from_region(lon0: float, lonf: float, cm: float) -> Tuple[float, float]:
+    if cm >= 0:
+        if lon0 > lonf:
+            a = lon0 - cm
+            b = 360 - cm + lonf
+        else:
+            a = lon0 + cm 
+            b = lonf - cm
+    else:
+        if lon0 > lonf:
+            a = lon0 - cm  - 360
+            b = lonf - cm
+        else:
+            a = lon0 - cm
+            b = lonf - cm
+    xlim = (a + cm, b + cm)
+    return xlim
+
+    
+def _get_central_longitude_from_region(lon0: float, lonf: float) -> float:
+    central_longitude: float
+    if lon0 < lonf:
+        central_longitude = np.mean([lonf, lon0])
+    else:
+        central_longitude = np.mean([lonf + 360, lon0])
+        central_longitude = central_longitude - 360 if central_longitude > 180 else central_longitude
+    
+    return central_longitude
+    

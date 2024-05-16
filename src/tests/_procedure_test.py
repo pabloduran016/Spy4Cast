@@ -11,7 +11,9 @@ from spy4cast._procedure import (
     _get_index_from_sy,
     _plot_map,
     _plot_ts,
-    _apply_flags_to_fig
+    _apply_flags_to_fig,
+    _get_xlim_from_region,
+    _get_central_longitude_from_region,
 )
 
 
@@ -180,3 +182,15 @@ class ProcedureTest(BaseTestCase):
         w, h = _calculate_figsize(0, 17, 8)
         self.assertEqual(w, 17)
         self.assertEqual(h, 8)
+
+    def test__get_central_longitude(self) -> None:
+        self.assertEqual(_get_central_longitude_from_region(100, 120), 110)
+        self.assertEqual(_get_central_longitude_from_region(-100, -120), -110)
+        self.assertEqual(_get_central_longitude_from_region(100, -120), 170)
+        self.assertEqual(_get_central_longitude_from_region(100, -10), -135)
+
+    def test__get_xlim_from_region(self) -> None:
+        self.assertEqual(_get_xlim_from_region(60, -60, 180), (-120 + 180, 120 + 180))
+        self.assertEqual(_get_xlim_from_region(100, -20, -140), (-120 - 140, 120 - 140))
+        self.assertEqual(_get_xlim_from_region(-160, 20, -70), (-90 - 70, 90 - 70))
+

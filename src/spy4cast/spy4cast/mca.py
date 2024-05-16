@@ -16,7 +16,8 @@ from scipy.stats import stats
 
 from .. import Region
 from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
-from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts
+from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts, \
+    _get_xlim_from_region, _get_central_longitude_from_region
 from .preprocess import Preprocess
 
 
@@ -352,6 +353,8 @@ class MCA(_Procedure):
         sig: Optional[Literal["monte-carlo", "test-t"]] = None,
         montecarlo_iterations: Optional[int] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
+        height_ratios: Optional[List[int]] = None,
+        width_ratios: Optional[List[int]] = None,
     ) -> Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]:
         """Plot the MCA results
 
@@ -399,6 +402,10 @@ class MCA(_Procedure):
         plot_type : {"contour", "pcolor"}, defaut = "pcolor"
             Plot type. If `contour` it will use function `ax.contourf`, 
             if `pcolor` `ax.pcolormesh`.
+        height_ratios: list[float], optional
+            Height ratios passed in to matplotlib.gridspec.Gridspec
+        width_ratios: list[float], optional
+            Width ratios passed in to matplotlib.gridspec.Gridspec
 
         Returns
         -------
@@ -492,7 +499,7 @@ class MCA(_Procedure):
                 self, cmap=cmap, signs=signs, ruy_ticks=ruy_ticks, ruz_ticks=ruz_ticks, 
                 ruy_levels=ruy_levels, ruz_levels=ruz_levels, figsize=figsize, mode0=mode0, modef=modef,
                 ruy=ruy, ruy_sig=ruy_sig, ruz=ruz, ruz_sig=ruz_sig, map_y=map_y, map_z=map_z, plot_type=plot_type, 
-                rect_color=rect_color,
+                rect_color=rect_color, height_ratios=height_ratios, width_ratios=width_ratios,
             )
 
             if folder is None:
@@ -613,24 +620,33 @@ def _new_mca_page(
     map_z: Preprocess,
     rect_color: Union[Tuple[int, int, int], str],
     plot_type: Literal["contour", "pcolor"],
+    width_ratios: Optional[List[float]],
+    height_ratios: Optional[List[float]],
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     nm = modef - mode0 + 1
 
-    nylat, nylon = len(map_y.lat), len(map_y.lon)
-    yratio = nylon / nylat
-    nzlat, nzlon = len(map_z.lat), len(map_z.lon)
-    zratio = nzlon / nzlat
-    gs = gridspec.GridSpec(nm + 1, 3, height_ratios=[*[1]*nm, 0.15],
-                           width_ratios=[0.9*max(yratio, zratio), yratio, zratio],
+    y_wratio = (map_y.region.lonf if map_y.region.lonf > map_y.region.lon0 else map_y.region.lonf + 360) - map_y.region.lon0
+    z_wratio = (map_z.region.lonf if map_z.region.lonf > map_z.region.lon0 else map_z.region.lonf + 360) - map_z.region.lon0
+    gs = gridspec.GridSpec(nm + 1, 3, 
+                           height_ratios=(height_ratios if height_ratios is not None else [*[1]*nm, 0.15]),
+                           width_ratios=(width_ratios if width_ratios is not None else 
+                                         [0.9*max(y_wratio, z_wratio), y_wratio, z_wratio]),
                            hspace=0.7)
 
-    figsize = _calculate_figsize(np.mean((1/zratio, 1/yratio)), maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+    figsize = _calculate_figsize(1/nm, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
     fig: plt.Figure = plt.figure(figsize=figsize)
+
+    # central longitude
+    central_longitude_y = _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
+    y_xlim = _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
+
+    central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+    z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
     axs = (
         *(fig.add_subplot(gs[i, 0]) for i in range(nm)),
-        *(fig.add_subplot(gs[i, 1], projection=ccrs.PlateCarree(0 if mca.dsy.region.lon0 < mca.dsy.region.lonf else 180)) for i in range(nm)),
-        *(fig.add_subplot(gs[i, 2], projection=ccrs.PlateCarree(0 if mca.dsz.region.lon0 < mca.dsz.region.lonf else 180)) for i in range(nm)),
+        *(fig.add_subplot(gs[i, 1], projection=ccrs.PlateCarree(central_longitude_y)) for i in range(nm)),
+        *(fig.add_subplot(gs[i, 2], projection=ccrs.PlateCarree(central_longitude_z)) for i in range(nm)),
     )
 
     for i in range(nm):
@@ -668,15 +684,10 @@ def _new_mca_page(
         ax_ts.grid(True)
 
         # RUY and RUZ map
-        for j, (var_name, ru, ru_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point, original_region) in enumerate((
-            ('RUY', ruy, ruy_sig, map_y.lat, map_y.lon, 'bwr', ruy_ticks, ruy_levels, map_y.region, map_y.region.lon0 >= map_y.region.lonf, mca.dsy.region),
-            ('RUZ', ruz, ruz_sig, map_z.lat, map_z.lon, cmap, ruz_ticks, ruz_levels, map_z.region, map_z.region.lon0 >= map_z.region.lonf, mca.dsz.region)
+        for j, (var_name, ru, ru_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point, original_region, central_longitude, xlim) in enumerate((
+            ('RUY', ruy, ruy_sig, map_y.lat, map_y.lon, 'bwr', ruy_ticks, ruy_levels, map_y.region, map_y.region.lon0 >= map_y.region.lonf, mca.dsy.region, central_longitude_y, y_xlim),
+            ('RUZ', ruz, ruz_sig, map_z.lat, map_z.lon, cmap, ruz_ticks, ruz_levels, map_z.region, map_z.region.lon0 >= map_z.region.lonf, mca.dsz.region, central_longitude_z, z_xlim)
         )):
-            
-            if region.lon0 < region.lonf:
-                xlim = sorted((lons.values[0], lons.values[-1]))
-            else:
-                xlim = [region.lon0 - 180, region.lonf + 180]
             ylim = sorted((lats.values[-1], lats.values[0]))
 
             if levels is None:
@@ -696,7 +707,7 @@ def _new_mca_page(
             im = _plot_map(
                 t, lats, lons, fig, ax_map, title,
                 levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
-                colorbar=False, add_cyclic_point=add_cyclic_point, plot_type=plot_type
+                colorbar=False, add_cyclic_point=add_cyclic_point, plot_type=plot_type,
             )
             if i == nm - 1:
                 cb = fig.colorbar(im, cax=fig.add_subplot(gs[nm, j + 1]), orientation='horizontal', ticks=ticks,)
@@ -871,7 +882,7 @@ def calculate_psi(
     # suy = suy * scf[np.newaxis, :]
     return cast(
         npt.NDArray[np.float32],
-        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt * nm / ny)
+        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt / ny)
     # (((SUY * inv(Us * Us')) * Us) * Z') / (ny * nm**2)
     # return cast(
     #     npt.NDArray[np.float32],

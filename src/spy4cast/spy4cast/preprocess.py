@@ -14,7 +14,7 @@ from .. import Region, Month
 from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
-    MAX_HEIGHT, _add_cyclic_point
+    MAX_HEIGHT, _add_cyclic_point, _get_xlim_from_region, _get_central_longitude_from_region
 from ..land_array import LandArray
 from ..meteo import Anom
 
@@ -364,12 +364,14 @@ class Preprocess(_Procedure):
         figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
         fig = plt.figure(figsize=figsize)
         gs = gridspec.GridSpec(2, 1, height_ratios=[1, 0.05])
-        ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
 
-        if self.region.lon0 < self.region.lonf:
-            xlim = sorted((self.lon.values[0], self.lon.values[-1]))
-        else:
-            xlim = [self.region.lon0 - 180, self.region.lonf + 180]
+        # central longitude
+        central_longitude = _get_central_longitude_from_region(self.region.lon0, self.region.lonf)
+        xlim = _get_xlim_from_region(self.region.lon0, self.region.lonf, central_longitude)
+
+        ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(central_longitude))
+
+
         _plot_map(
             plotable[index], self.lat, self.lon, fig, ax,
             f'Year {self.time[index].values}',
