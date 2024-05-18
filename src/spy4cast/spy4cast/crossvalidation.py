@@ -404,6 +404,8 @@ class Crossvalidation(_Procedure):
         version: Literal["default", 2] = "default",
         mca: Optional[MCA] = None,
         figsize: Optional[Tuple[float, float]] = None,
+        central_longitude_z: Optional[float] = None,
+        z_xlim: Optional[Tuple[float, float]] = None,
         nm: Optional[int] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
@@ -441,6 +443,10 @@ class Crossvalidation(_Procedure):
         plot_type : {"contour", "pcolor"}, defaut = "pcolor"
             Plot type. If `contour` it will use function `ax.contourf`, 
             if `pcolor` `ax.pcolormesh`.
+        central_longitude_z : float, optional
+            Longitude used to center the `z` map
+        z_xlim : tuple[float, float], optional
+            Xlim lim for the `z` map passed into ax.set_extent
 
         Returns
         -------
@@ -498,7 +504,7 @@ class Crossvalidation(_Procedure):
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
                 cmap = 'jet'
-            fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels, nm, plot_type)
+            fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels, central_longitude_z, z_xlim, nm, plot_type)
         elif int(version) == 2:
             if mca is None:
                 raise TypeError("Expected argument `mca` for version `2`")
@@ -947,6 +953,8 @@ def _plot_crossvalidation_default(
     map_levels: Optional[
         Union[npt.NDArray[np.float32], Sequence[float], bool]
     ],
+    central_longitude_z: Optional[float],
+    z_xlim: Optional[Tuple[float, float]],
     nm: Optional[int] = None,
     plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
@@ -957,8 +965,10 @@ def _plot_crossvalidation_default(
     # central longitude
     map_z = cross._dsz
 
-    central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
-    z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+    central_longitude_z = central_longitude_z if central_longitude_z is not None else \
+        _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+    z_xlim = z_xlim if z_xlim is not None else \
+        _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
     axs = (
         fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(central_longitude_z)),

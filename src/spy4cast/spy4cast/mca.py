@@ -353,8 +353,12 @@ class MCA(_Procedure):
         sig: Optional[Literal["monte-carlo", "test-t"]] = None,
         montecarlo_iterations: Optional[int] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
-        height_ratios: Optional[List[int]] = None,
-        width_ratios: Optional[List[int]] = None,
+        height_ratios: Optional[List[float]] = None,
+        width_ratios: Optional[List[float]] = None,
+        central_longitude_y: Optional[float] = None,
+        central_longitude_z: Optional[float] = None,
+        y_xlim: Optional[Tuple[float, float]] = None,
+        z_xlim: Optional[Tuple[float, float]] = None,
     ) -> Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]:
         """Plot the MCA results
 
@@ -406,6 +410,14 @@ class MCA(_Procedure):
             Height ratios passed in to matplotlib.gridspec.Gridspec
         width_ratios: list[float], optional
             Width ratios passed in to matplotlib.gridspec.Gridspec
+        central_longitude_y : float, optional
+            Longitude used to center the `y` map
+        central_longitude_z : float, optional
+            Longitude used to center the `z` map
+        y_xlim : tuple[float, float], optional
+            Xlim lim for the `y` map passed into ax.set_extent
+        z_xlim : tuple[float, float], optional
+            Xlim lim for the `z` map passed into ax.set_extent
 
         Returns
         -------
@@ -500,6 +512,7 @@ class MCA(_Procedure):
                 ruy_levels=ruy_levels, ruz_levels=ruz_levels, figsize=figsize, mode0=mode0, modef=modef,
                 ruy=ruy, ruy_sig=ruy_sig, ruz=ruz, ruz_sig=ruz_sig, map_y=map_y, map_z=map_z, plot_type=plot_type, 
                 rect_color=rect_color, height_ratios=height_ratios, width_ratios=width_ratios,
+                central_longitude_y=central_longitude_y, y_xlim=y_xlim, central_longitude_z=central_longitude_z, z_xlim=z_xlim
             )
 
             if folder is None:
@@ -622,6 +635,10 @@ def _new_mca_page(
     plot_type: Literal["contour", "pcolor"],
     width_ratios: Optional[List[float]],
     height_ratios: Optional[List[float]],
+    central_longitude_y: Optional[float],
+    central_longitude_z: Optional[float],
+    y_xlim: Optional[Tuple[float, float]],
+    z_xlim: Optional[Tuple[float, float]],
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     nm = modef - mode0 + 1
 
@@ -637,11 +654,15 @@ def _new_mca_page(
     fig: plt.Figure = plt.figure(figsize=figsize)
 
     # central longitude
-    central_longitude_y = _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
-    y_xlim = _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
+    central_longitude_y = central_longitude_y if central_longitude_y is not None else \
+        _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
+    y_xlim = y_xlim if y_xlim is not None else \
+        _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
 
-    central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
-    z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+    central_longitude_z = central_longitude_z if central_longitude_z is not None else \
+        _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+    z_xlim = z_xlim if z_xlim is not None else \
+        _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
     axs = (
         *(fig.add_subplot(gs[i, 0]) for i in range(nm)),
