@@ -504,7 +504,8 @@ class MCA(_Procedure):
 
         figs = []
         axs: List[Tuple[plt.Axes, ...]] = []
-        for i in range(math.ceil(nm / 3)):
+        n_pages = math.ceil(nm / 3)
+        for i in range(n_pages):
             mode0 = 3 * i
             modef = min(nm - 1, 3 * (i + 1) - 1)
             fig_i, axs_i = _new_mca_page(
@@ -518,9 +519,13 @@ class MCA(_Procedure):
             if folder is None:
                 folder = '.'
             if name is None:
-                path = os.path.join(folder, f'mca-plot_z-{self._dsz.var}_y-{self._dsy.var}_{i}.png')
+                path = os.path.join(folder, f'mca-plot_z-{self._dsz.var}_y-{self._dsy.var}.png')
             else:
                 path = os.path.join(folder, name)
+
+            if n_pages > 1:
+                path_name, path_extension = os.path.splitext(path)
+                path = f"{path_name}_{i}{path_extension}"
 
             _apply_flags_to_fig(
                 fig_i, path,
