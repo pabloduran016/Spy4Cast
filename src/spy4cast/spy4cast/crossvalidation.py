@@ -44,6 +44,8 @@ class Crossvalidation(_Procedure):
             Use multiprocessing for the methodology
         sig : {'monte-carlo', 'test-t'}
             Signification technique: monte-carlo or test-t
+        detrend : bool, default=True
+            Detrend the y variable in the time axis
 
     Examples
     --------
@@ -201,8 +203,9 @@ class Crossvalidation(_Procedure):
         nm: int,
         alpha: float,
         multiprocessed: bool = False,
-        sig: str = 'test-t',
+        sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
+        detrend: bool = True
     ):
         self._dsy = dsy
         self._dsz = dsz
@@ -270,6 +273,7 @@ class Crossvalidation(_Procedure):
                     p = pool.apply_async(self._crossvalidate_year, kwds={
                         'year': i, 'z': self._dsz.land_data, 'y': self._dsy.land_data, 'nt': nt, 'yrs': yrs,
                         'nm': nm, 'alpha': alpha, 'sig': sig, 'montecarlo_iterations': montecarlo_iterations,
+                        'detrend': detrend,
                     })
                     processes.append(p)
 
@@ -285,7 +289,8 @@ class Crossvalidation(_Procedure):
             for i in yrs:
                 out = self._crossvalidate_year(
                     year=i, z=self._dsz.land_data, y=self._dsy.land_data, nt=nt, yrs=yrs,
-                    nm=nm, alpha=alpha, sig=sig, montecarlo_iterations=montecarlo_iterations
+                    nm=nm, alpha=alpha, sig=sig, montecarlo_iterations=montecarlo_iterations, 
+                    detrend=detrend
                 )
                 self.scf[:, i], self.r_uv[:, i], self.r_uv_sig[:, i], self.p_uv[:, i], \
                     self.us[:, [x for x in range(nt) if x != i], i], \
@@ -324,14 +329,15 @@ class Crossvalidation(_Procedure):
         yrs: npt.NDArray[np.int32],
         nm: int,
         alpha: float,
-        sig: str,
+        sig: Literal["test-t", "monte-carlo"],
         montecarlo_iterations: Optional[int] = None,
+        detrend: bool = True,
     ) -> Tuple[npt.NDArray[np.float32], ...]:
         """Function of internal use that processes a single year for crossvalidation"""
         debugprint('\tyear:', year + 1, 'of', nt)
         z2 = LandArray(z.values[:, yrs != year])
         y2 = LandArray(y.values[:, yrs != year])
-        mca_out = MCA.from_land_arrays(y2, z2, nm, alpha)
+        mca_out = MCA.from_land_arrays(y2, z2, nm, alpha, sig, montecarlo_iterations, detrend)
         ny, _ = y2.shape
         nz, _ = z2.shape
 

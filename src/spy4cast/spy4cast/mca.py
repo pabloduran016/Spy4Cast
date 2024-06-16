@@ -50,6 +50,8 @@ class MCA(_Procedure):
             Signification technique: monte-carlo or test-t
         montecarlo_iterations : optional, int
             Number of iterations for monte-carlo sig
+        detrend : bool, default=True
+            Detrend the y variable in the time axis
 
     Examples
     --------
@@ -169,8 +171,9 @@ class MCA(_Procedure):
         dsz: Preprocess,
         nm: int,
         alpha: float,
-        sig: str = 'test-t',
+        sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
+        detrend: bool = True
     ):
         self._dsz = dsz
         self._dsy = dsy
@@ -190,7 +193,7 @@ class MCA(_Procedure):
                 f'{len(dsy.time)}'
             )
 
-        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations)
+        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations, detrend)
         debugprint(f'       Took: {time_to_here():.03f} seconds')
 
         # first you calculate the covariance matrix
@@ -215,6 +218,7 @@ class MCA(_Procedure):
         alpha: float,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
+        detrend: bool = True
     ) -> 'MCA':
         """
         Alternative constructor for mca that takes Land Array
@@ -233,6 +237,8 @@ class MCA(_Procedure):
                 Signification technique: monte-carlo or test-t
             montecarlo_iterations : optional, int
                 Number of iterations for monte-carlo sig
+            detrend : bool, default=True
+                Detrend the y variable in the time axis
 
         Returns
         -------
@@ -244,7 +250,7 @@ class MCA(_Procedure):
             MCA
         """
         m = cls.__new__(MCA)
-        m._mca(z, y, nm, alpha, sig, montecarlo_iterations)
+        m._mca(z, y, nm, alpha, sig, montecarlo_iterations, detrend)
         return m
 
     def _mca(
@@ -254,12 +260,14 @@ class MCA(_Procedure):
         nm: int,
         alpha: float,
         sig: str,
-        montecarlo_iterations: Optional[int] = None
+        montecarlo_iterations: Optional[int] = None,
+        detrend: bool = True,
     ) -> None:
         nz, nt = z.shape
         ny, nt = y.shape
 
-        y.values[~y.land_mask] = signal.detrend(y.not_land_values)  # detrend in time
+        if detrend:
+            y.values[~y.land_mask] = signal.detrend(y.not_land_values)  # detrend in time
 
         c = np.dot(y.not_land_values, np.transpose(z.not_land_values))
         if type(c) == np.ma.MaskedArray:
