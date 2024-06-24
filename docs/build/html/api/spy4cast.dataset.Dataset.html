@@ -327,7 +327,7 @@ itself so that you can concatenate methods easily.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.from_xrarray" title="spy4cast.dataset.Dataset.from_xrarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_xrarray</span></code></a>(array)</p></td>
 <td><p>Create a dataset from a xarray</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.open" title="spy4cast.dataset.Dataset.open"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open</span></code></a>([var])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.open" title="spy4cast.dataset.Dataset.open"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open</span></code></a>([var, region])</p></td>
 <td><p>Opens dataset without loading it into memory</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spy4cast.dataset.Dataset.save_nc" title="spy4cast.dataset.Dataset.save_nc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_nc</span></code></a>(name[, folder])</p></td>
@@ -411,7 +411,7 @@ They key used is recognised automatically</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spy4cast.dataset.Dataset.open">
-<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_T</span></span></span><a class="headerlink" href="#spy4cast.dataset.Dataset.open" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="spy4cast.stypes.Region.html#spy4cast.stypes.Region" title="spy4cast.stypes.Region"><span class="pre">Region</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_T</span></span></span><a class="headerlink" href="#spy4cast.dataset.Dataset.open" title="Permalink to this definition">#</a></dt>
 <dd><p>Opens dataset without loading it into memory</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -420,7 +420,10 @@ They key used is recognised automatically</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>var</strong> (<em>optional</em><em>, </em><em>str</em>) – Variable that can be specified. If not it is detected automatically</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> (<em>optional</em><em>, </em><em>str</em>) – Variable that can be specified. If not it is detected automatically</p></li>
+<li><p><strong>region</strong> (<em>optional</em><em>, </em><a class="reference internal" href="spy4cast.stypes.Region.html#spy4cast.stypes.Region" title="spy4cast.stypes.Region"><em>Region</em></a>) – Fill in this field the dataset is already sliced and you want to specify a certain region</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">

@@ -300,8 +300,17 @@ class Dataset:
         if region is not None:
             self.region = region
         else:
-            self.region = self._detect_region()
-        
+            self.region = Region(
+                lat0=self._ds[self._lat_key].values[0],
+                latf=self._ds[self._lat_key].values[-1],
+                lon0=self._ds[self._lon_key].values[0],
+                lonf=self._ds[self._lon_key].values[-1],
+                month0=Month(pd.to_datetime(self._ds[self._time_key].values[0]).month),
+                monthf=Month(pd.to_datetime(self._ds[self._time_key].values[-1]).month),
+                year0=pd.to_datetime(self._ds[self._time_key].values[0]).year,
+                yearf=pd.to_datetime(self._ds[self._time_key].values[-1]).year,
+            )
+
         self._roll_lon()
 
         # Check if values are in Kelvin
@@ -546,7 +555,7 @@ class Dataset:
         """
         if not hasattr(self, '_data'):
             raise ValueError(
-                'The dataset has not been loaded yet. Call load_dataset()'
+                'The dataset has not been opened yet. Call .open()'
             )
 
         assert type(region.year0) == int, \
