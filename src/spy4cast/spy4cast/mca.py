@@ -50,6 +50,8 @@ class MCA(_Procedure):
             Signification technique: monte-carlo or test-t
         montecarlo_iterations : optional, int
             Number of iterations for monte-carlo sig
+        detrend : bool, default=True
+            Detrend the y variable in the time axis
 
     Examples
     --------
@@ -169,8 +171,9 @@ class MCA(_Procedure):
         dsz: Preprocess,
         nm: int,
         alpha: float,
-        sig: str = 'test-t',
+        sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
+        detrend: bool = True
     ):
         self._dsz = dsz
         self._dsy = dsy
@@ -190,7 +193,7 @@ class MCA(_Procedure):
                 f'{len(dsy.time)}'
             )
 
-        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations)
+        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations, detrend)
         debugprint(f'       Took: {time_to_here():.03f} seconds')
 
         # first you calculate the covariance matrix
@@ -215,6 +218,7 @@ class MCA(_Procedure):
         alpha: float,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
+        detrend: bool = True
     ) -> 'MCA':
         """
         Alternative constructor for mca that takes Land Array
@@ -233,6 +237,8 @@ class MCA(_Procedure):
                 Signification technique: monte-carlo or test-t
             montecarlo_iterations : optional, int
                 Number of iterations for monte-carlo sig
+            detrend : bool, default=True
+                Detrend the y variable in the time axis
 
         Returns
         -------
@@ -244,7 +250,7 @@ class MCA(_Procedure):
             MCA
         """
         m = cls.__new__(MCA)
-        m._mca(z, y, nm, alpha, sig, montecarlo_iterations)
+        m._mca(z, y, nm, alpha, sig, montecarlo_iterations, detrend)
         return m
 
     def _mca(
@@ -254,12 +260,14 @@ class MCA(_Procedure):
         nm: int,
         alpha: float,
         sig: str,
-        montecarlo_iterations: Optional[int] = None
+        montecarlo_iterations: Optional[int] = None,
+        detrend: bool = True,
     ) -> None:
         nz, nt = z.shape
         ny, nt = y.shape
 
-        y.values[~y.land_mask] = signal.detrend(y.not_land_values)  # detrend in time
+        if detrend:
+            y.values[~y.land_mask] = signal.detrend(y.not_land_values)  # detrend in time
 
         c = np.dot(y.not_land_values, np.transpose(z.not_land_values))
         if type(c) == np.ma.MaskedArray:
@@ -353,8 +361,12 @@ class MCA(_Procedure):
         sig: Optional[Literal["monte-carlo", "test-t"]] = None,
         montecarlo_iterations: Optional[int] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
-        height_ratios: Optional[List[int]] = None,
-        width_ratios: Optional[List[int]] = None,
+        height_ratios: Optional[List[float]] = None,
+        width_ratios: Optional[List[float]] = None,
+        central_longitude_y: Optional[float] = None,
+        central_longitude_z: Optional[float] = None,
+        y_xlim: Optional[Tuple[float, float]] = None,
+        z_xlim: Optional[Tuple[float, float]] = None,
     ) -> Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]:
         """Plot the MCA results
 
@@ -406,6 +418,14 @@ class MCA(_Procedure):
             Height ratios passed in to matplotlib.gridspec.Gridspec
         width_ratios: list[float], optional
             Width ratios passed in to matplotlib.gridspec.Gridspec
+        central_longitude_y : float, optional
+            Longitude used to center the `y` map
+        central_longitude_z : float, optional
+            Longitude used to center the `z` map
+        y_xlim : tuple[float, float], optional
+            Xlim lim for the `y` map passed into ax.set_extent
+        z_xlim : tuple[float, float], optional
+            Xlim lim for the `z` map passed into ax.set_extent
 
         Returns
         -------
@@ -492,7 +512,8 @@ class MCA(_Procedure):
 
         figs = []
         axs: List[Tuple[plt.Axes, ...]] = []
-        for i in range(math.ceil(nm / 3)):
+        n_pages = math.ceil(nm / 3)
+        for i in range(n_pages):
             mode0 = 3 * i
             modef = min(nm - 1, 3 * (i + 1) - 1)
             fig_i, axs_i = _new_mca_page(
@@ -500,14 +521,19 @@ class MCA(_Procedure):
                 ruy_levels=ruy_levels, ruz_levels=ruz_levels, figsize=figsize, mode0=mode0, modef=modef,
                 ruy=ruy, ruy_sig=ruy_sig, ruz=ruz, ruz_sig=ruz_sig, map_y=map_y, map_z=map_z, plot_type=plot_type, 
                 rect_color=rect_color, height_ratios=height_ratios, width_ratios=width_ratios,
+                central_longitude_y=central_longitude_y, y_xlim=y_xlim, central_longitude_z=central_longitude_z, z_xlim=z_xlim
             )
 
             if folder is None:
                 folder = '.'
             if name is None:
-                path = os.path.join(folder, f'mca-plot_z-{self._dsz.var}_y-{self._dsy.var}_{i}.png')
+                path = os.path.join(folder, f'mca-plot_z-{self._dsz.var}_y-{self._dsy.var}.png')
             else:
                 path = os.path.join(folder, name)
+
+            if n_pages > 1:
+                path_name, path_extension = os.path.splitext(path)
+                path = f"{path_name}_{i}{path_extension}"
 
             _apply_flags_to_fig(
                 fig_i, path,
@@ -622,6 +648,10 @@ def _new_mca_page(
     plot_type: Literal["contour", "pcolor"],
     width_ratios: Optional[List[float]],
     height_ratios: Optional[List[float]],
+    central_longitude_y: Optional[float],
+    central_longitude_z: Optional[float],
+    y_xlim: Optional[Tuple[float, float]],
+    z_xlim: Optional[Tuple[float, float]],
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     nm = modef - mode0 + 1
 
@@ -637,11 +667,15 @@ def _new_mca_page(
     fig: plt.Figure = plt.figure(figsize=figsize)
 
     # central longitude
-    central_longitude_y = _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
-    y_xlim = _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
+    central_longitude_y = central_longitude_y if central_longitude_y is not None else \
+        _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
+    y_xlim = y_xlim if y_xlim is not None else \
+        _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
 
-    central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
-    z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+    central_longitude_z = central_longitude_z if central_longitude_z is not None else \
+        _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+    z_xlim = z_xlim if z_xlim is not None else \
+        _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
     axs = (
         *(fig.add_subplot(gs[i, 0]) for i in range(nm)),

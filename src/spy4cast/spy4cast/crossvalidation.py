@@ -44,6 +44,8 @@ class Crossvalidation(_Procedure):
             Use multiprocessing for the methodology
         sig : {'monte-carlo', 'test-t'}
             Signification technique: monte-carlo or test-t
+        detrend : bool, default=True
+            Detrend the y variable in the time axis
 
     Examples
     --------
@@ -201,8 +203,9 @@ class Crossvalidation(_Procedure):
         nm: int,
         alpha: float,
         multiprocessed: bool = False,
-        sig: str = 'test-t',
+        sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
+        detrend: bool = True
     ):
         self._dsy = dsy
         self._dsz = dsz
@@ -270,6 +273,7 @@ class Crossvalidation(_Procedure):
                     p = pool.apply_async(self._crossvalidate_year, kwds={
                         'year': i, 'z': self._dsz.land_data, 'y': self._dsy.land_data, 'nt': nt, 'yrs': yrs,
                         'nm': nm, 'alpha': alpha, 'sig': sig, 'montecarlo_iterations': montecarlo_iterations,
+                        'detrend': detrend,
                     })
                     processes.append(p)
 
@@ -285,7 +289,8 @@ class Crossvalidation(_Procedure):
             for i in yrs:
                 out = self._crossvalidate_year(
                     year=i, z=self._dsz.land_data, y=self._dsy.land_data, nt=nt, yrs=yrs,
-                    nm=nm, alpha=alpha, sig=sig, montecarlo_iterations=montecarlo_iterations
+                    nm=nm, alpha=alpha, sig=sig, montecarlo_iterations=montecarlo_iterations, 
+                    detrend=detrend
                 )
                 self.scf[:, i], self.r_uv[:, i], self.r_uv_sig[:, i], self.p_uv[:, i], \
                     self.us[:, [x for x in range(nt) if x != i], i], \
@@ -324,14 +329,15 @@ class Crossvalidation(_Procedure):
         yrs: npt.NDArray[np.int32],
         nm: int,
         alpha: float,
-        sig: str,
+        sig: Literal["test-t", "monte-carlo"],
         montecarlo_iterations: Optional[int] = None,
+        detrend: bool = True,
     ) -> Tuple[npt.NDArray[np.float32], ...]:
         """Function of internal use that processes a single year for crossvalidation"""
         debugprint('\tyear:', year + 1, 'of', nt)
         z2 = LandArray(z.values[:, yrs != year])
         y2 = LandArray(y.values[:, yrs != year])
-        mca_out = MCA.from_land_arrays(y2, z2, nm, alpha)
+        mca_out = MCA.from_land_arrays(y2, z2, nm, alpha, sig, montecarlo_iterations, detrend)
         ny, _ = y2.shape
         nz, _ = z2.shape
 
@@ -404,6 +410,8 @@ class Crossvalidation(_Procedure):
         version: Literal["default", 2] = "default",
         mca: Optional[MCA] = None,
         figsize: Optional[Tuple[float, float]] = None,
+        central_longitude_z: Optional[float] = None,
+        z_xlim: Optional[Tuple[float, float]] = None,
         nm: Optional[int] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
@@ -441,6 +449,10 @@ class Crossvalidation(_Procedure):
         plot_type : {"contour", "pcolor"}, defaut = "pcolor"
             Plot type. If `contour` it will use function `ax.contourf`, 
             if `pcolor` `ax.pcolormesh`.
+        central_longitude_z : float, optional
+            Longitude used to center the `z` map
+        z_xlim : tuple[float, float], optional
+            Xlim lim for the `z` map passed into ax.set_extent
 
         Returns
         -------
@@ -498,7 +510,7 @@ class Crossvalidation(_Procedure):
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
                 cmap = 'jet'
-            fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels, nm, plot_type)
+            fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels, central_longitude_z, z_xlim, nm, plot_type)
         elif int(version) == 2:
             if mca is None:
                 raise TypeError("Expected argument `mca` for version `2`")
@@ -947,6 +959,8 @@ def _plot_crossvalidation_default(
     map_levels: Optional[
         Union[npt.NDArray[np.float32], Sequence[float], bool]
     ],
+    central_longitude_z: Optional[float],
+    z_xlim: Optional[Tuple[float, float]],
     nm: Optional[int] = None,
     plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
@@ -957,8 +971,10 @@ def _plot_crossvalidation_default(
     # central longitude
     map_z = cross._dsz
 
-    central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
-    z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+    central_longitude_z = central_longitude_z if central_longitude_z is not None else \
+        _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+    z_xlim = z_xlim if z_xlim is not None else \
+        _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
     axs = (
         fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(central_longitude_z)),

@@ -296,7 +296,7 @@ def _get_xlim_from_region(lon0: float, lonf: float, cm: float) -> Tuple[float, f
             a = lon0 - cm
             b = 360 - cm + lonf
         else:
-            a = lon0 + cm 
+            a = lon0 - cm 
             b = lonf - cm
     else:
         if lon0 > lonf:

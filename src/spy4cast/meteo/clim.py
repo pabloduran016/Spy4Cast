@@ -7,6 +7,7 @@ from . import PlotType, _get_type
 from .. import Region, Dataset, Month
 from .._functions import region2str
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_ts, _plot_map, _calculate_figsize, MAX_WIDTH, MAX_HEIGHT
+import matplotlib.gridspec as gridspec
 import numpy as np
 import cartopy.crs as ccrs
 import xarray as xr
@@ -375,14 +376,15 @@ class Clim(_Procedure, object):
             nlat, nlon = len(self.lat), len(self.lon)
             figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
             fig = plt.figure(figsize=figsize)
+            gs = gridspec.GridSpec(2, 1, height_ratios=[1, 0.08], hspace=0.1)
             if color is not None:
                 raise TypeError('Color parameter is not valid to plot a map climatology')
-            ax = fig.add_subplot(projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
+            ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
             if self.region.lon0 < self.region.lonf:
                 xlim = sorted((self.lon.values[0], self.lon.values[-1]))
             else:
                 xlim = [self.region.lon0 - 180, self.region.lonf + 180]
-            _plot_map(
+            im = _plot_map(
                 arr=self.data.values,
                 lat=self.lat,
                 lon=self.lon,
@@ -394,7 +396,9 @@ class Clim(_Procedure, object):
                 xlim=xlim,
                 add_cyclic_point=self.region.lon0 >= self.region.lonf,
                 plot_type=plot_type,
+                colorbar=False,
             )
+            _cb = fig.colorbar(im, cax=fig.add_subplot(gs[1]), orientation='horizontal')
             fig.suptitle(
                 f'Climatology map of {self.var} ({region2str(self.region)})',
                 fontweight='bold'
