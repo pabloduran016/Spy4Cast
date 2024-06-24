@@ -233,11 +233,6 @@ class Dataset:
             errors.VariableSelectionError
                 If teh variable selected does not exist or can not be inferred
         """
-        if region is not None:
-            self.region = region
-        else:
-            self.region = self._detect_region()
-
         if hasattr(self, '_data'):
             return self
 
@@ -301,6 +296,11 @@ class Dataset:
             self._var = var
 
         self._detect_vars()
+
+        if region is not None:
+            self.region = region
+        else:
+            self.region = self._detect_region()
         
         self._roll_lon()
 
