@@ -170,25 +170,46 @@ class Dataset:
             _warning('Could not convert final timestamp to pandas TimeStamp')
             return cast(TimeStamp, pd.Timestamp(str(tf)))
 
+    def _detect_region(self) -> Region:
+        """
+        Detect region
+        """
+        return Region(
+            lat0=self.lat.values[0],
+            latf=self.lat.values[-1],
+            lon0=self.lon.values[0],
+            lonf=self.lon.values[-1],
+            month0=Month(self.timestamp0.month),
+            monthf=Month(self.timestampf.month),
+            year0=self.timestamp0.year,
+            yearf=self.timestampf.year,
+        )
+
     @property
     def region(self) -> Region:
         """
         Returns the actual region of the data
         """
         if not hasattr(self, '_region'):
-            self._region = Region(
-                lat0=self.lat.values[0],
-                latf=self.lat.values[-1],
-                lon0=self.lon.values[0],
-                lonf=self.lon.values[-1],
-                month0=Month(self.timestamp0.month),
-                monthf=Month(self.timestampf.month),
-                year0=self.timestamp0.year,
-                yearf=self.timestampf.year,
-            )
+            self._region = self._detect_region()
         return self._region
 
-    def open(self: _T, var: Optional[str] = None) -> _T:
+    @region.setter
+    def region(self, region: Region) -> None:
+        new_region = copy(region)
+        while new_region.lon0 > 180:
+            new_region.lon0 -= 360
+        while new_region.lonf > 180:
+            new_region.lonf -= 360
+        while new_region.lon0 < -180:
+            new_region.lon0 += 360
+        while new_region.lonf < -180:
+            new_region.lonf += 360
+
+        self._region = new_region
+
+
+    def open(self: _T, var: Optional[str] = None, region: Optional[Region] = None) -> _T:
         """Opens dataset without loading it into memory
 
         .. warning::
@@ -200,6 +221,8 @@ class Dataset:
         ----------
             var : optional, str
                 Variable that can be specified. If not it is detected automatically
+            region: optional, Region
+                Fill in this field the dataset is already sliced and you want to specify a certain region
 
         Raises
         ------
@@ -210,6 +233,11 @@ class Dataset:
             errors.VariableSelectionError
                 If teh variable selected does not exist or can not be inferred
         """
+        if region is not None:
+            self.region = region
+        else:
+            self.region = self._detect_region()
+
         if hasattr(self, '_data'):
             return self
 
@@ -273,6 +301,7 @@ class Dataset:
             self._var = var
 
         self._detect_vars()
+        
         self._roll_lon()
 
         # Check if values are in Kelvin
@@ -415,20 +444,9 @@ class Dataset:
         stypes.Region
         """
 
-        new_region = copy(region)
-        while new_region.lon0 > 180:
-            new_region.lon0 -= 360
-        while new_region.lonf > 180:
-            new_region.lonf -= 360
-        while new_region.lon0 < -180:
-            new_region.lon0 += 360
-        while new_region.lonf < -180:
-            new_region.lonf += 360
-
-        region = new_region
+        self.region = region
 
         self._check_region(region)
-        self._region = region
 
         # Time region
         fro = self.timestamp0
