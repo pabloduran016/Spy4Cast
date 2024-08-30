@@ -16,7 +16,7 @@ from .mca import index_regression, calculate_psi
 from .. import Region
 from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
-    MAX_HEIGHT, _plot_ts, _get_central_longitude_from_region, _get_xlim_from_region
+    MAX_HEIGHT, _plot_ts, _get_central_longitude_from_region, _get_xlim_from_region, _add_cyclic_point
 from ..land_array import LandArray
 from .preprocess import Preprocess
 import xarray as xr
@@ -1018,8 +1018,13 @@ def _plot_crossvalidation_default(
         #cb.ax.set_xticks(ticks)
         cb.ax.xaxis.set_major_locator(tick_locator)
 
+
+    add_cyclic_point = cross.dsz.region.lon0 >= cross.dsz.region.lonf,
+    hlons = cross._dsz.lon
+    if add_cyclic_point:
+        hatches, hlons = _add_cyclic_point(hatches, coord=hlons.values)
     axs[0].contourf(
-        cross._dsz.lon, cross._dsz.lat, hatches,
+        hlons, cross._dsz.lat, hatches,
         colors='none', hatches='..', extend='both',
         transform=ccrs.PlateCarree()
     )
@@ -1055,7 +1060,7 @@ def _plot_crossvalidation_default(
         levels=None,
         xlim=z_xlim,
         colorbar=False,
-        add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
+        add_cyclic_point=add_cyclic_point,
         plot_type=plot_type,
     )
     cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 0:3]), orientation='horizontal')

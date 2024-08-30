@@ -17,7 +17,7 @@ from scipy.stats import stats
 from .. import Region
 from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
 from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts, \
-    _get_xlim_from_region, _get_central_longitude_from_region
+    _get_xlim_from_region, _get_central_longitude_from_region, _add_cyclic_point
 from .preprocess import Preprocess
 
 
@@ -749,8 +749,11 @@ def _new_mca_page(
                     tick_locator = ticker.MaxNLocator(nbins=5, prune='both', symmetric=True)
                     cb.ax.xaxis.set_major_locator(tick_locator)
                 #cb.ax.xaxis.set_tick_params(rotation=20)
+            hlons = lons
+            if add_cyclic_point:
+                th, hlons = _add_cyclic_point(th, coord=hlons.values)
             ax_map.contourf(
-                lons, lats, th, colors='none', hatches='..', extend='both',
+                hlons, lats, th, colors='none', hatches='..', extend='both',
                 transform=ccrs.PlateCarree()
             )
             width = original_region.lonf - original_region.lon0 if original_region.lonf > original_region.lon0 else \
