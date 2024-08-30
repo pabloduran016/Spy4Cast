@@ -7,7 +7,8 @@ import cartopy.crs as ccrs
 
 from .. import Dataset, Region
 from .._functions import region2str
-from .._procedure import _Procedure, _plot_map, _plot_ts, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH
+from .._procedure import _Procedure, _plot_map, _plot_ts, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, \
+    _get_xlim_from_region, _get_central_longitude_from_region
 import xarray as xr
 import matplotlib.gridspec as gridspec
 import pandas as pd
@@ -338,6 +339,8 @@ class Anom(_Procedure):
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
         plot_type: Optional[Literal["contour", "pcolor"]] = None,
+        central_longitude: Optional[float] = None,
+        xlim: Optional[Tuple[float, float]] = None,
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes]]:
         """Plot the anomaly map or time series
 
@@ -369,6 +372,10 @@ class Anom(_Procedure):
         plot_type : {"contour", "pcolor"}, defaut = "pcolor"
             Plot type for map. If `contour` it will use function `ax.contourf`, 
             if `pcolor` `ax.pcolormesh`.
+        central_longitude : float, optional
+            Longitude used to center the map
+        xlim : tuple[float, float], optional
+            Xlim lim for the `y` map passed into ax.set_extent
 
         Returns
         -------
@@ -391,6 +398,10 @@ class Anom(_Procedure):
                 raise TypeError('`ticks` parameter is not valid to plot a time series anomaly')
             if plot_type is not None:
                 raise TypeError('`plot_type` parameter is not valid to plot a time series climatology')
+            if central_longitude is not None:
+                raise TypeError('`central_longitude` parameter is not valid to plot a time series climatology')
+            if xlim is not None:
+                raise TypeError('`xlim` parameter is not valid to plot a time series climatology')
             ax = fig.add_subplot()
             _plot_ts(
                 time=self.time.values,
@@ -418,11 +429,11 @@ class Anom(_Procedure):
                 raise TypeError('`color` parameter is not valid to plot a map anomaly')
             if year is None:
                 raise TypeError(f'`Must provide argument `year` to plot anom')
-            ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(0 if self.region.lon0 < self.region.lonf else 180))
-            if self.region.lon0 < self.region.lonf:
-                xlim = sorted((self.lon.values[0], self.lon.values[-1]))
-            else:
-                xlim = [self.region.lon0 - 180, self.region.lonf + 180]
+            central_longitude = central_longitude if central_longitude is not None else \
+                _get_central_longitude_from_region(self.region.lon0, self.region.lonf)
+            xlim = xlim if xlim is not None else \
+                _get_xlim_from_region(self.region.lon0, self.region.lonf, central_longitude)
+            ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(central_longitude))
             im = _plot_map(
                 arr=self.data.sel({self._time_key: year}).values,
                 lat=self.lat,

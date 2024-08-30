@@ -454,8 +454,9 @@ class Dataset:
         """
 
         self.region = region
+        del region
 
-        self._check_region(region)
+        self._check_region(self.region)
 
         # Time region
         fro = self.timestamp0
@@ -464,35 +465,35 @@ class Dataset:
         if len(time) == len(self.time) + 1:
             time = time[:-1]
 
-        if region.month0 <= region.monthf:
+        if self.region.month0 <= self.region.monthf:
             timemask = (
-                    (time.month >= region.month0) &
-                    (time.month <= region.monthf) &
-                    (time.year >= region.year0) &
-                    (time.year <= region.yearf)
+                    (time.month >= self.region.month0) &
+                    (time.month <= self.region.monthf) &
+                    (time.year >= self.region.year0) &
+                    (time.year <= self.region.yearf)
             )
         else:
             timemask = (
                     (
-                        (time.month >= region.month0)     &
-                        (time.year >= (region.year0 - 1)) &
-                        (time.year <= (region.yearf - 1))
+                        (time.month >= self.region.month0)     &
+                        (time.year >= (self.region.year0 - 1)) &
+                        (time.year <= (self.region.yearf - 1))
                     ) | (
-                        (time.month <= region.monthf) &
-                        (time.year >= region.year0)   &
-                        (time.year <= region.yearf)
+                        (time.month <= self.region.monthf) &
+                        (time.year >= self.region.year0)   &
+                        (time.year <= self.region.yearf)
                     )
             )
 
         # Space region
-        if region.lat0 > region.latf:
-            latmask = ~((self.lat >= region.latf) & (self.lat <= region.lat0))
+        if self.region.lat0 > self.region.latf:
+            latmask = ~((self.lat >= self.region.latf) & (self.lat <= self.region.lat0))
         else:
-            latmask = (self.lat >= region.lat0) & (self.lat <= region.latf)
-        if region.lon0 > region.lonf:
-            lonmask = ~((self.lon >= region.lonf) & (self.lon <= region.lon0))
+            latmask = (self.lat >= self.region.lat0) & (self.lat <= self.region.latf)
+        if self.region.lon0 > self.region.lonf:
+            lonmask = ~((self.lon >= self.region.lonf) & (self.lon <= self.region.lon0))
         else:
-            lonmask = (self.lon >= region.lon0) & (self.lon <= region.lonf)
+            lonmask = (self.lon >= self.region.lon0) & (self.lon <= self.region.lonf)
 
         self.data = self.data[{
             self._time_key: timemask,
@@ -500,13 +501,13 @@ class Dataset:
             self._lon_key: lonmask,
         }]
 
-        if region.month0 <= region.monthf:
-            season_size = region.monthf - region.month0 + 1
+        if self.region.month0 <= self.region.monthf:
+            season_size = self.region.monthf - self.region.month0 + 1
         else:
-            season_size = region.monthf + 13 - region.month0  # region.month0 != region.monthf
+            season_size = self.region.monthf + 13 - self.region.month0  # region.month0 != region.monthf
 
         self.data = self.data.assign_coords(year=(
-            'time', [year for year in range(region.year0, region.yearf + 1) for _ in range(season_size)]))
+            'time', [year for year in range(self.region.year0, self.region.yearf + 1) for _ in range(season_size)]))
 
         latskipmask: npt.NDArray[np.bool_] = np.zeros(
             len(self.lat)

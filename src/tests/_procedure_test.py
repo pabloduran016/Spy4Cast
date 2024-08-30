@@ -185,7 +185,8 @@ class ProcedureTest(BaseTestCase):
 
     def test__get_central_longitude(self) -> None:
         self.assertEqual(_get_central_longitude_from_region(100, 120), 110)
-        self.assertEqual(_get_central_longitude_from_region(-100, -120), -110)
+        self.assertEqual(_get_central_longitude_from_region(-120, -100), -110)
+        self.assertEqual(_get_central_longitude_from_region(-100, -120), 70)
         self.assertEqual(_get_central_longitude_from_region(100, -120), 170)
         self.assertEqual(_get_central_longitude_from_region(100, -10), -135)
 

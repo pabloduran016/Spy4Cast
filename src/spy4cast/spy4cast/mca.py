@@ -423,9 +423,9 @@ class MCA(_Procedure):
         central_longitude_z : float, optional
             Longitude used to center the `z` map
         y_xlim : tuple[float, float], optional
-            Xlim lim for the `y` map passed into ax.set_extent
+            Xlim for the `y` map passed into ax.set_extent
         z_xlim : tuple[float, float], optional
-            Xlim lim for the `z` map passed into ax.set_extent
+            Xlim for the `z` map passed into ax.set_extent
 
         Returns
         -------
