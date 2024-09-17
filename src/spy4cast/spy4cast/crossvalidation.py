@@ -509,7 +509,7 @@ class Crossvalidation(_Procedure):
             if mca is not None:
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
-                cmap = 'jet'
+                cmap = 'Reds'
             fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels, central_longitude_z, z_xlim, nm, plot_type)
         elif int(version) == 2:
             if mca is None:
@@ -991,7 +991,9 @@ def _plot_crossvalidation_default(
     # Correlation map
     if nm is not None and not 1 <= nm <= cross.r_z_zhat_s_accumulated_modes.shape[0]:
         raise ValueError(f"Parameter `nm` must be positive an less than or equal to the number of modes used in the methodology, {cross.r_z_zhat_s_accumulated_modes.shape[0]}, but got {nm}")
-    d = cross.r_z_zhat_s_accumulated_modes[(-1 if nm is None else nm - 1), :].transpose().reshape((nzlat, nzlon))
+    d = cross.r_z_zhat_s_accumulated_modes[(-1 if nm is None else nm - 1), :].transpose().reshape((nzlat, nzlon)).copy()
+    d[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (
+                cross.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
     _mean = np.nanmean(d)
     _std = np.nanstd(d)
     mx = _mean + _std
