@@ -22,7 +22,7 @@ builtins.__sphinx_build__ = True  # type: ignore
 project = 'Spy4Cast'
 copyright = '2022, Pablo Duran'
 author = 'Pablo Duran'
-with open('../../setup.cfg', 'r') as f:
+with open('../../pyproject.toml', 'r') as f:
     content = f.read()
     start = content.find('version = ')
     end = content[start:].find('\n') + start

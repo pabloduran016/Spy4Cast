@@ -495,6 +495,9 @@ class MCA(_Procedure):
             map_y = self.dsy
             ruy, ruy_sig, = self.RUY, self.RUY_sig
         else:
+            if map_y.time.shape[0] != self.dsy.time.shape[0]:
+                raise ValueError(f"`map_y` has to have the same amount of years (length of the time dimension) as the "
+                                 f"data used to run MCA. Got {map_y.time.shape[0]}, expected {self.dsy.time.shape[0]}")
             ny = map_y.shape[0]
             ruy = np.zeros([ny, nm], dtype=np.float32)
             ruy_sig = np.zeros([ny, nm], dtype=np.float32)
@@ -504,6 +507,9 @@ class MCA(_Procedure):
             map_z = self.dsz
             ruz, ruz_sig, = self.RUZ, self.RUZ_sig
         else:
+            if map_z.time.shape[0] != self.dsz.time.shape[0]:
+                raise ValueError(f"`map_z` has to have the same amount of years (length of the time dimension) as the "
+                                 f"data used to run MCA. Got {map_z.time.shape[0]}, expected {self.dsz.time.shape[0]}")
             nz = map_z.shape[0]
             ruz = np.zeros([nz, nm], dtype=np.float32)
             ruz_sig = np.zeros([nz, nm], dtype=np.float32)

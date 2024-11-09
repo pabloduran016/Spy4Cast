@@ -39,9 +39,9 @@ MCA_PLOT_NAME = 'mca.png'
 CROSS_PREFIX = 'cross_'
 CROSS_PLOT_NAME = 'cross.png'
 
-LOAD_PREPROCESSED = True
+LOAD_PREPROCESSED = False
 LOAD_MCA = False
-LOAD_CROSS = True
+LOAD_CROSS = False
 
 if LOAD_PREPROCESSED:
     predictor_preprocessed = Preprocess.load(PREDICTOR_PREPROCESSED_PREFIX, DATA_FOLDER)

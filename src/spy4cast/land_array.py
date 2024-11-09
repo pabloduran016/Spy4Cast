@@ -47,3 +47,4 @@ class LandArray:
 
     def update_land(self, land_mask: npt.NDArray[np.bool_]) -> None:
         self._land_mask = land_mask
+
