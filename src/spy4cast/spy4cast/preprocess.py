@@ -16,7 +16,6 @@ from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, _add_cyclic_point, _get_xlim_from_region, _get_central_longitude_from_region
 from ..land_array import LandArray
-from ..meteo import Anom
 
 
 __all__ = [
@@ -109,7 +108,8 @@ class Preprocess(_Procedure):
         _debuginfo(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
         assert len(ds.data.dims) == 3
-        anomaly = Anom(ds, 'map').data
+        a = ds.data.groupby('year').mean()
+        anomaly = a - a.mean('year')
         self._ds: Dataset = ds
         
         anomaly = anomaly.transpose(
