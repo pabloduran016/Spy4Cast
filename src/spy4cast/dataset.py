@@ -1,3 +1,4 @@
+import xarray.core.types
 from copy import copy
 import os
 import traceback
@@ -44,7 +45,7 @@ class Dataset:
             Directory where the dataset you want to use is located
         folder : str, default='dataset.nc'
             Name of the dataset
-        chunks : `stypes.ChunkType`, optional
+        chunks : `xarray.core.types.T_Chunks`, optional
             Argument passed when loading the datasets
             (see `chunks` in dask library)
 
@@ -69,11 +70,11 @@ class Dataset:
         self,
         name: str,
         folder: str = '.',
-        chunks: Optional[ChunkType] = None
+        chunks: Optional[xarray.core.types.T_Chunks] = None
     ):
         self.name: str = name
         self.folder: str = folder
-        self._chunks: Optional[ChunkType] = chunks
+        self._chunks: Optional[xarray.core.types.T_Chunks] = chunks
 
     @classmethod
     def from_xrarray(cls, array: xr.DataArray) -> 'Dataset':
