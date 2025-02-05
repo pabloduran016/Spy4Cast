@@ -419,6 +419,9 @@ class Crossvalidation(_Procedure):
         ts_only_sig: bool = False,
         nm: Optional[int] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
+        rmse_levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
+        ] = None,
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
         """Plot the Crossvalidation results
 
@@ -461,6 +464,8 @@ class Crossvalidation(_Procedure):
             Longitude used to center the `z` map
         z_xlim : tuple[float, float], optional
             Xlim lim for the `z` map passed into ax.set_extent
+        rmse_levels
+            Levels for the rmse map in version default
 
         Returns
         -------
@@ -528,7 +533,9 @@ class Crossvalidation(_Procedure):
                 z_xlim=z_xlim, 
                 ts_only_sig=ts_only_sig, 
                 nm=nm, 
-                plot_type=plot_type)
+                plot_type=plot_type,
+                rmse_levels=rmse_levels,
+            )
         elif int(version) == 2:
             if mca is None:
                 raise TypeError("Expected argument `mca` for version `2`")
@@ -538,6 +545,8 @@ class Crossvalidation(_Procedure):
                 raise TypeError("Unexpected argument `map_levels` for version `2`")
             if cmap is not None:
                 raise TypeError("Unexpected argument `cmap` for version `2`")
+            if rmse_levels is not None:
+                raise TypeError("Unexpected argument `rmse_levels` for version `2`")
             fig, axs = _plot_crossvalidation_2(self, figsize, mca)
         else:
             raise ValueError(f"Version can only be one of: `2`, `default`")
@@ -843,7 +852,7 @@ def _plot_crossvalidation_2(
             # ax0.set_ylabel('nº std', fontsize=20, weight='bold')
 
         r_uv, p_value, _ruv_sig, _reg, _reg_sig = index_regression(
-            LandArray(mca.Us[n_mode:n_mode+1, :]), mca.Vs[n_mode:n_mode+1, :].T, cross.alpha, 'test-t', 1000, )
+            LandArray(mca.Us[n_mode:n_mode+1, :]), mca.Vs[n_mode, :].T, cross.alpha, 'test-t', 1000, )
 
         # plt.xticks()
         # plt.yticks()
@@ -980,6 +989,9 @@ def _plot_crossvalidation_default(
     central_longitude_z: Optional[float],
     z_xlim: Optional[Tuple[float, float]],
     ts_only_sig: bool,
+    rmse_levels: Optional[
+        Union[npt.NDArray[np.float32], Sequence[float], bool]
+    ],
     nm: Optional[int] = None,
     plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
@@ -1091,7 +1103,7 @@ def _plot_crossvalidation_default(
         'RMSE map',
         cmap="Reds",
         ticks=None,
-        levels=None,
+        levels=rmse_levels,
         xlim=z_xlim,
         colorbar=False,
         add_cyclic_point=add_cyclic_point,

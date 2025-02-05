@@ -9,7 +9,7 @@ from typing import Optional, TypeVar, cast, Tuple
 import numpy as np
 import pandas as pd
 
-from ._functions import mon2str, _error, _warning, _debuginfo
+from ._functions import debugprint, mon2str, _error, _warning, _debuginfo
 from .errors import DatasetError, DatasetNotFoundError, VariableSelectionError, TimeBoundsSelectionError, \
     SelectedYearError
 from .stypes import *
@@ -460,29 +460,30 @@ class Dataset:
         self._check_region(self.region)
 
         # Time region
-        fro = self.timestamp0
-        to = fro + pd.DateOffset(months=len(self.time))
-        time = pd.date_range(start=fro, end=to, freq='M')
-        if len(time) == len(self.time) + 1:
-            time = time[:-1]
+        # fro = self.timestamp0
+        # to = fro + pd.DateOffset(months=len(self.time))
+        # time = pd.date_range(start=fro, end=to, freq='M')
+        # if len(time) == len(self.time) + 1:
+        #     time = time[:-1]
+        time = self.data[self._time_key]
 
         if self.region.month0 <= self.region.monthf:
             timemask = (
-                    (time.month >= self.region.month0) &
-                    (time.month <= self.region.monthf) &
-                    (time.year >= self.region.year0) &
-                    (time.year <= self.region.yearf)
+                    (time.dt.month >= self.region.month0) &
+                    (time.dt.month <= self.region.monthf) &
+                    (time.dt.year >= self.region.year0) &
+                    (time.dt.year <= self.region.yearf)
             )
         else:
             timemask = (
                     (
-                        (time.month >= self.region.month0)     &
-                        (time.year >= (self.region.year0 - 1)) &
-                        (time.year <= (self.region.yearf - 1))
+                        (time.dt.month >= self.region.month0)     &
+                        (time.dt.year >= (self.region.year0 - 1)) &
+                        (time.dt.year <= (self.region.yearf - 1))
                     ) | (
-                        (time.month <= self.region.monthf) &
-                        (time.year >= self.region.year0)   &
-                        (time.year <= self.region.yearf)
+                        (time.dt.month <= self.region.monthf) &
+                        (time.dt.year >= self.region.year0)   &
+                        (time.dt.year <= self.region.yearf)
                     )
             )
 

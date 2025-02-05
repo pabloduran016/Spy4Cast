@@ -33,9 +33,6 @@ from ..land_array import LandArray
 class MCA(_Procedure):
     """Maximum covariance analysis between y (predictor) and Z (predictand)
 
-    .. note::
-        **Always** detrends the `y` field  on the time axis
-
     Parameters
     ----------
         dsy : Preprocess
