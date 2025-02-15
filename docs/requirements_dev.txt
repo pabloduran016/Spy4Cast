@@ -1,0 +1,6 @@
+sphinx>=5
+sphinx-panels
+sphinx-automodapi
+enum_tools
+sphinx-toolbox
+furo
