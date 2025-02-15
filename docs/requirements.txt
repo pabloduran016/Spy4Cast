@@ -4,3 +4,6 @@ sphinx-automodapi
 enum_tools
 sphinx-toolbox
 furo
+xarray
+numpy
+matplotlib
