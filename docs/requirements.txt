@@ -7,3 +7,4 @@ furo
 xarray
 numpy
 matplotlib
+cartopy
