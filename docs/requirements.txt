@@ -1,5 +1,5 @@
 nbsphinx
-sphinx
+sphinx==7.4.7
 sphinx-panels
 sphinx-automodapi
 enum_tools
