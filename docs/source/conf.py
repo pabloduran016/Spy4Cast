@@ -36,6 +36,7 @@ release = version
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'nbsphinx',
     'sphinx.ext.todo',
     'sphinx.ext.napoleon',
     'sphinx_panels',
@@ -43,6 +44,9 @@ extensions = [
     'sphinx_automodapi.automodapi',
     'sphinx_automodapi.smart_resolver',
 ]
+
+source_suffix = [".rst", ".md"]
+
 numpydoc_show_class_members = False
 
 automodapi_writereprocessed = True

@@ -6,6 +6,7 @@ Python framework for working with .nc files and applying methodologies to them a
 
 ## Installation
 **WARNING**: The environment must be compatible with all the dependencies and Cartopy probably needs it to be 3.9 or lower
+
 **NOTE**: Cartopy has to be installed with conda because pip version does not work
 
 To get the latest version:
@@ -95,7 +96,7 @@ cross.plot(save_fig=True, folder=PLOTS_FOLDER, name="cross.png", version=2, mca=
 ![Crossvalidation plot](examples/cross-example.png)
 
 ## Documentation
-The documentation for this project is in https://spy4cast-docs.netlify.app
+The documentation for this project is in https://spy4cast.readthedocs.io
 
 ## References
 - [xarray](https://www.xarray.pydata.org/en/stable/)

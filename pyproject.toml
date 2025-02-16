@@ -23,7 +23,7 @@ dependencies = [
 
 [project.urls]
 Source = "https://github.com/pabloduran016/spy4cast"
-Documentation = "https://spy4cast-docs.netlify.app"
+Documentation = "https://spy4cast.readthedocs.io"
 
 [options]
 package_dir = "src"

@@ -1,4 +1,5 @@
-sphinx>=5
+nbsphinx
+sphinx
 sphinx-panels
 sphinx-automodapi
 enum_tools
