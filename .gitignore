@@ -2,8 +2,6 @@
 .venv/
 .coverage
 
-data-tna
-
 mypy.ini
 .mypy_cache/
 
@@ -16,28 +14,4 @@ __pycache__/
 
 
 Makefile
-
-dist/
-trying/
-other/
-examples/old/
-
-examples/saved*/
-examples/data*/
-examples/plots*/
-
-foo*
-
-*.json
-*.sh
-*.bat
-*.cmd
-*.zip
-*.egg-info
-
-build
-
-data-*
-plots-*
-runs/
-
+corrupted-dataset.nc
