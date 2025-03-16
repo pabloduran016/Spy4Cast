@@ -1,6 +1,35 @@
+[project]
+name = "spy4cast"
+version = "1.0.0"
+authors = [
+    {name="Pablo Duran", email="pdrm56@gmail.com"}
+]
+description = "Python API to process .nc datasets and perform scientific methodologies"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "xarray",
+    "dask",
+    "pandas",
+    "netcdf4",
+    "scipy",
+]
+
+[project.urls]
+Source = "https://github.com/pabloduran016/spy4cast"
+Documentation = "https://spy4cast.readthedocs.io"
+
+[options]
+package_dir = "src"
+
 [build-system]
 requires = [
-    "setuptools>=42",
-    "wheel"
+    "setuptools>=42"
 ]
 build-backend = "setuptools.build_meta"

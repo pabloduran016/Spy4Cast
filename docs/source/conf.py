@@ -22,7 +22,7 @@ builtins.__sphinx_build__ = True  # type: ignore
 project = 'Spy4Cast'
 copyright = '2022, Pablo Duran'
 author = 'Pablo Duran'
-with open('../../setup.cfg', 'r') as f:
+with open('../../pyproject.toml', 'r') as f:
     content = f.read()
     start = content.find('version = ')
     end = content[start:].find('\n') + start
@@ -36,6 +36,7 @@ release = version
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'nbsphinx',
     'sphinx.ext.todo',
     'sphinx.ext.napoleon',
     'sphinx_panels',
@@ -43,6 +44,9 @@ extensions = [
     'sphinx_automodapi.automodapi',
     'sphinx_automodapi.smart_resolver',
 ]
+
+source_suffix = [".rst", ".md"]
+
 numpydoc_show_class_members = False
 
 automodapi_writereprocessed = True

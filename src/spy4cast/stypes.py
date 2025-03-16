@@ -15,7 +15,6 @@ __all__ = [
     'T_FORMAT',
     'TimeStamp',
     'Month',
-    'ChunkType'
 ]
 
 Color = Tuple[float, float, float]
@@ -168,9 +167,6 @@ _document_dataclass(Region)
 #     initial_year: int
 #     final_year: int
 
-ChunkType = Union[int, Tuple[int, ...], Tuple[Tuple[int, ...], ...], Dict[Union[str, int], int]]
-"""Type variable to indicate the types that can be passed into the `chunk` argument in `dataset.Dataset`
-"""
 
 
 

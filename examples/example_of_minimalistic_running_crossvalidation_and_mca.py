@@ -7,10 +7,10 @@ predictand_dataset = 'chl_1km_monthly_Sep1997_Dec2020.nc'
 predictor_dataset = 'oisst_v2_mean_monthly.nc'
 
 y = Dataset(name=predictor_dataset, folder=DATASET_DIR).open(var='sst')
-y.slice(Region(5, 45, -90, -5, Month.JUN, Month.JUL, 1997, 2019), skip=0)
+y.slice(Region(5, 25, -75, -20, Month.AUG, Month.SEP, 1997, 2019), skip=3)
 
-z = Dataset(name=predictor_dataset, folder=DATASET_DIR).open(var="CHL")
-z.slice(Region(36, 37, -5.3, -2, Month.MAR, Month.APR, 1998, 2020), skip=0)
+z = Dataset(name=predictand_dataset, folder=DATASET_DIR).open(var="CHL")
+z.slice(Region(36, 37, -5.3, -2, Month.MAR, Month.APR, 1998, 2020), skip=2)
 
 y_ppcessed = spy4cast.Preprocess(y)
 z_ppcessed = spy4cast.Preprocess(z)

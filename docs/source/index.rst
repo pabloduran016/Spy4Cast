@@ -119,6 +119,7 @@ Table of contents
     example
     tutorial
     plotting
+    Comparission with Xarray <tutorial_vs_xarray.ipynb>
     Output Variables <variables/variables.rst>
     API Reference <toctrees/api-reference>
 

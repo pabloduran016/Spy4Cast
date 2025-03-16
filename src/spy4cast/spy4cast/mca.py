@@ -17,7 +17,7 @@ from scipy.stats import stats
 from .. import Region
 from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
 from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts, \
-    _get_xlim_from_region, _get_central_longitude_from_region
+    _get_xlim_from_region, _get_central_longitude_from_region, _add_cyclic_point
 from .preprocess import Preprocess
 
 
@@ -32,9 +32,6 @@ from ..land_array import LandArray
 
 class MCA(_Procedure):
     """Maximum covariance analysis between y (predictor) and Z (predictand)
-
-    .. note::
-        **Always** detrends the `y` field  on the time axis
 
     Parameters
     ----------
@@ -273,7 +270,6 @@ class MCA(_Procedure):
         if type(c) == np.ma.MaskedArray:
             c = c.data
 
-        # NEW WAY OF PEFORMING SVD: WAAAAAAAY FASTER (> 20 times)
         r, _d, q = sparse.linalg.svds(c, k=nm, which='LM')  # Which LM = Large magnitude
         # Modes are reversed so we reverse them in r, d and q
         r = r[:, ::-1]
@@ -423,9 +419,9 @@ class MCA(_Procedure):
         central_longitude_z : float, optional
             Longitude used to center the `z` map
         y_xlim : tuple[float, float], optional
-            Xlim lim for the `y` map passed into ax.set_extent
+            Xlim for the `y` map passed into ax.set_extent
         z_xlim : tuple[float, float], optional
-            Xlim lim for the `z` map passed into ax.set_extent
+            Xlim for the `z` map passed into ax.set_extent
 
         Returns
         -------
@@ -495,6 +491,9 @@ class MCA(_Procedure):
             map_y = self.dsy
             ruy, ruy_sig, = self.RUY, self.RUY_sig
         else:
+            if map_y.time.shape[0] != self.dsy.time.shape[0]:
+                raise ValueError(f"`map_y` has to have the same amount of years (length of the time dimension) as the "
+                                 f"data used to run MCA. Got {map_y.time.shape[0]}, expected {self.dsy.time.shape[0]}")
             ny = map_y.shape[0]
             ruy = np.zeros([ny, nm], dtype=np.float32)
             ruy_sig = np.zeros([ny, nm], dtype=np.float32)
@@ -504,6 +503,9 @@ class MCA(_Procedure):
             map_z = self.dsz
             ruz, ruz_sig, = self.RUZ, self.RUZ_sig
         else:
+            if map_z.time.shape[0] != self.dsz.time.shape[0]:
+                raise ValueError(f"`map_z` has to have the same amount of years (length of the time dimension) as the "
+                                 f"data used to run MCA. Got {map_z.time.shape[0]}, expected {self.dsz.time.shape[0]}")
             nz = map_z.shape[0]
             ruz = np.zeros([nz, nm], dtype=np.float32)
             ruz_sig = np.zeros([nz, nm], dtype=np.float32)
@@ -749,8 +751,11 @@ def _new_mca_page(
                     tick_locator = ticker.MaxNLocator(nbins=5, prune='both', symmetric=True)
                     cb.ax.xaxis.set_major_locator(tick_locator)
                 #cb.ax.xaxis.set_tick_params(rotation=20)
+            hlons = lons
+            if add_cyclic_point:
+                th, hlons = _add_cyclic_point(th, coord=hlons.values)
             ax_map.contourf(
-                lons, lats, th, colors='none', hatches='..', extend='both',
+                hlons, lats, th, colors='none', hatches='..', extend='both',
                 transform=ccrs.PlateCarree()
             )
             width = original_region.lonf - original_region.lon0 if original_region.lonf > original_region.lon0 else \

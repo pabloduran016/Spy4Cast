@@ -16,7 +16,7 @@ from .mca import index_regression, calculate_psi
 from .. import Region
 from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
-    MAX_HEIGHT, _plot_ts, _get_central_longitude_from_region, _get_xlim_from_region
+    MAX_HEIGHT, _plot_ts, _get_central_longitude_from_region, _get_xlim_from_region, _add_cyclic_point
 from ..land_array import LandArray
 from .preprocess import Preprocess
 import xarray as xr
@@ -301,11 +301,15 @@ class Crossvalidation(_Procedure):
 
         self.r_z_zhat_t_accumulated_modes, self.p_z_zhat_t_accumulated_modes, \
             self.r_z_zhat_t_separated_modes, self.p_z_zhat_t_separated_modes \
-            = calculate_time_correlation(self._dsz.land_data, self.zhat_accumulated_modes, self.zhat_accumulated_modes)
+            = calculate_time_correlation(
+                self._dsz.land_data, self.zhat_accumulated_modes, 
+                self.zhat_separated_modes)
 
         self.r_z_zhat_s_accumulated_modes, self.p_z_zhat_s_accumulated_modes, \
             self.r_z_zhat_s_separated_modes, self.p_z_zhat_s_separated_modes \
-            = calculate_space_correlation(self._dsz.land_data, self.zhat_accumulated_modes, self.zhat_separated_modes)
+            = calculate_space_correlation(
+                self._dsz.land_data, self.zhat_accumulated_modes, 
+                self.zhat_separated_modes)
 
         self.alpha = alpha
         debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
@@ -412,8 +416,12 @@ class Crossvalidation(_Procedure):
         figsize: Optional[Tuple[float, float]] = None,
         central_longitude_z: Optional[float] = None,
         z_xlim: Optional[Tuple[float, float]] = None,
+        ts_only_sig: bool = False,
         nm: Optional[int] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
+        rmse_levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
+        ] = None,
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
         """Plot the Crossvalidation results
 
@@ -446,6 +454,9 @@ class Crossvalidation(_Procedure):
         nm : int, optional
             Number of modes to use for the corssvalidation plot. Must be less than or equal
             to nm used to run the methodology. If -1 use all modes.
+        ts_only_sig : bool, default = False
+            If Ture, time series for the ACC map only takes into account the region where ACC
+            is significant
         plot_type : {"contour", "pcolor"}, defaut = "pcolor"
             Plot type. If `contour` it will use function `ax.contourf`, 
             if `pcolor` `ax.pcolormesh`.
@@ -453,6 +464,8 @@ class Crossvalidation(_Procedure):
             Longitude used to center the `z` map
         z_xlim : tuple[float, float], optional
             Xlim lim for the `z` map passed into ax.set_extent
+        rmse_levels
+            Levels for the rmse map in version default
 
         Returns
         -------
@@ -509,8 +522,20 @@ class Crossvalidation(_Procedure):
             if mca is not None:
                 raise TypeError("Unexpected argument `mca` for version `default`")
             if cmap is None:
-                cmap = 'jet'
-            fig, axs = _plot_crossvalidation_default(self, figsize, cmap, map_ticks, map_levels, central_longitude_z, z_xlim, nm, plot_type)
+                cmap = 'Reds'
+            fig, axs = _plot_crossvalidation_default(
+                self,
+                figsize=figsize, 
+                cmap=cmap, 
+                map_ticks=map_ticks, 
+                map_levels=map_levels, 
+                central_longitude_z=central_longitude_z, 
+                z_xlim=z_xlim, 
+                ts_only_sig=ts_only_sig, 
+                nm=nm, 
+                plot_type=plot_type,
+                rmse_levels=rmse_levels,
+            )
         elif int(version) == 2:
             if mca is None:
                 raise TypeError("Expected argument `mca` for version `2`")
@@ -520,6 +545,8 @@ class Crossvalidation(_Procedure):
                 raise TypeError("Unexpected argument `map_levels` for version `2`")
             if cmap is not None:
                 raise TypeError("Unexpected argument `cmap` for version `2`")
+            if rmse_levels is not None:
+                raise TypeError("Unexpected argument `rmse_levels` for version `2`")
             fig, axs = _plot_crossvalidation_2(self, figsize, mca)
         else:
             raise ValueError(f"Version can only be one of: `2`, `default`")
@@ -825,7 +852,7 @@ def _plot_crossvalidation_2(
             # ax0.set_ylabel('nº std', fontsize=20, weight='bold')
 
         r_uv, p_value, _ruv_sig, _reg, _reg_sig = index_regression(
-            LandArray(mca.Us[n_mode:n_mode+1, :]), mca.Vs[n_mode:n_mode+1, :].T, cross.alpha, 'test-t', 1000, )
+            LandArray(mca.Us[n_mode:n_mode+1, :]), mca.Vs[n_mode, :].T, cross.alpha, 'test-t', 1000, )
 
         # plt.xticks()
         # plt.yticks()
@@ -961,6 +988,10 @@ def _plot_crossvalidation_default(
     ],
     central_longitude_z: Optional[float],
     z_xlim: Optional[Tuple[float, float]],
+    ts_only_sig: bool,
+    rmse_levels: Optional[
+        Union[npt.NDArray[np.float32], Sequence[float], bool]
+    ],
     nm: Optional[int] = None,
     plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
@@ -991,7 +1022,9 @@ def _plot_crossvalidation_default(
     # Correlation map
     if nm is not None and not 1 <= nm <= cross.r_z_zhat_s_accumulated_modes.shape[0]:
         raise ValueError(f"Parameter `nm` must be positive an less than or equal to the number of modes used in the methodology, {cross.r_z_zhat_s_accumulated_modes.shape[0]}, but got {nm}")
-    d = cross.r_z_zhat_s_accumulated_modes[(-1 if nm is None else nm - 1), :].transpose().reshape((nzlat, nzlon))
+    d = cross.r_z_zhat_s_accumulated_modes[(-1 if nm is None else nm - 1), :].transpose().reshape((nzlat, nzlon)).copy()
+    d[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (
+                cross.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
     _mean = np.nanmean(d)
     _std = np.nanstd(d)
     mx = _mean + _std
@@ -1009,8 +1042,10 @@ def _plot_crossvalidation_default(
     )
 
     hatches = d.copy()
-    hatches[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (
-                cross.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
+    significant_and_positive = (
+        (cross.p_z_zhat_s_accumulated_modes[-1, :] <= cross.alpha) | 
+        (cross.r_z_zhat_s_accumulated_modes[-1, :] > 0))
+    hatches[(~significant_and_positive).transpose().reshape((nzlat, nzlon))] = np.nan
     cb = fig.colorbar(im, cax=fig.add_subplot(gs[1, 0:3]), orientation='horizontal', ticks=map_ticks)
     if map_ticks is None:
         tick_locator = ticker.MaxNLocator(nbins=5, prune='both', steps=[2, 5])
@@ -1018,22 +1053,38 @@ def _plot_crossvalidation_default(
         #cb.ax.set_xticks(ticks)
         cb.ax.xaxis.set_major_locator(tick_locator)
 
+
+    add_cyclic_point = cross.dsz.region.lon0 >= cross.dsz.region.lonf
+    hlons = cross._dsz.lon
+    if add_cyclic_point:
+        hatches, hlons = _add_cyclic_point(hatches, coord=hlons.values)
     axs[0].contourf(
-        cross._dsz.lon, cross._dsz.lat, hatches,
+        hlons, cross._dsz.lat, hatches,
         colors='none', hatches='..', extend='both',
         transform=ccrs.PlateCarree()
     )
     # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
 
     # ------ r_z_zhat_t and p_z_zhat_t ------ #
-    axs[1].bar(cross._dsz.time.values, cross.r_z_zhat_t_accumulated_modes[-1, :])
-    axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
 
-    axs[1].scatter(
-        cross._dsz.time[cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha],
-        cross.r_z_zhat_t_accumulated_modes[-1, :][cross.p_z_zhat_t_accumulated_modes[-1, :] <= cross.alpha]
-    )
-    axs[1].set_title('ACC time series')
+    if ts_only_sig:
+        mask = (~cross._dsz.land_data.land_mask) & significant_and_positive
+        nt = cross._dsz.time.shape[0]
+        rs = np.empty(nt, dtype=np.float32)
+        ps = np.empty(nt, dtype=np.float32)
+        for j in range(nt):
+            rs[j], ps[j] = stats.pearsonr(
+                cross.zhat_accumulated_modes[-1, mask, j], cross._dsz.data[mask, j])
+
+        ts_time, ts_r, ts_p = cross._dsz.time.values, rs, ps
+        axs[1].set_title('ACC time series (only significant region)')
+    else:
+        ts_time, ts_r, ts_p = cross._dsz.time.values, cross.r_z_zhat_t_accumulated_modes[-1, :], cross.p_z_zhat_t_accumulated_modes[-1, :]
+        axs[1].set_title('ACC time series')
+
+    axs[1].bar(ts_time, ts_r)
+    axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
+    axs[1].scatter(cross._dsz.time[ts_p <= cross.alpha], ts_r[ts_p <= cross.alpha])
     axs[1].grid(True)
     # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
 
@@ -1052,10 +1103,10 @@ def _plot_crossvalidation_default(
         'RMSE map',
         cmap="Reds",
         ticks=None,
-        levels=None,
+        levels=rmse_levels,
         xlim=z_xlim,
         colorbar=False,
-        add_cyclic_point=cross.dsz.region.lon0 >= cross.dsz.region.lonf,
+        add_cyclic_point=add_cyclic_point,
         plot_type=plot_type,
     )
     cb = fig.colorbar(im, cax=fig.add_subplot(gs[3, 0:3]), orientation='horizontal')

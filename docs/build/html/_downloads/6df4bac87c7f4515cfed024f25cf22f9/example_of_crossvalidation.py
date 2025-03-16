@@ -11,23 +11,23 @@ PREDICTOR_VAR = "sst"
 PREDICTAND_NAME = "chl_1km_monthly_Sep1997_Dec2020.nc"
 PREDICTAND_VAR = "CHL"
 
-predictor = Dataset(PREDICTOR_NAME, DATASETS_FOLDER).open(PREDICTOR_VAR)  # JAN-1870 : MAY-2020
+predictor = Dataset(PREDICTOR_NAME, DATASETS_FOLDER).open(PREDICTOR_VAR)
 oisst_region = Region(
-    lat0=5, latf=45,
-    lon0=-90, lonf=-5,
-    month0=Month.JUN, monthf=Month.JUL,
+    lat0=5, latf=25,
+    lon0=-75, lonf=-20,
+    month0=Month.AUG, monthf=Month.SEP,
     year0=1997, yearf=2019,
 )  # PREDICTOR: Y
 predictor.slice(oisst_region, skip=3)
 
-predictand = Dataset(PREDICTAND_NAME, DATASETS_FOLDER).open(PREDICTAND_VAR)  # JAN-1959 : DEC-2004
+predictand = Dataset(PREDICTAND_NAME, DATASETS_FOLDER).open(PREDICTAND_VAR)
 chl_region = Region(
     lat0=36, latf=37,
     lon0=-5.3, lonf=-2,
     month0=Month.MAR, monthf=Month.APR,
     year0=1998, yearf=2020,
 )  # PRECITAND: Z
-predictand.slice(chl_region, skip=3)
+predictand.slice(chl_region, skip=0)
 
 DATA_FOLDER = 'data-03122022'
 PLOTS_FOLDER = 'plots-03122022'
@@ -39,9 +39,9 @@ MCA_PLOT_NAME = 'mca.png'
 CROSS_PREFIX = 'cross_'
 CROSS_PLOT_NAME = 'cross.png'
 
-LOAD_PREPROCESSED = True
+LOAD_PREPROCESSED = False
 LOAD_MCA = False
-LOAD_CROSS = True
+LOAD_CROSS = False
 
 if LOAD_PREPROCESSED:
     predictor_preprocessed = Preprocess.load(PREDICTOR_PREPROCESSED_PREFIX, DATA_FOLDER)
@@ -61,8 +61,10 @@ else:
     mca = MCA(predictor_preprocessed, predictand_preprocessed, nm, alpha)
     mca.save(MCA_PREFIX, DATA_FOLDER)
 
-mca.plot(save_fig=True, cmap='viridis', name=MCA_PLOT_NAME, folder=PLOTS_FOLDER, ruy_ticks=[-0.25, -0.125, 0, 0.125, 0.25],
-         ruz_ticks=[-0.15, -0.075, 0, 0.075, 0.15])
+mca.plot(save_fig=True, cmap='viridis', name=MCA_PLOT_NAME, 
+         figsize=(14, 8),
+         width_ratios=[1, 1, 1],
+         folder=PLOTS_FOLDER,)
 
 if LOAD_CROSS:
     cross = Crossvalidation.load(CROSS_PREFIX, DATA_FOLDER, dsy=predictor_preprocessed, dsz=predictand_preprocessed)

@@ -1,0 +1,12 @@
+nbsphinx
+sphinx==7.4.7
+sphinx-panels
+sphinx-automodapi
+enum_tools
+sphinx-toolbox
+furo
+numpy==1.23
+matplotlib==3.5
+scipy==1.8
+xarray==2024.7.0
+cartopy

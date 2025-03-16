@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple, Any, cast, Sequence, Literal
+from typing import Optional, Tuple, Any, Union, cast, Sequence, Literal
 from cartopy.util import add_cyclic_point
 
 import numpy as np
@@ -16,7 +16,6 @@ from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, _add_cyclic_point, _get_xlim_from_region, _get_central_longitude_from_region
 from ..land_array import LandArray
-from ..meteo import Anom
 
 
 __all__ = [
@@ -109,7 +108,8 @@ class Preprocess(_Procedure):
         _debuginfo(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
         assert len(ds.data.dims) == 3
-        anomaly = Anom(ds, 'map').data
+        a = ds.data.groupby('year').mean()
+        anomaly = a - a.mean('year')
         self._ds: Dataset = ds
         
         anomaly = anomaly.transpose(
@@ -122,7 +122,8 @@ class Preprocess(_Procedure):
 
         if order is not None and period is not None:
             b, a = cast(Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]], signal.butter(order, 2 / period, btype=freq, analog=False, output='ba', fs=None))
-            data = np.apply_along_axis(lambda ts: cast(Tuple[npt.NDArray[np.float_]], signal.filtfilt(b, a, ts)), 1, data)
+            data = np.apply_along_axis(lambda ts: cast(Tuple[npt.NDArray[np.float_]], 
+                                                       signal.filtfilt(b, a, ts)), 1, data)
         elif order is not None or period is not None:
             if order is None:
                 raise TypeError('Missing keyword argument `order`')
@@ -307,6 +308,9 @@ class Preprocess(_Procedure):
         name: Optional[str] = None,
         figsize: Optional[Tuple[float, float]] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
+        levels: Optional[
+            Union[npt.NDArray[np.float32], Sequence[float], bool]
+        ] = None,
     ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes]]:
         """Plot the preprocessed data for spy4cast methodologes
 
@@ -330,6 +334,8 @@ class Preprocess(_Procedure):
         plot_type : {"contour", "pcolor"}, defaut = "pcolor"
             Plot type. If `contour` it will use function `ax.contourf`, 
             if `pcolor` `ax.pcolormesh`.
+        levels
+            Levels for the map
 
         Examples
         --------
@@ -375,6 +381,7 @@ class Preprocess(_Procedure):
         _plot_map(
             plotable[index], self.lat, self.lon, fig, ax,
             f'Year {self.time[index].values}',
+            levels=levels,
             cmap=cmap, xlim=xlim, cax=fig.add_subplot(gs[1]),
             add_cyclic_point=self.region.lon0 >= self.region.lonf,
             plot_type=plot_type,
