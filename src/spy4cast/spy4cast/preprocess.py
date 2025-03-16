@@ -121,8 +121,8 @@ class Preprocess(_Procedure):
         data = anomaly.values.reshape((nt, nlat * nlon)).transpose()  # space x time
 
         if order is not None and period is not None:
-            b, a = cast(Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]], signal.butter(order, 2 / period, btype=freq, analog=False, output='ba', fs=None))
-            data = np.apply_along_axis(lambda ts: cast(Tuple[npt.NDArray[np.float_]], 
+            b, a = cast(Tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]], signal.butter(order, 2 / period, btype=freq, analog=False, output='ba', fs=None))
+            data = np.apply_along_axis(lambda ts: cast(Tuple[npt.NDArray[np.float64]], 
                                                        signal.filtfilt(b, a, ts)), 1, data)
         elif order is not None or period is not None:
             if order is None:
@@ -228,7 +228,7 @@ class Preprocess(_Procedure):
         return self._land_data
 
     @property
-    def data(self) -> npt.NDArray[np.float_]:
+    def data(self) -> npt.NDArray[np.float64]:
         """Raw data in the object with `nan` as in the original dataset. It has dimensions of
         space x time. Should be reshaped like: data.reshape((nlat, nlon, ntime))"""
         return self._land_data.values

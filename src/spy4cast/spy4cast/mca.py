@@ -9,7 +9,6 @@ import matplotlib.gridspec as gridspec  # type: ignore
 from matplotlib import ticker, patches
 import cartopy.crs as ccrs
 from scipy import sparse, signal
-from scipy.signal.signaltools import axis_reverse
 import scipy.sparse.linalg
 import xarray as xr
 from scipy.stats import stats
@@ -640,10 +639,10 @@ def _new_mca_page(
     figsize: Optional[Tuple[float, float]],
     mode0: int,
     modef: int,
-    ruy: npt.NDArray[np.float_],
-    ruy_sig: npt.NDArray[np.float_],
-    ruz: npt.NDArray[np.float_],
-    ruz_sig: npt.NDArray[np.float_],
+    ruy: npt.NDArray[np.float64],
+    ruy_sig: npt.NDArray[np.float64],
+    ruz: npt.NDArray[np.float64],
+    ruz_sig: npt.NDArray[np.float64],
     map_y: Preprocess,
     map_z: Preprocess,
     rect_color: Union[Tuple[int, int, int], str],
@@ -787,7 +786,7 @@ def _new_mca_page(
 
 
 def index_regression(
-    data: Union[LandArray, npt.NDArray[np.float_]],
+    data: Union[LandArray, npt.NDArray[np.float64]],
     index: npt.NDArray[np.float32],
     alpha: float,
     sig: str,
@@ -901,10 +900,10 @@ def index_regression(
     return cor, pvalue, cor_sig, reg, reg_sig
 
 
-def pearsonr_2d(y: npt.NDArray[np.float_], x: npt.NDArray[np.float_]) -> npt.NDArray[np.float_]:
+def pearsonr_2d(y: npt.NDArray[np.float64], x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     upper = np.sum((x - np.mean(x)) * (y - np.mean(y, axis=1)[:, None]), axis=1)
     lower = np.sqrt(np.sum(np.power(x - np.mean(x), 2)) * np.sum(np.power(y - np.mean(y, axis=1)[:, None], 2), axis=1))
-    rho: npt.NDArray[np.float_] = upper / lower
+    rho: npt.NDArray[np.float64] = upper / lower
     return rho
 
 
@@ -915,7 +914,7 @@ def calculate_psi(
     nt: int,
     ny: int,
     nm: int,
-    scf: npt.NDArray[np.float_],
+    scf: npt.NDArray[np.float64],
 ) -> npt.NDArray[np.float32]:
     # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
     # suy = suy * scf[np.newaxis, :]

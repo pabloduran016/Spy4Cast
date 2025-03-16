@@ -23,10 +23,10 @@ class LandArray:
 
     """
 
-    values: npt.NDArray[np.float_]
+    values: npt.NDArray[np.float64]
     _land_mask: npt.NDArray[np.bool_]
 
-    def __init__(self, values: npt.NDArray[np.float_]) -> None:
+    def __init__(self, values: npt.NDArray[np.float64]) -> None:
         self.values = values
         self._land_mask = np.isnan(values).any(1)
 
@@ -36,9 +36,9 @@ class LandArray:
         return self.values.shape
 
     @property
-    def not_land_values(self) -> npt.NDArray[np.float_]:
+    def not_land_values(self) -> npt.NDArray[np.float64]:
         """Data ordered but jumps over land data-points (`nan`)."""
-        return cast(npt.NDArray[np.float_], self.values[~self._land_mask])
+        return cast(npt.NDArray[np.float64], self.values[~self._land_mask])
 
     @property
     def land_mask(self) -> npt.NDArray[np.bool_]:
