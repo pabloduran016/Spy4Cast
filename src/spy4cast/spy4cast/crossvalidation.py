@@ -92,45 +92,85 @@ class Crossvalidation(_Procedure):
     Attributes
     ----------
         zhat_separated_modes 
-            Hindcast of field to predict using crosvalidation for each individual mode
+            Hindcast of field to predict using crosvalidation for each individual mode.
+            Dimensions: nm x nz x nt
+
         zhat_accumulated_modes 
             Hindcast of field to predict using crosvalidation for n modes (1, 1->2, ..., 1->nm)
+            Dimensions: nm x nz x nt
+
         scf 
             Squared covariance fraction of the mca for each mode
+            Dimensions: nm x nt
+
         r_z_zhat_t_separated_modes 
             Correlation between zhat and Z for each time (time series) for each individual mode
+            Dimensions: nm x nt
+
         r_z_zhat_t_accumulated_modes 
             Correlation between zhat and Z for each time (time series) for n modes (1, 1->2, ..., 1->nm)
+            Dimensions: nm x nt
+            
         p_z_zhat_t_separated_modes 
-            P values of rt for each individual mode
+            P values of r for each individual mode
+            Dimensions: nm x nt
+            
         p_z_zhat_t_accumulated_modes 
             P values of rt for n modes (1, 1->2, ..., 1->nm)
+            Dimensions: nm x nt
+            
         r_z_zhat_s_separated_modes 
             Correlation between time series (for each point) of zhat and z (map) for each individual mode
+            Dimensions: nm x nt
+            
         r_z_zhat_s_accumulated_modes 
             Correlation between time series (for each point) of zhat and z (map) for n modes (1, 1->2, ..., 1->nm)
+            Dimensions: nm x nt
+            
         p_z_zhat_s_separated_modes 
             P values of rr for each individual mode
+            Dimensions: nm x nt
+            
         p_z_zhat_s_accumulated_modes 
             P values of rr for n modes (1, 1->2, ..., 1->nm)
+            Dimensions: nm x nt
+            
         r_uv 
             Correlation score betweeen u and v for each mode
+            Dimensions: nm x nt
+            
         r_uv_sig 
             Correlation score betweeen u and v for each mode where significative
+            Dimensions: nm x nt
+            
         p_uv 
             P value of ruv
+            Dimensions: nm x nt
+            
         suy 
-            Correlation in space of the predictor with the singular vector. Dimension: y_space x time x nm
+            Correlation in space of the predictor with the singular vector. 
+            Dimensions: ny x nt x nm
+            
         suz 
-            Correlation in space of the predictand with the singular vector. Dimension: z_space x time x nm
+            Correlation in space of the predictand with the singular vector. 
+            Dimensions: nz x nt x nm
+
         suy_sig 
-            Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x time x nm
+            Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. 
+            Dimensions: ny x nt x nm
+
         suz_sig 
-            Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x time x nm
+            Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. 
+            Dimensions: nz x nt x nm
+
         us 
-            Singular vectors of the predictor field. Dimension: nm x time x time
+            Singular vectors of the predictor field. 
+            Dimensions: nm x nt x nt
+
         vs 
-            Singular vectors of the predictand field. Dimension: nm x time x time
+            Singular vectors of the predictand field. 
+            Dimensions: nm x nt x nt
+
         alpha 
             Correlation factor
 

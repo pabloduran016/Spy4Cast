@@ -207,8 +207,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../example.html">Usage Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting.html">Plotting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorial_vs_xarray.html">Using xarray</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorial_vs_xarray.html#Using-Spy4Cast">Using Spy4Cast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial_vs_xarray.html">Comparission with Xarray</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../variables/variables.html">Output Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Output Variables</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../variables/dataset.html">Dataset Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../variables/preprocess.html">Preprocess Variables</a></li>
@@ -365,7 +364,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.zhat_separated_modes">
 <span class="sig-name descname"><span class="pre">zhat_separated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.zhat_separated_modes" title="Link to this definition">¶</a></dt>
-<dd><p>Hindcast of field to predict using crosvalidation for each individual mode</p>
+<dd><p>Hindcast of field to predict using crosvalidation for each individual mode.
+Dimensions: nm x nz x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -376,7 +376,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.zhat_accumulated_modes">
 <span class="sig-name descname"><span class="pre">zhat_accumulated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.zhat_accumulated_modes" title="Link to this definition">¶</a></dt>
-<dd><p>Hindcast of field to predict using crosvalidation for n modes (1, 1-&gt;2, …, 1-&gt;nm)</p>
+<dd><p>Hindcast of field to predict using crosvalidation for n modes (1, 1-&gt;2, …, 1-&gt;nm)
+Dimensions: nm x nz x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -387,7 +388,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.scf">
 <span class="sig-name descname"><span class="pre">scf</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.scf" title="Link to this definition">¶</a></dt>
-<dd><p>Squared covariance fraction of the mca for each mode</p>
+<dd><p>Squared covariance fraction of the mca for each mode
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -398,7 +400,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.r_z_zhat_t_separated_modes">
 <span class="sig-name descname"><span class="pre">r_z_zhat_t_separated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.r_z_zhat_t_separated_modes" title="Link to this definition">¶</a></dt>
-<dd><p>Correlation between zhat and Z for each time (time series) for each individual mode</p>
+<dd><p>Correlation between zhat and Z for each time (time series) for each individual mode
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -409,7 +412,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.r_z_zhat_t_accumulated_modes">
 <span class="sig-name descname"><span class="pre">r_z_zhat_t_accumulated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.r_z_zhat_t_accumulated_modes" title="Link to this definition">¶</a></dt>
-<dd><p>Correlation between zhat and Z for each time (time series) for n modes (1, 1-&gt;2, …, 1-&gt;nm)</p>
+<dd><p>Correlation between zhat and Z for each time (time series) for n modes (1, 1-&gt;2, …, 1-&gt;nm)
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -420,7 +424,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.p_z_zhat_t_separated_modes">
 <span class="sig-name descname"><span class="pre">p_z_zhat_t_separated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.p_z_zhat_t_separated_modes" title="Link to this definition">¶</a></dt>
-<dd><p>P values of rt for each individual mode</p>
+<dd><p>P values of r for each individual mode
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -431,7 +436,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.p_z_zhat_t_accumulated_modes">
 <span class="sig-name descname"><span class="pre">p_z_zhat_t_accumulated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.p_z_zhat_t_accumulated_modes" title="Link to this definition">¶</a></dt>
-<dd><p>P values of rt for n modes (1, 1-&gt;2, …, 1-&gt;nm)</p>
+<dd><p>P values of rt for n modes (1, 1-&gt;2, …, 1-&gt;nm)
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -442,7 +448,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.r_z_zhat_s_separated_modes">
 <span class="sig-name descname"><span class="pre">r_z_zhat_s_separated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.r_z_zhat_s_separated_modes" title="Link to this definition">¶</a></dt>
-<dd><p>Correlation between time series (for each point) of zhat and z (map) for each individual mode</p>
+<dd><p>Correlation between time series (for each point) of zhat and z (map) for each individual mode
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -453,7 +460,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.r_z_zhat_s_accumulated_modes">
 <span class="sig-name descname"><span class="pre">r_z_zhat_s_accumulated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.r_z_zhat_s_accumulated_modes" title="Link to this definition">¶</a></dt>
-<dd><p>Correlation between time series (for each point) of zhat and z (map) for n modes (1, 1-&gt;2, …, 1-&gt;nm)</p>
+<dd><p>Correlation between time series (for each point) of zhat and z (map) for n modes (1, 1-&gt;2, …, 1-&gt;nm)
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -464,7 +472,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.p_z_zhat_s_separated_modes">
 <span class="sig-name descname"><span class="pre">p_z_zhat_s_separated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.p_z_zhat_s_separated_modes" title="Link to this definition">¶</a></dt>
-<dd><p>P values of rr for each individual mode</p>
+<dd><p>P values of rr for each individual mode
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -475,7 +484,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.p_z_zhat_s_accumulated_modes">
 <span class="sig-name descname"><span class="pre">p_z_zhat_s_accumulated_modes</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.p_z_zhat_s_accumulated_modes" title="Link to this definition">¶</a></dt>
-<dd><p>P values of rr for n modes (1, 1-&gt;2, …, 1-&gt;nm)</p>
+<dd><p>P values of rr for n modes (1, 1-&gt;2, …, 1-&gt;nm)
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -486,7 +496,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.r_uv">
 <span class="sig-name descname"><span class="pre">r_uv</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.r_uv" title="Link to this definition">¶</a></dt>
-<dd><p>Correlation score betweeen u and v for each mode</p>
+<dd><p>Correlation score betweeen u and v for each mode
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -497,7 +508,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.r_uv_sig">
 <span class="sig-name descname"><span class="pre">r_uv_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.r_uv_sig" title="Link to this definition">¶</a></dt>
-<dd><p>Correlation score betweeen u and v for each mode where significative</p>
+<dd><p>Correlation score betweeen u and v for each mode where significative
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -508,7 +520,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.p_uv">
 <span class="sig-name descname"><span class="pre">p_uv</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.p_uv" title="Link to this definition">¶</a></dt>
-<dd><p>P value of ruv</p>
+<dd><p>P value of ruv
+Dimensions: nm x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -519,7 +532,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.suy">
 <span class="sig-name descname"><span class="pre">suy</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.suy" title="Link to this definition">¶</a></dt>
-<dd><p>Correlation in space of the predictor with the singular vector. Dimension: y_space x time x nm</p>
+<dd><p>Correlation in space of the predictor with the singular vector.
+Dimensions: ny x nt x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -530,7 +544,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.suz">
 <span class="sig-name descname"><span class="pre">suz</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.suz" title="Link to this definition">¶</a></dt>
-<dd><p>Correlation in space of the predictand with the singular vector. Dimension: z_space x time x nm</p>
+<dd><p>Correlation in space of the predictand with the singular vector.
+Dimensions: nz x nt x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -541,7 +556,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.suy_sig">
 <span class="sig-name descname"><span class="pre">suy_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.suy_sig" title="Link to this definition">¶</a></dt>
-<dd><p>Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x time x nm</p>
+<dd><p>Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha.
+Dimensions: ny x nt x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -552,7 +568,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.suz_sig">
 <span class="sig-name descname"><span class="pre">suz_sig</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.suz_sig" title="Link to this definition">¶</a></dt>
-<dd><p>Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x time x nm</p>
+<dd><p>Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha.
+Dimensions: nz x nt x nm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -563,7 +580,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.us">
 <span class="sig-name descname"><span class="pre">us</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.us" title="Link to this definition">¶</a></dt>
-<dd><p>Singular vectors of the predictor field. Dimension: nm x time x time</p>
+<dd><p>Singular vectors of the predictor field.
+Dimensions: nm x nt x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
@@ -574,7 +592,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spy4cast.spy4cast.Crossvalidation.vs">
 <span class="sig-name descname"><span class="pre">vs</span></span><a class="headerlink" href="#spy4cast.spy4cast.Crossvalidation.vs" title="Link to this definition">¶</a></dt>
-<dd><p>Singular vectors of the predictand field. Dimension: nm x time x time</p>
+<dd><p>Singular vectors of the predictand field.
+Dimensions: nm x nt x nt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray[Any, numpy.dtype[numpy.float32]]</p>
