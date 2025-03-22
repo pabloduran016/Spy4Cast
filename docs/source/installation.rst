@@ -66,7 +66,7 @@ On Mac
 .. note::
     
     ``eccodes`` depends on ``findlibs``, whose newer version does not work with ``python3.9`` so make
-   sure to specify the version number.
+    sure to specify the version number.
 
 
 Upgrade Version

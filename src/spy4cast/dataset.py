@@ -412,7 +412,7 @@ class Dataset:
                 )
 
             self._var = d_keys[0]
-            _debuginfo(f'Detected variable {self._var}')
+            _debuginfo(f'Detected variable {self._var} from: {", ".join(d_keys)}')
 
         if self.var not in self._ds.variables:
             raise VariableSelectionError(
