@@ -17,8 +17,8 @@ z.slice(Region(36, 37, -5.3, -2, Month.MAR, Month.APR, 1998, 2020), skip=2)
 # RECOMMEND: copy implementation in file src/spy4cast/spy4cast/preprocess.py 
 # and change what is needed
 class CustomPreprocess(spy4cast.Preprocess):
-    def __init__(self, ds):
-        self._ds: Dataset = ds
+    def __init__(self, ds: Dataset) -> None:
+        self._ds = ds
         
         a = ds.data.groupby('year').mean()
         anomaly = a - a.mean('year')
