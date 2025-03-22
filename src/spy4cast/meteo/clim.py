@@ -6,8 +6,8 @@ from matplotlib import pyplot as plt
 from . import PlotType, _get_type
 from .. import Region, Dataset, Month
 from .._functions import region2str
-from .._procedure import _Procedure, _apply_flags_to_fig, _plot_ts, _plot_map, _calculate_figsize, MAX_WIDTH, MAX_HEIGHT, \
-    _get_xlim_from_region, _get_central_longitude_from_region
+from .._procedure import _Procedure, _apply_flags_to_fig, plot_ts, plot_map, _calculate_figsize, MAX_WIDTH, MAX_HEIGHT, \
+    get_xlim_from_region, get_central_longitude_from_region
 import matplotlib.gridspec as gridspec
 import numpy as np
 import cartopy.crs as ccrs
@@ -366,7 +366,7 @@ class Clim(_Procedure, object):
             if xlim is not None:
                 raise TypeError('`xlim` parameter is not valid to plot a time series climatology')
             ax = fig.add_subplot()
-            _plot_ts(
+            plot_ts(
                 time=self.time.values,
                 arr=self.data.values,
                 ax=ax,
@@ -391,11 +391,11 @@ class Clim(_Procedure, object):
             if color is not None:
                 raise TypeError('Color parameter is not valid to plot a map climatology')
             central_longitude = central_longitude if central_longitude is not None else \
-                _get_central_longitude_from_region(self.region.lon0, self.region.lonf)
+                get_central_longitude_from_region(self.region.lon0, self.region.lonf)
             xlim = xlim if xlim is not None else \
-                _get_xlim_from_region(self.region.lon0, self.region.lonf, central_longitude)
+                get_xlim_from_region(self.region.lon0, self.region.lonf, central_longitude)
             ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(central_longitude))
-            im = _plot_map(
+            im = plot_map(
                 arr=self.data.values,
                 lat=self.lat,
                 lon=self.lon,

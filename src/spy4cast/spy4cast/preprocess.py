@@ -1,6 +1,5 @@
 import os
 from typing import Optional, Tuple, Any, Union, cast, Sequence, Literal
-from cartopy.util import add_cyclic_point
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -13,8 +12,8 @@ import cartopy.crs as ccrs
 from .. import Region, Month
 from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
 from ..dataset import Dataset
-from .._procedure import _Procedure, _get_index_from_sy, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
-    MAX_HEIGHT, _add_cyclic_point, _get_xlim_from_region, _get_central_longitude_from_region
+from .._procedure import _Procedure, _get_index_from_sy, plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
+    MAX_HEIGHT, add_cyclic_point_to_data, get_xlim_from_region, get_central_longitude_from_region
 from ..land_array import LandArray
 
 
@@ -372,13 +371,13 @@ class Preprocess(_Procedure):
         gs = gridspec.GridSpec(2, 1, height_ratios=[1, 0.05])
 
         # central longitude
-        central_longitude = _get_central_longitude_from_region(self.region.lon0, self.region.lonf)
-        xlim = _get_xlim_from_region(self.region.lon0, self.region.lonf, central_longitude)
+        central_longitude = get_central_longitude_from_region(self.region.lon0, self.region.lonf)
+        xlim = get_xlim_from_region(self.region.lon0, self.region.lonf, central_longitude)
 
         ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(central_longitude))
 
 
-        _plot_map(
+        plot_map(
             plotable[index], self.lat, self.lon, fig, ax,
             f'Year {self.time[index].values}',
             levels=levels,

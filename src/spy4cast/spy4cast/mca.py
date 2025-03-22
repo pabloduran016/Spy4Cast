@@ -16,8 +16,8 @@ from scipy.stats import stats
 
 from .. import Region
 from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
-from .._procedure import _Procedure, _plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, _plot_ts, \
-    _get_xlim_from_region, _get_central_longitude_from_region, _add_cyclic_point
+from .._procedure import _Procedure, plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, plot_ts, \
+    get_xlim_from_region, get_central_longitude_from_region, add_cyclic_point_to_data
 from .preprocess import Preprocess
 
 
@@ -475,8 +475,8 @@ class MCA(_Procedure):
         if signs is not None:
             if len(signs) != nm:
                 raise TypeError(f'Expected signs to be a sequence of the same length as number of modes ({nm})')
-            if any(type(x) != bool for x in signs):
-                raise TypeError(f'Expected signs to be a sequence of boolean: either True or False, got {signs}')
+            # if any(type(x) != bool for x in signs):
+            #     raise TypeError(f'Expected signs to be a sequence of boolean: either True or False, got {signs}')
 
         if montecarlo_iterations is not None and map_y is None and map_z is None and sig != 'monte-carlo':
             assert False
@@ -665,19 +665,19 @@ def _new_mca_page(
                                          [0.9*max(y_wratio, z_wratio), y_wratio, z_wratio]),
                            hspace=0.7)
 
-    figsize = _calculate_figsize(1/nm, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+    figsize = _calculate_figsize((nm + 1)/2/3, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
     fig: plt.Figure = plt.figure(figsize=figsize)
 
     # central longitude
     central_longitude_y = central_longitude_y if central_longitude_y is not None else \
-        _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
+        get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
     y_xlim = y_xlim if y_xlim is not None else \
-        _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
+        get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
 
     central_longitude_z = central_longitude_z if central_longitude_z is not None else \
-        _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+        get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
     z_xlim = z_xlim if z_xlim is not None else \
-        _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+        get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
     axs = (
         *(fig.add_subplot(gs[i, 0]) for i in range(nm)),
@@ -696,7 +696,7 @@ def _new_mca_page(
         if signs is not None and signs[mode]:
             us *= -1
             vs *= -1
-        _plot_ts(
+        plot_ts(
             time=mca._dsy.time.values,
             arr=us,
             ax=ax_ts,
@@ -704,7 +704,7 @@ def _new_mca_page(
             color='green',
             label='Us',
         )
-        _plot_ts(
+        plot_ts(
             time=mca._dsz.time.values,
             arr=vs,
             ax=ax_ts,
@@ -740,7 +740,7 @@ def _new_mca_page(
                 if signs[mode]:
                     t *= -1
 
-            im = _plot_map(
+            im = plot_map(
                 t, lats, lons, fig, ax_map, title,
                 levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
                 colorbar=False, add_cyclic_point=add_cyclic_point, plot_type=plot_type,
@@ -753,7 +753,7 @@ def _new_mca_page(
                 #cb.ax.xaxis.set_tick_params(rotation=20)
             hlons = lons
             if add_cyclic_point:
-                th, hlons = _add_cyclic_point(th, coord=hlons.values)
+                th, hlons = add_cyclic_point_to_data(th, coord=hlons.values)
             ax_map.contourf(
                 hlons, lats, th, colors='none', hatches='..', extend='both',
                 transform=ccrs.PlateCarree()

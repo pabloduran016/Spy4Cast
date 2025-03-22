@@ -11,7 +11,6 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import BoundaryNorm
 import xarray as xr
 import cartopy.crs as ccrs
-import cartopy.util
 import numpy.typing as npt
 from matplotlib.ticker import MaxNLocator
 
@@ -23,14 +22,14 @@ T = TypeVar('T', bound='_Procedure')
 
 __all__ = [
     '_Procedure',
-    '_plot_map',
-    '_plot_ts',
+    'plot_map',
+    'plot_ts',
     '_apply_flags_to_fig',
     '_get_index_from_sy',
     '_calculate_figsize',
-    '_add_cyclic_point',
-    '_get_central_longitude_from_region',
-    '_get_xlim_from_region',
+    'add_cyclic_point_to_data',
+    'get_central_longitude_from_region',
+    'get_xlim_from_region',
     'MAX_WIDTH',
     'MAX_HEIGHT',
 ]
@@ -94,7 +93,7 @@ class _Procedure(ABC):
         debugprint(f' took {time_to_here():.03f} seconds')
         return self
 
-def _plot_map(
+def plot_map(
     arr: npt.NDArray[np.float32],
     lat: Union[npt.NDArray[np.float32], xr.DataArray],
     lon: Union[npt.NDArray[np.float32], xr.DataArray],
@@ -117,7 +116,7 @@ def _plot_map(
     plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> matplotlib.contour.QuadContourSet:
     if add_cyclic_point:
-        arr, lon = _add_cyclic_point(arr, coord=lon)
+        arr, lon = add_cyclic_point_to_data(arr, coord=lon)
     cmap = 'bwr' if cmap is None else cmap
 
     if plot_type == "contour":
@@ -170,7 +169,7 @@ def _plot_map(
     return im
 
 
-def _plot_ts(
+def plot_ts(
     time: npt.NDArray[np.int_],
     arr: npt.NDArray[np.float_],
     ax: plt.Axes,
@@ -266,7 +265,7 @@ def _calculate_figsize(ratio: Optional[float], maxwidth: float, maxheight: float
     return w, h
 
 
-def _add_cyclic_point(
+def add_cyclic_point_to_data(
     data: npt.NDArray[np.float_], coord: npt.NDArray[np.float_], axis: int = -1
 ) -> Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]]:
     if coord.ndim != 1:
@@ -290,7 +289,7 @@ def _add_cyclic_point(
     return new_data, new_coord
 
 
-def _get_xlim_from_region(lon0: float, lonf: float, cm: float) -> Tuple[float, float]:
+def get_xlim_from_region(lon0: float, lonf: float, cm: float) -> Tuple[float, float]:
     if cm >= 0:
         if lon0 > lonf:
             a = lon0 - cm
@@ -309,7 +308,7 @@ def _get_xlim_from_region(lon0: float, lonf: float, cm: float) -> Tuple[float, f
     return xlim
 
     
-def _get_central_longitude_from_region(lon0: float, lonf: float) -> float:
+def get_central_longitude_from_region(lon0: float, lonf: float) -> float:
     central_longitude: float
     if lon0 < lonf:
         central_longitude = np.mean([lonf, lon0])

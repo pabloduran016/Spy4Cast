@@ -4,7 +4,7 @@ from typing import Any
 import numpy as np
 import xarray as xr
 
-from spy4cast._procedure import _plot_map
+from spy4cast._procedure import plot_map
 from spy4cast.spy4cast.preprocess import Preprocess
 from spy4cast import Dataset, Month, Region
 from spy4cast.meteo import Clim

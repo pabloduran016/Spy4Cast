@@ -9,11 +9,11 @@ from . import BaseTestCase
 from spy4cast._procedure import (
     _calculate_figsize,
     _get_index_from_sy,
-    _plot_map,
-    _plot_ts,
+    plot_map,
+    plot_ts,
     _apply_flags_to_fig,
-    _get_xlim_from_region,
-    _get_central_longitude_from_region,
+    get_xlim_from_region,
+    get_central_longitude_from_region,
 )
 
 
@@ -26,7 +26,7 @@ class ProcedureTest(BaseTestCase):
         arr = np.array([[x for x in range(nlon)] for _ in range(nlat)])
         fig = plt.figure()
         ax = fig.add_subplot(111, projection=ccrs.PlateCarree())
-        _plot_map(
+        plot_map(
             arr=arr,
             lat=lat,
             lon=lon,
@@ -49,7 +49,7 @@ class ProcedureTest(BaseTestCase):
         arr = np.array([[x for x in range(nlon)] for _ in range(nlat)])
         fig = plt.figure()
         ax = fig.add_subplot(111, projection=ccrs.PlateCarree())
-        _plot_map(
+        plot_map(
             arr=arr,
             lat=lat,
             lon=lon,
@@ -73,7 +73,7 @@ class ProcedureTest(BaseTestCase):
         arr = np.array([[x for x in range(nlon)] for _ in range(nlat)])
         fig = plt.figure()
         ax = fig.add_subplot(111, projection=ccrs.PlateCarree())
-        _plot_map(
+        plot_map(
             arr=arr,
             lat=lat,
             lon=lon,
@@ -95,7 +95,7 @@ class ProcedureTest(BaseTestCase):
         ax = fig.add_subplot(111)
         time = np.arange(1990, 2020)
         arr = np.empty(30)
-        _plot_ts(
+        plot_ts(
             time=time,
             arr=arr,
             ax=ax,
@@ -184,14 +184,14 @@ class ProcedureTest(BaseTestCase):
         self.assertEqual(h, 8)
 
     def test__get_central_longitude(self) -> None:
-        self.assertEqual(_get_central_longitude_from_region(100, 120), 110)
-        self.assertEqual(_get_central_longitude_from_region(-120, -100), -110)
-        self.assertEqual(_get_central_longitude_from_region(-100, -120), 70)
-        self.assertEqual(_get_central_longitude_from_region(100, -120), 170)
-        self.assertEqual(_get_central_longitude_from_region(100, -10), -135)
+        self.assertEqual(get_central_longitude_from_region(100, 120), 110)
+        self.assertEqual(get_central_longitude_from_region(-120, -100), -110)
+        self.assertEqual(get_central_longitude_from_region(-100, -120), 70)
+        self.assertEqual(get_central_longitude_from_region(100, -120), 170)
+        self.assertEqual(get_central_longitude_from_region(100, -10), -135)
 
     def test__get_xlim_from_region(self) -> None:
-        self.assertEqual(_get_xlim_from_region(60, -60, 180), (-120 + 180, 120 + 180))
-        self.assertEqual(_get_xlim_from_region(100, -20, -140), (-120 - 140, 120 - 140))
-        self.assertEqual(_get_xlim_from_region(-160, 20, -70), (-90 - 70, 90 - 70))
+        self.assertEqual(get_xlim_from_region(60, -60, 180), (-120 + 180, 120 + 180))
+        self.assertEqual(get_xlim_from_region(100, -20, -140), (-120 - 140, 120 - 140))
+        self.assertEqual(get_xlim_from_region(-160, 20, -70), (-90 - 70, 90 - 70))
 

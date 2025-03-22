@@ -1,6 +1,6 @@
 import os
 from math import floor
-from typing import Tuple, Optional, Any, Union, Sequence, cast, Literal, List
+from typing import Tuple, Optional, Any, TypedDict, Union, Sequence, cast, Literal, List
 
 import numpy as np
 import numpy.typing as npt
@@ -15,8 +15,8 @@ from . import MCA
 from .mca import index_regression, calculate_psi
 from .. import Region
 from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
-from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
-    MAX_HEIGHT, _plot_ts, _get_central_longitude_from_region, _get_xlim_from_region, _add_cyclic_point
+from .._procedure import _Procedure, _apply_flags_to_fig, plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
+    MAX_HEIGHT, plot_ts, get_central_longitude_from_region, get_xlim_from_region, add_cyclic_point_to_data
 from ..land_array import LandArray
 from .preprocess import Preprocess
 import xarray as xr
@@ -692,11 +692,11 @@ class Crossvalidation(_Procedure):
 
         # central longitude
         map_y, map_z = self._dsy, self._dsz
-        central_longitude_y = _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
-        y_xlim = _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
+        central_longitude_y = get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
+        y_xlim = get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
 
-        central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
-        z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+        central_longitude_z = get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+        z_xlim = get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
         ax0 = plt.subplot(gs[0], projection=ccrs.PlateCarree(central_longitude_y))
         ax1 = plt.subplot(gs[2], projection=ccrs.PlateCarree(central_longitude_z))
@@ -708,7 +708,7 @@ class Crossvalidation(_Procedure):
 
         d0 = self._dsy.data.transpose().reshape((nts, nylat, nylon))
 
-        _plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim, 
+        plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim, 
                   cax=fig.add_subplot(gs[1]), add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type,
                   levels=y_levels)
 
@@ -719,12 +719,12 @@ class Crossvalidation(_Procedure):
         _m = np.nanmean([np.nanmean(d2), np.nanmean(d1)])
         _s = np.nanmean([np.nanstd(d2), np.nanstd(d1)])
         levels = z_levels if z_levels is not None else np.linspace(_m -2*_s, _m + 2*_s, n)
-        _plot_map(
+        plot_map(
             d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim, colorbar=False,
             add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
         )
-        _plot_map(
+        plot_map(
             d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
             cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim, cax=fig.add_subplot(gs[4]),
             add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
@@ -1043,9 +1043,9 @@ def _plot_crossvalidation_default(
     map_z = cross._dsz
 
     central_longitude_z = central_longitude_z if central_longitude_z is not None else \
-        _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+        get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
     z_xlim = z_xlim if z_xlim is not None else \
-        _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+        get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
     axs = (
         fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(central_longitude_z)),
@@ -1069,7 +1069,7 @@ def _plot_crossvalidation_default(
     _std = np.nanstd(d)
     mx = _mean + _std
     mn = _mean - _std
-    im = _plot_map(
+    im = plot_map(
         d, cross._dsz.lat, cross._dsz.lon, fig, axs[0],
         'ACC map',
         cmap=cmap,
@@ -1097,7 +1097,7 @@ def _plot_crossvalidation_default(
     add_cyclic_point = cross.dsz.region.lon0 >= cross.dsz.region.lonf
     hlons = cross._dsz.lon
     if add_cyclic_point:
-        hatches, hlons = _add_cyclic_point(hatches, coord=hlons.values)
+        hatches, hlons = add_cyclic_point_to_data(hatches, coord=hlons.values)
     axs[0].contourf(
         hlons, cross._dsz.lat, hatches,
         colors='none', hatches='..', extend='both',
@@ -1138,7 +1138,7 @@ def _plot_crossvalidation_default(
 
     rmse_map = np.sqrt(np.nansum((zhat - zdata)**2, axis=1) / nt).reshape((nlat, nlon))
 
-    im = _plot_map(
+    im = plot_map(
         rmse_map, cross._dsz.lat, cross._dsz.lon, fig, axs[2],
         'RMSE map',
         cmap="Reds",

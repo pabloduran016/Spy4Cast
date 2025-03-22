@@ -7,8 +7,8 @@ import cartopy.crs as ccrs
 
 from .. import Dataset, Region
 from .._functions import region2str
-from .._procedure import _Procedure, _plot_map, _plot_ts, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, \
-    _get_xlim_from_region, _get_central_longitude_from_region
+from .._procedure import _Procedure, plot_map, plot_ts, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, \
+    get_xlim_from_region, get_central_longitude_from_region
 import xarray as xr
 import matplotlib.gridspec as gridspec
 import pandas as pd
@@ -403,7 +403,7 @@ class Anom(_Procedure):
             if xlim is not None:
                 raise TypeError('`xlim` parameter is not valid to plot a time series climatology')
             ax = fig.add_subplot()
-            _plot_ts(
+            plot_ts(
                 time=self.time.values,
                 arr=self.data.values,
                 ax=ax,
@@ -430,11 +430,11 @@ class Anom(_Procedure):
             if year is None:
                 raise TypeError(f'`Must provide argument `year` to plot anom')
             central_longitude = central_longitude if central_longitude is not None else \
-                _get_central_longitude_from_region(self.region.lon0, self.region.lonf)
+                get_central_longitude_from_region(self.region.lon0, self.region.lonf)
             xlim = xlim if xlim is not None else \
-                _get_xlim_from_region(self.region.lon0, self.region.lonf, central_longitude)
+                get_xlim_from_region(self.region.lon0, self.region.lonf, central_longitude)
             ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(central_longitude))
-            im = _plot_map(
+            im = plot_map(
                 arr=self.data.sel({self._time_key: year}).values,
                 lat=self.lat,
                 lon=self.lon,

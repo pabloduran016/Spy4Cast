@@ -12,6 +12,7 @@ __all__ = [
     'time_to_here',
 
     'region2str',
+    'season2str',
     'mon2str',
     'str2mon',
     'debugprint',
@@ -37,9 +38,14 @@ VALID_MONTHS = list(filter(
 _prev: Optional[float] = None
 
 
-def time_from_here() -> None:
+def time_from_here() -> float:
     """Function that is supposed to use in conjunctin with `time_to_here`
     to time program parts
+
+    Returns
+    -------
+        here : float
+            Timestamp calcualted with time.perf_counter that can be passed to time_to_here()
 
     Example
     -------
@@ -58,12 +64,18 @@ def time_from_here() -> None:
     """
     global _prev
     _prev = perf_counter()
-    return
+    return _prev
 
 
-def time_to_here() -> float:
-    """Function that is supposed to use in conjunctin with `time_from_here`
+def time_to_here(here: Optional[float] = None) -> float:
+    """Function that is supposed to use in conjunction with `time_from_here`
     to time program parts
+
+    Parameters
+    ----------
+        here : optional, float
+            If passed it will calculate the time since `here`. If not it
+            will used a global variable that is set when `time_from_here` is called
 
     Example
     -------
@@ -80,12 +92,16 @@ def time_to_here() -> float:
         Iterating through the first 100 million ints and adding their square
         to an array took: 30.27 seconds
     """
+    now = perf_counter()
+    if here is not None:
+        return now - here
+
     global _prev
     if _prev is None:
         raise ValueError(
-            'Expected to call time_from_here() before calling time_to_here()'
+            'Expected to call time_from_here() before calling time_to_here() or passing a tiemstamp'
         )
-    rv = perf_counter() - _prev
+    rv = now - _prev
     _prev = None
     return rv
 
@@ -172,6 +188,31 @@ def mon2str(month: Union[Month, int]) -> str:
         raise ValueError(f'Expected month number from 1 to 12, got {month}')
     # print('[WARNING] <month_to_string()> Changing month indexes!!!!!!!!!!!!')
     return MONTH_TO_STRING[month - 1]
+
+
+def season2str(month0: Union[Month, int], monthf: Union[Month, int]) -> str:
+    """Converts season defined by initial and final month to a season string:
+    (Month.JUL, Month.SEP) -> 'JAS'
+
+    Parameters
+    ----------
+        month0 : Month
+            Intial month of the season
+        monthf : Month
+            Final month of the season
+
+    Returns
+    -------
+        season : str
+            String created with the first letter of the season
+    """
+    if monthf < month0:
+        monthf += 12
+    rv = ""
+    for i in range(month0, monthf + 1):
+        index = (i-1) % 12
+        rv += MONTH_TO_STRING[index][0]
+    return rv
 
 
 def str2mon(month: str) -> Month:

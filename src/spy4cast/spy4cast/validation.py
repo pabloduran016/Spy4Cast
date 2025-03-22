@@ -16,8 +16,8 @@ from .crossvalidation import calculate_psi, calculate_time_correlation, calculat
 from .mca import index_regression
 from .. import Region
 from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
-from .._procedure import _Procedure, _apply_flags_to_fig, _plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
-    MAX_HEIGHT, _plot_ts, _get_xlim_from_region, _get_central_longitude_from_region
+from .._procedure import _Procedure, _apply_flags_to_fig, plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
+    MAX_HEIGHT, plot_ts, get_xlim_from_region, get_central_longitude_from_region
 from ..land_array import LandArray
 from .preprocess import Preprocess
 import xarray as xr
@@ -508,11 +508,11 @@ class Validation(_Procedure):
 
         # central longitude
         map_y, map_z = self._validating_dsy, self._validating_dsz
-        central_longitude_y = _get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
-        y_xlim = _get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
+        central_longitude_y = get_central_longitude_from_region(map_y.region.lon0, map_y.region.lonf)
+        y_xlim = get_xlim_from_region(map_y.region.lon0, map_y.region.lonf, central_longitude_y)
 
-        central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
-        z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+        central_longitude_z = get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+        z_xlim = get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
         ax0 = plt.subplot(gs[0], projection=ccrs.PlateCarree(central_longitude_y))
         ax1 = plt.subplot(gs[2], projection=ccrs.PlateCarree(central_longitude_z))
@@ -525,7 +525,7 @@ class Validation(_Procedure):
 
         d0 = self._validating_dsy.data.transpose().reshape((nts, nylat, nylon))
 
-        _plot_map(d0[yindex], self._validating_dsy.lat, self._validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim,
+        plot_map(d0[yindex], self._validating_dsy.lat, self._validating_dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim,
                   add_cyclic_point=self._validating_dsy.region.lon0 >= self._validating_dsy.region.lonf, plot_type=plot_type,
                   levels=y_levels)
 
@@ -537,12 +537,12 @@ class Validation(_Procedure):
         _s = np.nanmean([np.nanstd(d2), np.nanstd(d1)])
         levels = z_levels if z_levels is not None else np.linspace(_m -2*_s, _m + 2*_s, n)
 
-        _plot_map(
+        plot_map(
             d1[zindex], self._validating_dsz.lat, self._validating_dsz.lon, fig, ax1, f'Zhat on year {year}',
             cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim,
             add_cyclic_point=self._validating_dsz.region.lon0 >= self._validating_dsz.region.lonf, plot_type=plot_type,
         )
-        _plot_map(
+        plot_map(
             d2[zindex], self._validating_dsz.lat, self._validating_dsz.lon, fig, ax2, f'Z on year {year}',
             cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim,
             add_cyclic_point=self._validating_dsz.region.lon0 >= self._validating_dsz.region.lonf, plot_type=plot_type,
@@ -602,8 +602,8 @@ def _plot_validation_default(
 
     # central longitude
     map_z = validation._validating_dsz
-    central_longitude_z = _get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
-    z_xlim = _get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
+    central_longitude_z = get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
+    z_xlim = get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
     axs = (
         fig.add_subplot(gs[0, 0:3], projection=ccrs.PlateCarree(central_longitude_z)),
@@ -623,7 +623,7 @@ def _plot_validation_default(
     _std = np.nanstd(d)
     mx = _mean + _std
     mn = _mean - _std
-    im = _plot_map(
+    im = plot_map(
         d, validation.validating_dsz.lat, validation.validating_dsz.lon, fig, axs[0],
         'Correlation in space between z and zhat',
         cmap=cmap,
@@ -674,7 +674,7 @@ def _plot_validation_default(
 
     rmse_map = np.sqrt(np.nansum((zhat - zdata)**2, axis=1) / nt).reshape((nlat, nlon))
 
-    im = _plot_map(
+    im = plot_map(
         d, validation.validating_dsz.lat, validation.validating_dsz.lon, fig, axs[2],
         'RMSE',
         cmap="Reds",

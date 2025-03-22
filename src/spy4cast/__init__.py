@@ -1,5 +1,7 @@
 from .dataset import Dataset
 from .stypes import Region, Month
+from ._functions import region2str, season2str
+from ._procedure import plot_map, plot_ts, add_cyclic_point_to_data, get_central_longitude_from_region, get_xlim_from_region
 
 __all__ = [
     'Region',
@@ -7,6 +9,13 @@ __all__ = [
     'Dataset',
     'set_silence',
     'Settings',
+    'region2str',
+    'season2str',
+    'plot_map',
+    'plot_ts',
+    'add_cyclic_point_to_data',
+    'get_central_longitude_from_region',
+    'get_xlim_from_region',
 ]
 
 
