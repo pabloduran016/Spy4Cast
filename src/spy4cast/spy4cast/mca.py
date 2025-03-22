@@ -49,6 +49,11 @@ class MCA(_Procedure):
             Number of iterations for monte-carlo sig
         detrend : bool, default=True
             Detrend the y variable in the time axis
+        num_svdvals : int or None, default=None
+            If not None, approximate the sum of the singular values of the
+            covariance matrix (used to calculate scf) to the sum of the
+            largest `num_svdvals` singular values. Useful to speed up MCA
+            if the `scf` is not needed or it is not needed to be precise.
 
     Examples
     --------
@@ -138,7 +143,8 @@ class MCA(_Procedure):
     Vs: npt.NDArray[np.float32]
     scf: npt.NDArray[np.float32]
     alpha: float
-    psi: npt.NDArray[np.float32]
+
+    _psi: Optional[npt.NDArray[np.float32]]
 
     @property
     def var_names(self) -> Tuple[str, ...]:
@@ -170,7 +176,8 @@ class MCA(_Procedure):
         alpha: float,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
-        detrend: bool = True
+        detrend: bool = True,
+        num_svdvals: Optional[int] = None,
     ):
         self._dsz = dsz
         self._dsy = dsy
@@ -180,7 +187,7 @@ class MCA(_Procedure):
             Y{dsy.shape} 
     Regions: Z {region2str(self._dsz.region)} 
             Y {region2str(self._dsy.region)}""", )
-        time_from_here()
+        here = time_from_here()
 
         if len(dsz.time) != len(dsy.time):
             raise ValueError(
@@ -190,9 +197,10 @@ class MCA(_Procedure):
                 f'{len(dsy.time)}'
             )
 
-        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations, detrend)
-        debugprint(f'       Took: {time_to_here():.03f} seconds')
+        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations, detrend, num_svdvals)
+        debugprint(f'       Took: {time_to_here(here):.03f} seconds')
 
+        self._psi = None
         # first you calculate the covariance matrix
         # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
 
@@ -215,7 +223,8 @@ class MCA(_Procedure):
         alpha: float,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
-        detrend: bool = True
+        detrend: bool = True,
+        num_svdvals: Optional[int] = None,
     ) -> 'MCA':
         """
         Alternative constructor for mca that takes Land Array
@@ -236,6 +245,11 @@ class MCA(_Procedure):
                 Number of iterations for monte-carlo sig
             detrend : bool, default=True
                 Detrend the y variable in the time axis
+            num_svdvals : int or None, default=None
+                If True, approximate the sum of the singular values of the
+                covariance matrix (used to calculate scf) to the sum of the
+                largest `num_svdvals` singular values. Useful to speed up MCA
+                if the `scf` is not needed or it is not needed to be precise.
 
         Returns
         -------
@@ -247,7 +261,7 @@ class MCA(_Procedure):
             MCA
         """
         m = cls.__new__(MCA)
-        m._mca(z, y, nm, alpha, sig, montecarlo_iterations, detrend)
+        m._mca(z, y, nm, alpha, sig, montecarlo_iterations, detrend, num_svdvals)
         return m
 
     def _mca(
@@ -259,6 +273,7 @@ class MCA(_Procedure):
         sig: str,
         montecarlo_iterations: Optional[int] = None,
         detrend: bool = True,
+        num_svdvals: Optional[int] = None
     ) -> None:
         nz, nt = z.shape
         ny, nt = y.shape
@@ -270,10 +285,10 @@ class MCA(_Procedure):
         if type(c) == np.ma.MaskedArray:
             c = c.data
 
-        r, _d, q = sparse.linalg.svds(c, k=nm, which='LM')  # Which LM = Large magnitude
+        r, d, q = sparse.linalg.svds(c, k=nm, which='LM')  # Which LM = Large magnitude
         # Modes are reversed so we reverse them in r, d and q
         r = r[:, ::-1]
-        _d = _d[::-1]
+        d = d[::-1]
         q = q[::-1, :]
 
         # OLD WAY OF DOING SVD: REALLY SLOW
@@ -281,8 +296,16 @@ class MCA(_Procedure):
         # r = r[:, :nm]
         # q = r[:nm, :]
 
-        svdvals = scipy.linalg.svdvals(c)
-        scf = svdvals[:nm] / np.sum(svdvals)
+        if num_svdvals is None:
+            svdvals = scipy.linalg.svdvals(c)
+            sum_svdvals = np.sum(svdvals)
+        elif num_svdvals <= nm:
+            sum_svdvals = np.sum(d[:num_svdvals])
+        else:
+            _r, svdvals, _q = sparse.linalg.svds(c, k=num_svdvals, which='LM')
+            sum_svdvals = np.sum(svdvals)
+
+        scf = d / sum_svdvals
 
         # y había que transponerla si originariamente era (espacio, tiempo),
         # pero ATN_e es (tiempo, espacio) así
@@ -325,7 +348,20 @@ class MCA(_Procedure):
                 self.SUZ[:, i],
                 self.SUZ_sig[:, i]
             ) = index_regression(z, self.Us[i, :], alpha, sig, montecarlo_iterations)
-        self.psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, nm, scf)
+
+    @property
+    def psi(self) -> npt.NDArray[np.float32]:
+        if self._psi is None:
+            z = self._dsz.land_data
+            y = self._dsy.land_data
+            nz, nt = z.shape
+            ny, nt = y.shape
+            self._psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, self.nm, self.scf)
+        return self._psi
+
+    @psi.setter
+    def psi(self, value: npt.NDArray[np.float32]) -> None:
+        self._psi = value
 
     def plot(
         self,
