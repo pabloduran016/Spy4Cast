@@ -3,5 +3,6 @@ matplotlib==3.5
 xarray==2024.7.0
 dask
 pandas
+cfgrib==0.9.10.4
 netcdf4
 scipy==1.8
