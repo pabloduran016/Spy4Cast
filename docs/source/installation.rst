@@ -52,7 +52,7 @@ On Linux
 .. code-block:: console
 
     (<your-env-name>) $ sudo apt-get install libeccodes0
-    (<your-env-name>) $ pip install cfgrib
+    (<your-env-name>) $ pip install cfgrib findlibs==0.0.5
 
 
 On Mac
@@ -61,7 +61,12 @@ On Mac
 .. code-block:: console
 
     (<your-env-name>) $ brew install eccodes
-    (<your-env-name>) $ pip install cfgrib
+    (<your-env-name>) $ pip install cfgrib findlibs==0.0.5
+
+.. note::
+    
+    ``eccodes`` depends on ``findlibs``, whose newer version does not work with ``python3.9`` so make
+   sure to specify the version number.
 
 
 Upgrade Version

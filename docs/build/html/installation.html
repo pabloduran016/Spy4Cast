@@ -333,15 +333,22 @@
 <section id="on-linux">
 <h3>On Linux<a class="headerlink" href="#on-linux" title="Link to this heading">¶</a></h3>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>libeccodes0
-<span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>cfgrib
+<span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>cfgrib<span class="w"> </span><span class="nv">findlibs</span><span class="o">==</span><span class="m">0</span>.0.5
 </pre></div>
 </div>
 </section>
 <section id="on-mac">
 <h3>On Mac<a class="headerlink" href="#on-mac" title="Link to this heading">¶</a></h3>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>brew<span class="w"> </span>install<span class="w"> </span>eccodes
-<span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>cfgrib
+<span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>cfgrib<span class="w"> </span><span class="nv">findlibs</span><span class="o">==</span><span class="m">0</span>.0.5
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">eccodes</span></code> depends on <code class="docutils literal notranslate"><span class="pre">findlibs</span></code>, whose newer version does not work with <code class="docutils literal notranslate"><span class="pre">python3.9</span></code> so make</p>
+</div></blockquote>
+<p>sure to specify the version number.</p>
 </div>
 </section>
 </section>
