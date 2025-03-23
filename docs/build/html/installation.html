@@ -209,6 +209,8 @@
 <li class="toctree-l1"><a class="reference internal" href="validation.html">Validation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="manual/manual.html">Spy4Cast Manual</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Spy4Cast Manual</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="manual/Analysis_of_Predictability.html">Analysis of Predictability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manual/CCA_using_XEOFS_and_Spy4Cast.html">Calculating CCA coupled patterns on SST data using Spy4Cast and Xeofs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manual/CCA_using_XEOFS_and_Spy4Cast.html#Data-ingestion-and-preprocessing">Data ingestion and preprocessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manual/Climatology_Anomaly_EquatorialAtlantic.html">Example to Open, Slice and Plot Anomaly and Climatology Maps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manual/EquatorialAtlantic_Impact_Nino.html">Jupyter Notebook Version for calculating Equatorial Impact of the Niño</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manual/Pacific_Impact_European_SLP.html">Calculating Pacific Impact on Sahelian Rain Fall</a></li>
@@ -318,7 +320,7 @@
 <p>To get the latest version:</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The environment must be compatible with all the dependencies and Cartopy probably needs it to be 3.9 or lower</p>
+<p>The environment must be compatible with all the dependencies and Cartopy may need python version to be 3.9 or lower</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -328,7 +330,7 @@
 <p class="admonition-title">Note</p>
 <p>You have to have installed anaconda (<a class="reference external" href="https://docs.anaconda.com/anaconda/install/index.html">Install Anaconda</a>)</p>
 </div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>&lt;your-env-name&gt;<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>&lt;your-env-name&gt;
 <span class="gp">$ </span>conda<span class="w"> </span>activate<span class="w"> </span>&lt;your-env-name&gt;
 <span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>conda<span class="w"> </span>install<span class="w"> </span>pip
 <span class="gp gp-VirtualEnv">(&lt;your-env-name&gt;)</span> <span class="gp">$ </span>conda<span class="w"> </span>install<span class="w"> </span>cartopy

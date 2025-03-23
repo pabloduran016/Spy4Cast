@@ -27,6 +27,11 @@ def copy_examples_from_manual():
     py_manual_files = glob.glob("../../../Spy4CastManual/*.py")
     dest_folder = "manual/"
     added = set()
+    for file in glob.glob(dest_folder+"/*"):
+        filename = os.path.basename(file)
+        if filename != "manual.rst":
+            print(f"[INFO] REMOVING: {file}")
+            os.remove(file)
     for file in nb_manual_files:
         filename = os.path.basename(file)
         dest_file = os.path.join(dest_folder, filename)
