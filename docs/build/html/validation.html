@@ -208,6 +208,7 @@
 <li class="toctree-l1"><a class="reference internal" href="crossvalidation.html">Crossvalidation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Validation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="manual/manual.html">Spy4Cast Manual</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Spy4Cast Manual</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="manual/Analysis_of_Predictability.html">Analysis of Predictability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manual/Climatology_Anomaly_EquatorialAtlantic.html">Example to Open, Slice and Plot Anomaly and Climatology Maps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manual/EquatorialAtlantic_Impact_Nino.html">Jupyter Notebook Version for calculating Equatorial Impact of the Niño</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manual/Pacific_Impact_European_SLP.html">Calculating Pacific Impact on Sahelian Rain Fall</a></li>
@@ -312,18 +313,18 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="validation">
-<h1>Validation<a class="headerlink" href="#validation" title="Link to this heading">¶</a></h1>
-<p>Althogh <span class="xref std std-ref">MCA</span> provides a prediction based on principal modes of variability,
+<span id="id1"></span><h1>Validation<a class="headerlink" href="#validation" title="Link to this heading">¶</a></h1>
+<p>Althogh <a class="reference internal" href="mca.html#mca"><span class="std std-ref">MCA</span></a> provides a prediction based on principal modes of variability,
 validation is required for all models in order to test its reliability, assuming stationarity,
 i.e: the training period contains the same relations that the validation period. In this case
 the predictand field <span class="math notranslate nohighlight">\(\hat{Z}\)</span> is predicted calculating <span class="math notranslate nohighlight">\(\Psi\)</span> by applying the
-<span class="xref std std-ref">MCA</span> for a certain training period and multiplying it by the predictor field
+<a class="reference internal" href="mca.html#mca"><span class="std std-ref">MCA</span></a> for a certain training period and multiplying it by the predictor field
 <span class="math notranslate nohighlight">\(Y\)</span> for a validation period.</p>
 <p>Spy4Cast is able to perform a validation methodology to look for non-stationary relations.
 To run validation, four datasets need to be preprocessed, corresponding to the predictor and
 predictand field, for the training period and for the validating period. With the training
-dataset, <span class="xref std std-ref">MCA</span> is applied to produce the prediction model parameters. In this way,
-the <span class="math notranslate nohighlight">\(\Psi\)</span> matrix is calculated for the <span class="xref std std-ref">MCA</span> modes characteristic of the
+dataset, <a class="reference internal" href="mca.html#mca"><span class="std std-ref">MCA</span></a> is applied to produce the prediction model parameters. In this way,
+the <span class="math notranslate nohighlight">\(\Psi\)</span> matrix is calculated for the <a class="reference internal" href="mca.html#mca"><span class="std std-ref">MCA</span></a> modes characteristic of the
 training period. Then, using  <span class="math notranslate nohighlight">\(\Psi\)</span> and the preprocessed predictor field for the validation
 period, the validated predictand field is calculated. Thus, the model is  tested against a
 predictor and predictand field of a different period than the training one.</p>

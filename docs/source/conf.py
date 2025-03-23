@@ -23,13 +23,33 @@ import shutil
 
 def copy_examples_from_manual():
     # Copy Examples From Manual
-    manual_files = glob.glob("../../../Spy4CastManual/*.ipynb")
+    nb_manual_files = glob.glob("../../../Spy4CastManual/*.ipynb")
+    py_manual_files = glob.glob("../../../Spy4CastManual/*.py")
     dest_folder = "manual/"
-    for file in manual_files:
+    added = set()
+    for file in nb_manual_files:
         filename = os.path.basename(file)
         dest_file = os.path.join(dest_folder, filename)
         print(f"[INFO] COPY: {file} -> {dest_file}")
         shutil.copy(file, dest_file)
+        name, _ext = os.path.splitext(filename)
+        added.add(name)
+
+    for file in py_manual_files:
+        filename = os.path.basename(file)
+        name, _ext = os.path.splitext(filename)
+        if name in added:
+            # Already included the ipynb ersion
+            continue
+        dest_file = os.path.join(dest_folder, filename)
+        print(f"[INFO] COPY: {file} -> {dest_file}")
+        shutil.copy(file, dest_file)
+        with open(os.path.join(dest_folder, name+".rst"), "w") as f:
+            title = name.replace("_", " ")
+            f.write(title+"\n")
+            f.write("="*len(title)+"\n")
+            f.write("\n")
+            f.write(f".. literalinclude:: {filename}")
 
 copy_examples_from_manual()
 
@@ -93,7 +113,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns: list[str] = []
+exclude_patterns: list[str] = [".py"]
 
 
 # -- Options for HTML output -------------------------------------------------

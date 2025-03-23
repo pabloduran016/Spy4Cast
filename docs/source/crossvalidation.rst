@@ -1,4 +1,4 @@
-.. crossvalidation:
+.. _crossvalidation:
 
 Crossvalidation
 ===============
