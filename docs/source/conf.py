@@ -17,6 +17,22 @@ sys.path.insert(0, os.path.abspath('../../src/'))
 import builtins
 builtins.__sphinx_build__ = True  # type: ignore
 
+import glob
+import shutil
+
+
+def copy_examples_from_manual():
+    # Copy Examples From Manual
+    manual_files = glob.glob("../../../Spy4CastManual/*.ipynb")
+    dest_folder = "manual/"
+    for file in manual_files:
+        filename = os.path.basename(file)
+        dest_file = os.path.join(dest_folder, filename)
+        print(f"[INFO] COPY: {file} -> {dest_file}")
+        shutil.copy(file, dest_file)
+
+copy_examples_from_manual()
+
 # -- Project information -----------------------------------------------------
 
 project = 'Spy4Cast'

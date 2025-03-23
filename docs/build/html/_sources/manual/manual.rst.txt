@@ -1,0 +1,14 @@
+.. _spy4cast-manual:
+
+Spy4Cast Manual
+===============
+
+Spy4Cast has a manual containing examples for the user.
+It can be fonund in github `Spy4CastManual <https://github.com/pabloduran016/Spy4CastManual/tree/main>`_
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   
+   *
+    

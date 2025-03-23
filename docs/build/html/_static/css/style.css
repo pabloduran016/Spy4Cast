@@ -12,3 +12,10 @@ table.variables-table td:first-child {
 .btn {
     text-decoration: none
 }
+
+
+.workflow-svg {
+    padding: .5rem;
+    background-color: rgba(255, 255, 255, .8);
+}
+

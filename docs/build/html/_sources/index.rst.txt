@@ -9,12 +9,15 @@ Welcome to Spy4Cast's documentation! |ICON|
 
 **Spy4Cast** is a framework for working with .nc files and applying methodologies to them as well as plotting.
 
-..
-    .. note::
-       If you see anywhere in the docs or in the files `region` and think it is a typo, it is not. Python has a built-in function called `slice` and in this library we have decided to use `region` to avoid unexpected behaviours. I hope it is not too ugly...
-
 .. note::
     This project is under active developement
+
+
+Workflow
+--------
+
+.. image:: _static/images/workflow.svg
+   :class: workflow-svg
 
 
 
@@ -116,10 +119,14 @@ Table of contents
     :maxdepth: 1
     
     installation
+    mca
+    crossvalidation
+    validation
+    manual/manual
     example
     tutorial
     plotting
-    Comparission with Xarray <tutorial_vs_xarray.ipynb>
+    Comparission with Xarray <manual/Tutorial.ipynb>
     Output Variables <variables/variables.rst>
     API Reference <toctrees/api-reference>
 
