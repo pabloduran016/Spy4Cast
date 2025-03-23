@@ -1,8 +1,21 @@
 # Spy4Cast
 <img alt="Icon" src="docs/source/_static/images/favicon.png" height="100">
 
-Python framework for working with .nc files and applying methodologies to them as well as plotting
+Python framework for working with .nc files and applying MCA based to them as well as plotting
 
+
+## Documentation
+
+You can find the manual at: https://github.com/pabloduran016/Spy4CastManual
+
+You can find the docs at: https://spy4cast.readthedocs.io
+
+## Workflow
+
+<img 
+    src="docs/source/_static/images/workflow.svg" 
+    alt="Workflow" 
+    style="padding: .5rem; background-color: rgba(255, 255, 255, .8)">
 
 ## Installation
 **WARNING**: The environment must be compatible with all the dependencies and Cartopy probably needs it to be 3.9 or lower
