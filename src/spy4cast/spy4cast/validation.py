@@ -675,7 +675,7 @@ def _plot_validation_default(
     rmse_map = np.sqrt(np.nansum((zhat - zdata)**2, axis=1) / nt).reshape((nlat, nlon))
 
     im = plot_map(
-        d, validation.validating_dsz.lat, validation.validating_dsz.lon, fig, axs[2],
+        rmse_map, validation.validating_dsz.lat, validation.validating_dsz.lon, fig, axs[2],
         'RMSE',
         cmap="Reds",
         ticks=None,
