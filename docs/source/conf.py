@@ -52,7 +52,8 @@ def copy_examples_from_manual():
         print(f"[INFO] COPY: {file} -> {dest_file}")
         shutil.copy(file, dest_file)
 
-copy_examples_from_manual()
+if os.environ.get("UPDATE_EXAMPLES", False) == "1":
+    copy_examples_from_manual()
 
 # -- Project information -----------------------------------------------------
 

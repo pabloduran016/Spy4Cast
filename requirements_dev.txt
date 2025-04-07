@@ -6,3 +6,4 @@ sphinx-automodapi
 enum_tools
 sphinx-toolbox
 furo
+nbsphinx
