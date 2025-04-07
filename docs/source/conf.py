@@ -21,20 +21,23 @@ import glob
 import shutil
 
 
-def copy_examples_from_manual(dest_folder: str, create_rst: bool = True):
+def copy_examples_from_manual():
     # Copy Examples From Manual
     nb_manual_files = glob.glob("../../../Spy4CastManual/*.ipynb")
     py_manual_files = glob.glob("../../../Spy4CastManual/*.py")
+    examples_folder = "../../examples/Spy4CastManual/"
     added = set()
-    for file in glob.glob(dest_folder+"/*"):
+
+    for file in glob.glob(examples_folder+"/*"):
         filename = os.path.basename(file)
-        if filename != "manual.rst":
-            print(f"[INFO] REMOVING: {file}")
-            os.remove(file)
+        print(f"[INFO] REMOVING: {file}")
+        os.remove(file)
+
     for file in nb_manual_files:
         filename = os.path.basename(file)
-        dest_file = os.path.join(dest_folder, filename)
+        dest_file = os.path.join(examples_folder, filename)
         print(f"[INFO] COPY: {file} -> {dest_file}")
+        print(f"[INFO] SYMLINK: {file} -> {dest_file}")
         shutil.copy(file, dest_file)
         name, _ext = os.path.splitext(filename)
         added.add(name)
@@ -45,19 +48,11 @@ def copy_examples_from_manual(dest_folder: str, create_rst: bool = True):
         if name in added:
             # Already included the ipynb ersion
             continue
-        dest_file = os.path.join(dest_folder, filename)
+        dest_file = os.path.join(examples_folder, filename)
         print(f"[INFO] COPY: {file} -> {dest_file}")
         shutil.copy(file, dest_file)
-        if create_rst:
-            with open(os.path.join(dest_folder, name+".rst"), "w") as f:
-                title = name.replace("_", " ")
-                f.write(title+"\n")
-                f.write("="*len(title)+"\n")
-                f.write("\n")
-                f.write(f".. literalinclude:: {filename}")
 
-copy_examples_from_manual("manual/")
-copy_examples_from_manual("../../examples/Spy4CastManual/", create_rst=False)
+copy_examples_from_manual()
 
 # -- Project information -----------------------------------------------------
 
