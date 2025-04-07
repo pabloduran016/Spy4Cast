@@ -1,1 +1,0 @@
-../../../Spy4CastManual/EquatorialAtlantic_Impact_Nino.py

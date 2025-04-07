@@ -21,11 +21,10 @@ import glob
 import shutil
 
 
-def copy_examples_from_manual():
+def copy_examples_from_manual(dest_folder: str, create_rst: bool = True):
     # Copy Examples From Manual
     nb_manual_files = glob.glob("../../../Spy4CastManual/*.ipynb")
     py_manual_files = glob.glob("../../../Spy4CastManual/*.py")
-    dest_folder = "manual/"
     added = set()
     for file in glob.glob(dest_folder+"/*"):
         filename = os.path.basename(file)
@@ -49,14 +48,16 @@ def copy_examples_from_manual():
         dest_file = os.path.join(dest_folder, filename)
         print(f"[INFO] COPY: {file} -> {dest_file}")
         shutil.copy(file, dest_file)
-        with open(os.path.join(dest_folder, name+".rst"), "w") as f:
-            title = name.replace("_", " ")
-            f.write(title+"\n")
-            f.write("="*len(title)+"\n")
-            f.write("\n")
-            f.write(f".. literalinclude:: {filename}")
+        if create_rst:
+            with open(os.path.join(dest_folder, name+".rst"), "w") as f:
+                title = name.replace("_", " ")
+                f.write(title+"\n")
+                f.write("="*len(title)+"\n")
+                f.write("\n")
+                f.write(f".. literalinclude:: {filename}")
 
-copy_examples_from_manual()
+copy_examples_from_manual("manual/")
+copy_examples_from_manual("../../examples/Spy4CastManual/", create_rst=False)
 
 # -- Project information -----------------------------------------------------
 

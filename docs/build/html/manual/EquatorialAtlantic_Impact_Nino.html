@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Calculating Pacific Impact on Sahelian Rain Fall" href="Pacific_Impact_European_SLP.html" /><link rel="prev" title="Example to Open, Slice and Plot Anomaly and Climatology Maps" href="Climatology_Anomaly_EquatorialAtlantic.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Calculating Pacific Impact on European Rainfall" href="Pacific_Impact_European_Rainfall.html" /><link rel="prev" title="Calculating Extended EOF coupled patterns on SST data using Spy4Cast and Xeofs" href="EEOF_using_XEOFS_and_Spy4Cast.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>Jupyter Notebook Version for calculating Equatorial Impact of the Niño - Spy4Cast &#34;1.0.0&#34; documentation</title>
@@ -210,12 +210,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../validation.html">Validation</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="manual.html">Spy4Cast Manual</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Spy4Cast Manual</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Analysis_of_Predictability.html">Analysis of Predictability</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CCA_using_XEOFS_and_Spy4Cast.html">Calculating CCA coupled patterns on SST data using Spy4Cast and Xeofs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CCA_using_XEOFS_and_Spy4Cast.html#Data-ingestion-and-preprocessing">Data ingestion and preprocessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Climatology_Anomaly_EquatorialAtlantic.html">Example to Open, Slice and Plot Anomaly and Climatology Maps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="EEOF_using_XEOFS_and_Spy4Cast.html">Calculating Extended EOF coupled patterns on SST data using Spy4Cast and Xeofs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="EEOF_using_XEOFS_and_Spy4Cast.html#Data-ingestion-and-preprocessing">Data ingestion and preprocessing</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Jupyter Notebook Version for calculating Equatorial Impact of the Niño</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Pacific_Impact_European_SLP.html">Calculating Pacific Impact on Sahelian Rain Fall</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Pacific_Impact_Sahelian_Rainfall.html">Jupyter Notebook Version for calculating Pacific Impact on Sahelian Rain Fall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Pacific_Impact_European_Rainfall.html">Calculating Pacific Impact on European Rainfall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Pacific_Impact_Sahelian_Rainfall.html">Jupyter Notebook Version for calculating Pacific Impact on Sahelian Rainfall</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Tutorial.html">Step by step Tutorial</a></li>
 </ul>
 </li>
@@ -381,9 +381,9 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Preprocessing data for variable sst took: 0.104 seconds
+[INFO] Preprocessing data for variable sst took: 0.108 seconds
 [INFO] Saving Preprocess data in `./data-EquatorialAtalantic_Impact_Nino/y_*.npy`
-[INFO] Preprocessing data for variable sst took: 0.225 seconds
+[INFO] Preprocessing data for variable sst took: 0.391 seconds
 [INFO] Saving Preprocess data in `./data-EquatorialAtalantic_Impact_Nino/z_*.npy`
 </pre></div></div>
 </div>
@@ -391,13 +391,13 @@
 <section id="MCA">
 <h3>MCA<a class="headerlink" href="#MCA" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Second step. MCA: expansion coefficients and correlation and regression maps</span>
 <span class="n">nm</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span>
-<span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">predictor_preprocessed</span><span class="p">,</span> <span class="n">predictand_preprocessed</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+<span class="c1">#mca = MCA(predictor_preprocessed, predictand_preprocessed, nm, alpha)</span>
 <span class="n">mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;mca_&quot;</span><span class="p">,</span> <span class="s2">&quot;./data-EquatorialAtalantic_Impact_Nino/&quot;</span><span class="p">)</span>
 <span class="c1"># mca = MCA.load(&quot;mca_&quot;, &quot;./data-EquatorialAtalantic_Impact_Nino/&quot;,</span>
 <span class="c1">#     dsy=predictor_preprocessed, dsz=predictand_preprocessed)</span>
@@ -409,26 +409,20 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Applying MCA
-    Shapes: Z(2100, 50)
-            Y(760, 50)
-    Regions: Z DJF (30.00ºS, 30.00ºN - 160.00ºE, 60.00ºW)
-            Y JJA (30.00ºS, 10.00ºN - 60.00ºW, 15.00ºE)
-       Took: 0.690 seconds
-[INFO] Saving MCA data in `./data-EquatorialAtalantic_Impact_Nino/mca_*.npy`
+[INFO] Loading MCA data from `./data-EquatorialAtalantic_Impact_Nino/mca_*` took 0.025 seconds
 </pre></div></div>
 </div>
 </section>
 <section id="Crossvalidation">
 <h3>Crossvalidation<a class="headerlink" href="#Crossvalidation" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Third step. Crossvalidation: skill and hidcast evaluation and products</span>
 <span class="n">cross</span> <span class="o">=</span> <span class="n">Crossvalidation</span><span class="p">(</span><span class="n">predictor_preprocessed</span><span class="p">,</span> <span class="n">predictand_preprocessed</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
 <span class="n">cross</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;cross_&quot;</span><span class="p">,</span> <span class="s2">&quot;./data-EquatorialAtalantic_Impact_Nino/&quot;</span><span class="p">)</span>
-<span class="c1"># cross = Crossvalidation.load(&quot;cross_&quot;, &quot;./data-EquatorialAtalantic_Impact_Nino/&quot;,</span>
+<span class="c1"># cross = Crossvalidation.load(&quot;cross_&quot;, &quot;./data-EquatorialAtalantic_Impact_Nino/&quot;,</span>
 <span class="c1">#     dsy=predictor_preprocessed, dsz=predictand_preprocessed)</span>
 </pre></div>
 </div>
@@ -438,64 +432,7 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Applying Crossvalidation
-    Shapes: Z(2100, 50)
-            Y(760, 50)
-    Regions: Z DJF (30.00ºS, 30.00ºN - 160.00ºE, 60.00ºW)
-            Y JJA (30.00ºS, 10.00ºN - 60.00ºW, 15.00ºE)
-        year: 1 of 50
-        year: 2 of 50
-        year: 3 of 50
-        year: 4 of 50
-        year: 5 of 50
-        year: 6 of 50
-        year: 7 of 50
-        year: 8 of 50
-        year: 9 of 50
-        year: 10 of 50
-        year: 11 of 50
-        year: 12 of 50
-        year: 13 of 50
-        year: 14 of 50
-        year: 15 of 50
-        year: 16 of 50
-        year: 17 of 50
-        year: 18 of 50
-        year: 19 of 50
-        year: 20 of 50
-        year: 21 of 50
-        year: 22 of 50
-        year: 23 of 50
-        year: 24 of 50
-        year: 25 of 50
-        year: 26 of 50
-        year: 27 of 50
-        year: 28 of 50
-        year: 29 of 50
-        year: 30 of 50
-        year: 31 of 50
-        year: 32 of 50
-        year: 33 of 50
-        year: 34 of 50
-        year: 35 of 50
-        year: 36 of 50
-        year: 37 of 50
-        year: 38 of 50
-        year: 39 of 50
-        year: 40 of 50
-        year: 41 of 50
-        year: 42 of 50
-        year: 43 of 50
-        year: 44 of 50
-        year: 45 of 50
-        year: 46 of 50
-        year: 47 of 50
-        year: 48 of 50
-        year: 49 of 50
-        year: 50 of 50
-
-        Took: 44.134 seconds
-[INFO] Saving Crossvalidation data in `./data-EquatorialAtalantic_Impact_Nino/cross_*.npy`
+[INFO] Loading Crossvalidation data from `./data-EquatorialAtalantic_Impact_Nino/cross_*` took 0.016 seconds
 </pre></div></div>
 </div>
 </section>
@@ -503,7 +440,7 @@
 <section id="Plotting-results">
 <h2>Plotting results<a class="headerlink" href="#Plotting-results" title="Link to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mca.png&quot;</span><span class="p">,</span>
@@ -529,7 +466,7 @@
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -617,7 +554,7 @@
 <p>## Validation</p>
 <p>It is important to say that this is <strong>not</strong> a good example of validation becuase it uses two periods where the relation is <strong>non stationary</strong>, so the results are not good. However, it shows how to apply <em>Validation</em> to any dataset with any configuration.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">spy4cast.spy4cast</span><span class="w"> </span><span class="kn">import</span> <span class="n">Validation</span>
@@ -625,7 +562,7 @@
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># To apply validation we first preprocess the training data</span>
@@ -648,21 +585,21 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Preprocessing data for variable sst took: 0.025 seconds
-[INFO] Preprocessing data for variable sst took: 0.128 seconds
+[INFO] Preprocessing data for variable sst took: 0.051 seconds
+[INFO] Preprocessing data for variable sst took: 0.238 seconds
 [INFO] Saving Preprocess data in `./data-EquatorialAtalantic_Impact_Nino/training_y_*.npy`
 [INFO] Saving Preprocess data in `./data-EquatorialAtalantic_Impact_Nino/training_z_*.npy`
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">training_mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">training_y</span><span class="p">,</span> <span class="n">training_z</span><span class="p">,</span> <span class="n">nm</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 
 <span class="n">training_mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;training_mca_&quot;</span><span class="p">,</span> <span class="s2">&quot;./data-EquatorialAtalantic_Impact_Nino/&quot;</span><span class="p">)</span>
-<span class="c1"># training_mca = MCA.load(&quot;training_mca_&quot;, &quot;./data-EquatorialAtalantic_Impact_Nino/&quot;, dsy=training_y,</span>
-<span class="c1">#     dsz=training_z)</span>
+<span class="c1"># training_mca = MCA.load(&quot;training_mca_&quot;, &quot;./data-EquatorialAtalantic_Impact_Nino/&quot;, dsy=training_y,</span>
+<span class="c1">#     dsz=training_z)</span>
 </pre></div>
 </div>
 </div>
@@ -671,17 +608,11 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Applying MCA
-    Shapes: Z(2100, 31)
-            Y(760, 31)
-    Regions: Z DJF (30.00ºS, 30.00ºN - 160.00ºE, 60.00ºW)
-            Y JJA (30.00ºS, 10.00ºN - 60.00ºW, 15.00ºE)
-       Took: 0.845 seconds
-[INFO] Saving MCA data in `./data-EquatorialAtalantic_Impact_Nino/training_mca_*.npy`
+[INFO] Loading MCA data from `./data-EquatorialAtalantic_Impact_Nino/training_mca_*` took 0.024 seconds
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We now validate agains the period from 2001 - 2020</span>
@@ -705,19 +636,21 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Preprocessing data for variable sst took: 0.010 seconds
-[INFO] Preprocessing data for variable sst took: 0.043 seconds
+[INFO] Preprocessing data for variable sst took: 0.020 seconds
+[INFO] Preprocessing data for variable sst took: 0.081 seconds
 [INFO] Saving Preprocess data in `./data-EquatorialAtalantic_Impact_Nino/validating_y_*.npy`
 [INFO] Saving Preprocess data in `./data-EquatorialAtalantic_Impact_Nino/validating_z_*.npy`
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">validation</span> <span class="o">=</span> <span class="n">Validation</span><span class="p">(</span><span class="n">training_mca</span><span class="p">,</span> <span class="n">validating_y</span><span class="p">,</span> <span class="n">validating_z</span><span class="p">)</span>
 
 <span class="n">validation</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;validation_z_&quot;</span><span class="p">,</span> <span class="s2">&quot;./data-EquatorialAtalantic_Impact_Nino/&quot;</span><span class="p">)</span>
+<span class="c1"># validation = Validation.load(&quot;validation_z_&quot;, &quot;./data-EquatorialAtalantic_Impact_Nino/&quot;,</span>
+<span class="c1">#     validating_dsy=validating_y, validating_dsz=validating_z, training_mca=training_mca)</span>
 
 <span class="n">validation</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;./plots-EquatorialAtalantic_Impact_Nino/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;validation.png&quot;</span><span class="p">,</span>
                 <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;magma&quot;</span><span class="p">,</span>
@@ -732,29 +665,13 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Applying Validation
-        Training
-        ----------
-        Shapes: Z(2100, 31)
-                Y(760, 31)
-        Regions: Z DJF (30.00ºS, 30.00ºN - 160.00ºE, 60.00ºW)
-                Y JJA (30.00ºS, 10.00ºN - 60.00ºW, 15.00ºE)
-
-        Validation
-        ----------
-        Shapes: Z(2100, 10)
-                Y(760, 10)
-        Regions: Z DJF (30.00ºS, 30.00ºN - 160.00ºE, 60.00ºW)
-                Y JJA (30.00ºS, 10.00ºN - 60.00ºW, 15.00ºE)
-
-        Took: 0.100 seconds
-[INFO] Saving Validation data in `./data-EquatorialAtalantic_Impact_Nino/validation_z_*.npy`
+[INFO] Loading Validation data from `./data-EquatorialAtalantic_Impact_Nino/validation_z_*` took 0.008 seconds
 [INFO] Saving plot with path ./plots-EquatorialAtalantic_Impact_Nino/validation.png
 [INFO] Saving plot with path ./plots-EquatorialAtalantic_Impact_Nino/zhat_2016_validation.png
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -779,12 +696,52 @@
 <img alt="../_images/manual_EquatorialAtlantic_Impact_Nino_21_3.png" src="../_images/manual_EquatorialAtlantic_Impact_Nino_21_3.png" />
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<p>## Evaluate the amount of modes that are needed</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cross</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mca</span><span class="o">=</span><span class="n">mca</span><span class="p">,</span>
+    <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cross2.png&quot;</span><span class="p">,</span>
+    <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;./plots-EquatorialAtalantic_Impact_Nino/&quot;</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[INFO] Saving plot with path ./plots-EquatorialAtalantic_Impact_Nino/cross2.png
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+((&lt;Figure size 2400x850 with 18 Axes&gt;,),
+ (&lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 1, |ruv|=0.53 p=1.000&#39;}, xlabel=&#39;Years&#39;, ylabel=&#39;nº std&#39;&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 1, |ruv|=0.53 , scf=53.61%&#39;}, xlabel=&#39;Years&#39;, ylabel=&#39;|ruv|&#39;&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;ACC 1 modes&#39;}&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Skill (bars), \n MSESS (lines)&#39;}&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 2, |ruv|=0.44 p=0.999&#39;}, xlabel=&#39;Years&#39;&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 2, |ruv|=0.44 , scf=9.48%&#39;}, xlabel=&#39;Years&#39;&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;ACC 2 modes&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;ACC [1 2]) - [1]&#39;}&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 3, |ruv|=0.51 p=1.000&#39;}, xlabel=&#39;Years&#39;&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 3, |ruv|=0.51 , scf=6.53%&#39;}, xlabel=&#39;Years&#39;&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;ACC 3 modes&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;ACC [1 2 3]) - [1 2]&#39;}&gt;))
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/manual_EquatorialAtlantic_Impact_Nino_23_2.png" src="../_images/manual_EquatorialAtlantic_Impact_Nino_23_2.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -803,23 +760,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="Pacific_Impact_European_SLP.html">
+          <a class="next-page" href="Pacific_Impact_European_Rainfall.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Calculating Pacific Impact on Sahelian Rain Fall</div>
+                <div class="title">Calculating Pacific Impact on European Rainfall</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="Climatology_Anomaly_EquatorialAtlantic.html">
+          <a class="prev-page" href="EEOF_using_XEOFS_and_Spy4Cast.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Example to Open, Slice and Plot Anomaly and Climatology Maps</div>
+                <div class="title">Calculating Extended EOF coupled patterns on SST data using Spy4Cast and Xeofs</div>
                 
               </div>
             </a>

@@ -882,6 +882,9 @@ def _plot_crossvalidation_2(
         height_ratios=[1.3, 1.3, 2, 2]
     )
 
+    central_longitude_z = get_central_longitude_from_region(cross._dsz.region.lon0, cross._dsz.region.lonf)
+    z_xlim = get_xlim_from_region(cross._dsz.region.lon0, cross._dsz.region.lonf, central_longitude_z)
+
     axs: List[plt.Axes] = []
 
     # fig.suptitle('Crossvalidation',fontsize=20,weight='bold')
@@ -988,17 +991,18 @@ def _plot_crossvalidation_2(
         r_sig[cross.p_z_zhat_s_accumulated_modes[n_mode] > cross.alpha] = np.nan
         sk_sig = r_sig.reshape(nlat, nlon)
 
-        ax2 = fig.add_subplot(spec[2, n_mode], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180))
+        ax2 = fig.add_subplot(spec[2, n_mode], projection=ccrs.PlateCarree(central_longitude_z))
         axs.append(ax2)
+
         im = ax2.contourf(cross._dsz.lon, cross._dsz.lat, sk, levels=levels, cmap='coolwarm', transform=ccrs.PlateCarree())
         ax2.contourf(cross._dsz.lon, cross._dsz.lat, sk_sig, levels=levels, cmap='coolwarm', hatches='.', transform=ccrs.PlateCarree())
         ax2.coastlines()
-        if n_mode == 3:
-            _cbar = fig.colorbar(im, ax2)
+        if n_mode == nm - 1:
+            _cbar = fig.colorbar(im, ax=ax2)
         gl = ax2.gridlines(draw_labels=True)
         gl.ylabels_right = False
         gl.xlabels_top = False
-        ax2.set_extent([min(cross._dsz.lon), max(cross._dsz.lon), min(cross._dsz.lat), max(cross._dsz.lat)])
+        ax2.set_extent([*z_xlim, min(cross._dsz.lat), max(cross._dsz.lat)], crs=ccrs.PlateCarree())
         ax2.set_title(f'ACC {n_mode + 1} modes', weight='bold', fontsize=8)
         # ax2.set_title(f'ACC {n_mode + 1} modes', fontsize=20, weight='bold', y=1.02)
 
@@ -1035,16 +1039,16 @@ def _plot_crossvalidation_2(
         else:
             sk_i = cross.r_z_zhat_s_accumulated_modes[n_mode - 1, :].reshape(nlat, nlon)
             # Skill modos
-            ax3 = fig.add_subplot(spec[3, n_mode], projection=ccrs.PlateCarree(0 if cross.dsz.region.lon0 < cross.dsz.region.lonf else 180))
+            ax3 = fig.add_subplot(spec[3, n_mode], projection=ccrs.PlateCarree(central_longitude_z))
             im = ax3.contourf(cross.dsz.lon, cross.dsz.lat, sk - sk_i, levels=levels, cmap='coolwarm', transform=ccrs.PlateCarree())
             # ax2.contourf(cross._dsz.lon,cross._dsz.lat,skill_sig[i,:,:],levels=levels,cmap='coolwarm',hatches='.',transform = ccrs.PlateCarree())
             ax3.coastlines()
-            if n_mode == 3:
-                _cbar = fig.colorbar(im, ax3)
+            if n_mode == nm - 1:
+                _cbar = fig.colorbar(im, ax=ax3)
             gl = ax3.gridlines(draw_labels=True)
             gl.ylabels_right = False
             gl.xlabels_top = False
-            ax3.set_extent([min(cross._dsz.lon), max(cross._dsz.lon), min(cross._dsz.lat), max(cross._dsz.lat)])
+            ax3.set_extent([*z_xlim, min(cross._dsz.lat), max(cross._dsz.lat)], crs=ccrs.PlateCarree())
             ax3.set_title(f'ACC {np.arange(n_mode + 1) + 1}) - {np.arange(n_mode) + 1}', weight='bold', fontsize=8)
             # ax3.set_title(f'ACC {np.arange(n_mode + 1) + 1}) - {np.arange(n_mode) + 1}', fontsize=20, weight='bold', y=1.02)
         axs.append(ax3)
@@ -1097,9 +1101,10 @@ def _plot_crossvalidation_default(
     # Correlation map
     if nm is not None and not 1 <= nm <= cross.r_z_zhat_s_accumulated_modes.shape[0]:
         raise ValueError(f"Parameter `nm` must be positive an less than or equal to the number of modes used in the methodology, {cross.r_z_zhat_s_accumulated_modes.shape[0]}, but got {nm}")
-    d = cross.r_z_zhat_s_accumulated_modes[(-1 if nm is None else nm - 1), :].transpose().reshape((nzlat, nzlon)).copy()
-    d[((cross.p_z_zhat_s_accumulated_modes[-1, :] > cross.alpha) | (
-                cross.r_z_zhat_s_accumulated_modes[-1, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
+    nm_i = -1 if nm is None else nm - 1
+    d = cross.r_z_zhat_s_accumulated_modes[nm_i, :].transpose().reshape((nzlat, nzlon)).copy()
+    d[((cross.p_z_zhat_s_accumulated_modes[nm_i, :] > cross.alpha) | (
+                cross.r_z_zhat_s_accumulated_modes[nm_i, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
     _mean = np.nanmean(d)
     _std = np.nanstd(d)
     mx = _mean + _std
@@ -1118,8 +1123,8 @@ def _plot_crossvalidation_default(
 
     hatches = d.copy()
     significant_and_positive = (
-        (cross.p_z_zhat_s_accumulated_modes[-1, :] <= cross.alpha) | 
-        (cross.r_z_zhat_s_accumulated_modes[-1, :] > 0))
+        (cross.p_z_zhat_s_accumulated_modes[nm_i, :] <= cross.alpha) | 
+        (cross.r_z_zhat_s_accumulated_modes[nm_i, :] > 0))
     hatches[(~significant_and_positive).transpose().reshape((nzlat, nzlon))] = np.nan
     cb = fig.colorbar(im, cax=fig.add_subplot(gs[1, 0:3]), orientation='horizontal', ticks=map_ticks)
     if map_ticks is None:
@@ -1149,12 +1154,12 @@ def _plot_crossvalidation_default(
         ps = np.empty(nt, dtype=np.float32)
         for j in range(nt):
             rs[j], ps[j] = stats.pearsonr(
-                cross.zhat_accumulated_modes[-1, mask, j], cross._dsz.data[mask, j])
+                cross.zhat_accumulated_modes[nm_i, mask, j], cross._dsz.data[mask, j])
 
         ts_time, ts_r, ts_p = cross._dsz.time.values, rs, ps
         axs[1].set_title('ACC time series (only significant region)')
     else:
-        ts_time, ts_r, ts_p = cross._dsz.time.values, cross.r_z_zhat_t_accumulated_modes[-1, :], cross.p_z_zhat_t_accumulated_modes[-1, :]
+        ts_time, ts_r, ts_p = cross._dsz.time.values, cross.r_z_zhat_t_accumulated_modes[nm_i, :], cross.p_z_zhat_t_accumulated_modes[nm_i, :]
         axs[1].set_title('ACC time series')
 
     axs[1].bar(ts_time, ts_r)
@@ -1168,7 +1173,7 @@ def _plot_crossvalidation_default(
     lat = cross._dsz.lat
     time = cross._dsz.time
     nlon, nlat, nt = len(lon), len(lat), len(time)
-    zhat = cross.zhat_accumulated_modes[-1, :]  # space x time
+    zhat = cross.zhat_accumulated_modes[nm_i, :]  # space x time
     zdata = cross._dsz.data  # space x time
 
     rmse_map = np.sqrt(np.nansum((zhat - zdata)**2, axis=1) / nt).reshape((nlat, nlon))

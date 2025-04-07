@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Step by step Tutorial" href="Tutorial.html" /><link rel="prev" title="Calculating Pacific Impact on Sahelian Rain Fall" href="Pacific_Impact_European_SLP.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Step by step Tutorial" href="Tutorial.html" /><link rel="prev" title="Calculating Pacific Impact on European Rainfall" href="Pacific_Impact_European_Rainfall.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Jupyter Notebook Version for calculating Pacific Impact on Sahelian Rain Fall - Spy4Cast &#34;1.0.0&#34; documentation</title>
+        <title>Jupyter Notebook Version for calculating Pacific Impact on Sahelian Rainfall - Spy4Cast &#34;1.0.0&#34; documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
@@ -210,12 +210,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../validation.html">Validation</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="manual.html">Spy4Cast Manual</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Spy4Cast Manual</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Analysis_of_Predictability.html">Analysis of Predictability</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CCA_using_XEOFS_and_Spy4Cast.html">Calculating CCA coupled patterns on SST data using Spy4Cast and Xeofs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CCA_using_XEOFS_and_Spy4Cast.html#Data-ingestion-and-preprocessing">Data ingestion and preprocessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Climatology_Anomaly_EquatorialAtlantic.html">Example to Open, Slice and Plot Anomaly and Climatology Maps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="EEOF_using_XEOFS_and_Spy4Cast.html">Calculating Extended EOF coupled patterns on SST data using Spy4Cast and Xeofs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="EEOF_using_XEOFS_and_Spy4Cast.html#Data-ingestion-and-preprocessing">Data ingestion and preprocessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="EquatorialAtlantic_Impact_Nino.html">Jupyter Notebook Version for calculating Equatorial Impact of the Niño</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Pacific_Impact_European_SLP.html">Calculating Pacific Impact on Sahelian Rain Fall</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Jupyter Notebook Version for calculating Pacific Impact on Sahelian Rain Fall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Pacific_Impact_European_Rainfall.html">Calculating Pacific Impact on European Rainfall</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Jupyter Notebook Version for calculating Pacific Impact on Sahelian Rainfall</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Tutorial.html">Step by step Tutorial</a></li>
 </ul>
 </li>
@@ -315,10 +315,10 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="Jupyter-Notebook-Version-for-calculating-Pacific-Impact-on-Sahelian-Rain-Fall">
-<h1>Jupyter Notebook Version for calculating Pacific Impact on Sahelian Rain Fall<a class="headerlink" href="#Jupyter-Notebook-Version-for-calculating-Pacific-Impact-on-Sahelian-Rain-Fall" title="Link to this heading">¶</a></h1>
+          <section id="Jupyter-Notebook-Version-for-calculating-Pacific-Impact-on-Sahelian-Rainfall">
+<h1>Jupyter Notebook Version for calculating Pacific Impact on Sahelian Rainfall<a class="headerlink" href="#Jupyter-Notebook-Version-for-calculating-Pacific-Impact-on-Sahelian-Rainfall" title="Link to this heading">¶</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>  <span class="c1"># Used later</span>
@@ -330,7 +330,7 @@
 <section id="Configuration">
 <h2>Configuration<a class="headerlink" href="#Configuration" title="Link to this heading">¶</a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predictor</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;HadISST_sst_chopped.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;./datasets&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;sst&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
@@ -356,7 +356,7 @@
 <section id="Preprocessing">
 <h3>Preprocessing<a class="headerlink" href="#Preprocessing" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First step. Preprocess variables: anomaly and reshaping</span>
@@ -375,9 +375,9 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Preprocessing data for variable sst took: 0.716 seconds
+[INFO] Preprocessing data for variable sst took: 0.782 seconds
 [INFO] Saving Preprocess data in `./data-Pacific_Impact_Sahelian_Rainfall/y_*.npy`
-[INFO] Preprocessing data for variable pre took: 0.021 seconds
+[INFO] Preprocessing data for variable pre took: 0.036 seconds
 [INFO] Saving Preprocess data in `./data-Pacific_Impact_Sahelian_Rainfall/z_*.npy`
 </pre></div></div>
 </div>
@@ -385,12 +385,12 @@
 <section id="MCA">
 <h3>MCA<a class="headerlink" href="#MCA" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Second step. MCA: expansion coefficients and correlation and regression maps</span>
 <span class="n">nm</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">predictor_preprocessed</span><span class="p">,</span> <span class="n">predictand_preprocessed</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
 <span class="n">mca</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;mca_&quot;</span><span class="p">,</span> <span class="s2">&quot;./data-Pacific_Impact_Sahelian_Rainfall/&quot;</span><span class="p">)</span>
 <span class="c1"># mca = MCA.load(&quot;mca_&quot;, &quot;./data-Pacific_Impact_Sahelian_Rainfall/&quot;, dsy=predictor_preprocessed, dsz=predictand_preprocessed)</span>
@@ -402,26 +402,20 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Applying MCA
-    Shapes: Z(4000, 31)
-            Y(8400, 31)
-    Regions: Z JAS (0.00ºN, 25.00ºN - 20.00ºW, 20.00ºE)
-            Y AMJ (30.00ºS, 30.00ºN - 160.00ºE, 60.00ºW)
-       Took: 13.685 seconds
-[INFO] Saving MCA data in `./data-Pacific_Impact_Sahelian_Rainfall/mca_*.npy`
+[INFO] Loading MCA data from `./data-Pacific_Impact_Sahelian_Rainfall/mca_*` took 0.160 seconds
 </pre></div></div>
 </div>
 </section>
 <section id="Crossvalidation">
 <h3>Crossvalidation<a class="headerlink" href="#Crossvalidation" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Third step. Crossvalidation: skill and hidcast evaluation and products</span>
 <span class="n">cross</span> <span class="o">=</span> <span class="n">Crossvalidation</span><span class="p">(</span><span class="n">predictor_preprocessed</span><span class="p">,</span> <span class="n">predictand_preprocessed</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
 <span class="n">cross</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;cross_&quot;</span><span class="p">,</span> <span class="s2">&quot;./data-Pacific_Impact_Sahelian_Rainfall/&quot;</span><span class="p">)</span>
-<span class="c1">#cross = Crossvalidation.load(&quot;cross_&quot;, &quot;./data-Pacific_Impact_Sahelian_Rainfall/&quot;, dsy=predictor_preprocessed, dsz=predictand_preprocessed)</span>
+<span class="c1"># cross = Crossvalidation.load(&quot;cross_&quot;, &quot;./data-Pacific_Impact_Sahelian_Rainfall/&quot;, dsy=predictor_preprocessed, dsz=predictand_preprocessed)</span>
 </pre></div>
 </div>
 </div>
@@ -430,45 +424,7 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Applying Crossvalidation
-    Shapes: Z(4000, 31)
-            Y(8400, 31)
-    Regions: Z JAS (0.00ºN, 25.00ºN - 20.00ºW, 20.00ºE)
-            Y AMJ (30.00ºS, 30.00ºN - 160.00ºE, 60.00ºW)
-        year: 1 of 31
-        year: 2 of 31
-        year: 3 of 31
-        year: 4 of 31
-        year: 5 of 31
-        year: 6 of 31
-        year: 7 of 31
-        year: 8 of 31
-        year: 9 of 31
-        year: 10 of 31
-        year: 11 of 31
-        year: 12 of 31
-        year: 13 of 31
-        year: 14 of 31
-        year: 15 of 31
-        year: 16 of 31
-        year: 17 of 31
-        year: 18 of 31
-        year: 19 of 31
-        year: 20 of 31
-        year: 21 of 31
-        year: 22 of 31
-        year: 23 of 31
-        year: 24 of 31
-        year: 25 of 31
-        year: 26 of 31
-        year: 27 of 31
-        year: 28 of 31
-        year: 29 of 31
-        year: 30 of 31
-        year: 31 of 31
-
-        Took: 485.598 seconds
-[INFO] Saving Crossvalidation data in `./data-Pacific_Impact_Sahelian_Rainfall/cross_*.npy`
+[INFO] Loading Crossvalidation data from `./data-Pacific_Impact_Sahelian_Rainfall/cross_*` took 0.038 seconds
 </pre></div></div>
 </div>
 </section>
@@ -476,7 +432,7 @@
 <section id="Plotting-results">
 <h2>Plotting results<a class="headerlink" href="#Plotting-results" title="Link to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
@@ -490,8 +446,8 @@
     <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cross.png&quot;</span><span class="p">,</span>
     <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;./plots-Pacific_Impact_Sahelian_Rainfall/&quot;</span><span class="p">,</span>
     <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;BrBG&quot;</span><span class="p">,</span>
-    <span class="n">map_ticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
-    <span class="n">map_levels</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+    <span class="n">map_ticks</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">.2</span><span class="p">),</span>
+    <span class="n">map_levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">.1</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">cross</span><span class="o">.</span><span class="n">plot_zhat</span><span class="p">(</span><span class="mi">1999</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;zhat_1999.png&quot;</span><span class="p">,</span>
                 <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;./plots-Pacific_Impact_Sahelian_Rainfall/&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;BrBG&quot;</span><span class="p">,</span>
@@ -510,7 +466,7 @@
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -543,7 +499,7 @@
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot regression on a bigger map</span>
@@ -572,12 +528,12 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Preprocessing data for variable sst took: 0.498 seconds
+[INFO] Preprocessing data for variable sst took: 0.517 seconds
 [INFO] Saving plot with path ./plots-Pacific_Impact_Sahelian_Rainfall/mca2.png
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -601,12 +557,55 @@
 <img alt="../_images/manual_Pacific_Impact_Sahelian_Rainfall_13_2.png" src="../_images/manual_Pacific_Impact_Sahelian_Rainfall_13_2.png" />
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<p>## Analyze the importance of the frist 3 modes</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cross</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mca</span><span class="o">=</span><span class="n">mca</span><span class="p">,</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+    <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;plots-Pacific_Impact_Sahelian_Rainfall/&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cross2.png&quot;</span><span class="p">,</span>
+    <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[INFO] Saving plot with path plots-Pacific_Impact_Sahelian_Rainfall/cross2.png
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+((&lt;Figure size 1000x800 with 18 Axes&gt;,),
+ (&lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 1, |ruv|=0.53 p=0.998&#39;}, xlabel=&#39;Years&#39;, ylabel=&#39;nº std&#39;&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 1, |ruv|=0.53 , scf=36.91%&#39;}, xlabel=&#39;Years&#39;, ylabel=&#39;|ruv|&#39;&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;ACC 1 modes&#39;}&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Skill (bars), \n MSESS (lines)&#39;}&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 2, |ruv|=0.56 p=0.999&#39;}, xlabel=&#39;Years&#39;&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 2, |ruv|=0.56 , scf=13.63%&#39;}, xlabel=&#39;Years&#39;&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;ACC 2 modes&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;ACC [1 2]) - [1]&#39;}&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 3, |ruv|=0.59 p=1.000&#39;}, xlabel=&#39;Years&#39;&gt;,
+  &lt;AxesSubplot:title={&#39;center&#39;:&#39;Mode 3, |ruv|=0.59 , scf=8.48%&#39;}, xlabel=&#39;Years&#39;&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;ACC 3 modes&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;ACC [1 2 3]) - [1 2]&#39;}&gt;))
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/manual_Pacific_Impact_Sahelian_Rainfall_15_2.png" src="../_images/manual_Pacific_Impact_Sahelian_Rainfall_15_2.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -634,14 +633,14 @@
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="Pacific_Impact_European_SLP.html">
+          <a class="prev-page" href="Pacific_Impact_European_Rainfall.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Calculating Pacific Impact on Sahelian Rain Fall</div>
+                <div class="title">Calculating Pacific Impact on European Rainfall</div>
                 
               </div>
             </a>
@@ -675,7 +674,7 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Jupyter Notebook Version for calculating Pacific Impact on Sahelian Rain Fall</a><ul>
+<li><a class="reference internal" href="#">Jupyter Notebook Version for calculating Pacific Impact on Sahelian Rainfall</a><ul>
 <li><a class="reference internal" href="#Configuration">Configuration</a></li>
 <li><a class="reference internal" href="#Methodology">Methodology</a><ul>
 <li><a class="reference internal" href="#Preprocessing">Preprocessing</a></li>

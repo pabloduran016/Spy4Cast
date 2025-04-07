@@ -1,1 +1,0 @@
-../../../Spy4CastManual/Climatology_Anomaly_EquatorialAtlantic.py
