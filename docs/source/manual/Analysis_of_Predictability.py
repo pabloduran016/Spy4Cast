@@ -92,7 +92,7 @@ for i in range(len(lags)):
         y_ds = Dataset(Y_DATASET_NAME, folder=DATASETS_FOLDER).open(Y_VAR).slice(y_region)
         y_pre = spy4cast.Preprocess(y_ds)
 
-        # num_svdvals=1 to only calculate the frist singular value (scf will not be precise but it will run faster)
+        # num_svdvals=1 to only calculate the first singular value (scf will not be precise but it will run faster)
         cross = spy4cast.Crossvalidation(y_pre, z_pre, nm=nm, alpha=alpha, num_svdvals=nm)
         cross.save(cross_prefix, folder=DATA_FOLDER)
 
