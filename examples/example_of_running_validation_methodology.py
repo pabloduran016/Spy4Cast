@@ -98,6 +98,7 @@ else:
 
 validation.plot(save_fig=True, folder=PLOTS_DIR, name=VALIDATION_PLOT_NAME, version='default')
 validation.plot_zhat(2015, save_fig=True, folder=PLOTS_DIR, name="zhat_" + VALIDATION_PLOT_NAME)
+validation.plot_zhat([2015, 2016, 2017])
 
 
 import matplotlib.pyplot as plt

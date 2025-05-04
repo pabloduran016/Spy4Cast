@@ -647,7 +647,7 @@ class Crossvalidation(_Procedure):
 
     def plot_zhat(
         self,
-        year: int,
+        year: Union[int, List[int]],
         save_fig: bool = False,
         show_plot: bool = False,
         halt_program: bool = False,
@@ -681,7 +681,7 @@ class Crossvalidation(_Procedure):
             Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
             and stops execution. Else uses fig.show and does not halt program
         year
-            Year to plot
+            Year (or years) to plot
         folder
             Directory to save fig if `save_fig` is `True`
         name
@@ -720,13 +720,14 @@ class Crossvalidation(_Procedure):
         if plot_type not in ("contour", "pcolor"):
             raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
 
+        years = cast(List[int], [year] if type(year) == int else year)
+        del year
+
         nts, nylat, nylon = len(self._dsy.time), len(self._dsy.lat), len(self._dsy.lon)
         nts, nzlat, nzlon = len(self._dsz.time), len(self._dsz.lat), len(self._dsz.lon)
 
-        figsize = _calculate_figsize(1.5, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
+        figsize = _calculate_figsize(2/len(years), maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
         fig = plt.figure(figsize=figsize)
-
-        gs = gridspec.GridSpec(5, 1, height_ratios=[1, 0.1, 1, 1, 0.1], hspace=0.7)
 
         # central longitude
         map_y, map_z = self._dsy, self._dsz
@@ -736,37 +737,49 @@ class Crossvalidation(_Procedure):
         central_longitude_z = get_central_longitude_from_region(map_z.region.lon0, map_z.region.lonf)
         z_xlim = get_xlim_from_region(map_z.region.lon0, map_z.region.lonf, central_longitude_z)
 
-        ax0 = plt.subplot(gs[0], projection=ccrs.PlateCarree(central_longitude_y))
-        ax1 = plt.subplot(gs[2], projection=ccrs.PlateCarree(central_longitude_z))
-        ax2 = plt.subplot(gs[3], projection=ccrs.PlateCarree(central_longitude_z))
+        gs = gridspec.GridSpec(5, len(years), height_ratios=[1, 0.1, 1, 1, 0.1], hspace=0.7, wspace=0.4)
+        for i, year in enumerate(years):
+            ax0 = plt.subplot(gs[0, i], projection=ccrs.PlateCarree(central_longitude_y))
+            ax1 = plt.subplot(gs[2, i], projection=ccrs.PlateCarree(central_longitude_z))
+            ax2 = plt.subplot(gs[3, i], projection=ccrs.PlateCarree(central_longitude_z))
 
-        zindex = _get_index_from_sy(self._dsz.time, year)
-        yindex = zindex
-        y_year = self._dsy.time.values[yindex]
+            zindex = _get_index_from_sy(self._dsz.time, year)
+            yindex = zindex
+            y_year = self._dsy.time.values[yindex]
 
-        d0 = self._dsy.data.transpose().reshape((nts, nylat, nylon))
+            d0 = self._dsy.data.transpose().reshape((nts, nylat, nylon))
 
-        plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim, 
-                  cax=fig.add_subplot(gs[1]), add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type,
-                  levels=y_levels)
+            im = plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim, 
+                          add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type,
+                          levels=y_levels, colorbar=False)
+            cb = fig.colorbar(im, cax=fig.add_subplot(gs[1, i]), orientation="horizontal", ticks=y_ticks)
+            if y_ticks is None:
+                tick_locator = ticker.MaxNLocator(nbins=5, prune='both', symmetric=True)
+                cb.ax.xaxis.set_major_locator(tick_locator)
 
-        d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
-        d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
+            d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
+            d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
 
-        n = 20
-        _m = np.nanmean([np.nanmean(d2), np.nanmean(d1)])
-        _s = np.nanmean([np.nanstd(d2), np.nanstd(d1)])
-        levels = z_levels if z_levels is not None else np.linspace(_m -2*_s, _m + 2*_s, n)
-        plot_map(
-            d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
-            cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim, colorbar=False,
-            add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
-        )
-        plot_map(
-            d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
-            cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim, cax=fig.add_subplot(gs[4]),
-            add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
-        )
+            n = 20
+            _m = np.nanmean([np.nanmean(d2), np.nanmean(d1)])
+            _s = np.nanmean([np.nanstd(d2), np.nanstd(d1)])
+            levels = z_levels if z_levels is not None else np.linspace(_m -2*_s, _m + 2*_s, n)
+            plot_map(
+                d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
+                cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim,
+                add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
+                colorbar=False,
+            )
+            im = plot_map(
+                d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
+                cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim,
+                add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
+                colorbar=False,
+            )
+            cb = fig.colorbar(im, cax=fig.add_subplot(gs[4, i]), orientation="horizontal", ticks=z_ticks)
+            if z_ticks is None:
+                tick_locator = ticker.MaxNLocator(nbins=5, prune='both', symmetric=True)
+                cb.ax.xaxis.set_major_locator(tick_locator)
 
         fig.suptitle(
             f'Z({self._dsz.var}): {region2str(self._dsz.region)}, '
