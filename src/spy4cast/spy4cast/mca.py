@@ -1,3 +1,4 @@
+import warnings
 import os
 import math
 from typing import Optional, Tuple, Any, Sequence, Union, cast, Literal, List
@@ -100,21 +101,21 @@ class MCA(_Procedure):
     psi
         Regression coefficient of the MCA model, so that ZHAT = PSI * Y
     RUY 
-        Regression of the predictor field. Dimension: y_space x nm
+        Correlation of the predictor field. Dimension: y_space x nm
     RUY_sig
-        Regression of the predictor field where pvalue is smaller than alpha. Dimension: y_space x nm
+        Correlation of the predictor field where pvalue is smaller than alpha. Dimension: y_space x nm
     SUY
-        Correlation in space of the predictor with the singular vector. Dimension: y_space x nm
+        Regression in space of the predictor with the singular vector. Dimension: y_space x nm
     SUY_sig
-        Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x nm
+        Regression in space of the predictor with the singular vector where pvalue is smaller than alpha. Dimension: y_space x nm
     RUZ
-        Regression of the predictand field. Dimension: z_space x nm
+        Correlation of the predictand field. Dimension: z_space x nm
     RUZ_sig 
-        Regression of the predictand field where pvalue is smaller than alpha. Dimension: z_space x nm
+        Correlation of the predictand field where pvalue is smaller than alpha. Dimension: z_space x nm
     SUZ 
-        Correlation in space of the predictand with the singular vector. Dimension: z_space x nm
+        Regression in space of the predictand with the singular vector. Dimension: z_space x nm
     SUZ_sig 
-        Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x nm
+        Regression in space of the predictand with the singular vector where pvalue is smaller than alpha. Dimension: z_space x nm
     pvalruy
         Pvalue of the correlation of the predictor field. Dimension: y_space x nm
     pvalruz
@@ -373,16 +374,16 @@ class MCA(_Procedure):
         signs: Optional[Sequence[bool]] = None,
         folder: Optional[str] = None,
         name: Optional[str] = None,
-        ruy_ticks: Optional[
+        y_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-        ruz_ticks: Optional[
+        z_ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
         ] = None,
-        ruy_levels: Optional[
+        y_levels: Optional[
             Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
-        ruz_levels: Optional[
+        z_levels: Optional[
             Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
@@ -399,6 +400,11 @@ class MCA(_Procedure):
         central_longitude_z: Optional[float] = None,
         y_xlim: Optional[Tuple[float, float]] = None,
         z_xlim: Optional[Tuple[float, float]] = None,
+        variable: Literal["s", "r"] = "r",
+        ruy_ticks: Optional[Union[npt.NDArray[np.float32], Sequence[float]]] = None,
+        ruz_ticks: Optional[Union[npt.NDArray[np.float32], Sequence[float]]] = None,
+        ruy_levels: Optional[Union[npt.NDArray[np.float32], Sequence[float], bool]] = None,
+        ruz_levels: Optional[Union[npt.NDArray[np.float32], Sequence[float], bool]] = None,
     ) -> Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]:
         """Plot the MCA results
 
@@ -421,14 +427,14 @@ class MCA(_Procedure):
             Directory to save fig if `save_fig` is `True`
         name
             Name of the fig saved if `save_fig` is `True`
-        ruy_ticks
-            Ticks for the maps of the RUY output
-        ruz_ticks
-            Ticks for the maps of the RUZ output
-        ruy_levels
-            Levels for the maps of the RUY output
-        ruz_levels
-            Levels for the maps of the RUZ output
+        y_ticks
+            Ticks for the maps of the Y output
+        z_ticks
+            Ticks for the maps of the Z output
+        y_levels
+            Levels for the maps of the Y output
+        z_levels
+            Levels for the maps of the Z output
         figsize
             Set figure size. See `plt.figure`
         nm : int
@@ -458,6 +464,13 @@ class MCA(_Procedure):
             Xlim for the `y` map passed into ax.set_extent
         z_xlim : tuple[float, float], optional
             Xlim for the `z` map passed into ax.set_extent
+        variable : {"s", "r"}, default="r"
+            If "r", plot RUY and RUZ (correlation)
+            If "s", plot SUY and SUZ (regression)
+
+        Note
+        ----
+            `ruy_ticks`, `ruz_ticks`, `ruy_levels` and `ruz_levels` are deprecated
 
         Returns
         -------
@@ -523,30 +536,72 @@ class MCA(_Procedure):
         if plot_type not in ("contour", "pcolor"):
             raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
 
+        if variable not in ("r", "s"):
+            raise ValueError(f"Expected `r` or `s` for argument `variable`, but got {variable}")
+
+        if ruy_ticks is not None:
+            if y_ticks is not None:
+                raise ValueError(f"Supplied both `y_ticks` and `ruy_ticks`, but only one can be used. Please use `y_ticks`, "
+                                 "as `y_ticks` is deprecated")
+            y_ticks = ruy_ticks
+            warnings.warn(f"`ruy_ticks` is deprecated. Please use `y_ticks` instead")
+        if ruz_ticks is not None:
+            if z_ticks is not None:
+                raise ValueError(f"Supplied both `z_ticks` and `ruz_ticks`, but only one can be used. Please use `z_ticks`, "
+                                 "as `z_ticks` is deprecated")
+            z_ticks = ruz_ticks
+            warnings.warn(f"`ruz_ticks` is deprecated. Please use `z_ticks` instead")
+        if ruy_levels is not None:
+            if y_levels is not None:
+                raise ValueError(f"Supplied both `y_levels` and `ruy_levels`, but only one can be used. Please use `y_levels`, "
+                                 "as `y_levels` is deprecated")
+            y_levels = ruy_levels
+            warnings.warn(f"`ruy_levels` is deprecated. Please use `y_levels` instead")
+        if ruz_levels is not None:
+            if z_levels is not None:
+                raise ValueError(f"Supplied both `z_levels` and `ruz_levels`, but only one can be used. Please use `z_levels`, "
+                                 "as `z_levels` is deprecated")
+            z_levels = ruz_levels
+            warnings.warn(f"`ruz_levels` is deprecated. Please use `z_levels` instead")
+
         if map_y is None:
             map_y = self.dsy
-            ruy, ruy_sig, = self.RUY, self.RUY_sig
+            if variable == "r":
+                uy, uy_sig = self.RUY, self.RUY_sig
+            elif variable == "s":
+                uy, uy_sig = self.SUY, self.SUY_sig
+            else:
+                assert False, "Unreachable"
         else:
             if map_y.time.shape[0] != self.dsy.time.shape[0]:
                 raise ValueError(f"`map_y` has to have the same amount of years (length of the time dimension) as the "
                                  f"data used to run MCA. Got {map_y.time.shape[0]}, expected {self.dsy.time.shape[0]}")
             ny = map_y.shape[0]
-            ruy = np.zeros([ny, nm], dtype=np.float32)
-            ruy_sig = np.zeros([ny, nm], dtype=np.float32)
+            uy = np.zeros([ny, nm], dtype=np.float32)
+            uy_sig = np.zeros([ny, nm], dtype=np.float32)
             for i in range(nm):
-                ruy[:, i], _, ruy_sig[:, i], _, _ = index_regression(map_y.land_data, self.Us[i, :], self.alpha, sig, montecarlo_iterations)
+                ruy, _, ruy_sig, suy, suy_sig = index_regression(map_y.land_data, self.Us[i, :], self.alpha, sig, montecarlo_iterations)
+                uy[:, i] = ruy if variable == "r" else suy
+                uy_sig[:, i] = ruy_sig if variable == "r" else suy_sig
         if map_z is None:
             map_z = self.dsz
-            ruz, ruz_sig, = self.RUZ, self.RUZ_sig
+            if variable == "r":
+                uz, uz_sig = self.RUZ, self.RUZ_sig
+            elif variable == "s":
+                uz, uz_sig = self.SUZ, self.SUZ_sig
+            else:
+                assert False, "Unreachable"
         else:
             if map_z.time.shape[0] != self.dsz.time.shape[0]:
                 raise ValueError(f"`map_z` has to have the same amount of years (length of the time dimension) as the "
                                  f"data used to run MCA. Got {map_z.time.shape[0]}, expected {self.dsz.time.shape[0]}")
             nz = map_z.shape[0]
-            ruz = np.zeros([nz, nm], dtype=np.float32)
-            ruz_sig = np.zeros([nz, nm], dtype=np.float32)
+            uz = np.zeros([nz, nm], dtype=np.float32)
+            uz_sig = np.zeros([nz, nm], dtype=np.float32)
             for i in range(nm):
-                ruz[:, i], _, ruz_sig[:, i], _, _ = index_regression(map_z.land_data, self.Us[i, :], self.alpha, sig, montecarlo_iterations)
+                ruz, _, ruz_sig, suz, suz_sig = index_regression(map_z.land_data, self.Us[i, :], self.alpha, sig, montecarlo_iterations)
+                uz[:, i] = ruz if variable == "r" else suz
+                uz_sig[:, i] = ruz_sig if variable == "r" else suz_sig
 
         figs = []
         axs: List[Tuple[plt.Axes, ...]] = []
@@ -555,9 +610,10 @@ class MCA(_Procedure):
             mode0 = 3 * i
             modef = min(nm - 1, 3 * (i + 1) - 1)
             fig_i, axs_i = _new_mca_page(
-                self, cmap=cmap, signs=signs, ruy_ticks=ruy_ticks, ruz_ticks=ruz_ticks, 
-                ruy_levels=ruy_levels, ruz_levels=ruz_levels, figsize=figsize, mode0=mode0, modef=modef,
-                ruy=ruy, ruy_sig=ruy_sig, ruz=ruz, ruz_sig=ruz_sig, map_y=map_y, map_z=map_z, plot_type=plot_type, 
+                self, cmap=cmap, signs=signs, y_ticks=y_ticks, z_ticks=z_ticks, 
+                y_levels=y_levels, z_levels=z_levels, figsize=figsize, mode0=mode0, modef=modef,
+                uy=uy, uy_sig=uy_sig, uz=uz, uz_sig=uz_sig, variable=variable,
+                map_y=map_y, map_z=map_z, plot_type=plot_type, 
                 rect_color=rect_color, height_ratios=height_ratios, width_ratios=width_ratios,
                 central_longitude_y=central_longitude_y, y_xlim=y_xlim, central_longitude_z=central_longitude_z, z_xlim=z_xlim
             )
@@ -661,25 +717,26 @@ def _new_mca_page(
     mca: MCA, 
     cmap: str,
     signs: Optional[Sequence[bool]],
-    ruy_ticks: Optional[
+    y_ticks: Optional[
         Union[npt.NDArray[np.float32], Sequence[float]]
     ],
-    ruz_ticks: Optional[
+    z_ticks: Optional[
         Union[npt.NDArray[np.float32], Sequence[float]]
     ],
-    ruy_levels: Optional[
+    y_levels: Optional[
         Union[npt.NDArray[np.float32], Sequence[float], bool]
     ],
-    ruz_levels: Optional[
+    z_levels: Optional[
         Union[npt.NDArray[np.float32], Sequence[float], bool]
     ],
     figsize: Optional[Tuple[float, float]],
     mode0: int,
     modef: int,
-    ruy: npt.NDArray[np.float_],
-    ruy_sig: npt.NDArray[np.float_],
-    ruz: npt.NDArray[np.float_],
-    ruz_sig: npt.NDArray[np.float_],
+    uy: npt.NDArray[np.float_],
+    uy_sig: npt.NDArray[np.float_],
+    uz: npt.NDArray[np.float_],
+    uz_sig: npt.NDArray[np.float_],
+    variable: Literal["r", "s"],
     map_y: Preprocess,
     map_z: Preprocess,
     rect_color: Union[Tuple[int, int, int], str],
@@ -755,10 +812,10 @@ def _new_mca_page(
             ax_ts.legend()
         ax_ts.grid(True)
 
-        # RUY and RUZ map
-        for j, (var_name, ru, ru_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point, original_region, central_longitude, xlim) in enumerate((
-            ('RUY', ruy, ruy_sig, map_y.lat, map_y.lon, 'bwr', ruy_ticks, ruy_levels, map_y.region, map_y.region.lon0 >= map_y.region.lonf, mca.dsy.region, central_longitude_y, y_xlim),
-            ('RUZ', ruz, ruz_sig, map_z.lat, map_z.lon, cmap, ruz_ticks, ruz_levels, map_z.region, map_z.region.lon0 >= map_z.region.lonf, mca.dsz.region, central_longitude_z, z_xlim)
+        # UY and UZ map
+        for j, (var_name, u, u_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point, original_region, central_longitude, xlim) in enumerate((
+            ("RUY" if variable == "r" else "SUY", uy, uy_sig, map_y.lat, map_y.lon, 'bwr', y_ticks, y_levels, map_y.region, map_y.region.lon0 >= map_y.region.lonf, mca.dsy.region, central_longitude_y, y_xlim),
+            ("RUZ" if variable == "r" else "SUZ", uz, uz_sig, map_z.lat, map_z.lon, cmap, z_ticks, z_levels, map_z.region, map_z.region.lon0 >= map_z.region.lonf, mca.dsz.region, central_longitude_z, z_xlim)
         )):
             ylim = sorted((lats.values[-1], lats.values[0]))
 
@@ -769,8 +826,8 @@ def _new_mca_page(
             title = f'{var_name} mode {mode + 1}. ' \
                     f'SCF={mca.scf[mode]*100:.01f}%'
 
-            t = ru[:, mode].transpose().reshape((len(lats), len(lons)))
-            th = ru_sig[:, mode].transpose().reshape((len(lats), len(lons)))
+            t = u[:, mode].transpose().reshape((len(lats), len(lons)))
+            th = u_sig[:, mode].transpose().reshape((len(lats), len(lons)))
 
             if signs is not None:
                 if signs[mode]:

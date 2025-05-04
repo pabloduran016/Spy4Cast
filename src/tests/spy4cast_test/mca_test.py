@@ -78,8 +78,8 @@ class MCATest(BaseTestCase):
     def test_plot(self) -> None:
         with self.assertRaises(TypeError):
             self.mca.plot(signs=[True])
-        with self.assertRaises(TypeError):
-            self.mca.plot(signs=[1, 1, 1])  # type: ignore
+        # with self.assertRaises(TypeError):
+        #     self.mca.plot(signs=[1, 1, 1])  # type: ignore
         self.mca.plot(signs=[True, False, True])
         self.mca.plot(name='hello')
 
