@@ -619,6 +619,7 @@ def _plot_validation_default(
     if nm is not None and not 1 <= nm <= validation.r_z_zhat_s_accumulated_modes.shape[0]:
         raise ValueError(f"Parameter `nm` must be positive an less than or equal to the number of modes used in the methodology, {validation.r_z_zhat_s_accumulated_modes.shape[0]}, but got {nm}")
     d = validation.r_z_zhat_s_accumulated_modes[(-1 if nm is None else nm - 1), :].transpose().reshape((nzlat, nzlon))
+    d[d < 0] = np.nan
     _mean = np.nanmean(d)
     _std = np.nanstd(d)
     mx = _mean + _std
@@ -656,10 +657,10 @@ def _plot_validation_default(
     axs[1].bar(validation.validating_dsz.time.values, validation.r_z_zhat_t_accumulated_modes[-1, :])
     axs[1].xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
 
-    axs[1].scatter(
-        validation.validating_dsz.time[validation.p_z_zhat_t_accumulated_modes[-1, :] <= validation.training_mca.alpha],
-        validation.r_z_zhat_t_accumulated_modes[-1, :][validation.p_z_zhat_t_accumulated_modes[-1, :] <= validation.training_mca.alpha]
-    )
+    # axs[1].scatter(
+    #     validation.validating_dsz.time[validation.p_z_zhat_t_accumulated_modes[-1, :] <= validation.training_mca.alpha],
+    #     validation.r_z_zhat_t_accumulated_modes[-1, :][validation.p_z_zhat_t_accumulated_modes[-1, :] <= validation.training_mca.alpha]
+    # )
     axs[1].set_title('Correlation in space between z and zhat')
     axs[1].grid(True)
     # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #

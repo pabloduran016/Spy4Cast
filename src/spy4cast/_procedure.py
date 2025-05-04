@@ -181,11 +181,12 @@ def plot_ts(
     xticks: Optional[List[Union[str, int, float]]] = None,
     only_int_xlabels: bool = True,
     label: Optional[str] = None,
+    linewidth: int = 3,
 ) -> None:
     assert len(time.shape) == 1
     assert len(arr.shape) == 1
 
-    ax.plot(time, arr, linewidth=3, color=color, label=label)
+    ax.plot(time, arr, linewidth=linewidth, color=color, label=label)
     ax.set_xlim(time[0], time[-1])
     if xticks is not None:
         ax.set_xticks(xticks)

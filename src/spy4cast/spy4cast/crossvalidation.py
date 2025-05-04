@@ -347,6 +347,7 @@ class Crossvalidation(_Procedure):
                     self.suy_sig[:, i, :] = out["suy_sig"]
                     self.suz[:, i, :] = out["suz"]
                     self.suz_sig[:, i, :] = out["suz_sig"]
+                debugprint("\n")
         else:
             for i in yrs:
                 out = self._crossvalidate_year(
@@ -366,6 +367,7 @@ class Crossvalidation(_Procedure):
                 self.suy_sig[:, i, :] = out["suy_sig"]
                 self.suz[:, i, :] = out["suz"]
                 self.suz_sig[:, i, :] = out["suz_sig"]
+            debugprint("\n")
 
         self.r_z_zhat_t_accumulated_modes, self.p_z_zhat_t_accumulated_modes, \
             self.r_z_zhat_t_separated_modes, self.p_z_zhat_t_separated_modes \
@@ -407,7 +409,8 @@ class Crossvalidation(_Procedure):
         num_svdvals: Optional[int] = None
     ) -> _CrossvalidateYearOut:
         """Function of internal use that processes a single year for crossvalidation"""
-        debugprint('\tyear:', year + 1, 'of', nt)
+        msg = f'\tyear: {year + 1} of {nt}\033[F*'
+        debugprint(msg)
         z2 = LandArray(z.values[:, yrs != year])
         y2 = LandArray(y.values[:, yrs != year])
         mca_out = MCA.from_land_arrays(y2, z2, nm, alpha, sig, montecarlo_iterations, detrend, num_svdvals)
@@ -1103,8 +1106,7 @@ def _plot_crossvalidation_default(
         raise ValueError(f"Parameter `nm` must be positive an less than or equal to the number of modes used in the methodology, {cross.r_z_zhat_s_accumulated_modes.shape[0]}, but got {nm}")
     nm_i = -1 if nm is None else nm - 1
     d = cross.r_z_zhat_s_accumulated_modes[nm_i, :].transpose().reshape((nzlat, nzlon)).copy()
-    d[((cross.p_z_zhat_s_accumulated_modes[nm_i, :] > cross.alpha) | (
-                cross.r_z_zhat_s_accumulated_modes[nm_i, :] < 0)).transpose().reshape((nzlat, nzlon))] = np.nan
+    d[d < 0] = np.nan
     _mean = np.nanmean(d)
     _std = np.nanstd(d)
     mx = _mean + _std
@@ -1123,7 +1125,7 @@ def _plot_crossvalidation_default(
 
     hatches = d.copy()
     significant_and_positive = (
-        (cross.p_z_zhat_s_accumulated_modes[nm_i, :] <= cross.alpha) | 
+        (cross.p_z_zhat_s_accumulated_modes[nm_i, :] <= cross.alpha) &
         (cross.r_z_zhat_s_accumulated_modes[nm_i, :] > 0))
     hatches[(~significant_and_positive).transpose().reshape((nzlat, nzlon))] = np.nan
     cb = fig.colorbar(im, cax=fig.add_subplot(gs[1, 0:3]), orientation='horizontal', ticks=map_ticks)
@@ -1164,7 +1166,7 @@ def _plot_crossvalidation_default(
 
     axs[1].bar(ts_time, ts_r)
     axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
-    axs[1].scatter(cross._dsz.time[ts_p <= cross.alpha], ts_r[ts_p <= cross.alpha])
+    # axs[1].scatter(cross._dsz.time[ts_p <= cross.alpha], ts_r[ts_p <= cross.alpha])
     axs[1].grid(True)
     # ^^^^^^ r_z_zhat_t and p_z_zhat_t ^^^^^^ #
 

@@ -796,6 +796,7 @@ def _new_mca_page(
             title=f'Us Vs mode {mode + 1}',
             color='green',
             label='Us',
+            linewidth=1,
         )
         plot_ts(
             time=mca._dsz.time.values,
@@ -803,7 +804,8 @@ def _new_mca_page(
             ax=ax_ts,
             title=None,
             color='blue',
-            label='Vs'
+            label='Vs',
+            linewidth=1,
         )
         ax_ts.xaxis.set_major_locator(ticker.MaxNLocator(nbins=5, integer=True))
         ax_ts.set_xlim(xmin=min(mca._dsy.time.values[0], mca._dsz.time.values[0]), 
@@ -906,6 +908,7 @@ def index_regression(
             Type of sygnificance
         montecarlo_iterations : optional, int
             Number of iterations for monte-carlo sig
+
 
     Returns
     -------
