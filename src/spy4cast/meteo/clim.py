@@ -373,7 +373,6 @@ class Clim(_Procedure, object):
                 ylabel=f'{self.var}',
                 xlabel='Year',
                 color=color,
-                xtickslabels=[x for x in self.time.values[::1]],
             )
             fig.suptitle(
                 f'Climatology time series of {self.var} ({region2str(self.region)})',

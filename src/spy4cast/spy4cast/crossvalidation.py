@@ -409,7 +409,7 @@ class Crossvalidation(_Procedure):
         num_svdvals: Optional[int] = None
     ) -> _CrossvalidateYearOut:
         """Function of internal use that processes a single year for crossvalidation"""
-        msg = f'\tyear: {year + 1} of {nt}\033[F*'
+        msg = f'\tyear: {year + 1} of {nt}\033[F'
         debugprint(msg)
         z2 = LandArray(z.values[:, yrs != year])
         y2 = LandArray(y.values[:, yrs != year])
