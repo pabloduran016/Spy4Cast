@@ -10,21 +10,21 @@ Variables for the :doc:`/api/spy4cast.spy4cast.MCA` methodology that can be acce
     +----------+-----------------------------------------------------------------------------------------------------+------------------+
     | VARIABLE | MEANING                                                                                             | DIMENSION LENGTH |
     +==========+=====================================================================================================+==================+
-    | .RUY     | Regression of the predictor field.                                                                  | y_ns x nm        |
+    | .RUY     | Correlation of the predictor field.                                                                 | y_ns x nm        |
     +----------+-----------------------------------------------------------------------------------------------------+------------------+
-    | .RUY_sig | Regression of the predictor field where pvalue is smaller than alpha.                               | y_ns x nm        |
+    | .RUY_sig | Correlation of the predictor field where pvalue is smaller than alpha.                              | y_ns x nm        |
     +----------+-----------------------------------------------------------------------------------------------------+------------------+
-    | .SUY     | Correlation in space of the predictor with the singular vector.                                     | y_ns x nm        |
+    | .SUY     | Regression in space of the predictor with the singular vector.                                      | y_ns x nm        |
     +----------+-----------------------------------------------------------------------------------------------------+------------------+
-    | .SUY_sig | Correlation in space of the predictor with the singular vector where pvalue is smaller than alpha.  | y_ns x nm        |
+    | .SUY_sig | Regression in space of the predictor with the singular vector where pvalue is smaller than alpha.   | y_ns x nm        |
     +----------+-----------------------------------------------------------------------------------------------------+------------------+
-    | .RUZ     | Regression of the predictand field.                                                                 | z_ns x nm        |
+    | .RUZ     | Correlation of the predictand field.                                                                | z_ns x nm        |
     +----------+-----------------------------------------------------------------------------------------------------+------------------+
-    | .RUZ_sig | Regression of the predictand field where pvalue is smaller than alpha.                              | z_ns x nm        |
+    | .RUZ_sig | Correlation of the predictand field where pvalue is smaller than alpha.                             | z_ns x nm        |
     +----------+-----------------------------------------------------------------------------------------------------+------------------+
-    | .SUZ     | Correlation in space of the predictand with the singular vector.                                    | z_ns x nm        |
+    | .SUZ     | Regression in space of the predictand with the singular vector.                                     | z_ns x nm        |
     +----------+-----------------------------------------------------------------------------------------------------+------------------+
-    | .SUZ_sig | Correlation in space of the predictand with the singular vector where pvalue is smaller than alpha. | z_ns x nm        |
+    | .SUZ_sig | Regression in space of the predictand with the singular vector where pvalue is smaller than alpha.  | z_ns x nm        |
     +----------+-----------------------------------------------------------------------------------------------------+------------------+
     | .pvalruy | Pvalue of the correlation of the predictor field.                                                   | y_ns x nm        |
     +----------+-----------------------------------------------------------------------------------------------------+------------------+
