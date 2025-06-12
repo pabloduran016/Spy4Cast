@@ -10,7 +10,6 @@ import matplotlib.gridspec as gridspec  # type: ignore
 from matplotlib import ticker, patches
 import cartopy.crs as ccrs
 from scipy import sparse, signal
-from scipy.signal.signaltools import axis_reverse
 import scipy.sparse.linalg
 import xarray as xr
 from scipy.stats import stats
