@@ -108,17 +108,16 @@ class Validation(_Procedure):
         Crossvalidation
     """
 
+    VAR_NAMES = (
+        'psi_accumulated_modes', 'zhat_accumulated_modes',
+        'r_z_zhat_t_accumulated_modes', 'p_z_zhat_t_accumulated_modes',
+        'r_z_zhat_s_accumulated_modes', 'p_z_zhat_s_accumulated_modes',
+    )
+
     @property
     def var_names(self) -> Tuple[str, ...]:
         """Returns the variables contained in the object"""
-        return (
-            'psi_accumulated_modes',
-            'zhat_accumulated_modes',
-            'r_z_zhat_t_accumulated_modes',
-            'p_z_zhat_t_accumulated_modes',
-            'r_z_zhat_s_accumulated_modes',
-            'p_z_zhat_s_accumulated_modes',
-        )
+        return self.VAR_NAMES
 
     def __init__(
         self,

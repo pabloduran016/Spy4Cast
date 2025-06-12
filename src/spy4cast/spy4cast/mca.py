@@ -147,27 +147,21 @@ class MCA(_Procedure):
 
     _psi: Optional[npt.NDArray[np.float32]]
 
+    VAR_NAMES = (
+        'psi',
+        'RUY', 'RUY_sig',
+        'SUY', 'SUY_sig',
+        'RUZ', 'RUZ_sig',
+        'SUZ', 'SUZ_sig',
+        'pvalruz', 'pvalruy',
+        'Us', 'Vs',
+        'scf', 'alpha', 'nm',
+    )
+
     @property
     def var_names(self) -> Tuple[str, ...]:
         """Returns the variables contained in the object (RUY, SUY, scf, ...)"""
-        return (
-            'psi',
-            'RUY',
-            'RUY_sig',
-            'SUY',
-            'SUY_sig',
-            'RUZ',
-            'RUZ_sig',
-            'SUZ',
-            'SUZ_sig',
-            'pvalruz',
-            'pvalruy',
-            'Us',
-            'Vs',
-            'scf',
-            'alpha',
-            'nm',
-        )
+        return self.VAR_NAMES
 
     def __init__(
         self,

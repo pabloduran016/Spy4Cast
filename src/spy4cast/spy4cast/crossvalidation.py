@@ -222,39 +222,30 @@ class Crossvalidation(_Procedure):
     suz_sig: npt.NDArray[np.float32]
     alpha: float
 
+    VAR_NAMES = (
+        'scf',
+        'r_uv', 'r_uv_sig',
+        'p_uv',
+        'us', 'vs',
+
+        'zhat_accumulated_modes', 'zhat_separated_modes',
+
+        'r_z_zhat_t_accumulated_modes', 'p_z_zhat_t_accumulated_modes',
+        'r_z_zhat_t_separated_modes', 'p_z_zhat_t_separated_modes',
+
+        'r_z_zhat_s_accumulated_modes', 'p_z_zhat_s_accumulated_modes',
+        'r_z_zhat_s_separated_modes', 'p_z_zhat_s_separated_modes',
+
+        'suy', 'suz', 'suy_sig', 'suz_sig',
+
+        # 'psi_accumulated_modes', 'psi_separated_modes',
+        'alpha',
+    )
+
     @property
     def var_names(self) -> Tuple[str, ...]:
         """Returns the variables contained in the object (scf, us, vs, r_uv, ...)"""
-        return (
-            'scf',
-            'r_uv',
-            'r_uv_sig',
-            'p_uv',
-            'us',
-            'vs',
-
-            'zhat_accumulated_modes',
-            'zhat_separated_modes',
-
-            'r_z_zhat_t_accumulated_modes',
-            'p_z_zhat_t_accumulated_modes',
-            'r_z_zhat_t_separated_modes',
-            'p_z_zhat_t_separated_modes',
-
-            'r_z_zhat_s_accumulated_modes',
-            'p_z_zhat_s_accumulated_modes',
-            'r_z_zhat_s_separated_modes',
-            'p_z_zhat_s_separated_modes',
-
-            'suy',
-            'suz',
-            'suy_sig',
-            'suz_sig',
-
-            # 'psi_accumulated_modes',
-            # 'psi_separated_modes',
-            'alpha',
-        )
+        return self.VAR_NAMES
 
     def __init__(
         self,

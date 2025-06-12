@@ -89,12 +89,12 @@ class Preprocess(_Procedure):
     _region: Region
     _var: str
 
+    VAR_NAMES = ('time', 'lat',  'lon', 'data', 'meta')
+
     @property
     def var_names(self) -> Tuple[str, ...]:
         """Returns the variables contained in the object (data, time, lat, lon, ...)"""
-        return (
-            'time', 'lat',  'lon', 'data', 'meta'
-        )
+        return self.VAR_NAMES
 
     def __init__(
         self,
