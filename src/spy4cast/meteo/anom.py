@@ -465,7 +465,9 @@ class Anom(_Procedure):
         return (fig, ), (ax, )
 
     @classmethod
-    def load(cls: Type['Anom'], prefix: str, folder: str = '.', *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Anom':
+    def load(cls: Type['Anom'], prefix: str, folder: str = '.', 
+             zip_file: Optional[str] = None,
+             *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Anom':
         """Load an anom object from matrices and type
 
         Parameters
@@ -474,6 +476,8 @@ class Anom(_Procedure):
             Prefix of the files containing the information for the object
         folder : str
             Directory of the files
+        zip_file: optional, str
+            If provided folder will be searched inside of the zip file, that should conatin all the data.
         type : 'map' or 'ts'
             Type of anomaly
 
@@ -485,7 +489,7 @@ class Anom(_Procedure):
             raise TypeError('Only accepetd kwarg `type` accepted for load method')
         if type is None:
             raise TypeError('`type` is a required keyword argument')
-        return super().load(prefix, folder, type=_get_type(type))
+        return super().load(prefix, folder, zip_file, type=_get_type(type))
 
     @property
     def var_names(self) -> Tuple[str, ...]:

@@ -206,7 +206,9 @@ class Validation(_Procedure):
         return self._validating_dsz
 
     @classmethod
-    def load(cls, prefix: str, folder: str = '.', *,
+    def load(cls, prefix: str, folder: str = '.', 
+             zip_file: Optional[str] = None,
+             *,
              validating_dsy: Optional[Preprocess] = None,
              validating_dsz: Optional[Preprocess] = None,
              training_mca: Optional[MCA] = None,
@@ -219,6 +221,8 @@ class Validation(_Procedure):
             Prefix of the files containing the information for the object
         folder : str
             Directory of the files
+        zip_file: optional, str
+            If provided folder will be searched inside of the zip file, that should conatin all the data.
         validating_dsy : Preprocess
             ONLY KEYWORD ARGUMENT. Preprocessed dataset of the validating predictor variable
         validating_dsz : Preprocess
@@ -288,7 +292,7 @@ class Validation(_Procedure):
             raise TypeError(
                 f'Unexpected types ({type(validating_dsy)}, {type(validating_dsz)} and {type(training_mca)}) for `validating_dsz`, `validating_dsy` and `training_mca`. Expected type `Preprocess`, `Preprocess` and `MCA`')
 
-        self: Validation = super().load(prefix, folder)
+        self: Validation = super().load(prefix, folder, zip_file)
 
         self._validating_dsy = validating_dsy
         self._validating_dsz = validating_dsz

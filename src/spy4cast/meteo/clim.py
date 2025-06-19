@@ -426,7 +426,9 @@ class Clim(_Procedure, object):
         return (fig, ), (ax, )
 
     @classmethod
-    def load(cls: Type['Clim'], prefix: str, folder: str = '.', *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Clim':
+    def load(cls: Type['Clim'], prefix: str, folder: str = '.', 
+             zip_file: Optional[str] = None,
+             *, type: Optional[Literal["map", "ts"]] = None, **attrs: Any) -> 'Clim':
         """Load an clim object from matrices and type
 
         Parameters
@@ -435,6 +437,8 @@ class Clim(_Procedure, object):
             Prefix of the files containing the information for the object
         folder : str
             Directory of the files
+        zip_file: optional, str
+            If provided folder will be searched inside of the zip file, that should conatin all the data.
         type : 'map' or 'ts'
             Type of climatology
 
@@ -446,7 +450,7 @@ class Clim(_Procedure, object):
             raise TypeError('Only kwarg `type` accepted for load method')
         if type is None:
             raise TypeError('`type` is a required kwarg')
-        return super().load(prefix, folder, type=_get_type(type))
+        return super().load(prefix, folder, zip_file, type=_get_type(type))
 
     @property
     def var_names(self) -> Tuple[str, ...]:

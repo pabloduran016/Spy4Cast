@@ -802,6 +802,7 @@ class Crossvalidation(_Procedure):
         cls,
         prefix: str,
         folder: str = '.',
+        zip_file: Optional[str] = None,
         *,
         dsz: Optional[Preprocess] = None,
         dsy: Optional[Preprocess] = None,
@@ -815,6 +816,8 @@ class Crossvalidation(_Procedure):
             Prefix of the files containing the information for the object
         folder : str
             Directory of the files
+        zip_file: optional, str
+            If provided folder will be searched inside of the zip file, that should conatin all the data.
         dsy : Preprocess
             ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predictor variable
         dsz : Preprocess
@@ -864,7 +867,7 @@ class Crossvalidation(_Procedure):
         if type(dsz) != Preprocess or type(dsy) != Preprocess:
             raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
 
-        self: Crossvalidation = super().load(prefix, folder)
+        self: Crossvalidation = super().load(prefix, folder, zip_file)
         self._dsz = dsz
         self._dsy = dsy
         return self
