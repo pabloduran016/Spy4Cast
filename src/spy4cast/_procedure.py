@@ -13,6 +13,7 @@ import xarray as xr
 import cartopy.crs as ccrs
 import numpy.typing as npt
 from matplotlib.ticker import MaxNLocator
+import zipfile
 
 from ._functions import time_from_here, time_to_here, _warning, _error, _debuginfo, debugprint
 from .stypes import Color, Region
@@ -67,11 +68,11 @@ class _Procedure(ABC):
             np.save(path, arr)
 
     @classmethod
-    def load(cls: Type[T], prefix: str, folder: str = '.', **attrs: Any) -> T:
+    def load(cls: Type[T], prefix: str, folder: str = '.', zip_file: Optional[str] = None, **attrs: Any) -> T:
         clsname = cls.__name__
         # print(clsname, cls)
         prefixed = os.path.join(folder, prefix)
-        _debuginfo(f'Loading {clsname} data from `{prefixed}*`', end='')
+        _debuginfo(f'Loading {clsname} data from `{prefixed}*`{f" inside zip file {zip_file}" if zip_file is not None else ""}', end='')
         time_from_here()
 
         self = cls.__new__(cls)
@@ -80,8 +81,14 @@ class _Procedure(ABC):
 
         for name in self.var_names:
             path = prefixed + name + '.npy'
+            if zip_file is not None:
+                with zipfile.ZipFile(zip_file, "r") as archive:
+                    with archive.open(path, "r") as f:
+                        data = np.load(f)
+            else:
+                data = np.load(path)
             try:
-                setattr(self, name, np.load(path))
+                setattr(self, name, data)
             except AttributeError:
                 _error(f'Could not set variable `{name}`')
                 traceback.print_exc()
