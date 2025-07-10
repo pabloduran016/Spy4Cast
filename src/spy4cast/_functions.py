@@ -3,6 +3,7 @@ Collection of functions used across the api and for the users convenience
 """
 import sys
 from typing import Optional, Dict, Any, Union
+import warnings
 from .stypes import Month, Region
 from time import perf_counter
 
@@ -98,9 +99,10 @@ def time_to_here(here: Optional[float] = None) -> float:
 
     global _prev
     if _prev is None:
-        raise ValueError(
+        warnings.warn(
             'Expected to call time_from_here() before calling time_to_here() or passing a tiemstamp'
         )
+        return 0
     rv = now - _prev
     _prev = None
     return rv
