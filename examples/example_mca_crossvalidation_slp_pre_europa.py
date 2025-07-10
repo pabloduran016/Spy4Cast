@@ -1,3 +1,6 @@
+"""
+This example is an example of handling datasets with over 10^4 data points
+"""
 import os
 from spy4cast import Dataset, Region, Month
 from spy4cast.spy4cast import Crossvalidation, Preprocess, MCA
