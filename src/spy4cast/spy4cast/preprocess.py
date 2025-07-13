@@ -96,6 +96,26 @@ class Preprocess(_Procedure):
         """Returns the variables contained in the object (data, time, lat, lon, ...)"""
         return self.VAR_NAMES
 
+    def copy(self, data: Optional[npt.NDArray[np.float32]] = None) -> 'Preprocess':
+        """ 
+        Return a new Preprocess instance with shallow copying. 
+        You can change the fields (like data) of a Preprocess instance 
+        using this while not changing the other object 
+        """
+
+        # Avoid calling init
+        pre = Preprocess.__new__(Preprocess)
+
+        pre._ds = self.ds
+
+        pre.time = self._time.values
+        pre.lat = self._lat.values
+        pre.lon = self._lon.values
+
+        pre.data = data if data is not None else self.land_data.values
+
+        return pre
+
     def __init__(
         self,
         ds: Dataset,
@@ -344,9 +364,9 @@ class Preprocess(_Procedure):
         >>> y = Preprocess(Dataset("dataset_y.nc").open("y").slice(
         ...         Region(-50, 10, -50, 20, Month.JUN, Month.AUG, 1960, 2010)))
         >>> # Plot 1990, 1991, 1992 and save 1990
-        >>> y.plot(1990, show_plot=True, save_fig=True, name='y_1990.png')
-        >>> y.plot(1991, show_plot=True, cmap='viridis')  # Change the default color map
-        >>> y.plot(1992, show_plot=True, halt_program=True)  # halt_program lets you show multiple figures at the same time
+        >>> y.plot(selected_year=1990, show_plot=True, save_fig=True, name='y_1990.png')
+        >>> y.plot(selected_year=1991, show_plot=True, cmap='viridis')  # Change the default color map
+        >>> y.plot(selected_year=1992, show_plot=True, halt_program=True)  # halt_program lets you show multiple figures at the same time
 
         Returns
         -------
