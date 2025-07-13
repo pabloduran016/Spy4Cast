@@ -292,14 +292,14 @@ class MCA(_Procedure):
 
         if num_svdvals is None:
             svdvals = scipy.linalg.svdvals(c)
-            sum_svdvals = np.sum(svdvals)
+            sum_covfrac = np.sum(svdvals ** 2)
         elif num_svdvals <= nm:
-            sum_svdvals = np.sum(d[:num_svdvals])
+            sum_covfrac = np.sum(d[:num_svdvals] ** 2)
         else:
-            _r, svdvals, _q = sparse.linalg.svds(c, k=num_svdvals, which='LM')
-            sum_svdvals = np.sum(svdvals)
+            svdvals = sparse.linalg.svds(c, k=num_svdvals, which='LM', return_singular_vectors=False)
+            sum_covfrac = np.sum(svdvals ** 2)
 
-        scf = d / sum_svdvals
+        scf = d ** 2 / sum_covfrac
 
         # y había que transponerla si originariamente era (espacio, tiempo),
         # pero ATN_e es (tiempo, espacio) así
