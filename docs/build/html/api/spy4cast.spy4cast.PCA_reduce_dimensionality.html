@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="TimeStamp" href="spy4cast.stypes.TimeStamp.html" /><link rel="prev" title="Color" href="spy4cast.stypes.Color.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="MCA" href="spy4cast.spy4cast.MCA.html" /><link rel="prev" title="index_regression" href="spy4cast.spy4cast.index_regression.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>T_FORMAT - Spy4Cast &#34;1.0.0&#34; documentation</title>
+        <title>PCA_reduce_dimensionality - Spy4Cast &#34;1.0.0&#34; documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
@@ -233,9 +233,9 @@
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../toctrees/api-reference.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Spy4cast</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../toctrees/api-reference-src/spy4cast.html">Spy4cast</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Spy4cast</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.index_regression.html">index_regression</a></li>
-<li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.PCA_reduce_dimensionality.html">PCA_reduce_dimensionality</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">PCA_reduce_dimensionality</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.MCA.html">MCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html">Preprocess</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.spy4cast.Crossvalidation.html">Crossvalidation</a></li>
@@ -252,11 +252,11 @@
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.meteo.Clim.html">Clim</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current has-children"><a class="reference internal" href="../toctrees/api-reference-src/stypes.html">Stypes</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Stypes</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../toctrees/api-reference-src/stypes.html">Stypes</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Stypes</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Region.html">Region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Month.html">Month</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.Color.html">Color</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">T_FORMAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.T_FORMAT.html">T_FORMAT</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spy4cast.stypes.TimeStamp.html">TimeStamp</a></li>
 </ul>
 </li>
@@ -295,7 +295,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/api/spy4cast.stypes.T_FORMAT.rst.txt" title="View this page">
+  <a class="muted-link" href="../_sources/api/spy4cast.spy4cast.PCA_reduce_dimensionality.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -315,12 +315,39 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="t-format">
-<h1>T_FORMAT<a class="headerlink" href="#t-format" title="Link to this heading">¶</a></h1>
-<dl class="py data">
-<dt class="sig sig-object py" id="spy4cast.stypes.T_FORMAT">
-<span class="sig-prename descclassname"><span class="pre">spy4cast.stypes.</span></span><span class="sig-name descname"><span class="pre">T_FORMAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'%d/%m/%Y</span> <span class="pre">%H:%M:%S'</span></em><a class="headerlink" href="#spy4cast.stypes.T_FORMAT" title="Link to this definition">¶</a></dt>
-<dd><p>Time stamp format used internally</p>
+          <section id="pca-reduce-dimensionality">
+<h1>PCA_reduce_dimensionality<a class="headerlink" href="#pca-reduce-dimensionality" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy4cast.spy4cast.PCA_reduce_dimensionality">
+<span class="sig-prename descclassname"><span class="pre">spy4cast.spy4cast.</span></span><span class="sig-name descname"><span class="pre">PCA_reduce_dimensionality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pca_modes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="spy4cast.spy4cast.Preprocess.html#spy4cast.spy4cast.Preprocess" title="spy4cast.spy4cast.preprocess.Preprocess"><span class="pre">Preprocess</span></a></span></span><a class="headerlink" href="#spy4cast.spy4cast.PCA_reduce_dimensionality" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a new Preprocess instance that has reduced dimensionality with
+PCA based dimensionality reduction</p>
+<section id="paramenters">
+<h2>Paramenters<a class="headerlink" href="#paramenters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>x<span class="classifier">Preprocess</span></dt><dd><p>Data to reduce the dimensionality</p>
+</dd>
+<dt>pca_modes<span class="classifier">int, default=10</span></dt><dd><p>Number of modes that the PCA will use</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">rtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Preprocess</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">z_ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;HadISST_sst_chopped.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;./datasets&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;sst&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z_ds</span> <span class="o">=</span> <span class="n">z_ds</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">Region</span><span class="p">(</span><span class="n">lat0</span><span class="o">=-</span><span class="mi">30</span><span class="p">,</span> <span class="n">latf</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">lon0</span><span class="o">=-</span><span class="mi">200</span><span class="p">,</span> <span class="n">lonf</span><span class="o">=-</span><span class="mi">60</span><span class="p">,</span> <span class="n">month0</span><span class="o">=</span><span class="n">Month</span><span class="o">.</span><span class="n">DEC</span><span class="p">,</span> <span class="n">monthf</span><span class="o">=</span><span class="n">Month</span><span class="o">.</span><span class="n">FEB</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="c1"># year0 and yearf refer to monthf so the slice will span from DEC 1970 to FEB 2020</span>
+<span class="gp">... </span>           <span class="n">year0</span><span class="o">=</span><span class="mi">1971</span><span class="p">,</span> <span class="n">yearf</span><span class="o">=</span><span class="mi">2020</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">skip</span><span class="o">=</span><span class="mi">1</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">PCA_reduce_dimensionality</span><span class="p">(</span><span class="n">Preprocess</span><span class="p">(</span><span class="n">z_ds</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mca</span> <span class="o">=</span> <span class="n">MCA</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 </dd></dl>
 
 </section>
@@ -330,23 +357,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="spy4cast.stypes.TimeStamp.html">
+          <a class="next-page" href="spy4cast.spy4cast.MCA.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">TimeStamp</div>
+                <div class="title">MCA</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="spy4cast.stypes.Color.html">
+          <a class="prev-page" href="spy4cast.spy4cast.index_regression.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Color</div>
+                <div class="title">index_regression</div>
                 
               </div>
             </a>
@@ -380,8 +407,8 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">T_FORMAT</a><ul>
-<li><a class="reference internal" href="#spy4cast.stypes.T_FORMAT"><code class="docutils literal notranslate"><span class="pre">T_FORMAT</span></code></a></li>
+<li><a class="reference internal" href="#">PCA_reduce_dimensionality</a><ul>
+<li><a class="reference internal" href="#spy4cast.spy4cast.PCA_reduce_dimensionality"><code class="docutils literal notranslate"><span class="pre">PCA_reduce_dimensionality()</span></code></a></li>
 </ul>
 </li>
 </ul>
