@@ -364,13 +364,13 @@ class Crossvalidation(_Procedure):
             self.r_z_zhat_t_separated_modes, self.p_z_zhat_t_separated_modes \
             = calculate_time_correlation(
                 self._dsz.land_data, self.zhat_accumulated_modes, 
-                self.zhat_separated_modes)
+                self.zhat_separated_modes, sig, montecarlo_iterations)
 
         self.r_z_zhat_s_accumulated_modes, self.p_z_zhat_s_accumulated_modes, \
             self.r_z_zhat_s_separated_modes, self.p_z_zhat_s_separated_modes \
             = calculate_space_correlation(
                 self._dsz.land_data, self.zhat_accumulated_modes, 
-                self.zhat_separated_modes)
+                self.zhat_separated_modes, sig, montecarlo_iterations)
 
         self.alpha = alpha
         debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
@@ -1253,6 +1253,8 @@ def calculate_time_correlation(
     z_land_array: LandArray,
     zhat_accumulated_modes: npt.NDArray[np.float_],
     zhat_separated_modes: Optional[npt.NDArray[np.float_]] = None,
+    sig: Literal["test-t", "monte-carlo"] = "test-t",
+    montecarlo_iterations: Optional[int] = None,
 ) -> Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_]]:
     nm, nz, nt = zhat_accumulated_modes.shape
 
@@ -1266,12 +1268,28 @@ def calculate_time_correlation(
             if zhat_separated_modes is not None:
                 rtt_sep = stats.pearsonr(zhat_separated_modes[mode, ~z_land_array.land_mask, j], z_land_array.not_land_values[:, j])  # serie de skill
                 r_z_zhat_t_separated_modes[mode, j] = rtt_sep[0]
-                p_z_zhat_t_separated_modes[mode, j] = rtt_sep[1]
+            else:
+                rtt_sep = None
 
             rtt_acc = stats.pearsonr(zhat_accumulated_modes[mode, ~z_land_array.land_mask, j],
                                      z_land_array.not_land_values[:, j])  # serie de skill
             r_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[0]
-            p_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[1]
+
+            if sig == "test-t":
+                if rtt_sep is not None:
+                    p_z_zhat_t_separated_modes[mode, j] = rtt_sep[1]
+                p_z_zhat_t_accumulated_modes[mode, j] = rtt_acc[1]
+            elif sig == "monte-carlo":
+                if montecarlo_iterations is None:
+                    raise ValueError('Expected argument `montecarlo_iteration` for `monte-carlo` sig')
+
+                if rtt_sep is not None:
+                    assert zhat_separated_modes is not None
+                    p_z_zhat_t_separated_modes[mode, j] = calculate_montecarlo_sig(zhat_separated_modes[mode, ~z_land_array.land_mask, j], z_land_array.not_land_values[:, j], rtt_sep[0], montecarlo_iterations)
+
+                p_z_zhat_t_accumulated_modes[mode, j] = calculate_montecarlo_sig(zhat_accumulated_modes[mode, ~z_land_array.land_mask, j], z_land_array.not_land_values[:, j], rtt_acc[0], montecarlo_iterations)
+            else:
+                assert False, "Unreachable"
 
     return r_z_zhat_t_accumulated_modes, p_z_zhat_t_accumulated_modes, r_z_zhat_t_separated_modes, p_z_zhat_t_separated_modes
 
@@ -1280,7 +1298,10 @@ def calculate_space_correlation(
     z_land_array: LandArray,
     zhat_accumulated_modes: npt.NDArray[np.float_],
     zhat_separated_modes: Optional[npt.NDArray[np.float_]] = None,
+    sig: Literal["test-t", "monte-carlo"] = "test-t",
+    montecarlo_iterations: Optional[int] = None,
 ) -> Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_]]:
+
     nm, nz, nt = zhat_accumulated_modes.shape
 
     r_z_zhat_s_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
@@ -1298,10 +1319,41 @@ def calculate_space_correlation(
             if zhat_separated_modes is not None:
                 rtt_sep = stats.pearsonr(zhat_separated_modes[mode, i, :], z_land_array.values[i, :])  # serie de skill
                 r_z_zhat_s_separated_modes[mode, i] = rtt_sep[0]
-                p_z_zhat_s_separated_modes[mode, i] = rtt_sep[1]
-
+            else:
+                rtt_sep = None
             rtt_acc = stats.pearsonr(zhat_accumulated_modes[mode, i, :], z_land_array.values[i, :])  # serie de skill
             r_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[0]
-            p_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[1]
+
+            if sig  == "test-t":
+                if rtt_sep is not None:
+                    p_z_zhat_s_separated_modes[mode, i] = rtt_sep[1]
+                p_z_zhat_s_accumulated_modes[mode, i] = rtt_acc[1]
+            elif sig  == "monte-carlo":
+                if montecarlo_iterations is None:
+                    raise ValueError('Expected argument `montecarlo_iteration` for `monte-carlo` sig')
+
+                if rtt_sep is not None:
+                    assert zhat_separated_modes is not None
+                    p_z_zhat_s_separated_modes[mode, i] = calculate_montecarlo_sig(zhat_separated_modes[mode, i, :], z_land_array.values[i, :], rtt_sep[0], montecarlo_iterations)
+
+                p_z_zhat_s_accumulated_modes[mode, i] = calculate_montecarlo_sig(zhat_accumulated_modes[mode, i, :], z_land_array.values[i, :], rtt_acc[0], montecarlo_iterations)
+            else:
+                assert False, "Unreachable"
 
     return r_z_zhat_s_accumulated_modes, p_z_zhat_s_accumulated_modes, r_z_zhat_s_separated_modes, p_z_zhat_s_separated_modes
+
+
+def calculate_montecarlo_sig(
+    data: npt.NDArray[np.float32],
+    index: npt.NDArray[np.float32],
+    cor: float,
+    montecarlo_iterations: int
+) -> float:
+    corp = np.empty(montecarlo_iterations)
+    for p in range(montecarlo_iterations):
+        corp[p] = stats.pearsonr(data, np.random.permutation(index))[0]
+
+    hcor = np.count_nonzero((cor > 0) & (corp < cor) | (cor < 0) & (corp > cor))
+
+    pval = 1 - hcor / montecarlo_iterations
+    return pval
