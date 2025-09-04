@@ -1,3 +1,4 @@
+import math
 import os
 from math import floor
 from typing import Tuple, Optional, Any, TypedDict, Union, Sequence, cast, Literal, List
@@ -66,6 +67,15 @@ class Crossvalidation(_Procedure):
             covariance matrix (used to calculate scf) to the sum of the
             largest `num_svdvals` singular values. Useful to speed up MCA
             if the `scf` is not needed or it is not needed to be precise.
+        fold_size : int, default = 1
+            By default crossvalidation is run by removing **one** year and
+            calculate the modes using MCA with the rest of the data. Then, the 
+            removed year is predicted using those modes. You can change
+            `fold_size` to remove a different amount of years from the data. 
+            For example, if `fold_size = 4` 4 years are removed at each iteratorion, 
+            MCA is calculated with the rest and those 4 year are calculated with the
+            obtained modes. Then the process continues with next 4 years. If the data
+            had 12 years, 3 iterations will be needed.
 
     Examples
     --------
@@ -258,6 +268,7 @@ class Crossvalidation(_Procedure):
         montecarlo_iterations: Optional[int] = None,
         detrend: bool = True,
         num_svdvals: Optional[int] = None,
+        fold_size: int = 1,
     ):
         self._dsy = dsy
         self._dsz = dsz
@@ -281,21 +292,22 @@ class Crossvalidation(_Procedure):
             )
 
         nt = ntz
+        nfolds = math.ceil(nt/fold_size)
 
-        self.scf = np.zeros([nm, nt], dtype=np.float32)
-        self.r_uv = np.zeros([nm, nt], dtype=np.float32)
-        self.r_uv_sig = np.zeros([nm, nt], dtype=np.float32)
-        self.p_uv = np.zeros([nm, nt], dtype=np.float32)
+        self.scf = np.zeros([nm, nfolds], dtype=np.float32)
+        self.r_uv = np.zeros([nm, nfolds], dtype=np.float32)
+        self.r_uv_sig = np.zeros([nm, nfolds], dtype=np.float32)
+        self.p_uv = np.zeros([nm, nfolds], dtype=np.float32)
 
         self.zhat_separated_modes = np.zeros([nm, nz, nt], dtype=np.float32)
         self.zhat_accumulated_modes = np.zeros([nm, nz, nt], dtype=np.float32)
         self.zhat_separated_modes[:, self._dsz.land_data.land_mask, :] = np.nan
         self.zhat_accumulated_modes[:, self._dsz.land_data.land_mask, :] = np.nan
 
-        self.suy = np.zeros([ny, nt, nm], dtype=np.float32)
-        self.suy_sig = np.zeros([ny, nt, nm], dtype=np.float32)
-        self.suz = np.zeros([nz, nt, nm], dtype=np.float32)
-        self.suz_sig = np.zeros([nz, nt, nm], dtype=np.float32)
+        self.suy = np.zeros([ny, nfolds, nm], dtype=np.float32)
+        self.suy_sig = np.zeros([ny, nfolds, nm], dtype=np.float32)
+        self.suz = np.zeros([nz, nfolds, nm], dtype=np.float32)
+        self.suz_sig = np.zeros([nz, nfolds, nm], dtype=np.float32)
 
         self.suy[self._dsy.land_data.land_mask, :, :] = np.nan
         self.suy_sig[self._dsy.land_data.land_mask, :, :] = np.nan
@@ -303,10 +315,9 @@ class Crossvalidation(_Procedure):
         self.suz_sig[self._dsz.land_data.land_mask, :, :] = np.nan
 
         # crosvalidated year on axis 2
-        self.us = np.zeros([nm, nt, nt], dtype=np.float32)
-        self.vs = np.zeros([nm, nt, nt], dtype=np.float32)
+        self.us = np.zeros([nm, nt, nfolds], dtype=np.float32)
+        self.vs = np.zeros([nm, nt, nfolds], dtype=np.float32)
         # estimación de self.zhat para cada año
-        yrs = np.arange(nt)
 
         if multiprocessed:
             import multiprocessing as mp
@@ -315,34 +326,39 @@ class Crossvalidation(_Procedure):
             with mp.Pool(count) as pool:
                 # print(f'Starting pool with {count=}')
                 processes = []
-                for i in yrs:
+                for i in range(nfolds):
                     # print(f'applying async on process {i=}')
+                    size_of_fold = min(nt, (i+1)*fold_size) - i*fold_size
                     p = pool.apply_async(self._crossvalidate_year, kwds={
-                        'year': i, 'z': self._dsz.land_data, 'y': self._dsy.land_data, 'nt': nt, 'yrs': yrs,
+                        'size_of_fold': size_of_fold, 'year_start': i*fold_size, 'z': self._dsz.land_data, 'y': self._dsy.land_data,
                         'nm': nm, 'alpha': alpha, 'sig': sig, 'montecarlo_iterations': montecarlo_iterations,
                         'detrend': detrend, 'num_svdvals': num_svdvals,
                     })
                     processes.append(p)
 
-                for i in yrs:
-                    out = processes[i].get()
+                for i, proc in enumerate(processes):
+                    out = proc.get()
                     self.scf[:, i] = out["scf"]
                     self.r_uv[:, i] = out["r_uv"]
                     self.r_uv_sig[:, i] = out["r_uv_sig"]
                     self.p_uv[:, i] = out["p_uv"]
-                    self.us[:, [x for x in range(nt) if x != i], i] = out["us"]
-                    self.vs[:, [x for x in range(nt) if x != i], i] = out["vs"]
-                    self.zhat_separated_modes[:, :, i] = out["zhat_separated_modes"]
-                    self.zhat_accumulated_modes[:, :, i] = out["zhat_accumulated_modes"]
+
+                    self.zhat_separated_modes[:, :, i*fold_size:(i+1)*fold_size] = out["zhat_separated_modes"]
+                    self.zhat_accumulated_modes[:, :, i*fold_size:(i+1)*fold_size] = out["zhat_accumulated_modes"]
+
                     self.suy[:, i, :] = out["suy"]
                     self.suy_sig[:, i, :] = out["suy_sig"]
                     self.suz[:, i, :] = out["suz"]
                     self.suz_sig[:, i, :] = out["suz_sig"]
+
+                    self.us[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["us"]
+                    self.vs[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["vs"]
                 debugprint("\n")
         else:
-            for i in yrs:
+            for i in range(nfolds):
+                size_of_fold = min(nt, (i+1)*fold_size) - i*fold_size
                 out = self._crossvalidate_year(
-                    year=i, z=self._dsz.land_data, y=self._dsy.land_data, nt=nt, yrs=yrs,
+                    size_of_fold=size_of_fold, year_start=i*fold_size, z=self._dsz.land_data, y=self._dsy.land_data,
                     nm=nm, alpha=alpha, sig=sig, montecarlo_iterations=montecarlo_iterations, 
                     detrend=detrend, num_svdvals=num_svdvals,
                 )
@@ -350,14 +366,14 @@ class Crossvalidation(_Procedure):
                 self.r_uv[:, i] = out["r_uv"]
                 self.r_uv_sig[:, i] = out["r_uv_sig"]
                 self.p_uv[:, i] = out["p_uv"]
-                self.us[:, [x for x in range(nt) if x != i], i] = out["us"]
-                self.vs[:, [x for x in range(nt) if x != i], i] = out["vs"]
-                self.zhat_separated_modes[:, :, i] = out["zhat_separated_modes"]
-                self.zhat_accumulated_modes[:, :, i] = out["zhat_accumulated_modes"]
+                self.zhat_separated_modes[:, :, i*fold_size:(i+1)*fold_size] = out["zhat_separated_modes"]
+                self.zhat_accumulated_modes[:, :, i*fold_size:(i+1)*fold_size] = out["zhat_accumulated_modes"]
                 self.suy[:, i, :] = out["suy"]
                 self.suy_sig[:, i, :] = out["suy_sig"]
                 self.suz[:, i, :] = out["suz"]
                 self.suz_sig[:, i, :] = out["suz_sig"]
+                self.us[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["us"]
+                self.vs[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["vs"]
             debugprint("\n")
 
         self.r_z_zhat_t_accumulated_modes, self.p_z_zhat_t_accumulated_modes, \
@@ -387,11 +403,10 @@ class Crossvalidation(_Procedure):
 
     def _crossvalidate_year(
         self,
-        year: int,
+        size_of_fold: int,
+        year_start: int,
         z: LandArray,
         y: LandArray,
-        nt: int,
-        yrs: npt.NDArray[np.int32],
         nm: int,
         alpha: float,
         sig: Literal["test-t", "monte-carlo"],
@@ -400,19 +415,26 @@ class Crossvalidation(_Procedure):
         num_svdvals: Optional[int] = None
     ) -> _CrossvalidateYearOut:
         """Function of internal use that processes a single year for crossvalidation"""
-        msg = f'\tyear: {year + 1} of {nt}\033[F'
+        ny, nt = y.shape
+        nz, _ = z.shape
+
+        year_end = year_start + size_of_fold
+        if size_of_fold == 1:
+            msg = f'\tyear: {year_start + 1} of {nt}\033[F'
+        else:
+            msg = f'\tyears: [{year_start + 1}, {year_end}] of {nt}\033[F'
         debugprint(msg)
-        z2 = LandArray(z.values[:, yrs != year])
-        y2 = LandArray(y.values[:, yrs != year])
+
+        yrs_included = np.setdiff1d(np.arange(nt), np.arange(year_start, year_end))
+        z2 = LandArray(z.values[:, yrs_included])
+        y2 = LandArray(y.values[:, yrs_included])
         mca_out = MCA.from_land_arrays(y2, z2, nm, alpha, sig, montecarlo_iterations, detrend, num_svdvals)
-        ny, _ = y2.shape
-        nz, _ = z2.shape
 
-        zhat_separated_modes = np.zeros([nm, nz], dtype=np.float32)
-        zhat_separated_modes[:, z2.land_mask] = np.nan
+        zhat_separated_modes = np.zeros([nm, nz, size_of_fold], dtype=np.float32)
+        zhat_separated_modes[:, z2.land_mask, :] = np.nan
 
-        zhat_accumulated_modes = np.zeros([nm, nz], dtype=np.float32)
-        zhat_accumulated_modes[:, z2.land_mask] = np.nan
+        zhat_accumulated_modes = np.zeros([nm, nz, size_of_fold], dtype=np.float32)
+        zhat_accumulated_modes[:, z2.land_mask, :] = np.nan
 
         psi = np.zeros([ny, nz], dtype=np.float32)
         psi[y2.land_mask, :] = np.nan
@@ -429,7 +451,9 @@ class Crossvalidation(_Procedure):
                 nm,
                 mca_out.scf[mode:mode + 1]
             ).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
-            zhat_separated_modes[mode, ~z2.land_mask] = np.dot(np.transpose(y.not_land_values[:, year]), psi[~y2.land_mask, :][:, ~z2.land_mask])
+            for i in range(size_of_fold):
+                year = i + year_start
+                zhat_separated_modes[mode, ~z2.land_mask, i] = np.dot(np.transpose(y.not_land_values[:, year]), psi[~y2.land_mask, :][:, ~z2.land_mask])
 
             # Accumulated modes
             psi[~np.isnan(psi)] = calculate_psi(
@@ -441,7 +465,9 @@ class Crossvalidation(_Procedure):
                 mode + 1,
                 mca_out.scf[:mode + 1]
             ).reshape((~y2.land_mask).sum() * (~z2.land_mask).sum())
-            zhat_accumulated_modes[mode, ~z2.land_mask] = np.dot(np.transpose(y.not_land_values[:, year]), psi[~y2.land_mask, :][:, ~z2.land_mask])
+            for i in range(size_of_fold):
+                year = i + year_start
+                zhat_accumulated_modes[mode, ~z2.land_mask, i] = np.dot(np.transpose(y.not_land_values[:, year]), psi[~y2.land_mask, :][:, ~z2.land_mask])
 
         r_uv = np.zeros(nm, dtype=np.float32)
         r_uv_sig = np.zeros(nm, dtype=np.float32)

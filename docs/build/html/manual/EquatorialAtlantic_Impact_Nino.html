@@ -321,7 +321,7 @@
 <div class="alert alert-block alert-info"><p>⚠️ The data used in this notebook is from HadISST and can be downloaded using this download link</p>
 </div><p>After download, decompress the file and save it in ./datasets under the name “HadISST_sst.nc”</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">spy4cast</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">Month</span>
@@ -333,7 +333,7 @@
 <section id="Configuration">
 <h2>Configuration<a class="headerlink" href="#Configuration" title="Link to this heading">¶</a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We will use sea surface temperature both for dataset and predictor, but</span>
@@ -361,7 +361,7 @@
 <section id="Preprocessing">
 <h3>Preprocessing<a class="headerlink" href="#Preprocessing" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First step. Preprocess variables: anomaly and reshaping</span>
@@ -382,9 +382,9 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Preprocessing data for variable sst took: 0.385 seconds
+[INFO] Preprocessing data for variable sst took: 0.431 seconds
 [INFO] Saving Preprocess data in `./data-EquatorialAtalantic_Impact_Nino/y_*.npy`
-[INFO] Preprocessing data for variable sst took: 1.433 seconds
+[INFO] Preprocessing data for variable sst took: 1.643 seconds
 [INFO] Saving Preprocess data in `./data-EquatorialAtalantic_Impact_Nino/z_*.npy`
 </pre></div></div>
 </div>
@@ -392,7 +392,7 @@
 <section id="MCA">
 <h3>MCA<a class="headerlink" href="#MCA" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Second step. MCA: expansion coefficients and correlation and regression maps</span>
@@ -415,7 +415,7 @@
             Y(3000, 130)
     Regions: Z DJF (30.00ºS, 30.00ºN - 160.00ºE, 60.00ºW)
             Y JJA (30.00ºS, 10.00ºN - 60.00ºW, 15.00ºE)
-       Took: 8.499 seconds
+       Took: 9.537 seconds
 [INFO] Saving MCA data in `./data-EquatorialAtalantic_Impact_Nino/mca_*.npy`
 </pre></div></div>
 </div>
@@ -423,7 +423,7 @@
 <section id="Plot-MCA">
 <h3>Plot MCA<a class="headerlink" href="#Plot-MCA" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mca.png&quot;</span><span class="p">,</span>
@@ -444,7 +444,7 @@
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -453,12 +453,12 @@
  (&lt;AxesSubplot:title={&#39;center&#39;:&#39;Us Vs mode 1&#39;}&gt;,
   &lt;AxesSubplot:title={&#39;center&#39;:&#39;Us Vs mode 2&#39;}&gt;,
   &lt;AxesSubplot:title={&#39;center&#39;:&#39;Us Vs mode 3&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 1. SCF=46.2%&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 2. SCF=10.4%&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 3. SCF=7.3%&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 1. SCF=46.2%&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 2. SCF=10.4%&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 3. SCF=7.3%&#39;}&gt;))
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 1. SCF=90.3%&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 2. SCF=4.6%&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 3. SCF=2.3%&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 1. SCF=90.3%&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 2. SCF=4.6%&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 3. SCF=2.3%&#39;}&gt;))
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -469,7 +469,7 @@
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot on a larger map using global regression</span>
@@ -488,12 +488,12 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[INFO] Preprocessing data for variable sst took: 0.122 seconds
-[INFO] Preprocessing data for variable sst took: 3.849 seconds
+[INFO] Preprocessing data for variable sst took: 0.302 seconds
+[INFO] Preprocessing data for variable sst took: 4.325 seconds
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mca</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -518,7 +518,7 @@
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -527,12 +527,12 @@
  (&lt;AxesSubplot:title={&#39;center&#39;:&#39;Us Vs mode 1&#39;}&gt;,
   &lt;AxesSubplot:title={&#39;center&#39;:&#39;Us Vs mode 2&#39;}&gt;,
   &lt;AxesSubplot:title={&#39;center&#39;:&#39;Us Vs mode 3&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 1. SCF=46.2%&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 2. SCF=10.4%&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 3. SCF=7.3%&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 1. SCF=46.2%&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 2. SCF=10.4%&#39;}&gt;,
-  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 3. SCF=7.3%&#39;}&gt;))
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 1. SCF=90.3%&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 2. SCF=4.6%&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUY mode 3. SCF=2.3%&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 1. SCF=90.3%&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 2. SCF=4.6%&#39;}&gt;,
+  &lt;GeoAxesSubplot:title={&#39;center&#39;:&#39;SUZ mode 3. SCF=2.3%&#39;}&gt;))
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
