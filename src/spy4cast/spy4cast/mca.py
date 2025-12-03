@@ -99,6 +99,8 @@ class MCA(_Procedure):
     ----------
     psi
         Regression coefficient of the MCA model, so that ZHAT = PSI * Y
+    r, sigma, q
+        Singular vectors, and values
     RUY 
         Correlation of the predictor field. Dimension: y_space x nm
     RUY_sig
@@ -144,10 +146,13 @@ class MCA(_Procedure):
     scf: npt.NDArray[np.float32]
     alpha: float
 
+    r: npt.NDArray[np.float32]
+    sigma: npt.NDArray[np.float32]
+    q: npt.NDArray[np.float32]
     _psi: Optional[npt.NDArray[np.float32]]
 
     VAR_NAMES = (
-        'psi',
+        'r', 'q', 'sigma',
         'RUY', 'RUY_sig',
         'SUY', 'SUY_sig',
         'RUZ', 'RUZ_sig',
@@ -275,7 +280,7 @@ class MCA(_Procedure):
         if detrend:
             y.values[~y.land_mask] = signal.detrend(y.not_land_values)  # detrend in time
 
-        c = np.dot(y.not_land_values, np.transpose(z.not_land_values))
+        c = np.dot(y.not_land_values, np.transpose(z.not_land_values)) / (nt - 1)
         if type(c) == np.ma.MaskedArray:
             c = c.data
 
@@ -284,6 +289,10 @@ class MCA(_Procedure):
         r = r[:, ::-1]
         d = d[::-1]
         q = q[::-1, :]
+
+        self.r = r
+        self.q = q
+        self.sigma = np.diag(d)
 
         # OLD WAY OF DOING SVD: REALLY SLOW
         # r, d, q = scipy.linalg.svd(c)
@@ -298,7 +307,6 @@ class MCA(_Procedure):
         else:
             svdvals = sparse.linalg.svds(c, k=num_svdvals, which='LM', return_singular_vectors=False)
             sum_covfrac = np.sum(svdvals ** 2)
-
         scf = d ** 2 / sum_covfrac
 
         # y había que transponerla si originariamente era (espacio, tiempo),
@@ -343,19 +351,39 @@ class MCA(_Procedure):
                 self.SUZ_sig[:, i]
             ) = index_regression(z, self.Us[i, :], alpha, sig, montecarlo_iterations)
 
-    @property
-    def psi(self) -> npt.NDArray[np.float32]:
-        if self._psi is None:
-            z = self._dsz.land_data
-            y = self._dsy.land_data
-            nz, nt = z.shape
-            ny, nt = y.shape
-            self._psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, self.nm, self.scf)
-        return self._psi
+    def calculate_psi(self, last_mode: int, first_mode: int = 0) -> npt.NDArray[np.float32]:
+        """
+        Calculate Psi
 
-    @psi.setter
-    def psi(self, value: npt.NDArray[np.float32]) -> None:
-        self._psi = value
+        Parameters
+        ----------
+
+        last_mode : int
+            Number of modes used to calculate psi. Should be smaller than the `nm` used to 
+            run MCA, since those are the maximum amount of modes used. 
+
+        first_mode : int, default = 0
+            Used to select a specific mode or a range of modes. It is default to 0 so that 
+            by default the first argument indicates the total amount of modes used
+
+        Returns
+        -------
+            Psi, array-like
+        """
+        # z = self._dsz.land_data
+        # y = self._dsy.land_data
+        # nz, nt = z.shape
+        # ny, nt = y.shape
+        # self._psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, self.nm, self.scf)
+        r = self.r[:, first_mode:last_mode+1]
+        q = self.q[first_mode:last_mode+1, :]
+        sigma = self.sigma[first_mode:last_mode+1, first_mode:last_mode+1]
+        psi = cast(npt.NDArray[np.float32], np.dot(r, np.dot(sigma, q)))
+        return psi
+
+    # @psi.setter
+    # def psi(self, value: npt.NDArray[np.float32]) -> None:
+    #     self._psi = value
 
     def plot(
         self,
@@ -1007,8 +1035,8 @@ def calculate_psi(
     z: npt.NDArray[np.float32],
     nt: int,
     ny: int,
-    nm: int,
-    scf: npt.NDArray[np.float_],
+    # nm: int,
+    # scf: npt.NDArray[np.float_],
 ) -> npt.NDArray[np.float32]:
     # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
     # suy = suy * scf[np.newaxis, :]
@@ -1019,4 +1047,3 @@ def calculate_psi(
     # return cast(
     #     npt.NDArray[np.float32],
     #     np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nm / ny) 
-
