@@ -12,7 +12,7 @@ from matplotlib import ticker
 from scipy import stats
 
 from . import MCA
-from .crossvalidation import calculate_psi, calculate_time_correlation, calculate_space_correlation
+from .crossvalidation import calculate_time_correlation, calculate_space_correlation
 from .mca import index_regression
 from .. import Region
 from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
