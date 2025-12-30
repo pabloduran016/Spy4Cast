@@ -13,7 +13,7 @@ from matplotlib.ticker import MaxNLocator
 from scipy import stats
 
 from . import MCA
-from .mca import index_regression, calculate_psi
+from .mca import index_regression
 from .. import Region
 from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
 from .._procedure import _Procedure, _apply_flags_to_fig, plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \

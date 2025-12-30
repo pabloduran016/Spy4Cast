@@ -1029,21 +1029,21 @@ def pearsonr_2d(y: npt.NDArray[np.float_], x: npt.NDArray[np.float_]) -> npt.NDA
     return rho
 
 
-def calculate_psi(
-    suy: npt.NDArray[np.float32],
-    us: npt.NDArray[np.float32],
-    z: npt.NDArray[np.float32],
-    nt: int,
-    ny: int,
-    # nm: int,
-    # scf: npt.NDArray[np.float_],
-) -> npt.NDArray[np.float32]:
-    # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
-    # suy = suy * scf[np.newaxis, :]
-    return cast(
-        npt.NDArray[np.float32],
-        np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt / ny)
-    # (((SUY * inv(Us * Us')) * Us) * Z') / (ny * nm**2)
-    # return cast(
-    #     npt.NDArray[np.float32],
-    #     np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nm / ny) 
+# def calculate_psi(
+#     suy: npt.NDArray[np.float32],
+#     us: npt.NDArray[np.float32],
+#     z: npt.NDArray[np.float32],
+#     nt: int,
+#     ny: int,
+#     # nm: int,
+#     # scf: npt.NDArray[np.float_],
+# ) -> npt.NDArray[np.float32]:
+#     # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
+#     # suy = suy * scf[np.newaxis, :]
+#     return cast(
+#         npt.NDArray[np.float32],
+#         np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nt / ny)
+#     # (((SUY * inv(Us * Us')) * Us) * Z') / (ny * nm**2)
+#     # return cast(
+#     #     npt.NDArray[np.float32],
+#     #     np.dot(np.dot(np.dot(suy, np.linalg.inv(np.dot(us, np.transpose(us)))), us), np.transpose(z)) * nm / ny) 

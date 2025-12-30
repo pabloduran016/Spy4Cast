@@ -164,15 +164,16 @@ class Validation(_Procedure):
         self.psi_accumulated_modes[:, :, common_z_land_mask] = np.nan
         self.zhat_accumulated_modes[:, common_z_land_mask] = np.nan
 
-        self.psi_accumulated_modes[0, ~np.isnan(self.psi_accumulated_modes[0])] = calculate_psi(
-            self._training_mca.SUY[~common_y_land_mask, :],
-            self._training_mca.Us[:, :],
-            self._training_mca._dsz.data[~common_z_land_mask, :],
-            self._training_mca.Us.shape[1],
-            self._training_mca._dsy.data.shape[0],
-            self._training_mca.Us.shape[0],
-            self._training_mca.scf
-        ).reshape((~common_y_land_mask).sum() * (~common_z_land_mask).sum())
+        self.psi_accumulated_modes[0, ~np.isnan(self.psi_accumulated_modes[0])] = self._training_mca.calculate_psi(0)
+        # self.psi_accumulated_modes[0, ~np.isnan(self.psi_accumulated_modes[0])] = calculate_psi(
+        #     self._training_mca.SUY[~common_y_land_mask, :],
+        #     self._training_mca.Us[:, :],
+        #     self._training_mca._dsz.data[~common_z_land_mask, :],
+        #     self._training_mca.Us.shape[1],
+        #     self._training_mca._dsy.data.shape[0],
+        #     self._training_mca.Us.shape[0],
+        #     self._training_mca.scf
+        # ).reshape((~common_y_land_mask).sum() * (~common_z_land_mask).sum())
 
         self.zhat_accumulated_modes[0, ~common_z_land_mask, :] = np.dot(
             validating_dsy.land_data.not_land_values[:, :].T,
