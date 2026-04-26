@@ -120,11 +120,15 @@ def plot_map(
     cax: Optional[plt.Axes] = None,
     labels: bool = True,
     add_cyclic_point: bool = False,
-    plot_type: Literal["contour", "pcolor"] = "contour",
+    plot_type: Literal["contour", "pcolor", "tricontour", "scatter"] = "contour",
 ) -> matplotlib.contour.QuadContourSet:
-    if add_cyclic_point:
-        arr, lon = add_cyclic_point_to_data(arr, coord=lon)
-    cmap = 'bwr' if cmap is None else cmap
+    if plot_type in ("tricontour", "scatter"):
+        assert len(arr.shape) == 1
+    else:
+        assert len(arr.shape) == 2
+        if add_cyclic_point:
+            arr, lon = add_cyclic_point_to_data(arr, coord=lon)
+        cmap = 'bwr' if cmap is None else cmap
 
     if plot_type == "contour":
         if levels is False or levels is True:
@@ -148,6 +152,22 @@ def plot_map(
         im = ax.pcolormesh(
             p_lon, p_lat, arr, cmap=cmap, norm=norm, transform=ccrs.PlateCarree()
         )
+    elif plot_type == "scatter":
+        assert levels is None
+        im = ax.scatter(
+            lon, lat, 100, c=arr, cmap=cmap,
+            linewidth=0,
+            alpha=0.8,
+            transform=ccrs.PlateCarree(),
+        )
+    elif plot_type == "tricontour":
+        if levels is False or levels is True:
+            levels = None
+        im = ax.tricontourf(
+            lon, lat, arr, cmap=cmap, levels=levels,
+            transform=ccrs.PlateCarree(),
+        )
+        levels = im.levels
     else:
         assert False, f"Unreachable: {plot_type}"
     ax.coastlines()

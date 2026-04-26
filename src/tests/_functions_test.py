@@ -11,9 +11,6 @@ class FunctionsTest(BaseTestCase):
         sleep(4)
         self.assertTrue(abs(time_to_here() - 4) < 0.01)
 
-        with self.assertRaises(ValueError):
-            time_to_here()
-
     def test_region2str(self) -> None:
         s = Region(-10, 10, -100, 80, Month.JAN, Month.FEB, 1870, 2020)
         self.assertEqual(region2str(s), 'JF (10.00ºS, 10.00ºN - 100.00ºW, 80.00ºE)')

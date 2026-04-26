@@ -19,7 +19,9 @@ from .._functions import time_from_here, time_to_here, region2str, _debuginfo, d
 from .._procedure import _Procedure, plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, plot_ts, \
     get_xlim_from_region, get_central_longitude_from_region, add_cyclic_point_to_data
 from .preprocess import Preprocess
+from .preprocess_unstructured import PreprocessUnstructured
 
+PreprocessAny = Union[Preprocess, PreprocessUnstructured]
 
 __all__ = [
     'MCA',
@@ -34,9 +36,9 @@ class MCA(_Procedure):
 
     Parameters
     ----------
-        dsy : Preprocess
+        dsy : Preprocess, PreprocessUnstructured
             Predictor
-        dsz : Preprocess
+        dsz : Preprocess, PreprocessUnstructured
             Predictand
         nm : int
             Number of modes
@@ -148,6 +150,10 @@ class MCA(_Procedure):
     q: npt.NDArray[np.float32]
     _psi: Optional[npt.NDArray[np.float32]]
 
+    # Only if it is created with `from_land_arrays`
+    _y_data: LandArray
+    _z_data: LandArray
+
     VAR_NAMES = (
         'r', 'q', 'sigma',
         'RUY', 'RUY_sig',
@@ -166,8 +172,8 @@ class MCA(_Procedure):
 
     def __init__(
         self,
-        dsy: Preprocess,
-        dsz: Preprocess,
+        dsy: PreprocessAny,
+        dsz: PreprocessAny,
         nm: int,
         alpha: float,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
@@ -200,12 +206,34 @@ class MCA(_Procedure):
         # c = np.nan_to_num(np.dot(y, np.transpose(z)), nan=NAN_VAL)
 
     @property
-    def dsy(self) -> Preprocess:
+    def y_data(self) -> LandArray:
+        """Data from the Y variable. 
+           If constructed with `from_land_arrays` it is used to do the same job as ._dsy"""
+        if hasattr(self, "_dsy"):
+            return self._dsy.land_data
+        elif hasattr(self, "_y_data"):
+            return self._y_data
+        else:
+            assert False, "Unreachable"
+
+    @property
+    def z_data(self) -> LandArray:
+        """Data from the Z variable. 
+           If constructed with `from_land_arrays` it is used to do the same job as ._dsz"""
+        if hasattr(self, "_dsz"):
+            return self._dsz.land_data
+        elif hasattr(self, "_z_data"):
+            return self._z_data
+        else:
+            assert False, "Unreachable"
+
+    @property
+    def dsy(self) -> PreprocessAny:
         """Preprocessed dataset introduced as predictor"""
         return self._dsy
 
     @property
-    def dsz(self) -> Preprocess:
+    def dsz(self) -> PreprocessAny:
         """Preprocessed dataset introduced as predictand"""
         return self._dsz
 
@@ -253,6 +281,8 @@ class MCA(_Procedure):
             MCA
         """
         m = cls.__new__(MCA)
+        m._y_data = y
+        m._z_data = z
         m._mca(z, y, nm, alpha, sig, montecarlo_iterations, num_svdvals)
         return m
 
@@ -343,7 +373,12 @@ class MCA(_Procedure):
                 self.SUZ_sig[:, i]
             ) = index_regression(z, self.Us[i, :], alpha, sig, montecarlo_iterations)
 
-    def calculate_psi(self, last_mode: int, first_mode: int = 0) -> npt.NDArray[np.float32]:
+    def calculate_psi(
+        self, 
+        last_mode: int, 
+        first_mode: int = 0, 
+        cyy_inv: Optional[npt.NDArray[np.float32]] = None,
+    ) -> npt.NDArray[np.float32]:
         """
         Calculate Psi
 
@@ -358,6 +393,13 @@ class MCA(_Procedure):
             Used to select a specific mode or a range of modes. It is default to 0 so that 
             by default the first argument indicates the total amount of modes used
 
+        cyy_inv : optional, array (y-space x y-space)
+            Inverse of the self-convariance matrix dot(Y, Y.T) with dimensions 
+            (y-space x y-space). If it is not squared you can calculate it with 
+            `np.linalg.pinv` or `scipy.linalg.pinv`. If it is not provided the program will calculate it for you.
+            However, if you are calling `calculate_psi` on a loop it is better to
+            precalculate it.
+
         Returns
         -------
             Psi, array-like
@@ -368,22 +410,24 @@ class MCA(_Procedure):
         # ny, nt = y.shape
         # self._psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, self.nm, self.scf)
 
-        r = self.r[:, first_mode:last_mode+1]
-        q = self.q[first_mode:last_mode+1, :]
-        sigma = self.sigma[first_mode:last_mode+1, first_mode:last_mode+1]
-        psi = cast(npt.NDArray[np.float32], np.dot(r, np.dot(sigma, q)))
-        return psi
-
-        # C = np.dot(Y, z.T) / nt
-        # U, s, Vh = svd(C, full_matrices=False)
-        # S_m = self.sigma  # S_m = np.diag(s[:nm])  # nm, nm
-        # U_m = self.r  # U_m = U[:, :nm]  # nt, nm
-        # V_m = self.q.T  # V_m = Vh.T[:, :nm]  # nt, nm
-        # y = self.dsy.land_data.not
-        # cyy = np.dot(y.not_land_values, y.not_land_values.T)  # np.dot(Yc, Yc.T)
-        # cyy_inv = np.linalg.pinv(cyy)
-        # psi = np.dot(np.dot(np.dot(V_m, S_m), U_m.T), cyy_inv))
+        # r = self.r[:, first_mode:last_mode+1]
+        # q = self.q[first_mode:last_mode+1, :]
+        # sigma = self.sigma[first_mode:last_mode+1, first_mode:last_mode+1]
+        # psi = cast(npt.NDArray[np.float32], np.dot(r, np.dot(sigma, q)))
         # return psi
+
+        ## C = np.dot(Y, z.T) / nt
+        ## U, s, Vh = svd(C, full_matrices=False)
+        S_m = self.sigma[first_mode:last_mode+1, first_mode:last_mode+1]  # S_m = np.diag(s[:nm])  # nm, nm
+        U_m = self.r[:, first_mode:last_mode+1]  # U_m = U[:, :nm]  # nt, nm
+        V_m = self.q.T[:, first_mode:last_mode+1]  # V_m = Vh.T[:, :nm]  # nt, nm
+        if cyy_inv is None:
+            y = self.y_data.not_land_values
+            cyy = np.dot(y, y.T)  # np.dot(Yc, Yc.T)
+            cyy_inv = np.linalg.pinv(cyy, hermitian=True)
+        assert cyy_inv is not None
+        psi = np.dot(np.dot(np.dot(V_m, S_m), U_m.T), cyy_inv).T
+        return psi
 
     # @psi.setter
     # def psi(self, value: npt.NDArray[np.float32]) -> None:
@@ -413,12 +457,13 @@ class MCA(_Procedure):
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
         nm: Optional[int] = None,
-        map_y: Optional[Preprocess] = None,
-        map_z: Optional[Preprocess] = None,
+        map_y: Optional[PreprocessAny] = None,
+        map_z: Optional[PreprocessAny] = None,
         rect_color: Union[Tuple[int, int, int], str] = "r",
         sig: Optional[Literal["monte-carlo", "test-t"]] = None,
         montecarlo_iterations: Optional[int] = None,
-        plot_type: Literal["contour", "pcolor"] = "contour",
+        plot_type_y: Optional[Literal["contour", "pcolor", "tricontour", "scatter"]] = None,
+        plot_type_z: Optional[Literal["contour", "pcolor", "tricontour", "scatter"]] = None,
         height_ratios: Optional[List[float]] = None,
         width_ratios: Optional[List[float]] = None,
         central_longitude_y: Optional[float] = None,
@@ -464,9 +509,9 @@ class MCA(_Procedure):
             Set figure size. See `plt.figure`
         nm : int
             Number of modes to plot
-        map_y : Preprocess
+        map_y : Preprocess, PreprocessUnstructured
             Y to plot the map
-        map_z : Preprocess
+        map_z : Preprocess, PreprocessUnstructured
             Z to plot the map
         rect_color: (r, g, b) or string, default = "r"
             Color of the rectangle when using map_y and map_z that outlines the region where the methodology was originally ran
@@ -474,9 +519,14 @@ class MCA(_Procedure):
             Significance method when map_y or map_z is set
         montecarlo_iterations : int
             when monte-carlo sig and map_y or map_z is set
-        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
-            Plot type. If `contour` it will use function `ax.contourf`, 
-            if `pcolor` `ax.pcolormesh`.
+        plot_type_y : {"contour", "pcolor", "tricontour", "scatter"}, default = "contour" or "scatter"
+            Plot type. If Y if of type Preprocess: `contour` it will use function `ax.contourf`, 
+            `pcolor` will use `ax.pcolormesh`. If Y if type PreprocessUnstructured, `tricontour` 
+            will use `ax.tricontourf`, `scatter` `ax.scatter`.
+        plot_type_z : {"contour", "pcolor", "tricontour", "scatter"}, default = "contour" or "scatter"
+            Plot type. If Z if of type Preprocess: `contour` it will use function `ax.contourf`, 
+            `pcolor` will use `ax.pcolormesh`. If Z if type PreprocessUnstructured, `tricontour` 
+            will use `ax.tricontourf`, `scatter` `ax.scatter`.
         height_ratios: list[float], optional
             Height ratios passed in to matplotlib.gridspec.Gridspec
         width_ratios: list[float], optional
@@ -558,8 +608,17 @@ class MCA(_Procedure):
             assert False
         sig = 'test-t' if sig is None else sig
 
-        if plot_type not in ("contour", "pcolor"):
-            raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
+        plot_type_y = plot_type_y if plot_type_y is not None else ("contour" if type(self.dsy) == Preprocess else "scatter")
+        plot_type_z = plot_type_z if plot_type_z is not None else ("contour" if type(self.dsz) == Preprocess else "scatter")
+        for (var, ds, plot_type) in (("y", self.dsy, plot_type_y), ("z", self.dsz, plot_type_z)):
+            if type(ds) == Preprocess:
+                if plot_type not in ("contour", "pcolor"):
+                    raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type_{var}`, but got {plot_type}")
+            elif type(ds) == PreprocessUnstructured:
+                if plot_type not in ("tricontour", "scatter"):
+                    raise ValueError(f"Expected `tricontour` or `scatter` for argument `plot_type_{var}`, but got {plot_type}")
+            else:
+                assert False, "Unreachable"
 
         if variable not in ("r", "s"):
             raise ValueError(f"Expected `r` or `s` for argument `variable`, but got {variable}")
@@ -638,7 +697,9 @@ class MCA(_Procedure):
                 self, cmap=cmap, signs=signs, y_ticks=y_ticks, z_ticks=z_ticks, 
                 y_levels=y_levels, z_levels=z_levels, figsize=figsize, mode0=mode0, modef=modef,
                 uy=uy, uy_sig=uy_sig, uz=uz, uz_sig=uz_sig, variable=variable,
-                map_y=map_y, map_z=map_z, plot_type=plot_type, 
+                map_y=map_y, map_z=map_z, 
+                plot_type_y=plot_type_y,   # type: ignore
+                plot_type_z=plot_type_z,   # type: ignore
                 rect_color=rect_color, height_ratios=height_ratios, width_ratios=width_ratios,
                 central_longitude_y=central_longitude_y, y_xlim=y_xlim, central_longitude_z=central_longitude_z, z_xlim=z_xlim
             )
@@ -674,8 +735,8 @@ class MCA(_Procedure):
     def load(cls, prefix: str, folder: str = '.', 
              zip_file: Optional[str] = None,
              *,
-             dsy: Optional[Preprocess] = None,
-             dsz: Optional[Preprocess] = None,
+             dsy: Optional[PreprocessAny] = None,
+             dsz: Optional[PreprocessAny] = None,
              **attrs: Any) -> 'MCA':
         """Load an MCA object from .npy files saved in MCA.save.
 
@@ -687,9 +748,9 @@ class MCA(_Procedure):
             Directory of the files
         zip_file: optional, str
             If provided folder will be searched inside of the zip file, that should conatin all the data.
-        dsy : Preprocess
+        dsy : Preprocess, PreprocessUnstructured
             ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predictor variable
-        dsz : Preprocess
+        dsz : Preprocess, PreprocessUnstructured
             ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predicting variable
 
         Returns
@@ -732,8 +793,8 @@ class MCA(_Procedure):
             raise TypeError('Load only takes two keyword arguments: dsy and dsz')
         if dsz is None or dsy is None:
             raise TypeError('To load an MCA object you must provide `dsz` and `dsy` keyword arguments')
-        if type(dsz) != Preprocess or type(dsy) != Preprocess:
-            raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
+        if type(dsz) not in (Preprocess, PreprocessUnstructured) or type(dsy) not in (Preprocess, PreprocessUnstructured):
+            raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess` or `PreprocessUnstructured`')
 
         self: MCA = super().load(prefix, folder, zip_file)
 
@@ -766,10 +827,11 @@ def _new_mca_page(
     uz: npt.NDArray[np.float_],
     uz_sig: npt.NDArray[np.float_],
     variable: Literal["r", "s"],
-    map_y: Preprocess,
-    map_z: Preprocess,
+    map_y: PreprocessAny,
+    map_z: PreprocessAny,
     rect_color: Union[Tuple[int, int, int], str],
-    plot_type: Literal["contour", "pcolor"],
+    plot_type_y: Literal["contour", "pcolor", "tricontour", "scatter"],
+    plot_type_z: Literal["contour", "pcolor", "tricontour", "scatter"],
     width_ratios: Optional[List[float]],
     height_ratios: Optional[List[float]],
     central_longitude_y: Optional[float],
@@ -844,21 +906,27 @@ def _new_mca_page(
         ax_ts.grid(True)
 
         # UY and UZ map
-        for j, (var_name, u, u_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point, original_region, central_longitude, xlim) in enumerate((
-            ("RUY" if variable == "r" else "SUY", uy, uy_sig, map_y.lat, map_y.lon, 'bwr', y_ticks, y_levels, map_y.region, map_y.region.lon0 >= map_y.region.lonf, mca.dsy.region, central_longitude_y, y_xlim),
-            ("RUZ" if variable == "r" else "SUZ", uz, uz_sig, map_z.lat, map_z.lon, cmap, z_ticks, z_levels, map_z.region, map_z.region.lon0 >= map_z.region.lonf, mca.dsz.region, central_longitude_z, z_xlim)
+        for j, (var_name, u, u_sig, lats, lons, cm, ticks, levels, region, add_cyclic_point, original_region, central_longitude, xlim, plot_type) in enumerate((
+            ("RUY" if variable == "r" else "SUY", uy, uy_sig, map_y.lat, map_y.lon, 'bwr', y_ticks, y_levels, map_y.region, map_y.region.lon0 >= map_y.region.lonf, mca.dsy.region, central_longitude_y, y_xlim, plot_type_y),
+            ("RUZ" if variable == "r" else "SUZ", uz, uz_sig, map_z.lat, map_z.lon, cmap, z_ticks, z_levels, map_z.region, map_z.region.lon0 >= map_z.region.lonf, mca.dsz.region, central_longitude_z, z_xlim, plot_type_z)
         )):
             ylim = sorted((lats.values[-1], lats.values[0]))
 
-            if levels is None:
+            if levels is None and plot_type != "scatter":
                 levels = np.linspace(-1, +1, 20)
 
             ax_map = axs[nm * (j + 1) + i]
             title = f'{var_name} mode {mode + 1}. ' \
                     f'SCF={mca.scf[mode]*100:.01f}%'
 
-            t = u[:, mode].transpose().reshape((len(lats), len(lons)))
-            th = u_sig[:, mode].transpose().reshape((len(lats), len(lons)))
+            if plot_type in ("contour", "pcolor"):
+                t = u[:, mode].transpose().reshape((len(lats), len(lons)))
+                th = u_sig[:, mode].transpose().reshape((len(lats), len(lons)))
+            elif plot_type in ("tricontour", "scatter"):
+                t = u[:, mode]
+                th = u_sig[:, mode]
+            else:
+                assert False, "Unreachable"
 
             if signs is not None:
                 if signs[mode]:
@@ -867,7 +935,9 @@ def _new_mca_page(
             im = plot_map(
                 t, lats, lons, fig, ax_map, title,
                 levels=levels, xlim=xlim, ylim=ylim, cmap=cm, ticks=ticks,
-                colorbar=False, add_cyclic_point=add_cyclic_point, plot_type=plot_type,
+                colorbar=False, 
+                add_cyclic_point=add_cyclic_point and plot_type in ("contour", "pcolor"), 
+                plot_type=plot_type,
             )
             if i == nm - 1:
                 cb = fig.colorbar(im, cax=fig.add_subplot(gs[nm, j + 1]), orientation='horizontal', ticks=ticks,)
@@ -876,12 +946,22 @@ def _new_mca_page(
                     cb.ax.xaxis.set_major_locator(tick_locator)
                 #cb.ax.xaxis.set_tick_params(rotation=20)
             hlons = lons
-            if add_cyclic_point:
+            if plot_type in ("contour", "pcolor") and add_cyclic_point:
                 th, hlons = add_cyclic_point_to_data(th, coord=hlons.values)
-            ax_map.contourf(
-                hlons, lats, th, colors='none', hatches='..', extend='both',
-                transform=ccrs.PlateCarree()
-            )
+            if plot_type in ("contour", "pcolor"):
+                ax_map.contourf(
+                    hlons, lats, th, colors='none', hatches='..', extend='both',
+                    transform=ccrs.PlateCarree()
+                )
+            elif plot_type in ("tricontour", "scatter"):
+                hlons = hlons[~np.isnan(th)]
+                hlats = lats[~np.isnan(th)]
+                ax_map.scatter(
+                    hlons, hlats, s=4, alpha=0.3, color='black', 
+                    transform=ccrs.PlateCarree()
+                )
+            else:
+                assert False, "Unreachable"
             width = original_region.lonf - original_region.lon0 if original_region.lonf > original_region.lon0 else \
                     original_region.lonf + 360 - original_region.lon0 
             assert width >= 0

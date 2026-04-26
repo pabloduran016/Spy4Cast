@@ -10,7 +10,7 @@ from matplotlib import ticker
 import matplotlib.gridspec as gridspec
 import cartopy.crs as ccrs
 from matplotlib.ticker import MaxNLocator
-from scipy import stats
+from scipy import stats, linalg
 
 from . import MCA
 from .mca import index_regression
@@ -20,8 +20,10 @@ from .._procedure import _Procedure, _apply_flags_to_fig, plot_map, _get_index_f
     MAX_HEIGHT, plot_ts, get_central_longitude_from_region, get_xlim_from_region, add_cyclic_point_to_data
 from ..land_array import LandArray
 from .preprocess import Preprocess
+from .preprocess_unstructured import PreprocessUnstructured
 import xarray as xr
 
+PreprocessAny = Union[Preprocess, PreprocessUnstructured]
 
 __all__ = [
     'Crossvalidation',
@@ -48,9 +50,9 @@ class Crossvalidation(_Procedure):
 
     Parameters
     ----------
-        dsy : Preprocess
+        dsy : Preprocess, PreprocessUnstructured
             Predictor field
-        dsz : Preprocess
+        dsz : Preprocess, PreprocessUnstructured
             Predictand field
         nm : int
             Number of modes
@@ -257,8 +259,8 @@ class Crossvalidation(_Procedure):
 
     def __init__(
         self,
-        dsy: Preprocess,
-        dsz: Preprocess,
+        dsy: PreprocessAny,
+        dsz: PreprocessAny,
         nm: int,
         alpha: float,
         multiprocessed: bool = False,
@@ -316,6 +318,11 @@ class Crossvalidation(_Procedure):
         self.vs = np.zeros([nm, nt, nfolds], dtype=np.float32)
         # estimación de self.zhat para cada año
 
+        y = self._dsy.land_data
+        cyy = np.dot(y.not_land_values, y.not_land_values.T)
+        cyy_inv = linalg.pinvh(cyy, rtol=0.01)
+        # cyy_inv = np.linalg.pinv(cyy, hermitian=True)
+
         if multiprocessed:
             import multiprocessing as mp
             # Step 1: Init multiprocessing.Pool()
@@ -328,7 +335,7 @@ class Crossvalidation(_Procedure):
                     size_of_fold = min(nt, (i+1)*fold_size) - i*fold_size
                     p = pool.apply_async(self._crossvalidate_year, kwds={
                         'size_of_fold': size_of_fold, 'year_start': i*fold_size, 'z': self._dsz.land_data, 'y': self._dsy.land_data,
-                        'nm': nm, 'alpha': alpha, 'sig': sig, 'montecarlo_iterations': montecarlo_iterations,
+                        'nm': nm, 'alpha': alpha, 'cyy_inv': cyy_inv, 'sig': sig, 'montecarlo_iterations': montecarlo_iterations,
                         'num_svdvals': num_svdvals,
                     })
                     processes.append(p)
@@ -356,7 +363,7 @@ class Crossvalidation(_Procedure):
                 size_of_fold = min(nt, (i+1)*fold_size) - i*fold_size
                 out = self._crossvalidate_year(
                     size_of_fold=size_of_fold, year_start=i*fold_size, z=self._dsz.land_data, y=self._dsy.land_data,
-                    nm=nm, alpha=alpha, sig=sig, montecarlo_iterations=montecarlo_iterations, 
+                    nm=nm, alpha=alpha, cyy_inv=cyy_inv, sig=sig, montecarlo_iterations=montecarlo_iterations, 
                     num_svdvals=num_svdvals,
                 )
                 self.scf[:, i] = out["scf"]
@@ -389,12 +396,12 @@ class Crossvalidation(_Procedure):
         debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
 
     @property
-    def dsy(self) -> Preprocess:
+    def dsy(self) -> PreprocessAny:
         """Preprocessed dataset introduced as predictor"""
         return self._dsy
 
     @property
-    def dsz(self) -> Preprocess:
+    def dsz(self) -> PreprocessAny:
         """Preprocessed dataset introduced as predictand"""
         return self._dsz
 
@@ -406,6 +413,7 @@ class Crossvalidation(_Procedure):
         y: LandArray,
         nm: int,
         alpha: float,
+        cyy_inv: npt.NDArray[np.float32],
         sig: Literal["test-t", "monte-carlo"],
         montecarlo_iterations: Optional[int] = None,
         num_svdvals: Optional[int] = None
@@ -436,7 +444,7 @@ class Crossvalidation(_Procedure):
 
         for mode in range(nm):
             # Separated modes
-            psim[:] = mca_out.calculate_psi(mode, mode)
+            psim[:] = mca_out.calculate_psi(mode, mode, cyy_inv=cyy_inv)
             # psi[~np.isnan(psi)] = calculate_psi(mode, mode)
             #     mca_out.SUY[~y2.land_mask, mode:mode + 1], 
             #     mca_out.Us[mode:mode + 1, :],
@@ -451,7 +459,7 @@ class Crossvalidation(_Procedure):
                 zhat_separated_modes[mode, ~z2.land_mask, i] = np.dot(np.transpose(y.not_land_values[:, year]), psim)
 
             # Accumulated modes
-            psim[:] = mca_out.calculate_psi(mode)
+            psim[:] = mca_out.calculate_psi(mode, cyy_inv=cyy_inv)
             # psi[~np.isnan(psi)] = calculate_psi(
             #     mca_out.SUY[~y2.land_mask, :mode + 1], 
             #     mca_out.Us[:mode + 1, :],
@@ -509,7 +517,7 @@ class Crossvalidation(_Procedure):
         z_xlim: Optional[Tuple[float, float]] = None,
         ts_only_sig: bool = False,
         nm: Optional[int] = None,
-        plot_type: Literal["contour", "pcolor"] = "contour",
+        plot_type: Optional[Literal["contour", "pcolor", "tricontour", "scatter"]] = None,
         rmse_levels: Optional[
             Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
@@ -548,9 +556,10 @@ class Crossvalidation(_Procedure):
         ts_only_sig : bool, default = False
             If Ture, time series for the ACC map only takes into account the region where ACC
             is significant
-        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
-            Plot type. If `contour` it will use function `ax.contourf`, 
-            if `pcolor` `ax.pcolormesh`.
+        plot_type : {"contour", "pcolor", "tricontour", "scatter"}, default = "contour" or "scatter"
+            Plot type. If Z if of type Preprocess: `contour` it will use function `ax.contourf`, 
+            `pcolor` will use `ax.pcolormesh`. If Z if type PreprocessUnstructured, `tricontour` 
+            will use `ax.tricontourf`, `scatter` `ax.scatter`.
         central_longitude_z : float, optional
             Longitude used to center the `z` map
         z_xlim : tuple[float, float], optional
@@ -607,8 +616,15 @@ class Crossvalidation(_Procedure):
         """
         fig: plt.Figure
         axs: Sequence[plt.Axes]
-        if plot_type not in ("contour", "pcolor"):
-            raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
+        plot_type = plot_type if plot_type is not None else ("contour" if type(self.dsz) == Preprocess else "scatter")
+        if type(self.dsz) == Preprocess:
+            if plot_type not in ("contour", "pcolor"):
+                raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
+        elif type(self.dsz) == PreprocessUnstructured:
+            if plot_type not in ("tricontour", "scatter"):
+                raise ValueError(f"Expected `tricontour` or `scatter` for argument `plot_type`, but got {plot_type}")
+        else:
+            assert False, "Unreachable"
         if version == "default":
             if mca is not None:
                 raise TypeError("Unexpected argument `mca` for version `default`")
@@ -680,7 +696,8 @@ class Crossvalidation(_Procedure):
             Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         figsize: Optional[Tuple[float, float]] = None,
-        plot_type: Literal["contour", "pcolor"] = "contour",
+        plot_type_y: Optional[Literal["contour", "pcolor", "tricontour", "scatter"]] = None,
+        plot_type_z: Optional[Literal["contour", "pcolor", "tricontour", "scatter"]] = None,
     ) -> Tuple[plt.Figure, Tuple[plt.Axes, plt.Axes, plt.Axes]]:
         """Plots the map of Zhat
 
@@ -711,9 +728,14 @@ class Crossvalidation(_Procedure):
             Levels for the map z
         figsize
             Set figure size. See `plt.figure`
-        plot_type : {"contour", "pcolor"}, defaut = "pcolor"
-            Plot type. If `contour` it will use function `ax.contourf`, 
-            if `pcolor` `ax.pcolormesh`.
+        plot_type_y : {"contour", "pcolor", "tricontour", "scatter"}, default = "contour" or "scatter"
+            Plot type. If Y if of type Preprocess: `contour` it will use function `ax.contourf`, 
+            `pcolor` will use `ax.pcolormesh`. If Y if type PreprocessUnstructured, `tricontour` 
+            will use `ax.tricontourf`, `scatter` `ax.scatter`.
+        plot_type_z : {"contour", "pcolor", "tricontour", "scatter"}, default = "contour" or "scatter"
+            Plot type. If Z if of type Preprocess: `contour` it will use function `ax.contourf`, 
+            `pcolor` will use `ax.pcolormesh`. If Z if type PreprocessUnstructured, `tricontour` 
+            will use `ax.tricontourf`, `scatter` `ax.scatter`.
 
         Examples
         --------
@@ -730,8 +752,17 @@ class Crossvalidation(_Procedure):
         axes : Sequence[plt.Axes]
             Tuple of axes in figure. In this case 3: y, z and zhat
         """
-        if plot_type not in ("contour", "pcolor"):
-            raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
+        plot_type_y = plot_type_y if plot_type_y is not None else ("contour" if type(self.dsy) == Preprocess else "scatter")
+        plot_type_z = plot_type_z if plot_type_z is not None else ("contour" if type(self.dsz) == Preprocess else "scatter")
+        for (var, ds, plot_type) in (("y", self.dsy, plot_type_y), ("z", self.dsz, plot_type_z)):
+            if type(ds) == Preprocess:
+                if plot_type not in ("contour", "pcolor"):
+                    raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type_{var}`, but got {plot_type}")
+            elif type(ds) == PreprocessUnstructured:
+                if plot_type not in ("tricontour", "scatter"):
+                    raise ValueError(f"Expected `tricontour` or `scatter` for argument `plot_type_{var}`, but got {plot_type}")
+            else:
+                assert False, "Unreachable"
 
         years = cast(List[int], [year] if type(year) == int else year)
         del year
@@ -760,33 +791,41 @@ class Crossvalidation(_Procedure):
             yindex = zindex
             y_year = self._dsy.time.values[yindex]
 
-            d0 = self._dsy.data.transpose().reshape((nts, nylat, nylon))
+            d0 = self._dsy.data.transpose()
+            if type(self.dsy) == Preprocess:
+                d0 = d0.reshape((nts, nylat, nylon))
 
             im = plot_map(d0[yindex], self._dsy.lat, self._dsy.lon, fig, ax0, f'Y on year {y_year}', ticks=y_ticks, xlim=y_xlim, 
-                          add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type,
+                          add_cyclic_point=self.dsy.region.lon0 >= self.dsy.region.lonf, plot_type=plot_type_y,
                           levels=y_levels, colorbar=False)
             cb = fig.colorbar(im, cax=fig.add_subplot(gs[1, i]), orientation="horizontal", ticks=y_ticks)
             if y_ticks is None:
                 tick_locator = ticker.MaxNLocator(nbins=5, prune='both', symmetric=True)
                 cb.ax.xaxis.set_major_locator(tick_locator)
 
-            d1 = self.zhat_accumulated_modes[-1, :].transpose().reshape((nts, nzlat, nzlon))
-            d2 = self._dsz.data.transpose().reshape((nts, nzlat, nzlon))
+            d1 = self.zhat_accumulated_modes[-1, :].transpose()
+            d2 = self._dsz.data.transpose()
+            if type(self.dsz) == Preprocess:
+                d1 = d1.reshape((nts, nzlat, nzlon))
+                d2 = d2.reshape((nts, nzlat, nzlon))
 
             n = 20
             _m = np.nanmean([np.nanmean(d2), np.nanmean(d1)])
             _s = np.nanmean([np.nanstd(d2), np.nanstd(d1)])
-            levels = z_levels if z_levels is not None else np.linspace(_m -2*_s, _m + 2*_s, n)
+            if z_levels is None and plot_type_z not in ("tricontour", "scatter"):
+                levels = z_levels if z_levels is not None else np.linspace(_m -2*_s, _m + 2*_s, n)
+            else:
+                levels = None
             plot_map(
                 d1[zindex], self._dsz.lat, self._dsz.lon, fig, ax1, f'Zhat on year {year}',
                 cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim,
-                add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
+                add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type_z,
                 colorbar=False,
             )
             im = plot_map(
                 d2[zindex], self._dsz.lat, self._dsz.lon, fig, ax2, f'Z on year {year}',
                 cmap=cmap, levels=levels, ticks=z_ticks, xlim=z_xlim,
-                add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type,
+                add_cyclic_point=self.dsz.region.lon0 >= self.dsz.region.lonf, plot_type=plot_type_z,
                 colorbar=False,
             )
             cb = fig.colorbar(im, cax=fig.add_subplot(gs[4, i]), orientation="horizontal", ticks=z_ticks)
@@ -826,8 +865,8 @@ class Crossvalidation(_Procedure):
         folder: str = '.',
         zip_file: Optional[str] = None,
         *,
-        dsz: Optional[Preprocess] = None,
-        dsy: Optional[Preprocess] = None,
+        dsz: Optional[PreprocessAny] = None,
+        dsy: Optional[PreprocessAny] = None,
         **attrs: Any
     ) -> 'Crossvalidation':
         """Load an Crossvalidation object from .npy files saved in Crossvalidation.save.
@@ -840,9 +879,9 @@ class Crossvalidation(_Procedure):
             Directory of the files
         zip_file: optional, str
             If provided folder will be searched inside of the zip file, that should conatin all the data.
-        dsy : Preprocess
+        dsy : Preprocess, PreprocessUnstructured
             ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predictor variable
-        dsz : Preprocess
+        dsz : Preprocess, PreprocessUnstructured
             ONLY KEYWORD ARGUMENT. Preprocessed dataset of the predicting variable
 
         Returns
@@ -886,8 +925,8 @@ class Crossvalidation(_Procedure):
             raise TypeError('Load only takes two keyword arguments: dsz and dsy')
         if dsz is None or dsy is None:
             raise TypeError('To load an Crossvalidation object you must provide `dsz` and `dsy` keyword arguments')
-        if type(dsz) != Preprocess or type(dsy) != Preprocess:
-            raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess`')
+        if type(dsz) not in (Preprocess, PreprocessUnstructured) or type(dsy) not in (Preprocess, PreprocessUnstructured):
+            raise TypeError(f'Unexpected types ({type(dsz)} and {type(dsy)}) for `dsz` and `dsy`. Expected type `Preprocess` or `PreprocessUnstructured`')
 
         self: Crossvalidation = super().load(prefix, folder, zip_file)
         self._dsz = dsz
@@ -1018,10 +1057,13 @@ def _plot_crossvalidation_2(
         # lon_grid, lat_grid = np.meshgrid(cross._dsz.lon, cross._dsz.lat)
         # is_on_land = globe.is_land(lat_grid, lon_grid)
 
-        sk = cross.r_z_zhat_s_accumulated_modes[n_mode, :].reshape(nlat, nlon)
+        sk = cross.r_z_zhat_s_accumulated_modes[n_mode, :]
         r_sig = cross.r_z_zhat_s_accumulated_modes[n_mode, :].copy()
         r_sig[cross.p_z_zhat_s_accumulated_modes[n_mode] > cross.alpha] = np.nan
-        sk_sig = r_sig.reshape(nlat, nlon)
+        sk_sig = r_sig
+        if type(cross.dsz) == Preprocess:
+            sk = sk.reshape(nlat, nlon)
+            sk_sig = sk_sig.reshape(nlat, nlon)
 
         ax2 = fig.add_subplot(spec[2, n_mode], projection=ccrs.PlateCarree(central_longitude_z))
         axs.append(ax2)
@@ -1069,7 +1111,9 @@ def _plot_crossvalidation_2(
             ax3.set_title('Skill (bars), \n MSESS (lines)', weight='bold', fontsize=8)
             # ax3.set_title('Skill (bars), \n MSESS (lines)', fontsize=20, weight='bold', x=0.2, y=1.02)
         else:
-            sk_i = cross.r_z_zhat_s_accumulated_modes[n_mode - 1, :].reshape(nlat, nlon)
+            sk_i = cross.r_z_zhat_s_accumulated_modes[n_mode - 1, :]
+            if type(cross.dsz) == Preprocess:
+                sk_i = sk_i.reshape(nlat, nlon)
             # Skill modos
             ax3 = fig.add_subplot(spec[3, n_mode], projection=ccrs.PlateCarree(central_longitude_z))
             im = ax3.contourf(cross.dsz.lon, cross.dsz.lat, sk - sk_i, levels=levels, cmap='coolwarm', transform=ccrs.PlateCarree())
@@ -1100,11 +1144,11 @@ def _plot_crossvalidation_default(
     central_longitude_z: Optional[float],
     z_xlim: Optional[Tuple[float, float]],
     ts_only_sig: bool,
+    plot_type: Literal["contour", "pcolor", "tricontour", "scatter"],
     rmse_levels: Optional[
         Union[npt.NDArray[np.float32], Sequence[float], bool]
     ],
     nm: Optional[int] = None,
-    plot_type: Literal["contour", "pcolor"] = "contour",
 ) -> Tuple[plt.Figure, Tuple[plt.Axes, ...]]:
     figsize = _calculate_figsize(1.5/3, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
     fig = plt.figure(figsize=figsize)
@@ -1134,7 +1178,10 @@ def _plot_crossvalidation_default(
     if nm is not None and not 1 <= nm <= cross.r_z_zhat_s_accumulated_modes.shape[0]:
         raise ValueError(f"Parameter `nm` must be positive an less than or equal to the number of modes used in the methodology, {cross.r_z_zhat_s_accumulated_modes.shape[0]}, but got {nm}")
     nm_i = -1 if nm is None else nm - 1
-    d = cross.r_z_zhat_s_accumulated_modes[nm_i, :].transpose().reshape((nzlat, nzlon)).copy()
+
+    d = cross.r_z_zhat_s_accumulated_modes[nm_i, :]
+    if type(cross.dsz) == Preprocess:
+        d = d.transpose().reshape((nzlat, nzlon)).copy()
     d[d < 0] = np.nan
     _mean = np.nanmean(d)
     _std = np.nanstd(d)
@@ -1156,7 +1203,12 @@ def _plot_crossvalidation_default(
     significant_and_positive = (
         (cross.p_z_zhat_s_accumulated_modes[nm_i, :] <= cross.alpha) &
         (cross.r_z_zhat_s_accumulated_modes[nm_i, :] > 0))
-    hatches[(~significant_and_positive).transpose().reshape((nzlat, nzlon))] = np.nan
+    if plot_type in ("contour", "pcolor"):
+        hatches[(~significant_and_positive).transpose().reshape((nzlat, nzlon))] = np.nan
+    elif plot_type in ("tricontour", "scatter"):
+        hatches[(~significant_and_positive)] = np.nan
+    else:
+        assert False, "Unreachable"
     cb = fig.colorbar(im, cax=fig.add_subplot(gs[1, 0:3]), orientation='horizontal', ticks=map_ticks)
     if map_ticks is None:
         tick_locator = ticker.MaxNLocator(nbins=5, prune='both', steps=[2, 5])
@@ -1169,11 +1221,22 @@ def _plot_crossvalidation_default(
     hlons = cross._dsz.lon
     if add_cyclic_point:
         hatches, hlons = add_cyclic_point_to_data(hatches, coord=hlons.values)
-    axs[0].contourf(
-        hlons, cross._dsz.lat, hatches,
-        colors='none', hatches='..', extend='both',
-        transform=ccrs.PlateCarree()
-    )
+    if plot_type in ("contour", "pcolor"):
+        axs[0].contourf(
+            hlons, cross._dsz.lat, hatches,
+            colors='none', hatches='..', extend='both',
+            transform=ccrs.PlateCarree()
+        )
+    elif plot_type in ("tricontour", "scatter"):
+        hlons = hlons[~np.isnan(hatches)]
+        hlats = cross._dsz.lat[~np.isnan(hatches)]
+        axs[0].scatter(
+            hlons, hlats, s=4,
+            color='black', alpha=0.3,
+            transform=ccrs.PlateCarree()
+        )
+    else:
+        assert False, "Unreachable"
     # ^^^^^^ r_z_zhat_s and p_z_zhat_s ^^^^^^ #
 
     # ------ r_z_zhat_t and p_z_zhat_t ------ #
@@ -1207,7 +1270,9 @@ def _plot_crossvalidation_default(
     zhat = cross.zhat_accumulated_modes[nm_i, :]  # space x time
     zdata = cross._dsz.data  # space x time
 
-    rmse_map = np.sqrt(np.nansum((zhat - zdata)**2, axis=1) / nt).reshape((nlat, nlon))
+    rmse_map = np.sqrt(np.nansum((zhat - zdata)**2, axis=1) / nt)
+    if plot_type in ("contour", "pcolor"):
+        rmse_map = rmse_map.reshape((nlat, nlon))
 
     im = plot_map(
         rmse_map, cross._dsz.lat, cross._dsz.lon, fig, axs[2],

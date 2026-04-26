@@ -1,5 +1,6 @@
 from .mca import MCA, index_regression
 from .preprocess import Preprocess
+from .preprocess_unstructured import PreprocessUnstructured
 from .crossvalidation import Crossvalidation
 from .validation import Validation
 import numpy as np
