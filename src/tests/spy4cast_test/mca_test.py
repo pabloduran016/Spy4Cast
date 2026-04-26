@@ -1,13 +1,8 @@
-import os
 import shutil
 from typing import Any
 
-import numpy as np
-import xarray as xr
-
 from spy4cast.spy4cast.mca import MCA, Preprocess
 from spy4cast import Dataset, Month, Region
-from spy4cast.meteo import Clim
 from .. import BaseTestCase
 
 
@@ -35,22 +30,14 @@ class MCATest(BaseTestCase):
 
     def test_var_names(self) -> None:
         var_names = (
-            'psi',
-            'RUY',
-            'RUY_sig',
-            'SUY',
-            'SUY_sig',
-            'RUZ',
-            'RUZ_sig',
-            'SUZ',
-            'SUZ_sig',
-            'pvalruz',
-            'pvalruy',
-            'Us',
-            'Vs',
-            'scf',
-            'alpha',
-            'nm',
+            'r', 'q', 'sigma',
+            'RUY', 'RUY_sig',
+            'SUY', 'SUY_sig',
+            'RUZ', 'RUZ_sig',
+            'SUZ', 'SUZ_sig',
+            'pvalruz', 'pvalruy',
+            'Us', 'Vs',
+            'scf', 'alpha', 'nm',
         )
         self.assertEqual(var_names, self.mca.var_names)
 

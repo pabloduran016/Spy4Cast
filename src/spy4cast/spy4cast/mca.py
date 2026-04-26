@@ -24,7 +24,6 @@ from .preprocess import Preprocess
 __all__ = [
     'MCA',
     'index_regression',
-    'calculate_psi',
 ]
 
 from ..land_array import LandArray
@@ -47,8 +46,6 @@ class MCA(_Procedure):
             Signification technique: monte-carlo or test-t
         montecarlo_iterations : optional, int
             Number of iterations for monte-carlo sig
-        detrend : bool, default=True
-            Detrend the y variable in the time axis
         num_svdvals : int or None, default=None
             If not None, approximate the sum of the singular values of the
             covariance matrix (used to calculate scf) to the sum of the
@@ -175,7 +172,6 @@ class MCA(_Procedure):
         alpha: float,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
-        detrend: bool = True,
         num_svdvals: Optional[int] = None,
     ):
         self._dsz = dsz
@@ -196,7 +192,7 @@ class MCA(_Procedure):
                 f'{len(dsy.time)}'
             )
 
-        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations, detrend, num_svdvals)
+        self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations, num_svdvals)
         debugprint(f'       Took: {time_to_here(here):.03f} seconds')
 
         self._psi = None
@@ -222,7 +218,6 @@ class MCA(_Procedure):
         alpha: float,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
-        detrend: bool = True,
         num_svdvals: Optional[int] = None,
     ) -> 'MCA':
         """
@@ -242,8 +237,6 @@ class MCA(_Procedure):
                 Signification technique: monte-carlo or test-t
             montecarlo_iterations : optional, int
                 Number of iterations for monte-carlo sig
-            detrend : bool, default=True
-                Detrend the y variable in the time axis
             num_svdvals : int or None, default=None
                 If True, approximate the sum of the singular values of the
                 covariance matrix (used to calculate scf) to the sum of the
@@ -260,7 +253,7 @@ class MCA(_Procedure):
             MCA
         """
         m = cls.__new__(MCA)
-        m._mca(z, y, nm, alpha, sig, montecarlo_iterations, detrend, num_svdvals)
+        m._mca(z, y, nm, alpha, sig, montecarlo_iterations, num_svdvals)
         return m
 
     def _mca(
@@ -271,14 +264,13 @@ class MCA(_Procedure):
         alpha: float,
         sig: str,
         montecarlo_iterations: Optional[int] = None,
-        detrend: bool = True,
         num_svdvals: Optional[int] = None
     ) -> None:
         nz, nt = z.shape
         ny, nt = y.shape
 
-        if detrend:
-            y.values[~y.land_mask] = signal.detrend(y.not_land_values)  # detrend in time
+        # if detrend:
+        #     y.values[~y.land_mask] = signal.detrend(y.not_land_values)  # detrend in time
 
         c = np.dot(y.not_land_values, np.transpose(z.not_land_values)) / (nt - 1)
         if type(c) == np.ma.MaskedArray:
@@ -297,7 +289,7 @@ class MCA(_Procedure):
         # OLD WAY OF DOING SVD: REALLY SLOW
         # r, d, q = scipy.linalg.svd(c)
         # r = r[:, :nm]
-        # q = r[:nm, :]
+        # q = q[:nm, :]
 
         if num_svdvals is None:
             svdvals = scipy.linalg.svdvals(c)
@@ -375,11 +367,23 @@ class MCA(_Procedure):
         # nz, nt = z.shape
         # ny, nt = y.shape
         # self._psi = calculate_psi(self.SUY, self.Us, z.values, nt, ny, self.nm, self.scf)
+
         r = self.r[:, first_mode:last_mode+1]
         q = self.q[first_mode:last_mode+1, :]
         sigma = self.sigma[first_mode:last_mode+1, first_mode:last_mode+1]
         psi = cast(npt.NDArray[np.float32], np.dot(r, np.dot(sigma, q)))
         return psi
+
+        # C = np.dot(Y, z.T) / nt
+        # U, s, Vh = svd(C, full_matrices=False)
+        # S_m = self.sigma  # S_m = np.diag(s[:nm])  # nm, nm
+        # U_m = self.r  # U_m = U[:, :nm]  # nt, nm
+        # V_m = self.q.T  # V_m = Vh.T[:, :nm]  # nt, nm
+        # y = self.dsy.land_data.not
+        # cyy = np.dot(y.not_land_values, y.not_land_values.T)  # np.dot(Yc, Yc.T)
+        # cyy_inv = np.linalg.pinv(cyy)
+        # psi = np.dot(np.dot(np.dot(V_m, S_m), U_m.T), cyy_inv))
+        # return psi
 
     # @psi.setter
     # def psi(self, value: npt.NDArray[np.float32]) -> None:

@@ -60,8 +60,6 @@ class Crossvalidation(_Procedure):
             Use multiprocessing for the methodology
         sig : {'monte-carlo', 'test-t'}
             Signification technique: monte-carlo or test-t
-        detrend : bool, default=True
-            Detrend the y variable in the time axis
         num_svdvals : int or None, default=None
             If not None, approximate the sum of the singular values of the
             covariance matrix (used to calculate scf) to the sum of the
@@ -266,7 +264,6 @@ class Crossvalidation(_Procedure):
         multiprocessed: bool = False,
         sig: Literal["test-t", "monte-carlo"] = 'test-t',
         montecarlo_iterations: Optional[int] = None,
-        detrend: bool = True,
         num_svdvals: Optional[int] = None,
         fold_size: int = 1,
     ):
@@ -332,7 +329,7 @@ class Crossvalidation(_Procedure):
                     p = pool.apply_async(self._crossvalidate_year, kwds={
                         'size_of_fold': size_of_fold, 'year_start': i*fold_size, 'z': self._dsz.land_data, 'y': self._dsy.land_data,
                         'nm': nm, 'alpha': alpha, 'sig': sig, 'montecarlo_iterations': montecarlo_iterations,
-                        'detrend': detrend, 'num_svdvals': num_svdvals,
+                        'num_svdvals': num_svdvals,
                     })
                     processes.append(p)
 
@@ -360,7 +357,7 @@ class Crossvalidation(_Procedure):
                 out = self._crossvalidate_year(
                     size_of_fold=size_of_fold, year_start=i*fold_size, z=self._dsz.land_data, y=self._dsy.land_data,
                     nm=nm, alpha=alpha, sig=sig, montecarlo_iterations=montecarlo_iterations, 
-                    detrend=detrend, num_svdvals=num_svdvals,
+                    num_svdvals=num_svdvals,
                 )
                 self.scf[:, i] = out["scf"]
                 self.r_uv[:, i] = out["r_uv"]
@@ -411,7 +408,6 @@ class Crossvalidation(_Procedure):
         alpha: float,
         sig: Literal["test-t", "monte-carlo"],
         montecarlo_iterations: Optional[int] = None,
-        detrend: bool = True,
         num_svdvals: Optional[int] = None
     ) -> _CrossvalidateYearOut:
         """Function of internal use that processes a single year for crossvalidation"""
@@ -428,7 +424,7 @@ class Crossvalidation(_Procedure):
         yrs_included = np.setdiff1d(np.arange(nt), np.arange(year_start, year_end))
         z2 = LandArray(z.values[:, yrs_included])
         y2 = LandArray(y.values[:, yrs_included])
-        mca_out = MCA.from_land_arrays(y2, z2, nm, alpha, sig, montecarlo_iterations, detrend, num_svdvals)
+        mca_out = MCA.from_land_arrays(y2, z2, nm, alpha, sig, montecarlo_iterations, num_svdvals)
 
         zhat_separated_modes = np.zeros([nm, nz, size_of_fold], dtype=np.float32)
         zhat_separated_modes[:, z2.land_mask, :] = np.nan
