@@ -510,6 +510,7 @@ class Crossvalidation(_Procedure):
         central_longitude_z: Optional[float] = None,
         z_xlim: Optional[Tuple[float, float]] = None,
         ts_only_sig: bool = False,
+        rmse_only_sig: bool = False,
         nm: Optional[int] = None,
         plot_type: Optional[Literal["contour", "pcolor", "tricontour", "scatter"]] = None,
         rmse_levels: Optional[
@@ -549,6 +550,9 @@ class Crossvalidation(_Procedure):
             to nm used to run the methodology. If -1 use all modes.
         ts_only_sig : bool, default = False
             If Ture, time series for the ACC map only takes into account the region where ACC
+            is significant
+        rmse_only_sig : bool, default = False
+            If Ture, RMSE map only takes into account the region where ACC
             is significant
         plot_type : {"contour", "pcolor", "tricontour", "scatter"}, default = "contour" or "scatter"
             Plot type. If Z if of type Preprocess: `contour` it will use function `ax.contourf`, 
@@ -633,6 +637,7 @@ class Crossvalidation(_Procedure):
                 central_longitude_z=central_longitude_z, 
                 z_xlim=z_xlim, 
                 ts_only_sig=ts_only_sig, 
+                rmse_only_sig=rmse_only_sig, 
                 nm=nm, 
                 plot_type=plot_type,
                 rmse_levels=rmse_levels,
@@ -648,6 +653,10 @@ class Crossvalidation(_Procedure):
                 raise TypeError("Unexpected argument `cmap` for version `2`")
             if rmse_levels is not None:
                 raise TypeError("Unexpected argument `rmse_levels` for version `2`")
+            if ts_only_sig:
+                raise TypeError("Unexpected argument `ts_only_sig` for version `2`")
+            if rmse_only_sig:
+                raise TypeError("Unexpected argument `rmse_only_sig` for version `2`")
             fig, axs = _plot_crossvalidation_2(self, figsize, mca)
         else:
             raise ValueError(f"Version can only be one of: `2`, `default`")
@@ -1138,6 +1147,7 @@ def _plot_crossvalidation_default(
     central_longitude_z: Optional[float],
     z_xlim: Optional[Tuple[float, float]],
     ts_only_sig: bool,
+    rmse_only_sig: bool,
     plot_type: Literal["contour", "pcolor", "tricontour", "scatter"],
     rmse_levels: Optional[
         Union[npt.NDArray[np.float32], Sequence[float], bool]
@@ -1198,11 +1208,8 @@ def _plot_crossvalidation_default(
         (cross.p_z_zhat_s_accumulated_modes[nm_i, :] <= cross.alpha) &
         (cross.r_z_zhat_s_accumulated_modes[nm_i, :] > 0))
     if plot_type in ("contour", "pcolor"):
-        hatches[(~significant_and_positive).transpose().reshape((nzlat, nzlon))] = np.nan
-    elif plot_type in ("tricontour", "scatter"):
-        hatches[(~significant_and_positive)] = np.nan
-    else:
-        assert False, "Unreachable"
+        significant_and_positive = significant_and_positive.transpose().reshape((nzlat, nzlon))
+    hatches[~significant_and_positive] = np.nan
     cb = fig.colorbar(im, cax=fig.add_subplot(gs[1, 0:3]), orientation='horizontal', ticks=map_ticks)
     if map_ticks is None:
         tick_locator = ticker.MaxNLocator(nbins=5, prune='both', steps=[2, 5])
@@ -1236,7 +1243,7 @@ def _plot_crossvalidation_default(
     # ------ r_z_zhat_t and p_z_zhat_t ------ #
 
     if ts_only_sig:
-        mask = (~cross._dsz.land_data.land_mask) & significant_and_positive
+        mask = (~cross._dsz.land_data.land_mask) & significant_and_positive.flatten()
         nt = cross._dsz.time.shape[0]
         rs = np.empty(nt, dtype=np.float32)
         ps = np.empty(nt, dtype=np.float32)
@@ -1267,6 +1274,9 @@ def _plot_crossvalidation_default(
     rmse_map = np.sqrt(np.nansum((zhat - zdata)**2, axis=1) / nt)
     if plot_type in ("contour", "pcolor"):
         rmse_map = rmse_map.reshape((nlat, nlon))
+
+    if rmse_only_sig:
+        rmse_map[~significant_and_positive] = np.nan
 
     im = plot_map(
         rmse_map, cross._dsz.lat, cross._dsz.lon, fig, axs[2],
