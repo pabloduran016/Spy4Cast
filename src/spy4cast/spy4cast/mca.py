@@ -377,7 +377,6 @@ class MCA(_Procedure):
         self, 
         last_mode: int, 
         first_mode: int = 0, 
-        cyy_inv: Optional[npt.NDArray[np.float32]] = None,
     ) -> npt.NDArray[np.float32]:
         """
         Calculate Psi
@@ -392,13 +391,6 @@ class MCA(_Procedure):
         first_mode : int, default = 0
             Used to select a specific mode or a range of modes. It is default to 0 so that 
             by default the first argument indicates the total amount of modes used
-
-        cyy_inv : optional, array (y-space x y-space)
-            Inverse of the self-convariance matrix dot(Y, Y.T) with dimensions 
-            (y-space x y-space). If it is not squared you can calculate it with 
-            `np.linalg.pinv` or `scipy.linalg.pinv`. If it is not provided the program will calculate it for you.
-            However, if you are calling `calculate_psi` on a loop it is better to
-            precalculate it.
 
         Returns
         -------

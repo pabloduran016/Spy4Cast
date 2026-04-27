@@ -3,6 +3,25 @@
 
 Python framework for working with .nc files and applying MCA based to them as well as plotting
 
+## Installation
+**WARNING**: The environment must be compatible with all the dependencies and Cartopy probably needs it to be 3.9 or lower
+
+**NOTE**: Cartopy has to be installed with conda because pip version does not work
+
+Fast installation:
+```console
+    $ pip install --upgrade git+https://github.com/pabloduran016/Spy4Cast
+```
+
+Create environment (Recommended):
+```console
+    $ conda create -n <your-env-name>
+    $ conda activate <your-env-name>
+    (<your-env-name>) $ conda install pip
+    (<your-env-name>) $ conda install cartopy
+    (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
+    (<your-env-name>) $ conda install cartopy
+```
 
 ## Documentation
 
@@ -16,21 +35,6 @@ You can find the docs at: https://spy4cast.readthedocs.io
     src="docs/source/_static/images/workflow.svg" 
     alt="Workflow" 
     style="padding: .5rem; background-color: rgba(255, 255, 255, .8)">
-
-## Installation
-**WARNING**: The environment must be compatible with all the dependencies and Cartopy probably needs it to be 3.9 or lower
-
-**NOTE**: Cartopy has to be installed with conda because pip version does not work
-
-To get the latest version:
-```console
-    $ conda create -n <your-env-name>
-    $ conda activate <your-env-name>
-    (<your-env-name>) $ conda install pip
-    (<your-env-name>) $ conda install cartopy
-    (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
-    (<your-env-name>) $ conda install cartopy
-```
 
 ## Example to plot anomaly map
 

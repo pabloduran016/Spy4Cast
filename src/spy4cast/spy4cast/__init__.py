@@ -12,6 +12,7 @@ __all__ = [
     'Validation',
     'index_regression',
     'PCA_reduce_dimensionality',
+    'PreprocessUnstructured',
 ]
 
 
