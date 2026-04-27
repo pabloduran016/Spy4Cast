@@ -8,7 +8,7 @@ Python framework for working with .nc files and applying MCA based to them as we
 
 **NOTE**: Cartopy has to be installed with conda because pip version does not work
 
-Fast installation:
+Fast installation or upgrade:
 ```console
     $ pip install --upgrade git+https://github.com/pabloduran016/Spy4Cast
 ```
