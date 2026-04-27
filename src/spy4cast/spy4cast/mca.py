@@ -418,15 +418,27 @@ class MCA(_Procedure):
 
         ## C = np.dot(Y, z.T) / nt
         ## U, s, Vh = svd(C, full_matrices=False)
-        S_m = self.sigma[first_mode:last_mode+1, first_mode:last_mode+1]  # S_m = np.diag(s[:nm])  # nm, nm
-        U_m = self.r[:, first_mode:last_mode+1]  # U_m = U[:, :nm]  # nt, nm
-        V_m = self.q.T[:, first_mode:last_mode+1]  # V_m = Vh.T[:, :nm]  # nt, nm
-        if cyy_inv is None:
-            y = self.y_data.not_land_values
-            cyy = np.dot(y, y.T)  # np.dot(Yc, Yc.T)
-            cyy_inv = np.linalg.pinv(cyy, hermitian=True)
-        assert cyy_inv is not None
-        psi = np.dot(np.dot(np.dot(V_m, S_m), U_m.T), cyy_inv).T
+        # S_m = self.sigma[first_mode:last_mode+1, first_mode:last_mode+1]  # S_m = np.diag(s[:nm])  # nm, nm
+        # U_m = self.r[:, first_mode:last_mode+1]  # U_m = U[:, :nm]  # nt, nm
+        # V_m = self.q.T[:, first_mode:last_mode+1]  # V_m = Vh.T[:, :nm]  # nt, nm
+        # if cyy_inv is None:
+        #     y = self.y_data.not_land_values
+        #     cyy = np.dot(y, y.T)  # np.dot(Yc, Yc.T)
+        #     cyy_inv = np.linalg.pinv(cyy, hermitian=True)
+        # assert cyy_inv is not None
+        # psi = np.dot(np.dot(np.dot(V_m, S_m), U_m.T), cyy_inv).T
+        # return psi
+        r = self.r[:, first_mode:last_mode+1]  # ny, nm
+        q = self.q.T[:, first_mode:last_mode+1]  # nz, nm
+        y = self.y_data.not_land_values
+        z = self.z_data.not_land_values
+
+        u = np.dot(r.T, y)  # nm x nt
+        # v = np.dot(q.T, z)  # nm x nt
+        # Z(nz, nt) = B(nz, nm) * u(nm, nt)
+        # B = z * u.T * inv(u * u.T)
+        # Zhat = B * u = B * r.T * y = psi * y
+        psi = np.dot(np.dot(z, np.dot(u.T, np.linalg.inv(np.dot(u, u.T)))), r.T).T
         return psi
 
     # @psi.setter

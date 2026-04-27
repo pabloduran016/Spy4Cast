@@ -318,11 +318,6 @@ class Crossvalidation(_Procedure):
         self.vs = np.zeros([nm, nt, nfolds], dtype=np.float32)
         # estimación de self.zhat para cada año
 
-        y = self._dsy.land_data
-        cyy = np.dot(y.not_land_values, y.not_land_values.T)
-        cyy_inv = linalg.pinvh(cyy, rtol=0.01)
-        # cyy_inv = np.linalg.pinv(cyy, hermitian=True)
-
         if multiprocessed:
             import multiprocessing as mp
             # Step 1: Init multiprocessing.Pool()
@@ -335,7 +330,7 @@ class Crossvalidation(_Procedure):
                     size_of_fold = min(nt, (i+1)*fold_size) - i*fold_size
                     p = pool.apply_async(self._crossvalidate_year, kwds={
                         'size_of_fold': size_of_fold, 'year_start': i*fold_size, 'z': self._dsz.land_data, 'y': self._dsy.land_data,
-                        'nm': nm, 'alpha': alpha, 'cyy_inv': cyy_inv, 'sig': sig, 'montecarlo_iterations': montecarlo_iterations,
+                        'nm': nm, 'alpha': alpha, 'sig': sig, 'montecarlo_iterations': montecarlo_iterations,
                         'num_svdvals': num_svdvals,
                     })
                     processes.append(p)
@@ -363,7 +358,7 @@ class Crossvalidation(_Procedure):
                 size_of_fold = min(nt, (i+1)*fold_size) - i*fold_size
                 out = self._crossvalidate_year(
                     size_of_fold=size_of_fold, year_start=i*fold_size, z=self._dsz.land_data, y=self._dsy.land_data,
-                    nm=nm, alpha=alpha, cyy_inv=cyy_inv, sig=sig, montecarlo_iterations=montecarlo_iterations, 
+                    nm=nm, alpha=alpha, sig=sig, montecarlo_iterations=montecarlo_iterations, 
                     num_svdvals=num_svdvals,
                 )
                 self.scf[:, i] = out["scf"]
@@ -413,7 +408,6 @@ class Crossvalidation(_Procedure):
         y: LandArray,
         nm: int,
         alpha: float,
-        cyy_inv: npt.NDArray[np.float32],
         sig: Literal["test-t", "monte-carlo"],
         montecarlo_iterations: Optional[int] = None,
         num_svdvals: Optional[int] = None
@@ -444,7 +438,7 @@ class Crossvalidation(_Procedure):
 
         for mode in range(nm):
             # Separated modes
-            psim[:] = mca_out.calculate_psi(mode, mode, cyy_inv=cyy_inv)
+            psim[:] = mca_out.calculate_psi(mode, mode)
             # psi[~np.isnan(psi)] = calculate_psi(mode, mode)
             #     mca_out.SUY[~y2.land_mask, mode:mode + 1], 
             #     mca_out.Us[mode:mode + 1, :],
@@ -459,7 +453,7 @@ class Crossvalidation(_Procedure):
                 zhat_separated_modes[mode, ~z2.land_mask, i] = np.dot(np.transpose(y.not_land_values[:, year]), psim)
 
             # Accumulated modes
-            psim[:] = mca_out.calculate_psi(mode, cyy_inv=cyy_inv)
+            psim[:] = mca_out.calculate_psi(mode)
             # psi[~np.isnan(psi)] = calculate_psi(
             #     mca_out.SUY[~y2.land_mask, :mode + 1], 
             #     mca_out.Us[:mode + 1, :],
