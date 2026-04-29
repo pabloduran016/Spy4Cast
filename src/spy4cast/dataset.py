@@ -74,7 +74,7 @@ class Dataset:
     ):
         self.name: str = name
         self.folder: str = folder
-        self._chunks: Optional[xarray.core.types.T_Chunks] = chunks
+        self._chunks: Optional[Any] = chunks
 
     @classmethod
     def from_xrarray(cls, array: xr.DataArray) -> 'Dataset':
