@@ -4,7 +4,7 @@ import os
 import traceback
 import warnings
 from datetime import datetime
-from typing import Optional, TypeVar, cast, Tuple
+from typing import Optional, TypeVar, cast, Tuple, Any
 
 import numpy as np
 import pandas as pd
@@ -70,7 +70,7 @@ class Dataset:
         self,
         name: str,
         folder: str = '.',
-        chunks: Optional[xarray.core.types.T_Chunks] = None
+        chunks: Optional[Any] = None
     ):
         self.name: str = name
         self.folder: str = folder
