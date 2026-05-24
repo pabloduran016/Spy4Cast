@@ -1243,13 +1243,14 @@ def _plot_crossvalidation_default(
     # ------ r_z_zhat_t and p_z_zhat_t ------ #
 
     if ts_only_sig:
-        mask = (~cross._dsz.land_data.land_mask) & significant_and_positive.flatten()
         nt = cross._dsz.time.shape[0]
         rs = np.empty(nt, dtype=np.float32)
         ps = np.empty(nt, dtype=np.float32)
-        for j in range(nt):
-            rs[j], ps[j] = stats.pearsonr(
-                cross.zhat_accumulated_modes[nm_i, mask, j], cross._dsz.data[mask, j])
+        mask = (~cross._dsz.land_data.land_mask) & significant_and_positive.flatten()
+        if np.sum(mask) >= 2:
+            for j in range(nt):
+                rs[j], ps[j] = stats.pearsonr(
+                    cross.zhat_accumulated_modes[nm_i, mask, j], cross._dsz.data[mask, j])
 
         ts_time, ts_r, ts_p = cross._dsz.time.values, rs, ps
         axs[1].set_title('ACC time series (only significant region)')

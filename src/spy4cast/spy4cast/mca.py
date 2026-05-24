@@ -430,8 +430,10 @@ class MCA(_Procedure):
         # Z(nz, nt) = B(nz, nm) * u(nm, nt)
         # B = z * u.T * inv(u * u.T)
         # Zhat = B * u = B * r.T * y = psi * y
+        psim = np.dot(np.dot(z, np.dot(u.T, np.linalg.inv(np.dot(u, u.T)))), r.T).T
+
         psi = np.zeros((self.y_data.shape[0], self.z_data.shape[0]), np.float32)
-        psi[~self.y_data.land_mask, :][:, ~self.z_data.land_mask] = np.dot(np.dot(z, np.dot(u.T, np.linalg.inv(np.dot(u, u.T)))), r.T).T
+        psi[np.logical_and.outer(~self.y_data.land_mask, ~self.z_data.land_mask)] = psim.ravel()
         psi[self.y_data.land_mask, :] = np.nan
         psi[:, self.z_data.land_mask] = np.nan
         return psi
