@@ -160,11 +160,12 @@ class Validation(_Procedure):
         self.psi_accumulated_modes = np.zeros([1, training_mca._dsy.data.shape[0], training_mca._dsz.data.shape[0]], dtype=np.float32)
         self.zhat_accumulated_modes = np.zeros([1, validating_dsz.land_data.shape[0], validating_dsz.time.shape[0]], dtype=np.float32)
 
-        self.psi_accumulated_modes[:, common_y_land_mask, :] = np.nan
-        self.psi_accumulated_modes[:, :, common_z_land_mask] = np.nan
         self.zhat_accumulated_modes[:, common_z_land_mask] = np.nan
 
-        self.psi_accumulated_modes[0, ~np.isnan(self.psi_accumulated_modes[0])] = self._training_mca.calculate_psi(0)
+        self.psi_accumulated_modes[0, :, :] = self._training_mca.calculate_psi(0)
+        self.psi_accumulated_modes[:, common_y_land_mask, :] = np.nan
+        self.psi_accumulated_modes[:, :, common_z_land_mask] = np.nan
+
         # self.psi_accumulated_modes[0, ~np.isnan(self.psi_accumulated_modes[0])] = calculate_psi(
         #     self._training_mca.SUY[~common_y_land_mask, :],
         #     self._training_mca.Us[:, :],
