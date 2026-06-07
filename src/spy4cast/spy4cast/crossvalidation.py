@@ -1343,11 +1343,11 @@ def _plot_crossvalidation_default(
 
 def calculate_time_correlation(
     z_land_array: LandArray,
-    zhat_accumulated_modes: npt.NDArray[np.float_],
-    zhat_separated_modes: Optional[npt.NDArray[np.float_]] = None,
+    zhat_accumulated_modes: npt.NDArray[np.float32],
+    zhat_separated_modes: Optional[npt.NDArray[np.float32]] = None,
     sig: Literal["test-t", "monte-carlo"] = "test-t",
     montecarlo_iterations: Optional[int] = None,
-) -> Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_]]:
+) -> Tuple[npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32]]:
     nm, nz, nt = zhat_accumulated_modes.shape
 
     r_z_zhat_t_accumulated_modes = np.zeros([nm, nt], dtype=np.float32)
@@ -1388,11 +1388,11 @@ def calculate_time_correlation(
 
 def calculate_space_correlation(
     z_land_array: LandArray,
-    zhat_accumulated_modes: npt.NDArray[np.float_],
-    zhat_separated_modes: Optional[npt.NDArray[np.float_]] = None,
+    zhat_accumulated_modes: npt.NDArray[np.float32],
+    zhat_separated_modes: Optional[npt.NDArray[np.float32]] = None,
     sig: Literal["test-t", "monte-carlo"] = "test-t",
     montecarlo_iterations: Optional[int] = None,
-) -> Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_], npt.NDArray[np.float_]]:
+) -> Tuple[npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32], npt.NDArray[np.float32]]:
 
     nm, nz, nt = zhat_accumulated_modes.shape
 

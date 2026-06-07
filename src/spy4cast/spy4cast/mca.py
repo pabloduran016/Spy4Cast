@@ -831,10 +831,10 @@ def _new_mca_page(
     figsize: Optional[Tuple[float, float]],
     mode0: int,
     modef: int,
-    uy: npt.NDArray[np.float_],
-    uy_sig: npt.NDArray[np.float_],
-    uz: npt.NDArray[np.float_],
-    uz_sig: npt.NDArray[np.float_],
+    uy: npt.NDArray[np.float32],
+    uy_sig: npt.NDArray[np.float32],
+    uz: npt.NDArray[np.float32],
+    uz_sig: npt.NDArray[np.float32],
     variable: Literal["r", "s"],
     map_y: PreprocessAny,
     map_z: PreprocessAny,
@@ -1000,7 +1000,7 @@ def _new_mca_page(
 
 
 def index_regression(
-    data: Union[LandArray, npt.NDArray[np.float_]],
+    data: Union[LandArray, npt.NDArray[np.float32]],
     index: npt.NDArray[np.float32],
     alpha: float,
     sig: str,
@@ -1115,10 +1115,10 @@ def index_regression(
     return cor, pvalue, cor_sig, reg, reg_sig
 
 
-def pearsonr_2d(y: npt.NDArray[np.float_], x: npt.NDArray[np.float_]) -> npt.NDArray[np.float_]:
+def pearsonr_2d(y: npt.NDArray[np.float32], x: npt.NDArray[np.float32]) -> npt.NDArray[np.float32]:
     upper = np.sum((x - np.mean(x)) * (y - np.mean(y, axis=1)[:, None]), axis=1)
     lower = np.sqrt(np.sum(np.power(x - np.mean(x), 2)) * np.sum(np.power(y - np.mean(y, axis=1)[:, None], 2), axis=1))
-    rho: npt.NDArray[np.float_] = upper / lower
+    rho: npt.NDArray[np.float32] = upper / lower
     return rho
 
 
@@ -1129,7 +1129,7 @@ def pearsonr_2d(y: npt.NDArray[np.float_], x: npt.NDArray[np.float_]) -> npt.NDA
 #     nt: int,
 #     ny: int,
 #     # nm: int,
-#     # scf: npt.NDArray[np.float_],
+#     # scf: npt.NDArray[np.float32],
 # ) -> npt.NDArray[np.float32]:
 #     # (((SUY * inv(Us * Us')) * Us) * Z') * nt * nm / ny
 #     # suy = suy * scf[np.newaxis, :]

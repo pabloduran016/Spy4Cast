@@ -198,7 +198,7 @@ def plot_map(
 
 def plot_ts(
     time: npt.NDArray[np.int_],
-    arr: npt.NDArray[np.float_],
+    arr: npt.NDArray[np.float32],
     ax: plt.Axes,
     title: Optional[str] = None,
     ylabel: Optional[str] = None,
@@ -294,8 +294,8 @@ def _calculate_figsize(ratio: Optional[float], maxwidth: float, maxheight: float
 
 
 def add_cyclic_point_to_data(
-    data: npt.NDArray[np.float_], coord: npt.NDArray[np.float_], axis: int = -1
-) -> Tuple[npt.NDArray[np.float_], npt.NDArray[np.float_]]:
+    data: npt.NDArray[np.float32], coord: npt.NDArray[np.float32], axis: int = -1
+) -> Tuple[npt.NDArray[np.float32], npt.NDArray[np.float32]]:
     if coord.ndim != 1:
         raise ValueError('The coordinate must be 1-dimensional.')
     if len(coord) != data.shape[axis]:
