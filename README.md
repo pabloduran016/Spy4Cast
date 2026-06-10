@@ -20,6 +20,34 @@ Create environment (Recommended):
     (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
 ```
 
+## Use .grib
+
+Conda (Recommended)
++++++++++++++++++++
+
+```console
+    (<your-env-name>) $ conda install -c conda-forge cfgrib
+```
+
+On Linux
+++++++++
+
+```console
+    (<your-env-name>) $ sudo apt-get install libeccodes0
+    (<your-env-name>) $ pip install cfgrib findlibs==0.0.5
+```
+
+On Mac
+++++++
+
+```console
+    (<your-env-name>) $ brew install eccodes
+    (<your-env-name>) $ pip install cfgrib findlibs==0.0.5
+```
+
+Note: ``eccodes`` depends on ``findlibs``, whose newer version does not work with ``python3.9`` so make sure to specify the version number.
+
+
 ## Possible errors
 
 #### Shapely error
