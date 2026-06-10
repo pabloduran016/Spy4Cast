@@ -25,13 +25,7 @@ To get the latest version:
     $ conda create -n <your-env-name>
     $ conda activate <your-env-name>
     (<your-env-name>) $ conda install pip
-    (<your-env-name>) $ conda install cartopy
     (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
-
-.. note::
-
-    Cartopy has to be installed with conda because pip version does not work
-
 
 ..
     To get the latest stable version:

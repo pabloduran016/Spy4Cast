@@ -6,21 +6,38 @@ Python framework for working with .nc files and applying MCA based to them as we
 ## Installation
 **WARNING**: The environment must be compatible with all the dependencies and Cartopy probably needs it to be 3.9 or lower
 
-**NOTE**: Cartopy has to be installed with conda because pip version does not work
-
 Fast installation or upgrade:
 ```console
     $ pip install --upgrade git+https://github.com/pabloduran016/Spy4Cast
 ```
 
+**WARNING**: If you install more packages, the last installation must be Spy4Cast to ensure working versions
+
 Create environment (Recommended):
 ```console
     $ conda create -n <your-env-name>
     $ conda activate <your-env-name>
-    (<your-env-name>) $ conda install pip
-    (<your-env-name>) $ conda install cartopy
     (<your-env-name>) $ pip install git+https://github.com/pabloduran016/Spy4Cast
-    (<your-env-name>) $ conda install cartopy
+```
+
+## Possible errors
+
+#### Shapely error
+
+```console
+    $ python -c "import cartopy"
+
+    Traceback (most recent call last):
+      ...
+      File "/opt/anaconda3/envs/Spy4CastTesting/lib/python3.9/site-packages/shapely/creation.py", line 171, in linearrings
+        return lib.linearrings(coords, out=out, **kwargs)
+    RecursionError: maximum recursion depth exceeded while calling a Python object
+```
+
+Solution:
+
+```
+    $ pip install --upgrade --no-cache-dir shapely==2.0.3
 ```
 
 ## Documentation
