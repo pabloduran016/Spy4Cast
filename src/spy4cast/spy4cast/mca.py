@@ -1,3 +1,4 @@
+from sys import prefix
 import warnings
 import os
 import math
@@ -15,7 +16,8 @@ import xarray as xr
 from scipy.stats import stats
 
 from .. import Region
-from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
+from .._functions import time_from_here, time_to_here, region2str
+from .._log import log_debug, log_info
 from .._procedure import _Procedure, plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, plot_ts, \
     get_xlim_from_region, get_central_longitude_from_region, add_cyclic_point_to_data
 from .preprocess import Preprocess
@@ -183,7 +185,7 @@ class MCA(_Procedure):
         self._dsz = dsz
         self._dsy = dsy
 
-        _debuginfo(f"""Applying MCA 
+        log_info(f"""Applying MCA 
     Shapes: Z{dsz.shape} 
             Y{dsy.shape} 
     Regions: Z {region2str(self._dsz.region)} 
@@ -199,7 +201,7 @@ class MCA(_Procedure):
             )
 
         self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations, num_svdvals)
-        debugprint(f'       Took: {time_to_here(here):.03f} seconds')
+        log_debug(f'\tTook: {time_to_here(here):.03f} seconds', prefix="")
 
         self._psi = None
         # first you calculate the covariance matrix

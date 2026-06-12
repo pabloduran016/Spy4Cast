@@ -10,7 +10,8 @@ import xarray as xr
 import cartopy.crs as ccrs
 
 from .. import Region, Month
-from .._functions import time_from_here, time_to_here, region2str, _debuginfo, debugprint
+from .._functions import time_from_here, time_to_here, region2str
+from .._log import log_debug, log_info
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, add_cyclic_point_to_data, get_xlim_from_region, get_central_longitude_from_region
@@ -74,7 +75,7 @@ class PreprocessUnstructured(_Procedure):
         freq: Literal["high", "low"] = "high",
         detrend: bool = False,
     ):
-        _debuginfo(f'Preprocessing Unstructured data', end='')
+        log_info(f'Preprocessing Unstructured data', end='')
         time_from_here()
 
         self.time = time
@@ -103,7 +104,8 @@ class PreprocessUnstructured(_Procedure):
         if detrend:
             self._land_data.values[~self._land_data.land_mask] = signal.detrend(self._land_data.not_land_values)  # detrend in time
 
-        debugprint(f' took: {time_to_here():.03f} seconds')
+        log_debug(f' took: {time_to_here():.03f} seconds', prefix="", end="")
+        log_info("\n", prefix="")
 
     @property
     def region(self) -> Region:

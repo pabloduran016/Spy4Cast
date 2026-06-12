@@ -15,7 +15,8 @@ from . import MCA
 from .crossvalidation import calculate_time_correlation, calculate_space_correlation
 from .mca import index_regression
 from .. import Region
-from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
+from .._functions import region2str, time_from_here, time_to_here
+from .._log import log_debug
 from .._procedure import _Procedure, _apply_flags_to_fig, plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, plot_ts, get_xlim_from_region, get_central_longitude_from_region
 from ..land_array import LandArray
@@ -129,7 +130,7 @@ class Validation(_Procedure):
         self._validating_dsy = validating_dsy
         self._validating_dsz = validating_dsz
 
-        _debuginfo(f"""Applying Validation
+        log_info(f"""Applying Validation
         Training
         ---------- 
         Shapes: Z{training_mca._dsz.data.shape} 
@@ -190,7 +191,7 @@ class Validation(_Procedure):
             _r_z_zhat_s_separated_modes, _p_z_zhat_s_separated_modes \
             = calculate_space_correlation(new_z_land_array, self.zhat_accumulated_modes)
 
-        debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
+        log_debug(f'\n\tTook: {time_to_here():.03f} seconds', prefix="", end="")
 
     @property
     def training_mca(self) -> MCA:

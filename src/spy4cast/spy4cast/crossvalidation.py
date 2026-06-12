@@ -15,7 +15,8 @@ from scipy import stats, linalg
 from . import MCA
 from .mca import index_regression
 from .. import Region
-from .._functions import debugprint, region2str, time_from_here, time_to_here, _debuginfo
+from .._functions import region2str, time_from_here, time_to_here
+from .._log import log_debug
 from .._procedure import _Procedure, _apply_flags_to_fig, plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, plot_ts, get_central_longitude_from_region, get_xlim_from_region, add_cyclic_point_to_data
 from ..land_array import LandArray
@@ -275,7 +276,7 @@ class Crossvalidation(_Procedure):
         nz, ntz = self._dsz.land_data.shape
         ny, nty = self._dsy.land_data.shape
 
-        _debuginfo(f"""Applying Crossvalidation 
+        log_info(f"""Applying Crossvalidation 
     Shapes: Z{dsz.shape} 
             Y{dsy.shape} 
     Regions: Z {region2str(self._dsz.region)} 
@@ -352,7 +353,7 @@ class Crossvalidation(_Procedure):
 
                     self.us[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["us"]
                     self.vs[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["vs"]
-                debugprint("\n")
+                log_debug("\n", prefix="")
         else:
             for i in range(nfolds):
                 size_of_fold = min(nt, (i+1)*fold_size) - i*fold_size
@@ -373,7 +374,7 @@ class Crossvalidation(_Procedure):
                 self.suz_sig[:, i, :] = out["suz_sig"]
                 self.us[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["us"]
                 self.vs[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["vs"]
-            debugprint("\n")
+            log_debug("\n", prefix="")
 
         self.r_z_zhat_t_accumulated_modes, self.p_z_zhat_t_accumulated_modes, \
             self.r_z_zhat_t_separated_modes, self.p_z_zhat_t_separated_modes \
@@ -388,7 +389,7 @@ class Crossvalidation(_Procedure):
                 self.zhat_separated_modes, sig, montecarlo_iterations)
 
         self.alpha = alpha
-        debugprint(f'\n\tTook: {time_to_here():.03f} seconds')
+        log_debug(f'\n\tTook: {time_to_here():.03f} seconds', prefix="")
 
     @property
     def dsy(self) -> PreprocessAny:
@@ -421,7 +422,7 @@ class Crossvalidation(_Procedure):
             msg = f'\tyear: {year_start + 1} of {nt}\033[F'
         else:
             msg = f'\tyears: [{year_start + 1}, {year_end}] of {nt}\033[F'
-        debugprint(msg)
+        log_debug(msg, prefix="")
 
         yrs_included = np.setdiff1d(np.arange(nt), np.arange(year_start, year_end))
         z2 = LandArray(z.values[:, yrs_included])

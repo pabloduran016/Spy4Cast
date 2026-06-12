@@ -15,7 +15,8 @@ import numpy.typing as npt
 from matplotlib.ticker import MaxNLocator
 import zipfile
 
-from ._functions import time_from_here, time_to_here, _warning, _error, _debuginfo, debugprint
+from ._functions import time_from_here, time_to_here
+from ._log import log_warning, log_error, log_debug, log_info
 from .stypes import Color, Region
 
 T = TypeVar('T', bound='_Procedure')
@@ -50,7 +51,7 @@ class _Procedure(ABC):
     def save(self, prefix: str, folder: str = '.') -> None:
         clsname = type(self).__name__
         prefixed = os.path.join(folder, prefix)
-        _debuginfo(f'Saving {clsname} data in `{os.path.join(folder, prefix)}*.npy`')
+        log_info(f'Saving {clsname} data in `{os.path.join(folder, prefix)}*.npy`')
 
         variables: List[Tuple[str, npt.NDArray[Any]]] = [
             (name, getattr(self, name))
@@ -58,13 +59,13 @@ class _Procedure(ABC):
         ]
 
         if not os.path.exists(folder):
-            _warning(f'Creating path {folder} that did not exist')
+            log_warning(f'Creating path {folder} that did not exist')
             os.makedirs(folder)
 
         for name, arr in variables:
             path = prefixed + name
             if os.path.exists(path):
-                _warning(f'Found already existing file with path {path}')
+                log_warning(f'Found already existing file with path {path}')
             np.save(path, arr)
 
     @classmethod
@@ -72,7 +73,7 @@ class _Procedure(ABC):
         clsname = cls.__name__
         # print(clsname, cls)
         prefixed = os.path.join(folder, prefix)
-        _debuginfo(f'Loading {clsname} data from `{prefixed}*`{f" inside zip file {zip_file}" if zip_file is not None else ""}', end='')
+        log_info(f'Loading {clsname} data from `{prefixed}*`{f" inside zip file {zip_file}" if zip_file is not None else ""}', end='')
         time_from_here()
 
         self = cls.__new__(cls)
@@ -90,14 +91,14 @@ class _Procedure(ABC):
             try:
                 setattr(self, name, data)
             except AttributeError:
-                _error(f'Could not set variable `{name}`')
+                log_error(f'Could not set variable `{name}`')
                 traceback.print_exc()
                 exit(1)
             except FileNotFoundError:
-                _error(f'Could not find file `{path}` to load {clsname} variable {name}')
+                log_error(f'Could not find file `{path}` to load {clsname} variable {name}')
                 raise
 
-        debugprint(f' took {time_to_here():.03f} seconds')
+        log_debug(f' took {time_to_here():.03f} seconds', prefix="")
         return self
 
 def plot_map(
@@ -237,7 +238,7 @@ def _apply_flags_to_fig(
     _block: bool = True  # Only for testing purposes
 ) -> None:
     if save_fig:
-        _debuginfo(f'Saving plot with path {path}')
+        log_info(f'Saving plot with path {path}')
         for i in range(2):
             try:
                 fig.savefig(path)

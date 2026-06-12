@@ -1,8 +1,8 @@
 from time import sleep
 
 from spy4cast import Region, Month, set_silence
-from spy4cast._functions import time_from_here, time_to_here, region2str, mon2str, str2mon, debugprint, _warning, _error, \
-    _debuginfo
+from spy4cast._functions import time_from_here, time_to_here, region2str, mon2str, str2mon
+from spy4cast._log import log_debug, log_error, log_info, log_warning
 from . import BaseTestCase
 
 class FunctionsTest(BaseTestCase):
@@ -34,15 +34,16 @@ class FunctionsTest(BaseTestCase):
 
     def test_debugprint(self) -> None:
         set_silence(False)
-        debugprint('this is a test. Should be printed')
+        log_debug('this is a test. Should be printed')
         set_silence(True)
-        debugprint('this is a test. Should not be printed')
+        log_debug('this is a test. Should not be printed')
 
     def test__warning(self) -> None:
-        _warning('this is a wanrning')
+        log_warning('this is a wanrning')
 
     def test__error(self) -> None:
-        _error('this is an error')
+        log_error('this is an error')
 
-    def test__debuginfo(self) -> None:
-        _debuginfo('this is an info')
+    def test__info(self) -> None:
+        log_info('this is an info')
+

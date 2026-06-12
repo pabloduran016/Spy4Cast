@@ -9,7 +9,8 @@ from typing import Optional, TypeVar, cast, Tuple, Any
 import numpy as np
 import pandas as pd
 
-from ._functions import debugprint, mon2str, _error, _warning, _debuginfo
+from ._log import log_info, log_debug, log_warning, log_error
+from ._functions import mon2str
 from .errors import DatasetError, DatasetNotFoundError, VariableSelectionError, TimeBoundsSelectionError, \
     SelectedYearError
 from .stypes import *
@@ -158,7 +159,7 @@ class Dataset:
         try:
             return cast(TimeStamp, pd.to_datetime(t0))
         except TypeError:
-            _warning('Could not convert initial timestamp to pandas TimeStamp')
+            log_warning('Could not convert initial timestamp to pandas TimeStamp')
             return cast(TimeStamp, pd.Timestamp(str(t0)))
 
     @property
@@ -168,7 +169,7 @@ class Dataset:
         try:
             return cast(TimeStamp, pd.to_datetime(tf))
         except TypeError:
-            _warning('Could not convert final timestamp to pandas TimeStamp')
+            log_warning('Could not convert final timestamp to pandas TimeStamp')
             return cast(TimeStamp, pd.Timestamp(str(tf)))
 
     def _detect_region(self) -> Region:
@@ -273,7 +274,7 @@ class Dataset:
                         raise
                     year, month, day = map(int, values)
                     if year < 1678:
-                        _warning(
+                        log_warning(
                             f"Can not load dataset with initial year being {year}. "
                             "Loading it with year=2000 so keep it in mind for regions"
                         )
@@ -288,7 +289,7 @@ class Dataset:
                 )
             except Exception as e:
                 traceback.print_exc()
-                _error(
+                log_error(
                     f"<{self.__class__.__name__}> Could not load dataset {self.name}"
                 )
                 raise DatasetError from e
@@ -405,7 +406,7 @@ class Dataset:
                 )
 
             self._var = d_keys[0]
-            _debuginfo(f'Detected variable {self._var} from: {", ".join(d_keys)}')
+            log_info(f'Detected variable {self._var} from: {", ".join(d_keys)}')
 
         if self.var not in self._ds.variables:
             raise VariableSelectionError(

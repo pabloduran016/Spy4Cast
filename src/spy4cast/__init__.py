@@ -1,3 +1,5 @@
+from enum import Enum, auto
+from typing import Any, Callable
 from .dataset import Dataset
 from .stypes import Region, Month
 from ._functions import region2str, season2str
@@ -31,3 +33,4 @@ def set_silence(b: bool) -> None:
     if type(b) != bool:
         raise TypeError(f'Expected bool got {type(b)}')
     Settings.silence = b
+

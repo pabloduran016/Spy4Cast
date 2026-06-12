@@ -130,9 +130,9 @@ class Region:
             lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy = attrs
             day0, dayf = None, None
         elif len(attrs) == 11:
-            lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy, day0, dayf = attrs
-            day0 = None if np.isnan(day0) else int(day0)
-            dayf = None if np.isnan(dayf) else int(dayf)
+            lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy, day0_f, dayf_f = attrs
+            day0 = None if np.isnan(day0_f) else int(day0_f)
+            dayf = None if np.isnan(dayf_f) else int(dayf_f)
         else:
             raise TypeError(f'Invalid dimensions for array expected 9 or 11 fields, got {len(attrs)}')
 
