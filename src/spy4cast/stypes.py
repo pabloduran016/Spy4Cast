@@ -90,10 +90,18 @@ class Region:
     """Ending year of the period to select (included)"""
     sy: Optional[int] = None  # Should not be used
     """DEPRECATED. Selected year used in methodologies like anom where you can only plot a given year"""
+    day0: Optional[int] = None
+    """Starting day of the season to select (included)"""
+    dayf: Optional[int] = None
+    """Ending day of the season to select (included)"""
 
     @classmethod
-    def default(cls, month0: int = Month.JAN, monthf: int = Month.DEC, year0: int = 0, yearf: int = 2000,
-                sy: Optional[int] = None) -> 'Region':
+    def default(cls, 
+        month0: int = Month.JAN, monthf: int = Month.DEC, 
+        year0: int = 0, yearf: int = 2000,
+        sy: Optional[int] = None,
+        day0: Optional[int] = None, dayf: Optional[int] = None, 
+    ) -> 'Region':
         """Alternartive constructor that creates a `Region` that has the largest spatial region and season possible
 
         It is useful if you want to create fast a `Region` where you conly want to modify the initial and final year for example
@@ -101,7 +109,16 @@ class Region:
         Returns
         -------
             Region(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)"""
-        return Region(-90, 90, -180, 180, month0, monthf, year0, yearf, sy)
+        # if dayf is None:
+        #     if monthf == Month.FEB:
+        #         dayf = 28
+        #     elif monthf in (Month.JAN, Month.MAR, Month.MAY, Month.JUL, Month.AUG, Month.OCT, Month.DEC):
+        #         dayf = 31
+        #     elif monthf in (Month.APR, Month.JUN, Month.SEP, Month.NOV):
+        #         dayf = 30
+        #     else:
+        #         assert False, "Unreachable"
+        return Region(-90, 90, -180, 180, month0, monthf, year0, yearf, sy, day0=day0, dayf=dayf)
 
     @classmethod
     def from_numpy(cls, arr: npt.NDArray[Union[np.float32, np.uint]]) -> 'Region':
@@ -109,10 +126,15 @@ class Region:
             lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy
         """
         attrs: List[float] = [x for x in arr]
-        if len(attrs) != 9:
-            raise TypeError(f'Invalid dimensions for array expected 9 fields, got {len(attrs)}')
-
-        lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy = attrs
+        if len(attrs) == 9:
+            lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy = attrs
+            day0, dayf = None, None
+        elif len(attrs) == 11:
+            lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy, day0, dayf = attrs
+            day0 = None if np.isnan(day0) else int(day0)
+            dayf = None if np.isnan(dayf) else int(dayf)
+        else:
+            raise TypeError(f'Invalid dimensions for array expected 9 or 11 fields, got {len(attrs)}')
 
         return Region(
             lat0=float(lat0),
@@ -123,7 +145,8 @@ class Region:
             monthf=Month(int(monthf)),
             year0=int(year0),
             yearf=int(yearf),
-            sy=(int(sy) if not np.isnan(sy) else None),
+            day0=day0,
+            dayf=dayf,
         )
 
     def as_numpy(self) -> npt.NDArray[Union[np.float32, np.uint]]:
@@ -139,7 +162,9 @@ class Region:
             self.monthf,
             self.year0,
             self.yearf,
-            (self.sy if self.sy is not None else np.nan)
+            (self.sy if self.sy is not None else np.nan),
+            (self.day0 if self.day0 is not None else np.nan),
+            (self.dayf if self.dayf is not None else np.nan),
         ])
 
 

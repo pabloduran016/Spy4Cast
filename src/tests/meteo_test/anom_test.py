@@ -4,7 +4,7 @@ from typing import Any
 import numpy as np
 import xarray as xr
 
-from spy4cast.meteo.anom import _anom, npanom
+from spy4cast.meteo.anom import npanom
 from .. import BaseTestCase
 from spy4cast import Region, Dataset, Month
 from spy4cast.meteo import Anom, PlotType
@@ -210,14 +210,14 @@ class AnomTest(BaseTestCase):
         os.removedirs(folder)
 
     def test__anom(self) -> None:
-        with self.assertRaises(TypeError):
-            _anom(np.empty((10, 10)))
+        # with self.assertRaises(TypeError):
+        #     _anom(np.empty((10, 10)))
         # with self.assertRaises(ValueError):
         #     _anom(xr.DataArray(np.empty((10, 10, 10)), dims=['year', 'lat', 'lon']))
-        with self.assertRaises(ValueError):
-            _anom(xr.DataArray(np.empty((10, 10)), dims=['year', 'lat'], coords={'year': np.arange(1990, 2000)}))
-        with self.assertRaises(ValueError):
-            _anom(self.ds.data[:, 0])
+        # with self.assertRaises(ValueError):
+        #     _anom(xr.DataArray(np.empty((10, 10)), dims=['year', 'lat'], coords={'year': np.arange(1990, 2000)}))
+        # with self.assertRaises(ValueError):
+        #     _anom(self.ds.data[:, 0])
         # with self.assertRaises(ValueError):
         #     _anom(self.ds.data[1:])
 

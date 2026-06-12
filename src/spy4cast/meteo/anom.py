@@ -64,9 +64,21 @@ class Anom(_Procedure):
         self._st = st
 
         if self._type == PlotType.TS:
-            self._data = self._ds.data.mean(dim=self._ds._lon_key).mean(dim=self._ds._lat_key)
+            array = self._ds.data.mean(dim=self._ds._lon_key).mean(dim=self._ds._lat_key)
+            a = array.groupby('year').mean()
+            b = self._data - self._data.mean('year')
+            if st:
+                b = b / b.std()
+            self._data = b
         elif self._type == PlotType.MAP:
-            self._data = self._ds.data
+            # Reshape time variable
+            array = self._ds.data
+            a = array.groupby('year').mean()
+            b = a - a.mean('year')
+            if st:
+               b = b / b.std()
+
+            self._data = b
             self._lat = self._ds.lat
             self._lon = self._ds.lon
 
@@ -75,7 +87,6 @@ class Anom(_Procedure):
         else:
             assert False, 'Unreachable'
 
-        self._data = _anom(self.data, st)
         self._time_key = 'year'
         self._region.year0 = int(self.time[0])
         self._region.yearf = int(self.time[-1])
@@ -311,13 +322,9 @@ class Anom(_Procedure):
             raise TypeError('Dimensions for array must be either 3 (MAP) or 1 (TS)')
         if 'year' not in array.coords:
             raise ValueError('Missing coord "year" for dataset anom')
-        obj = Anom.__new__(Anom)
-        obj._ds = Dataset.from_xrarray(array)
-        obj.type = PlotType.MAP if len(array.shape) == 3 else PlotType.TS
-        obj.data = _anom(array, st).values
-        if obj.type == PlotType.MAP:
-            obj.lat = obj._ds.lat.values
-            obj.lon = obj._ds.lon.values
+        ds = Dataset.from_xrarray(array)
+        typ = "map" if len(array.shape) == 3 else "ts"
+        obj = Anom(ds, typ, st)
         return obj
 
     def plot(
@@ -503,7 +510,7 @@ class Anom(_Procedure):
 
 
 def _anom(
-        array: xr.DataArray, st: bool = False
+    array: xr.DataArray, st: bool = False
 ) -> xr.DataArray:
     if not isinstance(array, xr.DataArray):
         raise TypeError(f"Invalid type for array: {type(array)}")

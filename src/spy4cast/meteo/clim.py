@@ -61,11 +61,15 @@ class Clim(_Procedure, object):
         self._region = ds.region
 
         if self._type == PlotType.TS:
-            self._data = _clim(ds.data.mean(ds._lon_key).mean(ds._lat_key), dim='year')
+            array = ds.data.mean(ds._lon_key).mean(ds._lat_key)
+            b = array.groupby('year').mean()
+            self._data = b
             self._time_key = 'year'
             self._time = self._data[self._time_key]
         elif self._type == PlotType.MAP:
-            self._data = _clim(ds.data)
+            array = ds.data
+            b = array.mean(dim=self._ds._time_key)
+            self._data = b
             self._lon_key = self._ds._lon_key
             self._lat_key = self._ds._lat_key
             self._lat = self._ds.lat
@@ -461,50 +465,3 @@ class Clim(_Procedure, object):
             return 'data', 'lat', 'lon'
         else:
             assert False, 'Unreachable'
-
-
-def _clim(array: xr.DataArray, dim: str = 'time') -> xr.DataArray:
-    """Function that performs the climatology of a xarray Dataset
-
-    The climatology is the average across a given axis
-
-    Parameters
-    ----------
-    array : xr.DataArray
-        Xarray DataArray where you wish to perform the climatology
-
-    dim : str, default='time'
-        Dimension where the climatology is going to be performed on
-
-    See Also
-    --------
-    Anom
-
-    Raises
-    ------
-    TypeError
-        If array is not an instance of `xr.DataArray`
-    ValueError
-        If dim is not `month`, `time` or `year`
-    """
-    if not isinstance(array, xr.DataArray):
-        raise TypeError(f"Expected type xarray.DataArray, got {type(array)}")
-    if dim == 'year':
-        # season_size = len(set(array['time.month'].values))
-        # if len(array['time']) % season_size:
-        #     raise ValueError(f'Can not group time array of length {len(array["time"])} with season size of {season_size}')
-        # years = array['time.year'][season_size-1::season_size].data
-        # nyears = len(years)
-        # rv: xr.DataArray = array.groupby_bins('time', nyears, labels=years).mean()
-        # rv = rv.rename({'time_bins': 'year'})
-
-        rv: xr.DataArray = array.groupby('year').mean()
-    elif dim == 'month':
-        rv = array.groupby('time.month').mean()
-    elif dim == 'time':  # Apply across year and month
-        assert 'time' in array.dims
-        rv = array.mean(dim=dim)
-    else:
-        raise ValueError(f'Invalid dim {dim}')
-    return rv
-

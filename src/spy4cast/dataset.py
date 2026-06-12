@@ -184,6 +184,8 @@ class Dataset:
             monthf=Month(self.timestampf.month),
             year0=self.timestamp0.year,
             yearf=self.timestampf.year,
+            day0=self.timestamp0.day,
+            dayf=self.timestampf.day,
         )
 
     @property
@@ -301,16 +303,7 @@ class Dataset:
         if region is not None:
             self.region = region
         else:
-            self.region = Region(
-                lat0=self._ds[self._lat_key].values[0],
-                latf=self._ds[self._lat_key].values[-1],
-                lon0=self._ds[self._lon_key].values[0],
-                lonf=self._ds[self._lon_key].values[-1],
-                month0=Month(pd.to_datetime(self._ds[self._time_key].values[0]).month),
-                monthf=Month(pd.to_datetime(self._ds[self._time_key].values[-1]).month),
-                year0=pd.to_datetime(self._ds[self._time_key].values[0]).year,
-                yearf=pd.to_datetime(self._ds[self._time_key].values[-1]).year,
-            )
+            self.region = self._detect_region()
 
         self._roll_lon()
 
@@ -487,6 +480,26 @@ class Dataset:
                     )
             )
 
+        day0 = self.region.day0
+        dayf = self.region.dayf
+
+        if day0 is not None and dayf is not None:
+            if day0 <= dayf:
+                timemask = timemask & (
+                    (time.dt.day >= day0) & (time.dt.day <= dayf)
+                )
+            else:
+                timemask = timemask & (
+                    (time.dt.day >= dayf) | (time.dt.day <= day0)
+                )
+        elif day0 is not None:
+            timemask = timemask & (time.dt.day >= day0)
+        elif dayf is not None:
+            timemask = timemask & (time.dt.day <= dayf)
+        else:
+            assert day0 is None and dayf is None
+
+
         # Space region
         if self.region.lat0 > self.region.latf:
             latmask = ~((self.lat >= self.region.latf) & (self.lat <= self.region.lat0))
@@ -503,13 +516,16 @@ class Dataset:
             self._lon_key: lonmask,
         }]
 
-        if self.region.month0 <= self.region.monthf:
-            season_size = self.region.monthf - self.region.month0 + 1
-        else:
-            season_size = self.region.monthf + 13 - self.region.month0  # region.month0 != region.monthf
-
-        self.data = self.data.assign_coords(year=(
-            'time', [year for year in range(self.region.year0, self.region.yearf + 1) for _ in range(season_size)]))
+        ## This part is wrong: assumes monthly
+        # if self.region.month0 <= self.region.monthf:
+        #     season_size = self.region.monthf - self.region.month0 + 1
+        # else:
+        #     season_size = self.region.monthf + 13 - self.region.month0  # region.month0 != region.monthf
+        #
+        # self.data = self.data.assign_coords(year=(
+        #     'time', [year for year in range(self.region.year0, self.region.yearf + 1) for _ in range(season_size)]))
+        ## This one does not assume monthly
+        self.data = self.data.assign_coords(year=('time', self.data['time.year'].data))
 
         latskipmask: npt.NDArray[np.bool_] = np.zeros(
             len(self.lat)
@@ -654,3 +670,4 @@ class Dataset:
         }).to_netcdf(fig_data_path)
 
         return self
+

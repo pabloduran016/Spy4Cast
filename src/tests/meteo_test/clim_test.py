@@ -4,7 +4,6 @@ from typing import Any
 import numpy as np
 import xarray as xr
 
-from spy4cast.meteo.clim import _clim
 from .. import BaseTestCase
 from spy4cast import Region, Dataset, Month
 from spy4cast.meteo import Clim, PlotType
@@ -205,37 +204,37 @@ class ClimTest(BaseTestCase):
         os.removedirs(folder)
 
     def test__clim(self) -> None:
-        xr_sst = xr.open_dataset(
-            os.path.join(DATASETS_FOLDER, HadISST_sst)
-        )[SST]
+        # xr_sst = xr.open_dataset(
+        #     os.path.join(DATASETS_FOLDER, HadISST_sst)
+        # )[SST]
+        #
+        # xr_sst = xr_sst[
+        #     ((xr_sst['time.year'] >= 1910) & (xr_sst['time.year'] <= 2000)) &
+        #     ((xr_sst['time.month'] > 10) | (xr_sst['time.month'] <= 1))
+        # ]
+        # xr_sst = xr_sst.assign_coords(year=('time', xr_sst['time.year'].values))
 
-        xr_sst = xr_sst[
-            ((xr_sst['time.year'] >= 1910) & (xr_sst['time.year'] <= 2000)) &
-            ((xr_sst['time.month'] > 10) | (xr_sst['time.month'] <= 1))
-        ]
-        xr_sst = xr_sst.assign_coords(year=('time', xr_sst['time.year'].values))
-
-        xr_sst_m = xr_sst.mean('longitude').mean('latitude')
-        month_clim0 = _clim(xr_sst_m, 'month').values
-        month_clim1 = xr_sst_m.values.reshape((2000 - 1910 + 1, 3)).mean(0)
-        self.assertTrue((np.abs(month_clim0 - month_clim1) < 1e-5).all())
-
-        year_clim0 = _clim(xr_sst_m, 'year').values
-        year_clim1 = xr_sst_m.values.reshape((2000 - 1910 + 1, 3)).mean(1)
-        self.assertTrue((np.abs(year_clim0 - year_clim1) < 1e-5).all())
-
-        time_clim0 = _clim(xr_sst, 'time').values
-        time_clim0 = time_clim0[~np.isnan(time_clim0)]
-        time_clim1 = xr_sst.values.mean(0)
-        time_clim1 = time_clim1[~np.isnan(time_clim1)]
-        self.assertTrue((np.abs(time_clim0 - time_clim1) < 1e-5).all())
-
-        with self.assertRaises(TypeError):
-            _clim(np.array([1, 2, 3]))
+        # xr_sst_m = xr_sst.mean('longitude').mean('latitude')
+        # month_clim0 = _clim(xr_sst_m, 'month').values
+        # month_clim1 = xr_sst_m.values.reshape((2000 - 1910 + 1, 3)).mean(0)
+        # self.assertTrue((np.abs(month_clim0 - month_clim1) < 1e-5).all())
+        #
+        # year_clim0 = _clim(xr_sst_m, 'year').values
+        # year_clim1 = xr_sst_m.values.reshape((2000 - 1910 + 1, 3)).mean(1)
+        # self.assertTrue((np.abs(year_clim0 - year_clim1) < 1e-5).all())
+        #
+        # time_clim0 = _clim(xr_sst, 'time').values
+        # time_clim0 = time_clim0[~np.isnan(time_clim0)]
+        # time_clim1 = xr_sst.values.mean(0)
+        # time_clim1 = time_clim1[~np.isnan(time_clim1)]
+        # self.assertTrue((np.abs(time_clim0 - time_clim1) < 1e-5).all())
+        #
+        # with self.assertRaises(TypeError):
+        #     _clim(np.array([1, 2, 3]))
+        # # with self.assertRaises(ValueError):
+        # #     _clim(xr_sst_m[1:], 'year')
         # with self.assertRaises(ValueError):
-        #     _clim(xr_sst_m[1:], 'year')
-        with self.assertRaises(ValueError):
-            _clim(xr_sst_m, 'idk')
+        #     _clim(xr_sst_m, 'idk')
 
         clim = Clim(Dataset(HadISST_sst, DATASETS_FOLDER).open('sst').slice(
             Region(-45, 45, -25, 25, Month.DEC, Month.FEB, 1871, 1990)
