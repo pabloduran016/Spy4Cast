@@ -16,7 +16,7 @@ from .crossvalidation import calculate_time_correlation, calculate_space_correla
 from .mca import index_regression
 from .. import Region
 from .._functions import region2str, time_from_here, time_to_here
-from .._log import log_debug
+from ..log import log_debug, log_info
 from .._procedure import _Procedure, _apply_flags_to_fig, plot_map, _get_index_from_sy, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, plot_ts, get_xlim_from_region, get_central_longitude_from_region
 from ..land_array import LandArray

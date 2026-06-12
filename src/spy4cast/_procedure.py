@@ -16,7 +16,7 @@ from matplotlib.ticker import MaxNLocator
 import zipfile
 
 from ._functions import time_from_here, time_to_here
-from ._log import log_warning, log_error, log_debug, log_info
+from .log import log_warning, log_error, log_debug, log_info
 from .stypes import Color, Region
 
 T = TypeVar('T', bound='_Procedure')

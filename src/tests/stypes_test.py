@@ -22,6 +22,9 @@ class RegionTest(BaseTestCase):
         )
 
     def test_as_numpy(self) -> None:
+        numpy_sl = Region(-90, 90, -180, 180, Month.JAN, Month.DEC, 0, 2000, 1999, 1, 20).as_numpy()
+        self.assertTrue(np.isclose(numpy_sl, np.array([-90, 90, -180, 180, 1, 12, 0, 2000, 1999, 1, 20])).all())
         numpy_sl = Region(-90, 90, -180, 180, Month.JAN, Month.DEC, 0, 2000, None).as_numpy()
-        self.assertTrue(np.isclose(numpy_sl[:-1], np.array([-90, 90, -180, 180, 1, 12, 0, 2000])).all())
         self.assertTrue(np.isnan(numpy_sl[-1]))
+        self.assertTrue(np.isnan(numpy_sl[-2]))
+        self.assertTrue(np.isnan(numpy_sl[-3]))

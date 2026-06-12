@@ -2,7 +2,7 @@ from time import sleep
 
 from spy4cast import Region, Month, set_silence
 from spy4cast._functions import time_from_here, time_to_here, region2str, mon2str, str2mon
-from spy4cast._log import log_debug, log_error, log_info, log_warning
+from spy4cast.log import log_debug, log_error, log_info, log_warning
 from . import BaseTestCase
 
 class FunctionsTest(BaseTestCase):

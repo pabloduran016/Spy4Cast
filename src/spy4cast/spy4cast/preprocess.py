@@ -9,9 +9,11 @@ from scipy import signal
 import xarray as xr
 import cartopy.crs as ccrs
 
+from spy4cast.stypes import REGION_NP_LENGTH
+
 from .. import Region, Month
 from .._functions import time_from_here, time_to_here, region2str
-from .._log import log_debug, log_info
+from ..log import log_debug, log_info
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, add_cyclic_point_to_data, get_xlim_from_region, get_central_longitude_from_region
@@ -180,8 +182,8 @@ class Preprocess(_Procedure):
 
     @meta.setter
     def meta(self, arr: npt.NDArray[Any]) -> None:
-        self._region = Region.from_numpy(arr[:9].astype(np.float32))
-        self.var = str(arr[9])
+        self._region = Region.from_numpy(arr[:REGION_NP_LENGTH].astype(np.float32))
+        self.var = str(arr[-1])
 
     @property
     def time(self) -> xr.DataArray:

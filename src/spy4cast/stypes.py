@@ -57,6 +57,7 @@ class Month(IntEnum):
     NOV = auto()
     DEC = auto()
 
+REGION_NP_LENGTH = 11
 
 @dataclass
 class Region:
@@ -153,7 +154,7 @@ class Region:
         """Converts region to np array with fields:
             lat0, latf, lon0, lonf, month0, monthf, year0, yearf, sy
         """
-        return np.array([
+        arr = np.array([
             self.lat0,
             self.latf,
             self.lon0,
@@ -166,6 +167,8 @@ class Region:
             (self.day0 if self.day0 is not None else np.nan),
             (self.dayf if self.dayf is not None else np.nan),
         ])
+        assert len(arr) == REGION_NP_LENGTH
+        return arr
 
 
 CLS = TypeVar('CLS')

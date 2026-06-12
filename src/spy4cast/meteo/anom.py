@@ -60,13 +60,14 @@ class Anom(_Procedure):
     def __init__(self, ds: Dataset, type: Literal["map", "ts"], st: bool = False):
         self.type = _get_type(type)
         self._ds = ds
-        self._region = ds.region
         self._st = st
+
+        self._region = ds.region
 
         if self._type == PlotType.TS:
             array = self._ds.data.mean(dim=self._ds._lon_key).mean(dim=self._ds._lat_key)
             a = array.groupby('year').mean()
-            b = self._data - self._data.mean('year')
+            b = a - a.mean('year')
             if st:
                 b = b / b.std()
             self._data = b

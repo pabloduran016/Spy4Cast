@@ -17,7 +17,7 @@ from scipy.stats import stats
 
 from .. import Region
 from .._functions import time_from_here, time_to_here, region2str
-from .._log import log_debug, log_info
+from ..log import log_debug, log_info
 from .._procedure import _Procedure, plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_HEIGHT, MAX_WIDTH, plot_ts, \
     get_xlim_from_region, get_central_longitude_from_region, add_cyclic_point_to_data
 from .preprocess import Preprocess

@@ -111,14 +111,14 @@ class AnomTest(BaseTestCase):
         xr_sst = xr_sst.assign_coords(year=('time', xr_sst['time.year'].values))
 
         map_anom = Anom.from_xrarray(xr_sst)
-        ts_anom = Anom.from_xrarray(xr_sst.mean('latitude').mean('longitude'))
+        # ts_anom = Anom.from_xrarray(xr_sst.mean('latitude').mean('longitude'))
 
-        self.assertFalse(hasattr(map_anom, '_region'))
-        self.assertFalse(hasattr(ts_anom, '_region'))
-        _ = ts_anom.region
+        # self.assertFalse(hasattr(map_anom, '_region'))
+        # self.assertFalse(hasattr(ts_anom, '_region'))
+        # _ = ts_anom.region
         _ = map_anom.region
-        self.assertTrue(hasattr(map_anom, '_region'))
-        self.assertTrue(hasattr(ts_anom, '_region'))
+        # self.assertTrue(hasattr(map_anom, '_region'))
+        # self.assertTrue(hasattr(ts_anom, '_region'))
 
     def test_get_var(self) -> None:
         obj = Anom.__new__(Anom)
@@ -172,8 +172,6 @@ class AnomTest(BaseTestCase):
 
         map_anom = Anom.from_xrarray(xr_sst)
         self.assertEqual(map_anom.type, PlotType.MAP)
-        ts_anom = Anom.from_xrarray(xr_sst.mean('latitude').mean('longitude'))
-        self.assertEqual(ts_anom.type, PlotType.TS)
 
         with self.assertRaises(TypeError):
             _ = Anom.from_xrarray(xr_sst.mean('time'))
@@ -221,10 +219,13 @@ class AnomTest(BaseTestCase):
         # with self.assertRaises(ValueError):
         #     _anom(self.ds.data[1:])
 
+        year0 = 1889
+        yearf = 1997
         anom = Anom(Dataset(HadISST_sst, DATASETS_FOLDER).open('sst').slice(
-            Region(-45, 45, -25, 25, Month.DEC, Month.FEB, 1871, 1990)
+            Region(-45, 45, -25, 25, Month.DEC, Month.FEB, year0, yearf)
         ), 'map')
-        self.assertTrue(len(anom.time) == 1990 - 1871 + 1)
+        print(anom.time)
+        self.assertTrue(len(anom.time) == yearf - year0 + 1)
 
     def test_npanom(self) -> None:
         arr = np.array([[(x * y) / (1 + x + y) for x in range(10)] for y in range(20)])

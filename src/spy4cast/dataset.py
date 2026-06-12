@@ -9,7 +9,7 @@ from typing import Optional, TypeVar, cast, Tuple, Any
 import numpy as np
 import pandas as pd
 
-from ._log import log_info, log_debug, log_warning, log_error
+from .log import log_info, log_debug, log_warning, log_error
 from ._functions import mon2str
 from .errors import DatasetError, DatasetNotFoundError, VariableSelectionError, TimeBoundsSelectionError, \
     SelectedYearError
@@ -300,12 +300,6 @@ class Dataset:
             self._var = var
 
         self._detect_vars()
-
-        if region is not None:
-            self.region = region
-        else:
-            self.region = self._detect_region()
-
         self._roll_lon()
 
         # Check if values are in Kelvin
@@ -322,6 +316,11 @@ class Dataset:
             )
 
         self.data = self.data.assign_coords(year=('time', self.data['time.year'].data))
+
+        if region is not None:
+            self.region = region
+        else:
+            self.region = self._detect_region()
 
         return self
 
@@ -517,16 +516,23 @@ class Dataset:
             self._lon_key: lonmask,
         }]
 
-        ## This part is wrong: assumes monthly
+        # ## This part is wrong: assumes monthly
         # if self.region.month0 <= self.region.monthf:
         #     season_size = self.region.monthf - self.region.month0 + 1
         # else:
         #     season_size = self.region.monthf + 13 - self.region.month0  # region.month0 != region.monthf
         #
-        # self.data = self.data.assign_coords(year=(
-        #     'time', [year for year in range(self.region.year0, self.region.yearf + 1) for _ in range(season_size)]))
+        # season_year = [year for year in range(self.region.year0, self.region.yearf + 1) for _ in range(season_size)]
+
         ## This one does not assume monthly
-        self.data = self.data.assign_coords(year=('time', self.data['time.year'].data))
+        season_year  = self.data['time.year'].data
+        season_month = self.data['time.month'].data
+        if self.region.monthf < self.region.month0:
+            # In this case all months from month0..DEC correspond
+            # to the region of the next year
+            season_year[season_month >= self.region.month0] += 1
+
+        self.data = self.data.assign_coords(year=('time', season_year))
 
         latskipmask: npt.NDArray[np.bool_] = np.zeros(
             len(self.lat)
