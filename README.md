@@ -11,6 +11,8 @@ Fast installation or upgrade:
     $ pip install --upgrade git+https://github.com/pabloduran016/Spy4Cast
 ```
 
+**WARNING**: Sometimes pip does not upgrade the package correctly. If so first uninstall ``pip uninstall spy4cast`` and then install
+
 **WARNING**: If you install more packages, the last installation must be Spy4Cast to ensure working versions
 
 Create environment (Recommended):
