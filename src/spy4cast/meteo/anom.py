@@ -62,7 +62,6 @@ class Anom(_Procedure):
     _lon_key: str
     _region: Region
     _st: bool
-    _group_season: bool
 
     _type: PlotType
 
@@ -76,7 +75,6 @@ class Anom(_Procedure):
         self.type = _get_type(typ)
         self._ds = ds
         self._st = st
-        self._group_season = group_season
 
         self._region = ds.region
 
@@ -93,7 +91,7 @@ class Anom(_Procedure):
         else:
             assert False, 'Unreachable'
 
-        if self._group_season:
+        if group_season:
             a = a.groupby('year').mean()
             self._time_key = 'year'
         else:
@@ -103,7 +101,7 @@ class Anom(_Procedure):
         if st:
            self._data = self._data / self._data.std()
 
-        if self._group_season:
+        if group_season:
             self._region.year0 = int(self.time[0])
             self._region.yearf = int(self.time[-1])
 
@@ -200,14 +198,18 @@ class Anom(_Procedure):
         if self._time_key == "year":
             return time.astype(np.uint)
         else:
-            return time.astype(np.datetime64)
+            return time.astype(np.dtype("datetime64"))
 
     @time.setter
-    def time(self, value: npt.NDArray[np.uint]) -> None:
+    def time(self, value: Union[npt.NDArray[np.uint], npt.NDArray[np.datetime64]]) -> None:
         if type(value) != np.ndarray:
             raise ValueError(f'Type of `time` has to be `np.ndarray` got {type(value)}')
-        if np.dtype(value.dtype) != np.dtype('uint'):
-            raise ValueError(f'Dtype of `time` has to be `uint` got {np.dtype(value.dtype)}')
+        if np.dtype(value.dtype) == np.dtype('uint'):
+            self._time_key = "year"
+        elif np.dtype(value.dtype) == np.dtype('datetime64'):
+            self._time_key = "time"
+        else:
+            raise ValueError(f'Dtype of `time` has to be `uint` or `datetime64` got {np.dtype(value.dtype)}')
 
         if len(value) != self.data.shape[0]:
             raise ValueError(f'Unmatching shapes for `time` and `data` variables')
@@ -459,7 +461,7 @@ class Anom(_Procedure):
             if color is not None:
                 raise TypeError('`color` parameter is not valid to plot a map anomaly')
             if year is None and timestamp is None:
-                raise TypeError(f'Must provide argument `year` or `timestamp` to plot anom')
+                raise TypeError(f'Must provide argument `year` or `timestamp` to plot anom, got none')
             elif year is not None and timestamp is not None:
                 raise TypeError(f'Must provide either `year` or `timestamp` to plot anom, got both')
             else:

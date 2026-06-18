@@ -1,19 +1,20 @@
 import os
 from typing import Optional, Tuple, Any, Union, cast, Sequence, Literal
 
+import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import gridspec
 import numpy.typing as npt
-from scipy import signal
+from scipy import signal, interpolate
 import xarray as xr
 import cartopy.crs as ccrs
 
-from spy4cast.stypes import REGION_NP_LENGTH
+from spy4cast.stypes import REGION_NP_LENGTH, TimeStamp
 
 from .. import Region, Month
 from .._functions import time_from_here, time_to_here, region2str
-from ..log import log_debug, log_info
+from ..log import log_debug, log_info, log_warning
 from ..dataset import Dataset
 from .._procedure import _Procedure, _get_index_from_sy, plot_map, _apply_flags_to_fig, _calculate_figsize, MAX_WIDTH, \
     MAX_HEIGHT, add_cyclic_point_to_data, get_xlim_from_region, get_central_longitude_from_region
@@ -95,6 +96,7 @@ class Preprocess(_Procedure):
     _time: xr.DataArray
     _lat: xr.DataArray
     _lon: xr.DataArray
+    _time_key: str
 
     _region: Region
     _var: str
@@ -119,6 +121,7 @@ class Preprocess(_Procedure):
         pre._ds = self.ds
 
         pre.time = self._time.values
+        pre._time_key = self._time_key
         pre.lat = self._lat.values
         pre.lon = self._lon.values
 
@@ -138,12 +141,18 @@ class Preprocess(_Procedure):
         log_info(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
         assert len(ds.data.dims) == 3
-        a = ds.data.groupby('year').mean()
-        anomaly = a - a.mean('year')
         self._ds: Dataset = ds
+
+        if group_season:
+            a = ds.data.groupby('year').mean()
+            self._time_key = "year"
+        else:
+            a = ds.data
+            self._time_key = self._ds._time_key
+        anomaly = a - a.mean(self._time_key)
         
         anomaly = anomaly.transpose(
-            'year', ds._lat_key,  ds._lon_key
+            self._time_key, ds._lat_key,  ds._lon_key
         )
 
         nt, nlat, nlon = anomaly.shape
@@ -167,7 +176,7 @@ class Preprocess(_Procedure):
         if detrend:
             self._land_data.values[~self._land_data.land_mask] = signal.detrend(self._land_data.not_land_values)  # detrend in time
 
-        self._time = anomaly['year']
+        self._time = anomaly[self._time_key]
         self._lat = anomaly[ds._lat_key]
         self._lon = anomaly[ds._lon_key]
 
@@ -195,18 +204,22 @@ class Preprocess(_Procedure):
 
     @property
     def time(self) -> xr.DataArray:
-        """Time coordinate of the data in years."""
+        """Time coordinate of the data."""
         return self._time
 
     @time.setter
-    def time(self, arr: npt.NDArray[np.int32]) -> None:
+    def time(self, arr: Union[npt.NDArray[np.int32], npt.NDArray[np.datetime64]]) -> None:
         if type(arr) != np.ndarray:
             raise TypeError(f'Expected type `np.ndarray` for variable `time`, '
                             f'got `{type(arr)}`')
-        if arr.dtype not in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]:  # type: ignore
-            raise TypeError(f'Expected dtype `int` for `np.ndarray` for variable `time`, '
+        if arr.dtype in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]:  # type: ignore
+            self._time_key = "year"
+        elif arr.dtype in [np.datetime64]:  # type: ignore
+            self._time_key = "time"
+        else:
+            raise TypeError(f'Expected dtype `int` or `datetime64` for `np.ndarray` for variable `time`, '
                             f'got `{np.dtype(arr.dtype)}`')
-        self._time = xr.DataArray(arr, dims=['year'])
+        self._time = xr.DataArray(arr, dims=[self._time_key])
 
     @property
     def lat(self) -> xr.DataArray:
@@ -316,6 +329,11 @@ class Preprocess(_Procedure):
             return self._ds.region
         else:
             # TODO: Replace month0 and monthf with meaninful values
+            if self._time_key == "year":
+                years = self.time.values
+            else:
+                # TODO: year0 may be wrong for seasons like DJF
+                years = self.time["year"].values
             self._region = Region(
                 lat0=self.lat.values[0],
                 latf=self.lat.values[-1],
@@ -323,8 +341,8 @@ class Preprocess(_Procedure):
                 lonf=self.lon.values[-1],
                 month0=Month.JAN,
                 monthf=Month.DEC,
-                year0=self.time.values[0],
-                yearf=self.time.values[-1],
+                year0=years[0],
+                yearf=years[-1],
             )
             return self._region
 
@@ -334,6 +352,8 @@ class Preprocess(_Procedure):
         show_plot: bool = False,
         halt_program: bool = False,
         selected_year: Optional[int] = None,
+        year: Optional[int] = None,
+        timestamp: Union[str, TimeStamp, None] = None,
         cmap: str = 'bwr',
         folder: Optional[str] = None,
         name: Optional[str] = None,
@@ -347,6 +367,13 @@ class Preprocess(_Procedure):
 
         Parameters
         ----------
+        selected_year
+            Deprecated: same as year
+        year
+            Plot the anomaly map for the last date of the season with this year
+        timestamp
+            Plot the date which is closest to the timestamp
+
         save_fig
             Saves the fig using `folder` and `name` parameters
         show_plot
@@ -391,12 +418,47 @@ class Preprocess(_Procedure):
         if plot_type not in ("contour", "pcolor"):
             raise ValueError(f"Expected `contour` or `pcolor` for argument `plot_type`, but got {plot_type}")
 
-        nt, nlat, nlon = len(self.time), len(self.lat), len(self.lon)
+        if selected_year is not None:
+            log_warning("`selected_year` is deprecated. Use `year` instead")
+            year = selected_year
+            selected_year = None
 
+        nt, nlat, nlon = len(self.time), len(self.lat), len(self.lon)
         plotable = self.land_data.values.transpose().reshape((nt, nlat, nlon))
 
-        index = 0 if selected_year is None \
-            else _get_index_from_sy(self.time, selected_year)
+        if year is not None and timestamp is not None:
+            raise TypeError(f'Must provide either `year` or `timestamp` to plot anom, got both')
+        else:
+            if self._time_key == "year":
+                if year is None:
+                    if timestamp is not None:
+                        year = pd.to_datetime(timestamp).year
+                        idx = (np.abs(self.time.values - year)).argmin()
+                    else:
+                        idx = 0
+                else:
+                    try:
+                        idx = np.nonzero(self.time.values == year)[0][0]
+                    except IndexError as e:
+                        raise ValueError(f"Year {year} not valid. Years: {self.time.values.tolist()}") from e
+                actual_year = self.time.values[idx]
+                arr = plotable[idx]
+                title = f"Year: {actual_year}"
+            else:
+                if timestamp is None:
+                    assert year is not None
+                    ts = pd.Timestamp(
+                        year=year,
+                        month=int(self._region.monthf),
+                        day=1,
+                    )  # type: ignore
+                else:
+                    ts = pd.to_datetime(timestamp)
+
+                idx = (np.abs(self.time.values - ts.to_numpy())).argmin()
+                actual_ts = self.time.values[idx]
+                arr = plotable[idx]
+                title = f"Date: {actual_ts}"
 
         figsize = _calculate_figsize(nlat / nlon, maxwidth=MAX_WIDTH, maxheight=MAX_HEIGHT) if figsize is None else figsize
         fig = plt.figure(figsize=figsize)
@@ -408,10 +470,9 @@ class Preprocess(_Procedure):
 
         ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(central_longitude))
 
-
         plot_map(
-            plotable[index], self.lat, self.lon, fig, ax,
-            f'Year {self.time[index].values}',
+            arr, self.lat, self.lon, fig, ax,
+            title,
             levels=levels,
             cmap=cmap, xlim=xlim, cax=fig.add_subplot(gs[1]),
             add_cyclic_point=self.region.lon0 >= self.region.lonf,
@@ -433,3 +494,4 @@ class Preprocess(_Procedure):
             halt_program=halt_program,
         )
         return (fig, ), (ax, )
+

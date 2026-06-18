@@ -85,19 +85,19 @@ class AnomTest(BaseTestCase):
     def test_get_time(self) -> None:
         map_time = self.map_anom.time
         self.assertEqual(type(map_time), xr.DataArray)
-        self.assertEqual(map_time.dtype, np.uint)
+        self.assertEqual(map_time.values.dtype, np.uint)
 
         ts_time = self.ts_anom.time
         self.assertEqual(type(ts_time), xr.DataArray)
-        self.assertEqual(ts_time.dtype, np.uint)
+        self.assertEqual(ts_time.values.dtype, np.uint)
 
         map_time = self.map_anom_time.time
         self.assertEqual(type(map_time), xr.DataArray)
-        self.assertEqual(map_time.dtype, np.datetime64)
+        self.assertEqual(map_time.values.dtype, np.dtype("<M8[ns]"))
 
         ts_time = self.ts_anom_time.time
         self.assertEqual(type(ts_time), xr.DataArray)
-        self.assertEqual(ts_time.dtype, np.datetime64)
+        self.assertEqual(ts_time.values.dtype, np.dtype("<M8[ns]"))
 
     def test_set_time(self) -> None:
         for anom in (self.map_anom, self.ts_anom):

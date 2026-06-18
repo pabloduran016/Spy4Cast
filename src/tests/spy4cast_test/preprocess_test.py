@@ -185,6 +185,7 @@ class PreprocessTest(BaseTestCase):
         ppcessed._lat = self.preprocessed.lat
         ppcessed._lon = self.preprocessed.lon
         ppcessed._time = self.preprocessed.time
+        ppcessed._time_key = self.preprocessed._time_key
         self.assertEqual(ppcessed.region, Region(
             lat0=ppcessed.lat.values[0],
             latf=ppcessed.lat.values[-1],
