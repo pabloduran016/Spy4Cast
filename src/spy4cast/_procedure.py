@@ -98,7 +98,7 @@ class _Procedure(ABC):
                 log_error(f'Could not find file `{path}` to load {clsname} variable {name}')
                 raise
 
-        log_debug(f' took {time_to_here():.03f} seconds', prefix="")
+        log_debug(f' took {time_to_here():.03f} seconds', prefix="", info=False)
         return self
 
 def plot_map(

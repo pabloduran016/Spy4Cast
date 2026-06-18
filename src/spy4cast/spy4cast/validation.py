@@ -191,7 +191,7 @@ class Validation(_Procedure):
             _r_z_zhat_s_separated_modes, _p_z_zhat_s_separated_modes \
             = calculate_space_correlation(new_z_land_array, self.zhat_accumulated_modes)
 
-        log_debug(f'\n\tTook: {time_to_here():.03f} seconds', prefix="", end="")
+        log_debug(f'\n\tTook: {time_to_here():.03f} seconds', prefix="", info=False, end="")
 
     @property
     def training_mca(self) -> MCA:

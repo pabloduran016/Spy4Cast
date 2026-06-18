@@ -40,6 +40,13 @@ class Preprocess(_Procedure):
             If specified as well as period, a butterworth filter with those parameters will be applied
         detrend : bool, default = False
             Apply `scipy.signal.detrend` on the time axis.
+        group_season : bool, default=True
+            If True, group data points with the same **season_id** (defined below) and take the average. 
+            This creates a new dataset with only time dimension being **season_id**. 
+            This dataset is the one used to calculate anomalies. This is used when regions span
+            multiple months (e.g. JUN-AUG) and you consider the mean during this season the variable.
+            **season_id** is the common year of the region; or for regions like DEC-FEB that mix years,
+            the year of the end of the region (FEB).
 
     Examples
     --------
@@ -126,6 +133,7 @@ class Preprocess(_Procedure):
         period: Optional[float] = None,
         freq: Literal["high", "low"] = "high",
         detrend: bool = False,
+        group_season: bool = True,
     ):
         log_info(f'Preprocessing data for variable {ds.var}', end='')
         time_from_here()
@@ -163,8 +171,8 @@ class Preprocess(_Procedure):
         self._lat = anomaly[ds._lat_key]
         self._lon = anomaly[ds._lon_key]
 
-        log_debug(f' took: {time_to_here():.03f} seconds', prefix="", end="")
-        log_info("\n", prefix="")
+        log_debug(f' took: {time_to_here():.03f} seconds', prefix="", info=False, end="")
+        log_info("\n", prefix="", info=False)
 
     @property
     def ds(self) -> Dataset:

@@ -353,7 +353,7 @@ class Crossvalidation(_Procedure):
 
                     self.us[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["us"]
                     self.vs[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["vs"]
-                log_debug("\n", prefix="")
+                log_debug("\n", prefix="", info=False)
         else:
             for i in range(nfolds):
                 size_of_fold = min(nt, (i+1)*fold_size) - i*fold_size
@@ -374,7 +374,7 @@ class Crossvalidation(_Procedure):
                 self.suz_sig[:, i, :] = out["suz_sig"]
                 self.us[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["us"]
                 self.vs[:, [x for x in range(nt) if x < fold_size * i or x >= fold_size * (i + 1)], i] = out["vs"]
-            log_debug("\n", prefix="")
+            log_debug("\n", prefix="", info=False)
 
         self.r_z_zhat_t_accumulated_modes, self.p_z_zhat_t_accumulated_modes, \
             self.r_z_zhat_t_separated_modes, self.p_z_zhat_t_separated_modes \
@@ -389,7 +389,7 @@ class Crossvalidation(_Procedure):
                 self.zhat_separated_modes, sig, montecarlo_iterations)
 
         self.alpha = alpha
-        log_debug(f'\n\tTook: {time_to_here():.03f} seconds', prefix="")
+        log_debug(f'\n\tTook: {time_to_here():.03f} seconds', prefix="", info=False)
 
     @property
     def dsy(self) -> PreprocessAny:
@@ -422,7 +422,7 @@ class Crossvalidation(_Procedure):
             msg = f'\tyear: {year_start + 1} of {nt}\033[F'
         else:
             msg = f'\tyears: [{year_start + 1}, {year_end}] of {nt}\033[F'
-        log_debug(msg, prefix="")
+        log_debug(msg, prefix="", info=False)
 
         yrs_included = np.setdiff1d(np.arange(nt), np.arange(year_start, year_end))
         z2 = LandArray(z.values[:, yrs_included])

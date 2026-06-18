@@ -26,6 +26,9 @@ class AnomTest(BaseTestCase):
         self.ts_anom = Anom(self.ds, 'ts', st=True)
         self.map_anom = Anom(self.ds, 'map', st=True)
 
+        self.ts_anom_time = Anom(self.ds, 'ts', st=True, group_season=False)
+        self.map_anom_time = Anom(self.ds, 'map', st=True, group_season=False)
+
     def test___init__(self) -> None:
         with self.assertRaises(TypeError):
             _ = Anom(self.ds, 'idk')  # type: ignore
@@ -87,6 +90,14 @@ class AnomTest(BaseTestCase):
         ts_time = self.ts_anom.time
         self.assertEqual(type(ts_time), xr.DataArray)
         self.assertEqual(ts_time.dtype, np.uint)
+
+        map_time = self.map_anom_time.time
+        self.assertEqual(type(map_time), xr.DataArray)
+        self.assertEqual(map_time.dtype, np.datetime64)
+
+        ts_time = self.ts_anom_time.time
+        self.assertEqual(type(ts_time), xr.DataArray)
+        self.assertEqual(ts_time.dtype, np.datetime64)
 
     def test_set_time(self) -> None:
         for anom in (self.map_anom, self.ts_anom):
@@ -178,7 +189,12 @@ class AnomTest(BaseTestCase):
 
     def test_plot(self) -> None:
         self.map_anom.plot(year=1980)
+        self.map_anom.plot(timestamp="1980-01-01")
         self.ts_anom.plot()
+
+        self.map_anom_time.plot(year=1980)
+        self.map_anom_time.plot(timestamp="1890-02-16")
+        self.ts_anom_time.plot()
 
         with self.assertRaises(TypeError):
             self.ts_anom.plot(year=2000)
@@ -224,7 +240,6 @@ class AnomTest(BaseTestCase):
         anom = Anom(Dataset(HadISST_sst, DATASETS_FOLDER).open('sst').slice(
             Region(-45, 45, -25, 25, Month.DEC, Month.FEB, year0, yearf)
         ), 'map')
-        print(anom.time)
         self.assertTrue(len(anom.time) == yearf - year0 + 1)
 
     def test_npanom(self) -> None:

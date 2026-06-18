@@ -26,15 +26,17 @@ class TermColors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def log(prefix: str, msg: Any, *args: Any, color: Op[TermColors] = None, **kwargs: Any) -> None:
+def log(prefix: str, msg: Any, *args: Any, color: Op[TermColors] = None, info: bool = True, **kwargs: Any) -> None:
     now = datetime.datetime.now()
     if supports_color():
         prefix = f"{TermColors.BOLD}{prefix}{TermColors.ENDC}"
-    info = f"{now:%Y-%m-%d %H:%M:%S}:"
+    if info:
+        info_str = f" {now:%Y-%m-%d %H:%M:%S}"
+    else:
+        info_str = f""
     if supports_color() and color is not None:
-        prefix = f"{color}{prefix}{TermColors.ENDC}"
-        info = f"{color}{info}{TermColors.ENDC}"
-    s = f"{prefix} {info} {msg}"
+        prefix = f"{color}{prefix}{color}{info_str}:{TermColors.ENDC}"
+    s = f"{prefix} {msg}"
     print(s, *args, **kwargs)
 
 def log_info(msg: Any, *args: Any, prefix: str = "INFO", **kwargs: Any) -> None:

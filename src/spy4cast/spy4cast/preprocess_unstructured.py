@@ -104,8 +104,8 @@ class PreprocessUnstructured(_Procedure):
         if detrend:
             self._land_data.values[~self._land_data.land_mask] = signal.detrend(self._land_data.not_land_values)  # detrend in time
 
-        log_debug(f' took: {time_to_here():.03f} seconds', prefix="", end="")
-        log_info("\n", prefix="")
+        log_debug(f' took: {time_to_here():.03f} seconds', prefix="", info=False, end="")
+        log_info("\n", prefix="", info=False)
 
     @property
     def region(self) -> Region:

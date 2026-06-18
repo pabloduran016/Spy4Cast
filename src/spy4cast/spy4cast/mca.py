@@ -201,7 +201,7 @@ class MCA(_Procedure):
             )
 
         self._mca(dsz.land_data, dsy.land_data, nm, alpha, sig, montecarlo_iterations, num_svdvals)
-        log_debug(f'\tTook: {time_to_here(here):.03f} seconds', prefix="")
+        log_debug(f'\tTook: {time_to_here(here):.03f} seconds', prefix="", info=False)
 
         self._psi = None
         # first you calculate the covariance matrix

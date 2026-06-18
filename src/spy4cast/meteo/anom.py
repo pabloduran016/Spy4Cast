@@ -15,7 +15,7 @@ import pandas as pd
 import numpy as np
 import numpy.typing as npt
 from . import PlotType, _get_type
-from ..stypes import Color, Month
+from ..stypes import Color, Month, TimeStamp
 
 
 __all__ = [
@@ -38,6 +38,14 @@ class Anom(_Procedure):
         st : bool, default=False
             Indicates whether to standarise the anomaly
 
+        group_season : bool, default=True
+            If True, group data points with the same **season_id** (defined below) and take the average. 
+            This creates a new dataset with only time dimension being **season_id**. 
+            This dataset is the one used to calculate anomalies. This is used when regions span
+            multiple months (e.g. JUN-AUG) and you consider the mean during this season the variable.
+            **season_id** is the common year of the region; or for regions like DEC-FEB that mix years,
+            the year of the end of the region (FEB).
+
     See Also
     --------
         spy4cast.dataset.Dataset, Clim
@@ -54,32 +62,29 @@ class Anom(_Procedure):
     _lon_key: str
     _region: Region
     _st: bool
+    _group_season: bool
 
     _type: PlotType
 
-    def __init__(self, ds: Dataset, type: Literal["map", "ts"], st: bool = False):
-        self.type = _get_type(type)
+    def __init__(
+        self,
+        ds: Dataset, 
+        typ: Literal["map", "ts"], 
+        st: bool = False,
+        group_season: bool = True,
+    ):
+        self.type = _get_type(typ)
         self._ds = ds
         self._st = st
+        self._group_season = group_season
 
         self._region = ds.region
 
         if self._type == PlotType.TS:
-            array = self._ds.data.mean(dim=self._ds._lon_key).mean(dim=self._ds._lat_key)
-            a = array.groupby('year').mean()
-            b = a - a.mean('year')
-            if st:
-                b = b / b.std()
-            self._data = b
+            a = self._ds.data.mean(dim=self._ds._lon_key).mean(dim=self._ds._lat_key)
         elif self._type == PlotType.MAP:
-            # Reshape time variable
-            array = self._ds.data
-            a = array.groupby('year').mean()
-            b = a - a.mean('year')
-            if st:
-               b = b / b.std()
+            a = self._ds.data
 
-            self._data = b
             self._lat = self._ds.lat
             self._lon = self._ds.lon
 
@@ -88,9 +93,19 @@ class Anom(_Procedure):
         else:
             assert False, 'Unreachable'
 
-        self._time_key = 'year'
-        self._region.year0 = int(self.time[0])
-        self._region.yearf = int(self.time[-1])
+        if self._group_season:
+            a = a.groupby('year').mean()
+            self._time_key = 'year'
+        else:
+            self._time_key = self._ds._time_key
+        self._data = a - a.mean(self._time_key)
+
+        if st:
+           self._data = self._data / self._data.std()
+
+        if self._group_season:
+            self._region.year0 = int(self.time[0])
+            self._region.yearf = int(self.time[-1])
 
     @property
     def ds(self) -> Dataset:
@@ -181,7 +196,11 @@ class Anom(_Procedure):
         -------
             xarray.DataArray
         """
-        return self._data[self._time_key].astype(np.uint)
+        time = self._data[self._time_key]
+        if self._time_key == "year":
+            return time.astype(np.uint)
+        else:
+            return time.astype(np.datetime64)
 
     @time.setter
     def time(self, value: npt.NDArray[np.uint]) -> None:
@@ -335,6 +354,7 @@ class Anom(_Procedure):
         show_plot: bool = False,
         halt_program: bool = False,
         year: Optional[int] = None,
+        timestamp: Union[str, TimeStamp, None] = None,
         cmap: Optional[str] = None,
         color: Optional[Color] = None,
         folder: str = '.',
@@ -362,7 +382,9 @@ class Anom(_Procedure):
             Only used if `show_plot` is `True`. If `True` shows the plot if plt.show
             and stops execution. Else uses fig.show and does not halt program
         year
-            Requiered for plotting map anomalies
+            Plot the anomaly map for the last date of the season with this year
+        timestamp
+            Plot the date which is closest to the timestamp
         cmap
             Colormap for the `map` types
         color
@@ -398,6 +420,8 @@ class Anom(_Procedure):
             fig = plt.figure(figsize=figsize)
             if year is not None:
                 raise TypeError('`year` parameter is not valid to plot a time series anomaly')
+            if timestamp is not None:
+                raise TypeError('`timestamp` parameter is not valid to plot a time series anomaly')
             if cmap is not None:
                 raise TypeError('`cmap` parameter is not valid to plot a time series anomaly')
             if levels is not None:
@@ -434,15 +458,33 @@ class Anom(_Procedure):
             gs = gridspec.GridSpec(2, 1, height_ratios=[1, 0.08], hspace=0.1)
             if color is not None:
                 raise TypeError('`color` parameter is not valid to plot a map anomaly')
-            if year is None:
-                raise TypeError(f'`Must provide argument `year` to plot anom')
+            if year is None and timestamp is None:
+                raise TypeError(f'Must provide argument `year` or `timestamp` to plot anom')
+            elif year is not None and timestamp is not None:
+                raise TypeError(f'Must provide either `year` or `timestamp` to plot anom, got both')
+            else:
+                if self._time_key == "year":
+                    if year is None:
+                        assert timestamp is not None
+                        year = pd.to_datetime(timestamp).year
+                    arr = self.data.sel({self._time_key: year}).values
+                else:
+                    if timestamp is None:
+                        assert year is not None
+                        timestamp = pd.Timestamp(
+                            year=year,
+                            month=int(self._region.monthf),
+                            day=1,
+                        )  # type: ignore
+                    arr = self.data.sel({self._time_key: timestamp}, method="nearest").values
+
             central_longitude = central_longitude if central_longitude is not None else \
                 get_central_longitude_from_region(self.region.lon0, self.region.lonf)
             xlim = xlim if xlim is not None else \
                 get_xlim_from_region(self.region.lon0, self.region.lonf, central_longitude)
             ax = fig.add_subplot(gs[0], projection=ccrs.PlateCarree(central_longitude))
             im = plot_map(
-                arr=self.data.sel({self._time_key: year}).values,
+                arr=arr,
                 lat=self.lat,
                 lon=self.lon,
                 fig=fig,
