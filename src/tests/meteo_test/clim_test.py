@@ -118,6 +118,7 @@ class ClimTest(BaseTestCase):
 
         ts_clim = Clim.__new__(Clim)
         ts_clim._type = PlotType.TS
+        ts_clim._time_key = "year"
         ts_clim.data = xr_sst[:, 0, 0].values
 
         self.assertFalse(hasattr(map_clim, '_region'))
@@ -168,7 +169,6 @@ class ClimTest(BaseTestCase):
         ts_clim.data = np.empty((10,), dtype=np.float32)
         self.assertTrue(hasattr(ts_clim, '_data'))
         self.assertEqual(ts_clim.data.shape, (10,))
-        self.assertEqual(ts_clim._time_key, 'time')
 
         with self.assertRaises(ValueError):
             arr = np.empty((10, 10, 10), dtype=np.float32)

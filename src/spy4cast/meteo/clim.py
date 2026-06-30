@@ -55,18 +55,24 @@ class Clim(_Procedure, object):
 
     _type: PlotType
 
-    def __init__(self, ds: Dataset, type: Literal["map", "ts"]):
+    def __init__(self, ds: Dataset, type: Literal["map", "ts"], group_season: bool = True):
         self.type = _get_type(type)
         self._ds = ds
         self._region = ds.region
 
         if self._type == PlotType.TS:
             array = ds.data.mean(ds._lon_key).mean(ds._lat_key)
-            b = array.groupby('year').mean()
+            if group_season:
+                b = array.groupby('year').mean()
+                self._time_key = "year"
+            else:
+                b = array
+                self._time_key = "time"
             self._data = b
-            self._time_key = 'year'
             self._time = self._data[self._time_key]
         elif self._type == PlotType.MAP:
+            if group_season is not True:
+                raise ValueError("Can not use `group_season=False` for type map")
             array = ds.data
             b = array.mean(dim=self._ds._time_key)
             self._data = b
@@ -176,7 +182,11 @@ class Clim(_Procedure, object):
             pass
         else:
             assert False, 'Unreachable'
-        return self._data[self._time_key].astype(np.uint)
+        time = self._data[self._time_key]
+        if self._time_key == "year":
+            return time.astype(np.uint)
+        else:
+            return time.astype(np.dtype("datetime64"))
 
     @time.setter
     def time(self, value: npt.NDArray[Union[np.uint, np.datetime64]]) -> None:
@@ -188,11 +198,12 @@ class Clim(_Procedure, object):
             assert False, 'Unreachable'
         if type(value) != np.ndarray:
             raise ValueError(f'Type of `time` has to be `np.ndarray` got {type(value)}')
-        if (
-                np.dtype(value.dtype) != np.dtype('uint') and
-                np.dtype(value.dtype) != np.dtype('datetime64[ns]')
-        ):
-            raise ValueError(f'Dtype of `time` has to be `uint` or `datetime64[ns]` got {np.dtype(value.dtype)}')
+        if np.dtype(value.dtype) == np.dtype('uint'):
+            self._time_key = "year"
+        elif np.dtype(value.dtype) == np.dtype('datetime64'):
+            self._time_key = "time"
+        else:
+            raise ValueError(f'Dtype of `time` has to be `uint` or `datetime64` got {np.dtype(value.dtype)}')
 
         if len(value) != self.data.shape[0]:
             raise ValueError(f'Unmatching shapes for `time` and `data` variables')
@@ -278,8 +289,7 @@ class Clim(_Procedure, object):
         if self.type == PlotType.TS:
             if len(value.shape) != 1:
                 raise ValueError(f'Expected data to be one-dimensional for time series. Got shape {value.shape}')
-            self._data = xr.DataArray(value, coords={'time': np.arange(len(value))}, dims=['time'])
-            self._time_key = 'time'
+            self._data = xr.DataArray(value, coords={'year': np.arange(len(value))}, dims=['year'])
         elif self.type == PlotType.MAP:
             if len(value.shape) != 2:
                 raise ValueError(f'Expected data to be two-dimensional for map. Got shape {value.shape}')
@@ -375,7 +385,7 @@ class Clim(_Procedure, object):
                 arr=self.data.values,
                 ax=ax,
                 ylabel=f'{self.var}',
-                xlabel='Year',
+                xlabel=self._time_key.capitalize(),
                 color=color,
             )
             fig.suptitle(

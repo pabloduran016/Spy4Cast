@@ -442,7 +442,7 @@ class Anom(_Procedure):
                 arr=self.data.values,
                 ax=ax,
                 ylabel=f'{self.var}',
-                xlabel='Year',
+                xlabel=self._time_key.capitalize(),
                 color=color,
             )
             fig.suptitle(
