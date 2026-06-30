@@ -28,7 +28,7 @@ class TermColors:
 
 def log(prefix: str, msg: Any, *args: Any, color: Op[TermColors] = None, info: bool = True, **kwargs: Any) -> None:
     now = datetime.datetime.now()
-    if supports_color():
+    if supports_color() and len(prefix) > 0:
         prefix = f"{TermColors.BOLD}{prefix}{TermColors.ENDC}"
     if info:
         info_str = f" {now:%Y-%m-%d %H:%M:%S}"

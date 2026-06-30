@@ -177,9 +177,9 @@ class Preprocess(_Procedure):
         if detrend:
             self._land_data.values[~self._land_data.land_mask] = signal.detrend(self._land_data.not_land_values)  # detrend in time
 
-        self._time = anomaly[self._time_key]
-        self._lat = anomaly[ds._lat_key]
-        self._lon = anomaly[ds._lon_key]
+        self._time = xr.DataArray(anomaly[self._time_key].values, dims=[self._time_key])
+        self._lat = xr.DataArray(anomaly[ds._lat_key].values, dims=[ds._lat_key])
+        self._lon = xr.DataArray(anomaly[ds._lon_key].values, dims=[ds._lon_key])
 
         log_debug(f' took: {time_to_here():.03f} seconds', prefix="", info=False, end="")
         log_info("\n", prefix="", info=False)
