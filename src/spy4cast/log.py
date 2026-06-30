@@ -34,8 +34,10 @@ def log(prefix: str, msg: Any, *args: Any, color: Op[TermColors] = None, info: b
         info_str = f" {now:%Y-%m-%d %H:%M:%S}"
     else:
         info_str = f""
+    if len(prefix) > 0 or len(info_str) > 0:
+        info_str += ":"
     if supports_color() and color is not None:
-        prefix = f"{color}{prefix}{color}{info_str}:{TermColors.ENDC}"
+        prefix = f"{color}{prefix}{color}{info_str}{TermColors.ENDC}"
     s = f"{prefix} {msg}"
     print(s, *args, **kwargs)
 

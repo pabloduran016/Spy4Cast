@@ -322,7 +322,7 @@ class Validation(_Procedure):
         figsize: Optional[Tuple[float, float]] = None,
         nm: Optional[int] = None,
         plot_type: Literal["contour", "pcolor"] = "contour",
-    ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
+    ) -> Tuple[Tuple[plt.Figure], Tuple[Tuple[plt.Axes, ...]]]:
         """Plot the Validation results
 
         Parameters
@@ -362,7 +362,7 @@ class Validation(_Procedure):
         Tuple[plt.Figure]
             Figures object from matplotlib
 
-        Tuple[plt.Axes]
+        Tuple[Tuple[plt.Axes]]
             Tuple of axes in figure
 
         Examples
@@ -422,7 +422,7 @@ class Validation(_Procedure):
             halt_program=halt_program
         )
 
-        return (fig, ), axs
+        return (fig, ), (axs, )
 
 
     def plot_zhat(

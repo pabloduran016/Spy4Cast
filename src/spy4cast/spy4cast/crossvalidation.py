@@ -517,7 +517,7 @@ class Crossvalidation(_Procedure):
         rmse_levels: Optional[
             Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
-    ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes, ...]]:
+    ) -> Tuple[Tuple[plt.Figure], Tuple[Tuple[plt.Axes, ...]]]:
         """Plot the Crossvalidation results
 
         Parameters
@@ -571,7 +571,7 @@ class Crossvalidation(_Procedure):
         figures : Tuple[plt.Figure]
             Figures objects from matplotlib. In this case just one figure
 
-        ax : Tuple[plt.Axes]
+        ax : Tuple[Tuple[plt.Axes]]
             Tuple of axes in figure. In the default case: 2 axes
 
         Examples
@@ -676,7 +676,7 @@ class Crossvalidation(_Procedure):
             halt_program=halt_program
         )
 
-        return (fig, ), axs
+        return (fig, ), (axs, )
 
     def plot_zhat(
         self,

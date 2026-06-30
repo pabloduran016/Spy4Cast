@@ -41,7 +41,7 @@ MAX_HEIGHT = 8
 
 
 class _Procedure(ABC):
-    plot: Callable[..., Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]] = abstractmethod(lambda: ((), ()))
+    plot: Callable[..., Tuple[Tuple[plt.Figure, ...], Tuple[Tuple[plt.Axes, ...], ...]]] = abstractmethod(lambda: ((), ()))
 
     @property
     @abstractmethod
@@ -109,7 +109,7 @@ def plot_map(
     ax: plt.Axes,
     title: Optional[str] = None,
     levels: Optional[
-        Union[npt.NDArray[np.float32], Sequence[float], bool]
+        Union[int, npt.NDArray[np.float32], Sequence[float], bool]
     ] = None,
     xlim: Optional[Sequence[float]] = None,
     ylim: Optional[Sequence[float]] = None,

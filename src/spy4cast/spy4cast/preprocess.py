@@ -46,6 +46,7 @@ class Preprocess(_Procedure):
             This creates a new dataset with only time dimension being **season_id**. 
             This dataset is the one used to calculate anomalies. This is used when regions span
             multiple months (e.g. JUN-AUG) and you consider the mean during this season the variable.
+            **If you are using daily data set this setting to False so that it preserves the day in the time variable.**
             **season_id** is the common year of the region; or for regions like DEC-FEB that mix years,
             the year of the end of the region (FEB).
 
@@ -214,10 +215,10 @@ class Preprocess(_Procedure):
                             f'got `{type(arr)}`')
         if arr.dtype in [np.int8, np.int16, np.int64, np.int32, np.uint8, np.uint16, np.uint32, np.uint64]:  # type: ignore
             self._time_key = "year"
-        elif arr.dtype in [np.datetime64]:  # type: ignore
+        elif arr.dtype in [np.dtype("datetime64[ns]")]:  # type: ignore
             self._time_key = "time"
         else:
-            raise TypeError(f'Expected dtype `int` or `datetime64` for `np.ndarray` for variable `time`, '
+            raise TypeError(f'Expected dtype `int` or `datetime64[ns]` for `np.ndarray` for variable `time`, '
                             f'got `{np.dtype(arr.dtype)}`')
         self._time = xr.DataArray(arr, dims=[self._time_key])
 
@@ -362,7 +363,7 @@ class Preprocess(_Procedure):
         levels: Optional[
             Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
-    ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes]]:
+    ) -> Tuple[Tuple[plt.Figure], Tuple[Tuple[plt.Axes]]]:
         """Plot the preprocessed data for spy4cast methodologes
 
         Parameters
@@ -412,7 +413,7 @@ class Preprocess(_Procedure):
         figures : Tuple[plt.Figure]
             Figures objects from matplotlib. In this case just one figure with one axes
 
-        ax : Tuple[plt.Axes]
+        ax : Tuple[Tuple[plt.Axes]]
             Tuple of axes in figure. In this case just one axes
         """
         if plot_type not in ("contour", "pcolor"):
@@ -493,5 +494,5 @@ class Preprocess(_Procedure):
             show_plot=show_plot,
             halt_program=halt_program,
         )
-        return (fig, ), (ax, )
+        return (fig, ), ((ax, ), )
 

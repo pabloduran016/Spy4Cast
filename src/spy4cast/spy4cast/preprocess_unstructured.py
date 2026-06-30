@@ -268,7 +268,7 @@ class PreprocessUnstructured(_Procedure):
         levels: Optional[
             Union[npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
-    ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes]]:
+    ) -> Tuple[Tuple[plt.Figure], Tuple[Tuple[plt.Axes]]]:
         """Plot the unstructured preprocessed data for spy4cast methodologes
 
         Parameters
@@ -302,7 +302,7 @@ class PreprocessUnstructured(_Procedure):
         figures : Tuple[plt.Figure]
             Figures objects from matplotlib. In this case just one figure with one axes
 
-        ax : Tuple[plt.Axes]
+        ax : Tuple[Tuple[plt.Axes]]
             Tuple of axes in figure. In this case just one axes
         """
         if plot_type not in ("tricontour", "scatter"):
@@ -360,4 +360,5 @@ class PreprocessUnstructured(_Procedure):
             show_plot=show_plot,
             halt_program=halt_program,
         )
-        return (fig, ), (ax, )
+        return (fig, ), ((ax, ), )
+

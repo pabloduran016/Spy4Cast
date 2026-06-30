@@ -303,7 +303,7 @@ class Clim(_Procedure, object):
         folder: str = '.',
         name: str = 'clim.png',
         levels: Optional[
-            Union[npt.NDArray[np.float32], Sequence[float], bool]
+            Union[int, npt.NDArray[np.float32], Sequence[float], bool]
         ] = None,
         ticks: Optional[
             Union[npt.NDArray[np.float32], Sequence[float]]
@@ -312,7 +312,7 @@ class Clim(_Procedure, object):
         plot_type: Optional[Literal["contour", "pcolor"]] = None,
         central_longitude: Optional[float] = None,
         xlim: Optional[Tuple[float, float]] = None,
-    ) -> Tuple[Tuple[plt.Figure], Tuple[plt.Axes]]:
+    ) -> Tuple[Tuple[plt.Figure], Tuple[Tuple[plt.Axes]]]:
         """Plot the climatology map or time series
 
         Parameters
@@ -351,7 +351,7 @@ class Clim(_Procedure, object):
         figures : Tuple[plt.Figure]
             Figures objects from matplotlib. In this case just one figure
 
-        ax : Tuple[plt.Axes]
+        ax : Tuple[Tuple[plt.Axes]]
             Tuple of axes in figure. In this case just one axes
         """
         if self._type == PlotType.TS:
@@ -427,7 +427,7 @@ class Clim(_Procedure, object):
             show_plot=show_plot,
             halt_program=halt_program,
         )
-        return (fig, ), (ax, )
+        return (fig, ), ((ax, ), )
 
     @classmethod
     def load(cls: Type['Clim'], prefix: str, folder: str = '.', 

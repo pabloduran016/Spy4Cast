@@ -486,7 +486,7 @@ class MCA(_Procedure):
         ruz_ticks: Optional[Union[npt.NDArray[np.float32], Sequence[float]]] = None,
         ruy_levels: Optional[Union[npt.NDArray[np.float32], Sequence[float], bool]] = None,
         ruz_levels: Optional[Union[npt.NDArray[np.float32], Sequence[float], bool]] = None,
-    ) -> Tuple[Tuple[plt.Figure, ...], Tuple[plt.Axes, ...]]:
+    ) -> Tuple[Tuple[plt.Figure, ...], Tuple[Tuple[plt.Axes, ...], ...]]:
         """Plot the MCA results
 
         Parameters
@@ -563,7 +563,7 @@ class MCA(_Procedure):
         figures : Tuple[plt.Figure]
             Figures objects from matplotlib. One figure per page of MCA with 3 modes per page
 
-        ax : Tuple[plt.Axes]
+        ax : Tuple[Tuple[plt.Axes]]
             Tuple of axes in figure. In this case 3 axes per mode: Us/Vs, Y, Z
 
         Examples

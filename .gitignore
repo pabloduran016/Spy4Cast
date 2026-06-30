@@ -1,6 +1,9 @@
 .idea/
 .venv/
 .coverage
+/remove/
+
+/src/spy4cast.egg-info/
 
 mypy.ini
 .mypy_cache/
